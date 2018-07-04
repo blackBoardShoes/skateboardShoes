@@ -525,5 +525,14 @@ export default {
   },
   compute: {
     smallCALCULATE: '(INTnumAdult + numAdultaINPUT)'
+  },
+  errors: {
+    liveRADIO: true
+  },
+  comments: {
+    liveRADIO: {
+      id: 111,
+      label: 222
+    }
   }
 }

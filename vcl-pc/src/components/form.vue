@@ -1,98 +1,116 @@
 <template>
   <div class="formAll">
     <div class="formContent">
-      <el-form
-        :style="{ 'width': !add ? '100%' : '70%' }"
-        label-width="150px"
-        label-position="left"
-        ref='formModel' :model='formModel' size='mini'>
-        <!-- 菜肴展示 -->
-        <draggable v-model="newFields">
-          <!-- :rules="items.validations" -->
-          <el-form-item
-            v-for="(items, index) in newFields" :key="index"
-            :rules="items.validations"
-            :prop="items.id" :label="items.label" v-if="tf(items)">
-            <el-input clearable v-if="items.type === 'INPUT'" v-model.trim='formModel[items.id]'></el-input>
-            <el-input clearable v-if="items.type === 'INT'" v-model.number='formModel[items.id]'></el-input>
-            <el-input clearable v-if="items.type === 'DOUBLE'" v-model.number='formModel[items.id]'></el-input>
-            <el-input v-if="items.type === 'TEXTAREA'" type="textarea"  v-model='formModel[items.id]'></el-input>
-            <el-radio-group v-model="formModel[items.id]" v-if="items.type === 'RADIO'">
-              <el-radio v-for="(it, ii) in items.values" :key="ii" :label="it.value">{{it.label}}</el-radio>
-            </el-radio-group>
-            <div v-if="items.type === 'CHECKBOX'">
-              <el-checkbox-group v-model="formModel[items.id]">
-                <el-checkbox v-for="(it, ii) in items.values" :key="ii" :label="it.value" >{{it.label}}</el-checkbox>
-              </el-checkbox-group>
-            </div>
-            <el-switch v-if="items.type === 'SWITCH'" v-model="formModel[items.id]" ></el-switch>
-            <el-select clearable filterable v-if="items.type === 'SELECT'" v-model="formModel[items.id]" style="width:100%;">
-              <el-option v-for="(it, ii) in items.values" :key="ii" :label="it.label" :value="it.value" ></el-option>
-            </el-select>
-            <el-date-picker
-              clearable
-              style="width:100%;"
-              v-if="items.type === 'DATE'"
-              v-model="formModel[items.id]"
-              type="date"
-              placeholder="选择日期时间">
-            </el-date-picker>
-            <el-date-picker
-              clearable
-              style="width:100%;"
-              v-if="items.type === 'DATETIME'"
-              v-model="formModel[items.id]"
-              type="datetime"
-              placeholder="选择日期时间">
-            </el-date-picker>
-            <!-- value-format="yyyy-MM-dd/HH:mm:ss" -->
-            <el-cascader
-              clearable filterable
-              style="width:100%;"
-              v-if="items.type === 'CASCADER'"
-              :options="items.children"
-              v-model="formModel[items.id]">
-            </el-cascader>
-            <div v-if="items.type === 'CALCULATE'" >
-              <div>
-                {{formModel[items.id] ? formModel[items.id] : 0}}&nbsp;&nbsp;&nbsp;
-                <el-button @click="onEval(items)">计算</el-button>
+      <div
+        class="formContentLeft"
+        :style="{ 'width': !add ? '100%' : '70%' }">
+        <el-form
+          label-width="160px"
+          label-position="left"
+          :disabled="disabled"
+          ref='formModel' :model='formModel' size='mini'>
+          <!-- 菜肴展示 -->
+          <!-- <draggable v-model="newFields"> -->
+            <!-- :rules="items.validations" -->
+            <div
+              v-if="tf(items)"
+              v-for="(items, index) in newFields"
+              :key="index" style="display:flex;align-items:flex-start">
+              <div class="iconErrorClass">
+                <i class="el-icon-error" v-if="iconTf(items)"></i>
               </div>
+              <el-form-item
+                style="width: 100%"
+                :rules="items.validations"
+                :prop="items.id"
+                :label="items.label"
+                @dblclick.native="evaluate(items, index)"
+                >
+                <el-input clearable v-if="items.type === 'INPUT'" v-model.trim='formModel[items.id]'></el-input>
+                <el-input clearable v-if="items.type === 'INT'" v-model.number='formModel[items.id]'></el-input>
+                <el-input clearable v-if="items.type === 'DOUBLE'" v-model.number='formModel[items.id]'></el-input>
+                <el-input v-if="items.type === 'TEXTAREA'" type="textarea"  v-model='formModel[items.id]'></el-input>
+                <el-radio-group v-model="formModel[items.id]" v-if="items.type === 'RADIO'">
+                  <el-radio v-for="(it, ii) in items.values" :key="ii" :label="it.value">{{it.label}}</el-radio>
+                </el-radio-group>
+                <div v-if="items.type === 'CHECKBOX'">
+                  <el-checkbox-group v-model="formModel[items.id]">
+                    <el-checkbox v-for="(it, ii) in items.values" :key="ii" :label="it.value" >{{it.label}}</el-checkbox>
+                  </el-checkbox-group>
+                </div>
+                <el-switch v-if="items.type === 'SWITCH'" v-model="formModel[items.id]" ></el-switch>
+                <el-select clearable filterable v-if="items.type === 'SELECT'" v-model="formModel[items.id]" style="width:100%;">
+                  <el-option v-for="(it, ii) in items.values" :key="ii" :label="it.label" :value="it.value" ></el-option>
+                </el-select>
+                <el-select multiple clearable filterable v-if="items.type === 'SELECTMUTIPLE'" v-model="formModel[items.id]" style="width:100%;">
+                  <el-option v-for="(it, ii) in items.values" :key="ii" :label="it.label" :value="it.value" ></el-option>
+                </el-select>
+                <el-date-picker
+                  clearable
+                  style="width:100%;"
+                  v-if="items.type === 'DATE'"
+                  v-model="formModel[items.id]"
+                  type="date"
+                  placeholder="选择日期时间">
+                </el-date-picker>
+                <el-date-picker
+                  clearable
+                  style="width:100%;"
+                  v-if="items.type === 'DATETIME'"
+                  v-model="formModel[items.id]"
+                  type="datetime"
+                  placeholder="选择日期时间">
+                </el-date-picker>
+                <!-- value-format="yyyy-MM-dd/HH:mm:ss" -->
+                <el-cascader
+                  clearable filterable
+                  style="width:100%;"
+                  v-if="items.type === 'CASCADER'"
+                  :options="items.children"
+                  v-model="formModel[items.id]">
+                </el-cascader>
+                <div v-if="items.type === 'CALCULATE'" >
+                  <div>
+                    {{formModel[items.id] ? formModel[items.id] : 0}}&nbsp;&nbsp;&nbsp;
+                    <el-button @click="onEval(items)">计算</el-button>
+                  </div>
+                </div>
+                <div v-if="items.type === 'CREATECALCULATE'" >
+                  <sx-calculate v-model="formModel['createCalculate']" :calculateData="calculateData"></sx-calculate>
+                </div>
+                <div v-if="items.type === 'TABLE'">
+                  <sx-table ref="sxtable" :tableData="items" @getData="getData"></sx-table>
+                </div>
+                <div v-if="items.type === 'TREE'">
+                  <sx-tree v-model="formModel['tree']"></sx-tree>
+                </div>
+                <div v-if="items.type === 'LAYERTREE'">
+                  <sx-layer-tree v-model="formModel['layerTree']"></sx-layer-tree>
+                </div>
+                <div v-if="items.type === 'CREATETABLE'">
+                  <el-checkbox-group v-model="formModel['createTable']">
+                    <el-checkbox-button v-if="row.type !== 'TABLE' &  row.type !== 'CALCULATE'"
+                      v-for="(row, i) in repositoryData" :label="row.id" :key="i">{{row.label + ' - ' + row.type}}</el-checkbox-button>
+                  </el-checkbox-group>
+                </div>
+                <el-button-group v-if="edit">
+                  <!-- <el-button @click="editFormRow(items, index)">editFormRow</el-button> -->
+                  <el-button type="danger" @click="deleteFormRow(items, index)">deleteFormRow</el-button>
+                </el-button-group>
+              </el-form-item>
             </div>
-            <div v-if="items.type === 'CREATECALCULATE'" >
-              <sx-calculate v-model="formModel['createCalculate']" :calculateData="calculateData"></sx-calculate>
-            </div>
-            <div v-if="items.type === 'TABLE'">
-              <sx-table ref="sxtable" :tableData="items" @getData="getData"></sx-table>
-            </div>
-            <div v-if="items.type === 'TREE'">
-              <sx-tree v-model="formModel['tree']"></sx-tree>
-            </div>
-            <div v-if="items.type === 'LAYERTREE'">
-              <sx-layer-tree v-model="formModel['layerTree']"></sx-layer-tree>
-            </div>
-            <div v-if="items.type === 'CREATETABLE'">
-              <el-checkbox-group v-model="formModel['createTable']">
-                <el-checkbox-button v-if="row.type !== 'TABLE' &  row.type !== 'CALCULATE'"
-                  v-for="(row, i) in repositoryData" :label="row.id" :key="i">{{row.label + ' - ' + row.type}}</el-checkbox-button>
-              </el-checkbox-group>
-            </div>
-            <el-button-group v-if="edit">
-              <!-- <el-button @click="editFormRow(items, index)">editFormRow</el-button> -->
-              <el-button type="danger" @click="deleteFormRow(items, index)">deleteFormRow</el-button>
-            </el-button-group>
-          </el-form-item>
-        </draggable>
-        {{formModel}}<br><br>
-        <!-- 菜肴反馈 -->
-        <el-form-item label-width="0px" style="text-align:center">
-          <el-button v-if="sort" @click="sortAfterData">sortAfterData</el-button>
+          <!-- </draggable> -->
+          {{formModel}}<br><br>
+          <!-- 菜肴反馈 -->
+        </el-form>
+        <div class="formContentLeftControl">
+          <el-button v-if="sort" @click="sortAfterData" >sortAfterData</el-button>
           <el-button v-if="sort" @click="openRelation(false)">openRelation</el-button>
           <el-button @click="consoleData">consoleData</el-button>
           <el-button v-if="sort" @click="notVerifying">notVerifying</el-button>
           <!-- <el-button @click="resetData">resetData</el-button> -->
-        </el-form-item>
-      </el-form>
+        </div>
+      </div>
       <!-- 鱼塘展示 -->
       <div class="formTemplateElement" v-if="add">
         <el-row v-for="(items, index) in repositoryData" :key="index">
@@ -134,6 +152,18 @@
           :needCreatedRelation="needCreatedRelation"
           @getRealationData="getRealationData">
           </relation-factory>
+      </div>
+    </el-dialog>
+    <el-dialog
+      :modal="false"
+      title="错误反馈"
+      :visible.sync="evaluateDialogVisible"
+      width="30%">
+      <div style="width:100%;">
+        <sx-form
+          :disabled="false"
+          v-if="evaluateDialogVisible" :mozhu="allEvaluate"
+          :formModel="evaluateData" @consoleData="createEvaluate"></sx-form>
       </div>
     </el-dialog>
   </div>
@@ -191,6 +221,12 @@ export default {
       default () {
         return false
       }
+    },
+    disabled: {
+      type: Boolean,
+      default () {
+        return false
+      }
     }
   },
   data () {
@@ -198,6 +234,8 @@ export default {
       newFields: 'fields' in this.mozhu ? [...this.mozhu['fields']] : [],
       relation: 'relation' in this.mozhu ? Object.assign({}, this.mozhu['relation']) : {},
       compute: 'compute' in this.mozhu ? Object.assign({}, this.mozhu['compute']) : {},
+      errors: 'errors' in this.mozhu ? Object.assign({}, this.mozhu['errors']) : {},
+      comments: 'comments' in this.mozhu ? Object.assign({}, this.mozhu['comments']) : {},
       mozhuId: 'id' in this.mozhu ? this.mozhu['id'] : '',
       // 拥有各种鱼的鱼塘
       repositoryData: this.momo.length ? [...this.momo] : [],
@@ -216,7 +254,7 @@ export default {
           required: {
             target: 'type',
             rule_type: 'EQUAL',
-            value: ['INPUT', 'INT', 'DOUBLE', 'SELECT', 'DATE', 'DATETIME', 'RADIO', 'TEXTAREA', 'CHECKBOX', 'CASCADER']
+            value: ['INPUT', 'INT', 'DOUBLE', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'RADIO', 'TEXTAREA', 'CHECKBOX', 'CASCADER']
           },
           tree: {
             target: 'type',
@@ -226,7 +264,7 @@ export default {
           layerTree: {
             target: 'type',
             rule_type: 'EQUAL',
-            value: ['SELECT', 'RADIO', 'CHECKBOX']
+            value: ['SELECT', 'SELECTMUTIPLE', 'RADIO', 'CHECKBOX']
           },
           radioAgain: {
             target: 'type',
@@ -255,6 +293,7 @@ export default {
               {label: '整数类型输入框', value: 'INT'},
               {label: '浮点数类型输入框', value: 'DOUBLE'},
               {label: '选择器', value: 'SELECT'},
+              {label: '多选选择器', value: 'SELECTMUTIPLE'},
               {label: '日期选择器', value: 'DATE'},
               {label: '日期时间选择器', value: 'DATETIME'},
               {label: '单选框', value: 'RADIO'},
@@ -350,12 +389,35 @@ export default {
           }
         ]
       },
+      allEvaluate: {
+        fields: [
+          {
+            id: 'id',
+            label: 'ID',
+            value: '',
+            type: 'INPUT',
+            validations: [
+              { required: true, message: '请输入组件ID', trigger: 'change' }
+            ]
+          },
+          {
+            id: 'label',
+            label: 'label',
+            value: '',
+            type: 'INPUT',
+            validations: [
+              { required: true, message: '请输入组件ID', trigger: 'change' }
+            ]
+          }
+        ]
+      },
+      evaluateDialogVisible: false,
+      evaluateData: {},
+      evaluateRowData: {},
       fishData: {},
       fishEdit: false,
-      dialogVisible: false,
       tabelCheckboxGroup: [],
-      // treeData: JSON.parse(JSON.stringify(data)),
-      // rules: {},
+      dialogVisible: false,
       relationDialogVisible: false,
       needCreatedRelation: {},
       whatTF: false,
@@ -365,7 +427,6 @@ export default {
   created () {
     console.time('---form init-------')
     this.init()
-    this.firstShow()
   },
   mounted () {
     console.timeEnd('---form init-------')
@@ -399,6 +460,7 @@ export default {
           case 'TREE':
           case 'LAYERTREE':
           case 'CREATETABLE':
+          case 'SELECTMUTIPLE':
             if (!this.formModel[i.id]) {
               if ('value' in i) {
                 this.$set(this.formModel, i.id, [...i.value])
@@ -462,6 +524,7 @@ export default {
         //   }
         // }
       }
+      this.firstShow()
       // for (let j in this.fields) {
       //   if (this.fields[j]['validations']) {
       //     for (let z in this.fields[j]['validations']) {
@@ -512,6 +575,9 @@ export default {
       }
       return a
     },
+    iconTf (items) {
+      return (this.errors[items.id] & this.disabled)
+    },
     // form conversion rules
     // { "type": "INPUT", "id": "", "label": "", "pattern": "", "message": "", "required": "" }
     conversion (what = {}) {
@@ -527,6 +593,7 @@ export default {
         case 'TEXTAREA':
         case 'CHECKBOX':
         case 'CASCADER':
+        case 'SELECTMUTIPLE':
           if ((parseInt(what['required']))) {
             what['validations'].push(
               // 0 => true, 1 => false
@@ -597,7 +664,7 @@ export default {
       this.$refs['formModel'].validate(valid => {
         if (valid) {
           let idGroup = this.formatData()
-          this.$emit('consoleData', this.mozhuId, this.formModel, this.relation, this.compute, this.newFields, idGroup)
+          this.$emit('consoleData', this.mozhuId, this.formModel, this.relation, this.compute, this.newFields, idGroup, this.errors, this.comments)
           console.log(this.formModel, '------SUCCESS------点击页面DATA')
         } else {
           console.log('error submit!!')
@@ -808,6 +875,22 @@ export default {
         Object.assign(this.relation, data)
       }
       this.relationDialogVisible = false
+    },
+    // 菜肴评价输入
+    evaluate (row, index) {
+      if (this.disabled) {
+        console.log(row, index)
+        this.evaluateRowData = row
+        this.evaluateData = this.comments[row.id]
+        this.evaluateDialogVisible = true
+      }
+    },
+    // 菜肴评价提交
+    createEvaluate (mozhuId, formModel, relation, compute, newFields, idGroup, errors, comments) {
+      console.log(mozhuId, formModel, relation, compute, newFields, idGroup, errors, comments)
+      this.errors[this.evaluateRowData.id] = true
+      this.comments[this.evaluateRowData.id] = formModel
+      this.evaluateDialogVisible = false
     }
   }
 }
@@ -816,10 +899,25 @@ export default {
 <style lang="scss" scoped>
 .formAll {
   width: 100%;
+  .iconErrorClass {
+    height: 20px;
+    margin-top: 3px;
+    width: 35px;
+    font-size: 20px;
+    color: #F56C6C
+  }
   .formContent {
     width: 100%;
     display: flex;
     justify-content: space-between;
+    .formContentLeft {
+      flex-direction: column;
+      display: flex;
+    }
+    .formContentLeftControl {
+      width: 100%;
+      text-align: center;
+    }
     .el-radio, .el-checkbox {
       min-width: 140px;
       margin: 5px;

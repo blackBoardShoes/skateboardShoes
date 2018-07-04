@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <div class="content">
-      <sx-form add edit sort
+      <sx-form add edit sort disabled
         :momo="momo"
         :mozhu="mozhu"
         v-if="gainData"
@@ -105,10 +105,10 @@ export default {
       Object.assign(this.submitData, relation, compute)
       this.confirmTemplateDialogVisible = true
     },
-    async notVerifying (mozhuId, formModel, relation, compute, newFields, idGroup) {
+    async notVerifying (mozhuId, formModel, relation, compute, newFields, idGroup, errors, comments) {
       // 一盘不知道什么味道直接上的 菜
       this.submitData['fields'] = idGroup
-      Object.assign(this.submitData, relation, compute)
+      Object.assign(this.submitData, relation, compute, errors, comments)
       this.confirmTemplateDialogVisible = true
     },
     async confirmData (mozhuId, formModel, relation, compute, newFields, idGroup) {
