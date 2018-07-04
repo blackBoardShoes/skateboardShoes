@@ -1,0 +1,211 @@
+<template>
+  <div>
+    <el-table :data="tableValues">
+      <el-table-column
+        align="center"
+        type="index"
+        min-width="50">
+      </el-table-column>
+      <el-table-column
+        align="center"
+        min-width="180"
+        v-for="(item, index) in sub_fields"
+        :key="index"
+        :prop="item.id"
+        :formatter="formatter"
+        :label="item.label">
+        <!-- <template slot-scope="scope">
+          {{scope.row[item.id]}}
+        </template> -->
+      </el-table-column>
+      <el-table-column
+        align="center"
+        fixed="right"
+        label="操作"
+        width="100">
+        <template slot-scope="scope">
+          <el-button type="text" size="small" @click="editClick(scope.row, scope.$index, sub_fields)">编辑</el-button>
+          <el-button @click="deleteClick(scope.row, scope.$index, sub_fields)" type="text" size="small">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-button style="margin-top:15px;" size="small" @click="addRow">addRow</el-button>
+    <el-button style="margin-top:15px;" size="small" @click="getData">getData</el-button>
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible">
+      <!-- :mozhu="mozhu" -->
+      <sx-form v-if="dialogVisible" :mozhu="mozhu"  :formModel="formModel" @consoleData="consoleData"></sx-form>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    tableData: {
+      type: Object,
+      default () {
+        return {
+          values: [],
+          sub_fields: [],
+          relation: {}
+        }
+      }
+    }
+  },
+  created () {
+    console.time('--table init--')
+    console.log(this.tableData, 'table J S')
+    this.init()
+  },
+  mounted () {
+    console.timeEnd('--table init--')
+  },
+  data () {
+    return {
+      sub_fields: 'sub_fields' in this.tableData ? [...this.tableData['sub_fields']] : [],
+      tableValues: 'values' in this.tableData ? [...this.tableData['values']] : [],
+      dialogVisible: false,
+      mozhu: {
+        id: '',
+        fields: [],
+        relation: {},
+        compute: {}
+      },
+      fields: [],
+      // 传from 数据
+      formModel: {},
+      // table需要的数据
+      formLabel: {},
+      addEdit: {index: 0, add: 0}
+    }
+  },
+  methods: {
+    init () {
+      for (let i of this.sub_fields) {
+        this.formLabel[i.id] = { type: i.type, values: i.values, children: i.children ? i.children : [] }
+      }
+    },
+    formatter (row, column, cellValue, index) {
+      // console.log(row, column, cellValue, index)
+      if (!row[column.property]) {
+        return ''
+      } else {
+        let z = ''
+        if (this.formLabel[column.property]) {
+          switch (this.formLabel[column.property]['type']) {
+            case 'CHECKBOX':
+              for (let i of this.formLabel[column.property]['values']) {
+                // console.log(i.value, row[column.property], '-----------------------checkBox')
+                for (let j in row[column.property]) {
+                  if (row[column.property][j] === i.value) {
+                    z = z + i.label + '、'
+                  }
+                }
+              }
+              break
+            case 'CASCADER':
+              var forFn = (arr) => {
+                // console.log(arr, 'ararararararar')
+                for (let i of row[column.property]) {
+                  for (let j in arr) {
+                    if (arr[j].value === i) {
+                      z = z + arr[j].label + '、'
+                      if ('children' in arr[j]) {
+                        forFn(arr[j].children)
+                      }
+                    }
+                  }
+                }
+              }
+              forFn(this.formLabel[column.property]['children'])
+              break
+            case 'RADIO':
+            case 'SELECT':
+              for (let i of this.formLabel[column.property]['values']) {
+                if (row[column.property] === i.value) {
+                  z = i.label
+                }
+              }
+              break
+            case 'DATE':
+              let date = new Date(row[column.property])
+              if (row[column.property]) z = (date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()).toString()
+              else z = '否'
+              break
+            case 'DATETIME':
+              let dateTime = new Date(row[column.property])
+              if (row[column.property]) {
+                z = (dateTime.getFullYear() + '-' + (dateTime.getMonth() + 1) + '-' + dateTime.getDate() + ' ' + dateTime.getHours() + ':' + dateTime.getMinutes() + ':' + dateTime.getSeconds()).toString()
+              } else z = '否'
+              break
+            case 'SWITCH':
+              // console.log(row[column.property], '==========')
+              if (row[column.property]) {
+                z = '是'
+              } else z = '否'
+              break
+            default :
+              z = row[column.property]
+              break
+          }
+          // for (let i of this.formLabel[column.property]) {
+          //   if (row[column.property] === i.value) {
+          //     z = z + i.label
+          //   }
+          // }
+          return z
+        } else {
+          return row[column.property]
+        }
+      }
+    },
+    consoleData (mozhuId, formModel, relation, compute, newFields, idGroup) {
+      if (this.addEdit.add) {
+        this.tableValues.push(formModel)
+      } else {
+        this.$set(this.tableValues, this.addEdit.index, formModel)
+      }
+      this.dialogVisible = false
+    },
+    deleteClick (row, index, fieldsData) {
+      // this.fields = fieldsData
+      // this.formModel = {}
+      // this.dialogVisible = true
+      this.tableValues.splice(index, 1)
+      // this.tableData['values'].splice(index, 1)
+    },
+    editClick (row, index, fieldsData) {
+      this.addEdit.add = 0
+      this.addEdit.index = index
+      // console.log(row, index, fieldsData)
+      // this.fields = fieldsData
+      this.mozhu['relation'] = this.tableData['relation']
+      this.mozhu['fields'] = fieldsData
+      for (let i in row) {
+        if (this.formLabel[i].type === 'DATE' | this.formLabel[i].type === 'DATETIME') {
+          row[i] = new Date(row[i])
+        }
+      }
+      this.formModel = Object.assign({}, row)
+      this.dialogVisible = true
+    },
+    addRow () {
+      this.addEdit.add = 1
+      // this.fields = this.tableData['sub_fields']
+      this.mozhu['relation'] = this.tableData['relation']
+      this.mozhu['fields'] = this.tableData['sub_fields']
+      this.formModel = {}
+      this.dialogVisible = true
+    },
+    getData () {
+      this.$emit('getData', this.tableValues)
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+
+</style>

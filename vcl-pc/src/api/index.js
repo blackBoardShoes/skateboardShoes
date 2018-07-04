@@ -1,0 +1,42 @@
+import axios from 'axios'
+// import Qs from 'qs'
+// import {apiUrl} from '../dev'
+// axios.defaults.baseURL = '/api'
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+axios.defaults.timeout = 3000
+
+axios.interceptors.request.use(
+  config => {
+    // if (config.method === 'post') {
+    //   config.data = Qs.stringify(config.data)
+    // }
+    console.log(config.data)
+    return config
+  },
+  err => {
+    console.log(err)
+    return Promise.reject(err)
+  }
+)
+axios.interceptors.response.use(
+  response => {
+    return response
+  },
+  err => {
+    if (err.response) {
+      switch (err.response.status) {
+        case 500:
+          console.log('oh shit md fuck 又 500 了')
+          break
+        case 404:
+          console.log('啥玩意又找不到了')
+          break
+        default:
+          console.log('这个错 --->', err.response.status, '!!!!!!!!!!', err.response.status, '!!!!!!!!!!')
+          break
+      }
+    }
+    // return Promise.reject(err)
+  }
+)
+export default axios
