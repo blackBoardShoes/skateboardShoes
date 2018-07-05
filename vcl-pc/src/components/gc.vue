@@ -99,23 +99,26 @@ export default {
       let ft = await fieldTest(what)
       console.log(ft, '---------')
     },
-    async consoleData (mozhuId, formModel, relation, compute, newFields, idGroup) {
+    async consoleData (mozhuId, formModel, relation, newFields, idGroup, errors, comments) {
       // 一盘会检验味道的 菜
       this.submitData['fields'] = idGroup
-      Object.assign(this.submitData, relation, compute)
+      Object.assign(this.submitData, {relation: relation}, {errors: errors}, {comments: comments})
       this.confirmTemplateDialogVisible = true
     },
-    async notVerifying (mozhuId, formModel, relation, compute, newFields, idGroup, errors, comments) {
+    async notVerifying (mozhuId, formModel, relation, newFields, idGroup, errors, comments) {
       // 一盘不知道什么味道直接上的 菜
       this.submitData['fields'] = idGroup
-      Object.assign(this.submitData, relation, compute, errors, comments)
+      console.log(this.submitData, 'caocaocoacoaocaocoacoao')
+      Object.assign(this.submitData, {relation: relation}, {errors: errors}, {comments: comments})
       this.confirmTemplateDialogVisible = true
     },
-    async confirmData (mozhuId, formModel, relation, compute, newFields, idGroup) {
+    async confirmData (mozhuId, formModel, relation, newFields, idGroup, errors, comments) {
       // 服务员记住菜名id 之后 上菜
       Object.assign(this.submitData, formModel)
+      console.log(this.submitData, 'success')
       let fm = await formTest(this.submitData)
       console.log(fm)
+      this.confirmTemplateDialogVisible = false
     },
     sortAfterData (sortData) {
       console.log(sortData, '--=-=-=-=排序后（删除）-=-=-=')
