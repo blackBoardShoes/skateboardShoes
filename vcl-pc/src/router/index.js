@@ -8,7 +8,7 @@ export default new Router({
     {
       path: '/c',
       name: 'start',
-      component: () => import('../components/calculate.vue')
+      component: () => import('../views/content.vue')
     },
     {
       path: '/',
