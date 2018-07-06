@@ -23,7 +23,7 @@
 export default {
   data () {
     return {
-      text: 'cao{"id": "input", "type": "input", "label": "label", "rules": []}asdassaassad,ca asdasdas1',
+      text: 'cao{{"id": "input", "type": "input", "validations": [{ "required": true, "message": "liveRADIO", "trigger": "change" }], "label": "label"}}asdassaassad,ca asdasdas1',
       content: [],
       contentModel: {
         input: 55
@@ -41,9 +41,10 @@ export default {
       //   str.push(i)
       //   // str.push(i.substring(1, i.length - 1))
       // }
-      this.content = this.text.match(/\{.*?\}|[\w\s]+/g) ? this.text.match(/\{.*?\}|[\w\s]+/g) : []
+      this.content = this.text.match(/\{\{.*?\}\}+|[\w\s]+/g) ? this.text.match(/\{\{.*?\}\}|[\w\s]+/g) : []
       for (let z in this.content) {
-        if (/\{.*?\}/g.test(this.content[z])) {
+        if (/\{\{.*?\}\}/g.test(this.content[z])) {
+          this.content[z] = this.content[z].substring(1, this.content[z].length - 1)
           this.content[z] = JSON.parse(this.content[z])
         }
       }
