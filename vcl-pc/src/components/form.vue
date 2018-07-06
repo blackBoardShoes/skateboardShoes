@@ -161,7 +161,6 @@
       width="30%">
       <div style="width:100%;">
         <sx-form
-          :disabled="false"
           v-if="evaluateDialogVisible" :mozhu="allEvaluate"
           :formModel="evaluateData" @consoleData="createEvaluate"></sx-form>
       </div>
@@ -233,7 +232,7 @@ export default {
     return {
       newFields: 'fields' in this.mozhu ? [...this.mozhu['fields']] : [],
       relation: 'relation' in this.mozhu ? Object.assign({}, this.mozhu['relation']) : {},
-      compute: 'compute' in this.mozhu ? Object.assign({}, this.mozhu['compute']) : {},
+      // compute: 'compute' in this.mozhu ? Object.assign({}, this.mozhu['compute']) : {},
       errors: 'errors' in this.mozhu ? Object.assign({}, this.mozhu['errors']) : {},
       comments: 'comments' in this.mozhu ? Object.assign({}, this.mozhu['comments']) : {},
       mozhuId: 'id' in this.mozhu ? this.mozhu['id'] : '',
@@ -664,8 +663,7 @@ export default {
       this.$refs['formModel'].validate(valid => {
         if (valid) {
           let idGroup = this.formatData()
-          this.$emit('consoleData', this.mozhuId, this.formModel, this.relation, this.compute, this.newFields, idGroup, this.errors, this.comments)
-          console.log(this.formModel, '------SUCCESS------点击页面DATA')
+          this.$emit('consoleData', this.mozhuId, this.formModel, this.relation, this.newFields, idGroup, this.errors, this.comments)
         } else {
           console.log('error submit!!')
           return false
@@ -674,7 +672,7 @@ export default {
     },
     notVerifying () {
       let idGroup = this.formatData()
-      this.$emit('notVerifying', this.mozhuId, this.formModel, this.relation, this.compute, this.newFields, idGroup)
+      this.$emit('notVerifying', this.mozhuId, this.formModel, this.relation, this.newFields, idGroup, this.errors, this.comments)
     },
     // form element operation (drag and drop sort) -> newFields
     sortAfterData () {
@@ -768,8 +766,8 @@ export default {
       // this.fields.push()
     },
     // createAndEditElementData -> dialog
-    //  (mozhuId, formModel, relation, compute, newFields, idGroup)
-    async createFish (mozhuId, formModel, relation, compute, newFields, idGroup) {
+    //  mozhuId, formModel, relation, newFields, idGroup, errors, comments
+    async createFish (mozhuId, formModel, relation, newFields, idGroup) {
       formModel['calculate'] = formModel['createCalculate'] ? formModel['createCalculate'] : ''
       formModel['children'] = [...formModel['tree']].length ? [...formModel['tree']] : []
       formModel['values'] = [...formModel['layerTree']].length ? [...formModel['layerTree']] : []
@@ -864,6 +862,7 @@ export default {
       this.relationDialogVisible = true
     },
     getRealationData (data, id) {
+      console.log(this)
       if (this.whatTF) {
         for (let i of this.repositoryData) {
           if (i.id === id) {
@@ -886,10 +885,12 @@ export default {
       }
     },
     // 菜肴评价提交
-    createEvaluate (mozhuId, formModel, relation, compute, newFields, idGroup, errors, comments) {
-      console.log(mozhuId, formModel, relation, compute, newFields, idGroup, errors, comments)
+    createEvaluate (mozhuId, formModel, relation, newFields, idGroup, errors, comments) {
       this.errors[this.evaluateRowData.id] = true
       this.comments[this.evaluateRowData.id] = formModel
+      // this.$set(this.errors, this.evaluateRowData.id, true)
+      // this.$set(this.comments, this.evaluateRowData.id, formModel)
+      console.log(this.errors, this.comments)
       this.evaluateDialogVisible = false
     }
   }

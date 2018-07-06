@@ -523,9 +523,9 @@ export default {
       value: '666'
     }
   },
-  compute: {
-    smallCALCULATE: '(INTnumAdult + numAdultaINPUT)'
-  },
+  // compute: {
+  //   smallCALCULATE: '(INTnumAdult + numAdultaINPUT)'
+  // },
   errors: {
     liveRADIO: true
   },
