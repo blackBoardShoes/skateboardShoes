@@ -14,6 +14,16 @@ export default new Router({
       path: '/',
       name: 'c',
       component: () => import('../components/gc.vue')
+    },
+    {
+      path: '/print',
+      name: 'print',
+      component: () => import('../components/print.vue')
+    },
+    {
+      path: '/editInput',
+      name: 'editInput',
+      component: () => import('../components/editInput.vue')
     }
   ]
 })
