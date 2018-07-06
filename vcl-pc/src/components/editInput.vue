@@ -26,23 +26,24 @@
       </span>
       <br>
       <br>
-      <!-- <el-select v-model="value" placeholder="" :style="fontWidth(value)"> -->
       <el-select v-model="value" placeholder="" :style="fontWidth(value)">
+      <!-- <el-select v-model="value" placeholder="" > -->
         <el-option
           v-for="item in options"
           :key="item.value"
           :label="item.label"
           :value="item.label">
+          <span></span>
           <span style="float: left">{{ item.label }}</span>
           <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
         </el-option>
       </el-select>
-      <el-select v-model="value2" placeholder="" :style="fontWidth(value)">
+      <el-select v-model="value2" placeholder="" :style="fontWidth(value2)">
         <el-option
           v-for="item in options"
           :key="item.value"
           :label="item.label"
-          :value="item.value">
+          :value="item.label">
         </el-option>
       </el-select>
       我去二无群二无群二群翁无群二翁无群二群翁无群二翁无群二无群二无群二无群二翁无群二群翁无群二群翁无群二翁无群二无群
@@ -106,10 +107,10 @@ export default {
           label: '蚵仔煎'
         }, {
           value: '选项4',
-          label: '龙须面'
+          label: '19:00'
         }, {
           value: '选项5',
-          label: '北京烤鸭ewqewqewqeqe'
+          label: 'life is always a struggle'
         }
       ],
       value: '泡面',
@@ -118,13 +119,26 @@ export default {
   },
   methods: {
     fontWidth (value) {
-      console.log(value.length)
-      let fontLength = value.length
-      let cnChar = value.match(/[^\x00-\x80]/g)
-      let cnCharLen = cnChar.length
-      let enCharLen = fontLength - cnChar
-      console.log('width:' + cnCharLen * 18 + enCharLen * 12 + 'px')
-      return 'width:' + Number(fontLength) * 18 + 'px;'
+      console.log(value)
+      // let fontLength = value.length
+      // let cnChar = value.match(/[^\x00-\x80]/g)
+      // let cnCharLen = cnChar.length
+      // let enCharLen = fontLength - cnChar
+      let fontLen = this.strlen(value)
+      console.log(fontLen)
+      console.log('width:' + fontLen * 8 + 'px')
+      return 'width:' + fontLen * 8 + 'px;'
+    },
+    strlen (str) {
+      var len = 0
+      for (var i = 0; i < str.length; i++) {
+        if (this.charCodeAt(i) > 127 || this.charCodeAt(i) === 94) {    
+          len += 2
+        } else {
+          len ++ 
+        }
+      }
+      return len
     },
     handleSelect (item) {
       console.log(item)
@@ -197,7 +211,7 @@ export default {
     font-weight:900;
     font-size:14px;
     display: inline-block;
-    font-size: inherit;
+    font-size: 14px;
     height: 40px;
     line-height: 1;
     padding: 0px !important;
@@ -210,6 +224,7 @@ export default {
     width:100%;
     // border-bottom:1px solid #333;
     outline:none;
+    text-align: center;
     &:hover{
       border-color: #b4bccc;
     }
