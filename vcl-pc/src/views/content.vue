@@ -9,7 +9,7 @@
           <el-form-item
             :style="{width: 40 + contentModel[item.id].toString().length * 6 + 'px !important'}"
             :prop="item.id"
-            :rules="item.rules">
+            :rules="item.validations">
             <el-input v-if="item['type'] === 'input'" v-model="contentModel[item.id]"></el-input>
           </el-form-item>
         </div>
@@ -58,3 +58,12 @@ export default {
   display: flex;
 }
 </style>
+<style lang="scss">
+.all {
+  .el-input, .el-input__inner {
+    padding: 0;
+    margin: 0;
+  }
+}
+</style>
+
