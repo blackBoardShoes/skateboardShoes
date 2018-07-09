@@ -23,7 +23,7 @@ export default new Router({
     {
       path: '/editInput',
       name: 'editInput',
-      component: () => import('../components/editInput.vue')
+      component: () => import('../components/editInput2.vue')
     }
   ]
 })

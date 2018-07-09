@@ -1,33 +1,16 @@
 <template>
   <div id="edit">
     <h2>编辑文本：</h2>
-    <span class="text-area">
-      <!-- {{report[0].content}} -->
+    <!-- <span class="text-area">
       <span class="inside" v-for="cases in report" :key="cases.name">
         <span v-for="(content, index2) in cases.content" :key="index2">
         <span>{{content.before}}</span>
-        <!-- <span style="color:teal;font-weight:900;" @click="handleSelect">{{content.detail.value}}</span> -->
-        <!-- <el-autocomplete
-          popper-class="my-autocomplete"
-          v-model="content.detail.value"
-          :fetch-suggestions="querySearch"
-          @select="handleSelect">
-          <i
-            class="el-icon-edit el-input__icon"
-            slot="suffix"
-            @click="handleIconClick">
-          </i>
-          <template slot-scope="{ item }" :v-for="(item3, index3) in content.detail.options">
-            <div class="name">{{ item.label }}</div>
-          </template>
-        </el-autocomplete> -->
         <span>{{content.after}}</span>
         </span>
       </span>
       <br>
       <br>
       <el-select v-model="value" placeholder="" :style="fontWidth(value)">
-      <!-- <el-select v-model="value" placeholder="" > -->
         <el-option
           v-for="item in options"
           :key="item.value"
@@ -47,7 +30,25 @@
         </el-option>
       </el-select>
       我去二无群二无群二群翁无群二翁无群二群翁无群二翁无群二无群二无群二无群二翁无群二群翁无群二群翁无群二翁无群二无群
-    </span>
+      <br>
+      <span>我又来测试了</span>
+      <br>
+    </span> -->
+    <div class="text-area">
+      <span class="font">大家好，我是斯蒂芬库里，我是斯蒂芬库里,aaweqwewq今天我想吃</span>
+      <span class="text-show">
+      <span  :style="myStyle">{{value3}}</span>
+      <el-select v-model="value3" placeholder="">
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.label">
+        </el-option>
+      </el-select>
+      </span>
+      <span class="font">不知道你们想不想吃呢，听说有人说我是小学生，我一巴掌就直接过去了，现在的小学生都喜欢喊别人小学生么</span>
+    </div>
   </div>
 </template>
 <script>
@@ -114,10 +115,19 @@ export default {
         }
       ],
       value: '泡面',
-      value2: '泡面'
+      value2: '泡面',
+      value3: '我不是小学生',
+      showLabel: false,
+      myStyle: 'z-index:-999;opacity:0;'
     }
   },
   methods: {
+    // showText () {
+    //   this.showLabel = true
+    // },
+    // showNoText () {
+    //   this.showLabel = false
+    // },
     fontWidth (value) {
       console.log(value)
       // let fontLength = value.length
@@ -132,10 +142,11 @@ export default {
     strlen (str) {
       var len = 0
       for (var i = 0; i < str.length; i++) {
-        if (this.charCodeAt(i) > 127 || this.charCodeAt(i) === 94) {    
-          len += 2
+        var c = str.charCodeAt(i)
+        if ((c >= 0x0001 && c <= 0x007e) || (c >= 0xff60 && c <= 0xff9f)) {
+          len++
         } else {
-          len ++ 
+          len += 2
         }
       }
       return len
@@ -182,6 +193,7 @@ export default {
   #edit{
     background-color:teal;
     height:100%;
+    font-size: 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -189,18 +201,36 @@ export default {
       padding:20px;
     }
     .text-area{
-      // text-indent: 2em;
-      text-align: justify;
+      text-indent: 2em;
+      line-height:1.4;
+      cursor: pointer;
       background-color: #fff;
       width:600px;
-      padding:20px;
-      height:500px;
+      padding:10px;
+      height:300px;
+      overflow:auto;
+      margin-top:20px;
+      .text-show{
+        text-indent:0;
+        display: inline-block;
+        position: relative;
+        .el-select{
+          position: absolute;
+          left: 0;
+          top: 0;
+          right:0;
+          bottom: 0;
+          text-align: left;
+          z-index: 999;
+        }
+      }
     }
   }
 </style>
 <style lang="scss">
   .el-input--suffix{
     width:100%;
+    height:100%;
   }
   .el-input__inner{
     -webkit-appearance: none;
@@ -208,23 +238,17 @@ export default {
     border-radius: 0;
     box-sizing: border-box;
     color: teal;
-    font-weight:900;
-    font-size:14px;
-    display: inline-block;
-    font-size: 14px;
-    height: 40px;
-    line-height: 1;
+    display: block;
+    font-size: 16px;
+    line-height: 1.5;
     padding: 0px !important;
     margin:0px !important;
-    -webkit-transition: border-color .2s cubic-bezier(.645,.045,.355,1);
-    transition: border-color .2s cubic-bezier(.645,.045,.355,1);
-    // width:36px;
-    // width:100%;
     border:none;
     width:100%;
-    // border-bottom:1px solid #333;
+    height:100% !important;
+    border-bottom:1px solid teal;
     outline:none;
-    text-align: center;
+    text-align: left;
     &:hover{
       border-color: #b4bccc;
     }
@@ -235,14 +259,8 @@ export default {
   }
   .el-select__caret{
     display:none;
-    width:0px;
-    padding: 0px !important;
-    margin:0px !important;
   }
   .el-input__suffix{
     display:none;
-    width:0px;
-    padding: 0px !important;
-    margin:0px !important;
   }
 </style>
