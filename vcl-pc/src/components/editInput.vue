@@ -1,53 +1,43 @@
 <template>
-  <div id="edit">
-    <h2>编辑文本：</h2>
-    <!-- <span class="text-area">
-      <span class="inside" v-for="cases in report" :key="cases.name">
-        <span v-for="(content, index2) in cases.content" :key="index2">
-        <span>{{content.before}}</span>
-        <span>{{content.after}}</span>
-        </span>
-      </span>
-      <br>
-      <br>
-      <el-select v-model="value" placeholder="" :style="fontWidth(value)">
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.label">
-          <span></span>
-          <span style="float: left">{{ item.label }}</span>
-          <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
-        </el-option>
-      </el-select>
-      <el-select v-model="value2" placeholder="" :style="fontWidth(value2)">
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.label">
-        </el-option>
-      </el-select>
-      我去二无群二无群二群翁无群二翁无群二群翁无群二翁无群二无群二无群二无群二翁无群二群翁无群二群翁无群二翁无群二无群
-      <br>
-      <span>我又来测试了</span>
-      <br>
-    </span> -->
+  <div id="edit-input">
     <div class="text-area">
-      <span class="font">大家好，我是斯蒂芬库里，我是斯蒂芬库里,aaweqwewq今天我想吃</span>
-      <span class="text-show">
-      <span  :style="myStyle">{{value3}}</span>
-      <el-select v-model="value3" placeholder="">
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.label">
-        </el-option>
-      </el-select>
+      <el-form size="mini"
+      :model="contentModel"
+      ref="contentModel"
+      label-width="0px">
+      <span class="text-content" v-for="(item, index) in content" :key="index">
+        <!-- 可选内容 -->
+        <span v-if="item['type']" class="optional-content">
+          <span class="text-len">{{item['type'] === 'select' ? (item.values.find((n) => n.value === contentModel[item.id])).label : contentModel[item.id]}}</span>
+          <el-form-item
+            :prop="item.id"
+            :rules="item.validations">
+            <!-- 输入框 -->
+            <el-input v-if="item['type'] === 'input'" v-model="contentModel[item.id]"></el-input>
+            <!-- select选择器 -->
+            <el-select v-if="item['type'] === 'select'" v-model="contentModel[item.id]" placeholder="">
+              <el-option
+                v-for="option in item.values"
+                :key="option.value"
+                :label="option.label"
+                :value="option.value">
+              </el-option>
+            </el-select>
+            <!-- 日期选择器 -->
+            <el-date-picker
+              v-if="item['type'] === 'DATA'"
+              v-model="contentModel[item.id]"
+              type="date"
+              format="yyyy/MM/dd"
+              value-format="yyyy/MM/dd"
+              placeholder="">
+            </el-date-picker>
+          </el-form-item>
+        </span>
+        <!-- 其他文本内容 -->
+        <span v-else>{{item}}</span>
       </span>
-      <span class="font">不知道你们想不想吃呢，听说有人说我是小学生，我一巴掌就直接过去了，现在的小学生都喜欢喊别人小学生么</span>
+    </el-form>
     </div>
   </div>
 </template>
@@ -56,178 +46,87 @@ export default {
   name: 'editInput',
   data () {
     return {
-      report: [
-        {
-          name: 'case1',
-          // content: '鼻胆管造影结果：胆总管(扩张/不扩张)，直径（）mm，伴有（肝胆部胆管、肝胆中段、胆管下端）'
-          content: [
-            {
-              before: '鼻胆管造影结果：胆总管我删掉撒欢地阿',
-              detail: {
-                id: 'phase1',
-                type: 'select',
-                options: [
-                  {label: '扩张', value: '扩张'},
-                  {label: '不扩张', value: '不扩张'}
-                ],
-                value: '扩张'
-              },
-              after: '，'
-            }
-          ]
-        },
-        {
-          name: 'case2',
-          // content: '鼻胆管造影结果：胆总管(扩张/不扩张)，直径（）mm，伴有（肝胆部胆管、肝胆中段、胆管下端）'
-          content: [
-            {
-              before: '鼻胆管造影结果：胆总管',
-              detail: {
-                id: 'phase1',
-                type: 'select',
-                options: [
-                  {label: '扩张', value: '扩张'},
-                  {label: '不扩张', value: '不扩张'}
-                ],
-                value: ''
-              },
-              after: '，'
-            }
-          ]
-        }
-      ],
-      options: [
-        {
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '19:00'
-        }, {
-          value: '选项5',
-          label: 'life is always a struggle'
-        }
-      ],
-      value: '泡面',
-      value2: '泡面',
-      value3: '我不是小学生',
-      showLabel: false,
-      myStyle: 'z-index:-999;opacity:0;'
+      text: '患者姓名：{{"id": "name", "type": "input", "validations": [{ "required": true, "message": "请填入患者姓名", "trigger": "change" }], "label": "label", "value":""}}，患者性别{{"id": "gender", "type": "select", "validations": [{ "required": true, "message": "请选择患者性别", "trigger": "blur" }], "values": [{"label": "男", "value": "0"},{"label": "女", "value": "1"}], "value":""}}，诊断日期{{"id": "diagTime", "type": "DATA", "validations": [{ "required": true, "message": "请选择诊断日期", "trigger": "blur" }], "values": ""}}，其他建议：北京时间7月9日，夏季联赛赛场出现中国德比，周琦所在的火箭以87-81逆转勇士。周琦发挥出色，他首发出场，在19分钟里得了9分6个篮板，此外还有全场最高的4个盖帽。火箭在最后一节以35-14胜出，一举翻盘。RJ-享特是火箭逆转功臣，得了24分，梅尔顿17尔腾施泰因12分7个篮板另一中国球员阿不都沙拉木代表勇士出场，他以替补身份出战4分钟，未能得分，抢了1个篮板送出1个封盖。马库斯-德里克森23分7个篮板，乔丹-贝尔只得5分2次助攻，替补出场的奥马里-约翰逊10分。两名中国球员的德比令人关注，但两人角色不同，在场上没有面对面的机会。周琦在常规赛中难得有出场机会，但到了夏季联赛却是首发，是火箭重点考察的对象。阿布都沙拉木刚到勇士，出场时间很少。',
+      content: [],
+      contentModel: {
+        name: '李富贵',
+        gender: '1',
+        diagTime: '2017/10/10'
+      }
     }
   },
+  mounted () {
+    this.init()
+  },
   methods: {
-    // showText () {
-    //   this.showLabel = true
-    // },
-    // showNoText () {
-    //   this.showLabel = false
-    // },
-    fontWidth (value) {
-      console.log(value)
-      // let fontLength = value.length
-      // let cnChar = value.match(/[^\x00-\x80]/g)
-      // let cnCharLen = cnChar.length
-      // let enCharLen = fontLength - cnChar
-      let fontLen = this.strlen(value)
-      console.log(fontLen)
-      console.log('width:' + fontLen * 8 + 'px')
-      return 'width:' + fontLen * 8 + 'px;'
-    },
-    strlen (str) {
-      var len = 0
-      for (var i = 0; i < str.length; i++) {
-        var c = str.charCodeAt(i)
-        if ((c >= 0x0001 && c <= 0x007e) || (c >= 0xff60 && c <= 0xff9f)) {
-          len++
-        } else {
-          len += 2
+    init () {
+      this.content = this.text ? this.text.match(/\{\{.*?\}\}|[^{}]+/g) : []
+      for (let z in this.content) {
+        if (/\{\{.*?\}\}/g.test(this.content[z])) {
+          this.content[z] = this.content[z].substring(1, this.content[z].length - 1)
+          this.content[z] = JSON.parse(this.content[z])
         }
       }
-      return len
-    },
-    handleSelect (item) {
-      console.log(item)
-    },
-    handleIconClick (ev) {
-      console.log(ev)
-    },
-    querySearch (queryString, cb) {
-      var restaurants = this.report[0].content[0].detail.options
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants
-      // 调用 callback 返回建议列表的数据
-      cb(results)
-    },
-    createFilter (queryString) {
-      return (restaurant) => {
-        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
-      }
-    },
-    intValue (value1, value2) {
-      value1 = value2
+      console.log(this.content)
+    }
+  },
+  watch: {
+    'contentModel': {
+      handler: function (newVal) {
+        console.log(newVal)
+      },
+      deep: true
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-
-  .select{
-    background-color: red;
-  }
-  input{
-    border:none !important;
-    outline:none !important;
-  }
-  .el-input__inner{
-    border:none !important;
-    outline:none !important;
-  }
-  .el-input_inner{
-    background-color:red;
-  }
-  #edit{
-    background-color:teal;
+// 本页样式
+  #edit-input{
+    width:100%;
     height:100%;
-    font-size: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    h2{
-      padding:20px;
-    }
+    padding:40px;
+    box-sizing: border-box;
+    background-color:darkcyan;
     .text-area{
-      text-indent: 2em;
-      line-height:1.4;
-      cursor: pointer;
+      // text-indent: 2em;
+      height: 100%;
+      width:100%;
       background-color: #fff;
-      width:600px;
-      padding:10px;
-      height:300px;
-      overflow:auto;
-      margin-top:20px;
-      .text-show{
-        text-indent:0;
-        display: inline-block;
-        position: relative;
-        .el-select{
-          position: absolute;
-          left: 0;
-          top: 0;
-          right:0;
-          bottom: 0;
-          text-align: left;
-          z-index: 999;
+      font-size: 16px;
+      line-height: 1.5;
+      .el-form{
+        height:100%;
+        .text-content{
+          line-height: 3;
+          .optional-content{
+            position: relative;
+            .text-len{
+              padding:0px 4px;
+              z-index: -999;
+              opacity: 0;
+            }
+            .el-form-item{
+              position: absolute;
+              left: 0;
+              top: 0;
+              right:0;
+              bottom: 0;
+              text-align: center;
+              z-index: 999;
+            }
+          }
+        }
+        .text-content:nth-of-type(1){
+          text-indent:2em;
+          padding-left: 2em;
         }
       }
     }
   }
 </style>
 <style lang="scss">
+// 本页局部样式修改
   .el-input--suffix{
     width:100%;
     height:100%;
@@ -246,9 +145,9 @@ export default {
     border:none;
     width:100%;
     height:100% !important;
-    border-bottom:1px solid teal;
+    // border-bottom:1px solid teal;
     outline:none;
-    text-align: left;
+    text-align: center;
     &:hover{
       border-color: #b4bccc;
     }
@@ -262,5 +161,20 @@ export default {
   }
   .el-input__suffix{
     display:none;
+  }
+  .el-input__prefix{
+    display: none;
+  }
+  .el-form-item__error{
+    position: absolute;
+    width:300%;
+    left:-150%;
+    margin-left:50%;
+  }
+  .el-date-editor{
+    width:100% !important;
+  }
+  .el-form-item__content{
+    line-height:1 !important;
   }
 </style>
