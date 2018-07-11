@@ -24,7 +24,7 @@
 
 <script>
 import { formTest, formTests, fieldTest, fieldTests } from '../api/a/a.js'
-import data from './data.js'
+// import data from './data.js'
 export default {
   name: 'HelloWorld',
   data () {
