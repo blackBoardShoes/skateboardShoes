@@ -21,6 +21,11 @@ export default new Router({
       component: () => import('../components/print.vue')
     },
     {
+      path: '/imgView',
+      name: 'imgView',
+      component: () => import('../components/imgView.vue')
+    },
+    {
       path: '/editInput',
       name: 'editInput',
       component: () => import('../components/editInput.vue')

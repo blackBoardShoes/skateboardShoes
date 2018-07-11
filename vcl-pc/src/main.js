@@ -9,7 +9,8 @@ import VeLine from 'v-charts/lib/bmap'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import sxForm from './components/form'
-
+import Viewer from 'v-viewer'
+import 'viewerjs/dist/viewer.css'
 // 引入svg组件
 import iconSvg from './components/icon.vue'
 // 全局注册icon-svg
@@ -17,7 +18,7 @@ Vue.component('iconSvg', iconSvg)
 Vue.component('sx-form', sxForm)
 Vue.component(VeLine.name, VeLine)
 Vue.use(ElementUI)
-
+Vue.use(Viewer)
 Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({

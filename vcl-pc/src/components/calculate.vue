@@ -1,6 +1,5 @@
 <template>
   <div class="allCalculate">
-    <el-button @click="toPrint">打印</el-button>
     <div class="ContentCalculate">
       <!-- <el-button-group>
         <el-button
@@ -106,9 +105,6 @@ export default {
     }
   },
   methods: {
-    toPrint () {
-      this.$router.push('print')
-    },
     createFormula (item, index) {
       let formulaEnd = this.formula.slice(this.formula.length - 1, this.formula.length)
       let pattern = /^[a-zA-Z]+$/
