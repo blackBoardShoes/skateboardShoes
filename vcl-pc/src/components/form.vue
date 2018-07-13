@@ -593,10 +593,9 @@ export default {
         case 'CHECKBOX':
         case 'CASCADER':
         case 'SELECTMUTIPLE':
-          if ((parseInt(what['required']))) {
+          if (what['required']) {
             what['validations'].push(
-              // 0 => true, 1 => false
-              { required: (parseInt(what['required'])), message: '请输入或选择' + what['label'], trigger: 'change' }
+              { required: (Boolean(what['required'])), message: '请输入或选择' + what['label'], trigger: 'change' }
             )
           }
           if (what.type === 'INPUT' | what.type === 'INT' | what.type === 'DOUBLE' | what.type === 'TEXTAREA') {
@@ -606,7 +605,7 @@ export default {
               //   what['pattern'].replace('/^', '^')
               // }
               what['validations'].push(
-                { pattern: what['pattern'], message: parseInt(what['message']) ? what['message'] : '请按规则填写', trigger: 'change' }
+                { pattern: what['pattern'], message: what['message'] ? what['message'] : '请按规则填写', trigger: 'change' }
               )
             }
           }
