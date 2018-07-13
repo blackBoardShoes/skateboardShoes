@@ -93,6 +93,12 @@
                       v-for="(row, i) in repositoryData" :label="row.id" :key="i">{{row.label + ' - ' + row.type}}</el-checkbox-button>
                   </el-checkbox-group>
                 </div>
+                <div v-if="items.type === 'EXAMPLE'">
+                  <span style="font-size: 12px">
+                    1到10： ^[1-9]$|^10$ &nbsp;&nbsp;&nbsp; 0到100： ^[0-9][0-9]$|^100$ <br>
+                    1-5字符长度区间： ^.{1,5}$ &nbsp;&nbsp;&nbsp; 5字符长度： ^.{5}$
+                  </span>
+                </div>
                 <el-button-group v-if="edit">
                   <!-- <el-button @click="editFormRow(items, index)">editFormRow</el-button> -->
                   <el-button type="danger" @click="deleteFormRow(items, index)">deleteFormRow</el-button>
@@ -250,6 +256,11 @@ export default {
             rule_type: 'EQUAL',
             value: ['INPUT', 'INT', 'DOUBLE', 'TEXTAREA']
           },
+          example: {
+            target: 'type',
+            rule_type: 'EQUAL',
+            value: ['INPUT', 'INT', 'DOUBLE', 'TEXTAREA']
+          },
           required: {
             target: 'type',
             rule_type: 'EQUAL',
@@ -344,6 +355,12 @@ export default {
               rule_type: 'EQUAL',
               value: 'INPUT'
             }
+          },
+          // patten
+          {
+            id: 'example',
+            label: '正则例子',
+            type: 'EXAMPLE'
           },
           // required
           {
