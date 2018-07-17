@@ -42,11 +42,16 @@
     <div id="right-content">
       <div id="topbar-wrapper">
         <!-- 顶部导航 -->
-        <div class="float-left full-height">
+        <div class="float-left full-height bread-nav">
           <div class="float-left"><i class="el-icon-dogma-menu"></i></div>
           <el-breadcrumb separator=">">
             <el-breadcrumb-item :to="{ path: item.path }" v-for="(item, index) in currentPath" :key="index">{{item.title}}</el-breadcrumb-item>
           </el-breadcrumb>
+        </div>
+        <div class="system-operate float-right">
+          <span class="el-icon-minus" @click="windwowOperate('mini')"></span>
+          <span class="el-icon-news"  @click="windwowOperate('max')"></span>
+          <span class="el-icon-close" @click="windwowOperate('close')"></span>
         </div>
         <div class="sign-out float-right" @click="exit">退出系统</div>
         <div class="system-title float-right">ERCP信息录入管理系统</div>
@@ -65,6 +70,7 @@
 <script>
 import layout from '../../data/layout.json'
 import sessionStorage from '../../assets/js/storage/sessionStorage'
+// var {ipcRenderer: ipc} = require('electron')
 export default {
   name: 'layout',
   data () {
@@ -147,6 +153,21 @@ export default {
         currentPathArr.push(obj)
       }
       return currentPathArr
+    },
+    windwowOperate (operate) {
+      switch (operate) {
+        case 'mini':
+          // ipc.send('window-min')
+          break
+        case 'max':
+          // ipc.send('window-max')
+          break
+        case 'close':
+          // ipc.send('window-close')
+          break
+      }
+      console.log(operate)
+      // console.log(ipc)
     }
   },
   watch: {
@@ -294,6 +315,8 @@ export default {
       display: flex;
       flex-direction: column;
       #topbar-wrapper{
+        // 顶部区域可拖拽
+        -webkit-app-region: drag;
         box-sizing: border-box;
         overflow: hidden;
         height:48px;
@@ -303,6 +326,7 @@ export default {
         background-color: #fff;
         border-bottom:1px solid #B4B4B4;
         .sign-out{
+          -webkit-app-region: no-drag;
           color:teal;
           padding:0 10px;
           cursor: pointer;
@@ -315,6 +339,7 @@ export default {
           background-color:#f9f9f9;
         }
         .el-breadcrumb{
+          -webkit-app-region: no-drag;
           float: left;
           margin-left:14px;
           height:100%;
@@ -326,6 +351,7 @@ export default {
           }
         }
         .quick-search{
+          -webkit-app-region: no-drag;
           padding:0 10px;
           width:200px;
           float:right;
@@ -334,6 +360,13 @@ export default {
               border-radius:15px;
             }
           }
+        }
+        .system-operate{
+          width: 100px;
+          height:100%;
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
         }
       }
       #main-content{

@@ -1,6 +1,20 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
-
+const electron = require('electron')
+const ipc = electron.ipcMain
+ipc.on('window-min',function(){
+  mainWindow.minimize()
+})
+ipc.on('window-max',function(){
+  if(mainWindow.isMaximized()){
+      mainWindow.restore()
+  }else{
+      mainWindow.maximize()
+  }
+})
+ipc.on('window-close',function(){
+  mainWindow.close()
+})
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow

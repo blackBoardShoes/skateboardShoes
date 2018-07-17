@@ -2,7 +2,6 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
-import router from './router'
 import axios from './api'
 
 import store from './store'
@@ -10,6 +9,8 @@ import store from './store'
 // 引入elementui
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import router from './router'
+
 import sxForm from './components/form'
 import Viewer from 'v-viewer'
 import 'viewerjs/dist/viewer.css'
