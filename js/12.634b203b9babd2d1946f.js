@@ -1,1 +1,0 @@
-webpackJsonp([12],{"7Zj+":function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var s={render:function(){var e=this.$createElement;return(this._self._c||e)("div",{attrs:{id:"test"}},[this._v("\n  测试用\n")])},staticRenderFns:[]},r=n("VU/8")({name:"test_index"},s,!1,null,null,null);t.default=r.exports}});

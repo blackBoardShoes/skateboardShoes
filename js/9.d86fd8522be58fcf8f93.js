@@ -1,1 +1,0 @@
-webpackJsonp([9],{ItCA:function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var r={render:function(){var e=this.$createElement;return(this._self._c||e)("div",{attrs:{id:"form"}},[this._v("\n  表单中心\n")])},staticRenderFns:[]};var i=n("VU/8")({name:"form_index"},r,!1,function(e){n("bES1")},"data-v-22353904",null);t.default=i.exports},bES1:function(e,t){}});
