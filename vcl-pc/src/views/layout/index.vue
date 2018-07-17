@@ -28,57 +28,6 @@
            <div class="sub-menu" v-else  slot="content" style="display:none;">
            </div>
         </el-tooltip>
-        <!-- <el-menu
-          background-color="#242B31"
-          text-color="#fff"
-          active-text-color="rgba(255,255,255,1)"
-          class="menu-wrapper"
-          :router="true"
-          :unique-opened="true"
-          :collapse="true"
-          :default-active="$route.path.split('/')[1] === 'home' ? '/home' : '/' + $route.path.split('/')[1]">
-          <template v-for="(item, index) in menuData">
-            <el-menu-item class="menu-item" v-if="!item.children" :index="item.path" :key="index">
-              <i :class="item.icon"></i>
-              <span slot="title">{{item.title}}</span>
-            </el-menu-item>
-            <el-submenu v-else :index="item.path" :key="item.path">
-              <template slot="title">
-                <i :class="item.icon"></i>
-                <span slot="title">{{item.title}}</span>
-              </template>
-              <el-menu-item class="menu-item" v-for="(sub_item, sub_index) in item.children" :index="sub_item.path"
-                            :key="sub_index">
-                <span slot="title" style="margin-left:12px;">{{sub_item.title}}</span>
-              </el-menu-item>
-            </el-submenu>
-          </template>
-        </el-menu> -->
-        <!-- <el-menu
-          :collapse="false"
-          background-color="#242B31"
-          text-color="#fff"
-          active-text-color="rgba(255,255,255,1)"
-          class="menu-wrapper"
-          :router="true"
-          :unique-opened="true"
-          :default-active="$route.path.split('/')[1] === 'home' ? '/home' : '/' + $route.path.split('/')[1] + '/index'">
-          <el-submenu :index="menu.path" v-for="(menu,index) in menuData" :key="index">
-            <template slot="title">
-              <i :class="menu.icon"></i>
-              <span slot="title">{{menu.title}}</span>
-            </template>
-            <el-menu-item-group v-if="menu.children">
-              <span slot="title" style="display:none">分组一</span>
-              <el-menu-item
-                :index="subMenu.path"
-                v-for="(subMenu, index2) in menu.children"
-                :key="index2">
-                {{subMenu.title}}
-              </el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
-        </el-menu> -->
       </div>
       <div class="other-menu">
         <div
@@ -139,7 +88,7 @@ export default {
     checkAuth () {
       let token = this.$store.state.token || sessionStorage.getItem('token')
       if (!token || sessionStorage.getItem('token') === '') {
-        this.$message.success('请登录')
+        // this.$message.success('请登录')
         this.$router.replace('/login')
       } else {
         console.log(token)
