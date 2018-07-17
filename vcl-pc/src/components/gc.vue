@@ -30,7 +30,6 @@ export default {
   data () {
     return {
       // 菜肴
-      mozhu: {},
       // 鱼塘
       momo: [],
       gainData: false,

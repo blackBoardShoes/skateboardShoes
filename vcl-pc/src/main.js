@@ -4,13 +4,21 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import axios from './api'
+
 import store from './store'
 import VeLine from 'v-charts/lib/bmap'
+// 引入elementui
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import sxForm from './components/form'
 import Viewer from 'v-viewer'
 import 'viewerjs/dist/viewer.css'
+// 引入样式文件
+import '../src/assets/css/variable.scss'
+import '../src/assets/css/base.scss'
+import '../src/assets/css/common.scss'
+import '../src/assets/css/iconfont.css'
+
 // 引入svg组件
 import iconSvg from './components/icon.vue'
 // 全局注册icon-svg

@@ -272,6 +272,7 @@ export default {
           margin-top:20px;
           height:150px;
           box-sizing: border-box;
+          background-color: #f0f0f0;
           img{
             width:100%;
             height:100%;

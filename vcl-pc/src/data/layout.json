@@ -1,0 +1,56 @@
+{
+  "use" : "layout",
+  "data": [
+    {
+      "path": "/home",
+      "title": "系统首页",
+      "icon": "el-icon-dogma-home"
+    },
+    {
+      "path": "/patient",
+      "title": "患者中心",
+      "icon": "el-icon-dogma-patient"
+    },
+    {
+      "path": "/statistics",
+      "title": "工作统计",
+      "icon": "el-icon-dogma-statistics"
+    },
+    {
+      "path": "/form",
+      "title": "表单中心",
+      "icon": "el-icon-dogma-form"
+    },
+    {
+      "path": "/message",
+      "title": "消息中心",
+      "icon": "el-icon-dogma-send"
+    },
+    {
+      "path": "/test",
+      "title": "测试",
+      "icon": "el-icon-dogma-piechart",
+      "children": [
+        {"path": "/test/editInput", "title": "可编辑文本域"},
+        {"path": "/test/print", "title": "打印"},
+        {"path": "/test/c1", "title": "表单1"},
+        {"path": "/test/c2", "title": "表单2"},
+        {"path": "/test/imgView", "title": "图片预览"}
+      ]
+    }
+  ],
+  "otherData": [
+    {
+      "path": "/helpCenter",
+      "title": "帮助中心"
+    },
+    {
+      "path": "/mesFeedback",
+      "title": "信息反馈"
+    },
+    {
+      "path": "/aboutSystem",
+      "title": "关于系统"
+    }
+  ]
+}

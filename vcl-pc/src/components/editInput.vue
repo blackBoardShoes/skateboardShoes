@@ -85,16 +85,19 @@ export default {
   #edit-input{
     width:100%;
     height:100%;
-    padding:40px;
+    padding:20px;
     box-sizing: border-box;
-    background-color:darkcyan;
+    // background-color:darkcyan;
     .text-area{
       // text-indent: 2em;
       height: 100%;
       width:100%;
+      padding:20px;
+      box-sizing:border-box;
       background-color: #fff;
       font-size: 16px;
       line-height: 1.5;
+      text-align: justify;
       .el-form{
         height:100%;
         .text-content{
@@ -127,11 +130,11 @@ export default {
 </style>
 <style lang="scss">
 // 本页局部样式修改
-  .el-input--suffix{
+  #edit-input .el-input--suffix{
     width:100%;
     height:100%;
   }
-  .el-input__inner{
+  #edit-input .el-input__inner{
     -webkit-appearance: none;
     background-color: #fff;
     border-radius: 0;
@@ -156,25 +159,25 @@ export default {
       outline: 0;
     }
   }
-  .el-select__caret{
+  #edit-input .el-select__caret{
     display:none;
   }
-  .el-input__suffix{
+  #edit-input .el-input__suffix{
     display:none;
   }
-  .el-input__prefix{
+  #edit-input .el-input__prefix{
     display: none;
   }
-  .el-form-item__error{
+  #edit-input .el-form-item__error{
     position: absolute;
     width:300%;
     left:-150%;
     margin-left:50%;
   }
-  .el-date-editor{
+  #edit-input .el-date-editor{
     width:100% !important;
   }
-  .el-form-item__content{
+  #edit-input .el-form-item__content{
     line-height:1 !important;
   }
 </style>
