@@ -6,7 +6,7 @@ import router from './router'
 import axios from './api'
 
 import store from './store'
-import VeLine from 'v-charts/lib/bmap'
+// import VeLine from 'v-charts/lib/bmap'
 // 引入elementui
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
@@ -24,7 +24,7 @@ import iconSvg from './components/icon.vue'
 // 全局注册icon-svg
 Vue.component('iconSvg', iconSvg)
 Vue.component('sx-form', sxForm)
-Vue.component(VeLine.name, VeLine)
+// Vue.component(VeLine.name, VeLine)
 Vue.use(ElementUI)
 Vue.use(Viewer)
 Vue.config.productionTip = false

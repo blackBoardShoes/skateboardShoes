@@ -264,7 +264,7 @@ export const appRouter = [
           title: '表单2',
           requireAuth: true
         },
-        component: () => import('../components/gc.vue')
+        component: () => import('../views/gc.vue')
       }
     ]
   }
