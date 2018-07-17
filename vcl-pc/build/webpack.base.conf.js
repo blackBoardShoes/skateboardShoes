@@ -73,7 +73,7 @@ module.exports = {
         exclude: [resolve(svgSrc)],
         loader: 'url-loader',
         options: {
-          limit: 10000,
+          limit: 80000,
           name: utils.assetsPath('img/[name].[hash:7].[ext]')
         }
       },
@@ -81,7 +81,7 @@ module.exports = {
         test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
         loader: 'url-loader',
         options: {
-          limit: 80000,
+          limit: 8000,
           name: utils.assetsPath('media/[name].[hash:7].[ext]')
         }
       },
