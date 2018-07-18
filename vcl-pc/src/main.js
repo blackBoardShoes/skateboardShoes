@@ -25,6 +25,9 @@ import iconSvg from './components/icon.vue'
 // 全局注册icon-svg
 Vue.component('iconSvg', iconSvg)
 Vue.component('sx-form', sxForm)
+if (!process.env.IS_WEB) {
+  Vue.use(window.require('vue-electron'))
+}
 // Vue.component(VeLine.name, VeLine)
 Vue.use(ElementUI)
 Vue.use(Viewer)

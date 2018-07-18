@@ -5,27 +5,18 @@
 </template>
 
 <script>
-// if (!process.env.IS_WEB) {
-//   const {ipcRenderer} = window.require('electron')
-//   console.log(ipcRenderer.sendSync('synchronous-message', 'ping'))
-//   ipcRenderer.on('asynchronous-reply', (event, arg) => {
-//     console.log(arg)
-//   })
-//   ipcRenderer.send('asynchronous-message', 'ping')
-// }
-// const {ipcRenderer} = window.require('electron')
-// console.log(ipcRenderer.sendSync('synchronous-message', 'ping'))
-// ipcRenderer.on('asynchronous-reply', (event, arg) => {
-//   console.log(arg)
-// })
-// ipcRenderer.send('asynchronous-message', 'ping')
+  console.log(this.$electron.ipcRenderer.sendSync('synchronous-message', 'ping'))
+  this.$electron.ipcRenderer.on('asynchronous-reply', (event, arg) => {
+    console.log(arg)
+  })
+  this.$electron.ipcRenderer.send('asynchronous-message', 'ping')
 export default {
   name: 'App',
   methods: {
   },
   created () {
-    console.log(process.env)
-    // console.log(ipcRenderer)
+    console.log(this)
+    console.log(this.$electron)
   }
 }
 </script>
