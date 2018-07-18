@@ -1,7 +1,7 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
-const electron = require('electron')
-const ipc = electron.ipcMain
+const ipc = require('electron').ipcMain
+let mainWindow
 ipc.on('window-min',function(){
   mainWindow.minimize()
 })
@@ -17,10 +17,9 @@ ipc.on('window-close',function(){
 })
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 1366, height: 768, frame: false})
+  mainWindow = new BrowserWindow({width: 1366, height: 768})
 
   // and load the index.html of the app.
   mainWindow.loadFile('vcl-pc/dist/index.html')
@@ -36,7 +35,6 @@ function createWindow () {
     mainWindow = null
   })
 }
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.

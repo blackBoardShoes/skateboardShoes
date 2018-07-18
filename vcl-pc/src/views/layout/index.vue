@@ -70,7 +70,6 @@
 <script>
 import layout from '../../data/layout.json'
 import sessionStorage from '../../assets/js/storage/sessionStorage'
-// var {ipcRenderer: ipc} = require('electron')
 export default {
   name: 'layout',
   data () {
@@ -155,6 +154,8 @@ export default {
       return currentPathArr
     },
     windwowOperate (operate) {
+      // console.log(ele)
+      // console.log(ipc)
       switch (operate) {
         case 'mini':
           // ipc.send('window-min')
