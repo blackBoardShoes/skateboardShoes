@@ -103,66 +103,6 @@ export default {
           thumbnail: require('../assets/xbx.jpg'),
           checked: false,
           information: '镜检照片9'
-        },
-        {
-          source: require('../assets/xbx.jpg'),
-          thumbnail: require('../assets/xbx.jpg'),
-          checked: false,
-          information: '镜检照片10'
-        },
-        {
-          source: require('../assets/xbx.jpg'),
-          thumbnail: require('../assets/xbx.jpg'),
-          checked: false,
-          information: '镜检照片11'
-        },
-        {
-          source: require('../assets/xbx.jpg'),
-          thumbnail: require('../assets/xbx.jpg'),
-          checked: false,
-          information: '镜检照片12'
-        },
-        {
-          source: require('../assets/xbx.jpg'),
-          thumbnail: require('../assets/xbx.jpg'),
-          checked: false,
-          information: '镜检照片13'
-        },
-        {
-          source: require('../assets/xbx.jpg'),
-          thumbnail: require('../assets/xbx.jpg'),
-          checked: false,
-          information: '镜检照片14'
-        },
-        {
-          source: require('../assets/xbx.jpg'),
-          thumbnail: require('../assets/xbx.jpg'),
-          checked: false,
-          information: '镜检照片15'
-        },
-        {
-          source: require('../assets/xbx.jpg'),
-          thumbnail: require('../assets/xbx.jpg'),
-          checked: false,
-          information: '镜检照片16'
-        },
-        {
-          source: require('../assets/xbx.jpg'),
-          thumbnail: require('../assets/xbx.jpg'),
-          checked: false,
-          information: '镜检照片17'
-        },
-        {
-          source: require('../assets/xbx.jpg'),
-          thumbnail: require('../assets/xbx.jpg'),
-          checked: false,
-          information: '镜检照片18'
-        },
-        {
-          source: require('../assets/xbx.jpg'),
-          thumbnail: require('../assets/xbx.jpg'),
-          checked: false,
-          information: '镜检照片19'
         }
       ],
       previewImages: [
@@ -238,9 +178,6 @@ export default {
       padding:0 20px;
       box-sizing: border-box;
       line-height: 40px;
-      .float-left{
-        float: left;
-      }
       .close{
         float:right;
         font-size:16px;
@@ -272,6 +209,8 @@ export default {
           margin-top:20px;
           height:150px;
           box-sizing: border-box;
+          border-radius:2px;
+          overflow: hidden;
           background-color: #f0f0f0;
           img{
             width:100%;
@@ -351,7 +290,8 @@ export default {
       }
       .clear-choosen{
         height:40px;
-        text-align: center;
+        padding-right:30px;
+        text-align: right;
         line-height:40px;
         background-color: #f0f0f0;
         color: #117FD1;
@@ -393,13 +333,8 @@ export default {
   .viewer {
     height: 100%;
     position: relative;
-    // margin-top:500px;
     .images {
       display:none;
-      // position: absolute;
-      // top:-100%;
-      // height: 100%;
-      // display: flex;
       justify-content: center;
       align-content: center;
       align-items: center;

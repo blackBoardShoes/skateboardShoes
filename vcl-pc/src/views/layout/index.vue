@@ -28,57 +28,6 @@
            <div class="sub-menu" v-else  slot="content" style="display:none;">
            </div>
         </el-tooltip>
-        <!-- <el-menu
-          background-color="#242B31"
-          text-color="#fff"
-          active-text-color="rgba(255,255,255,1)"
-          class="menu-wrapper"
-          :router="true"
-          :unique-opened="true"
-          :collapse="true"
-          :default-active="$route.path.split('/')[1] === 'home' ? '/home' : '/' + $route.path.split('/')[1]">
-          <template v-for="(item, index) in menuData">
-            <el-menu-item class="menu-item" v-if="!item.children" :index="item.path" :key="index">
-              <i :class="item.icon"></i>
-              <span slot="title">{{item.title}}</span>
-            </el-menu-item>
-            <el-submenu v-else :index="item.path" :key="item.path">
-              <template slot="title">
-                <i :class="item.icon"></i>
-                <span slot="title">{{item.title}}</span>
-              </template>
-              <el-menu-item class="menu-item" v-for="(sub_item, sub_index) in item.children" :index="sub_item.path"
-                            :key="sub_index">
-                <span slot="title" style="margin-left:12px;">{{sub_item.title}}</span>
-              </el-menu-item>
-            </el-submenu>
-          </template>
-        </el-menu> -->
-        <!-- <el-menu
-          :collapse="false"
-          background-color="#242B31"
-          text-color="#fff"
-          active-text-color="rgba(255,255,255,1)"
-          class="menu-wrapper"
-          :router="true"
-          :unique-opened="true"
-          :default-active="$route.path.split('/')[1] === 'home' ? '/home' : '/' + $route.path.split('/')[1] + '/index'">
-          <el-submenu :index="menu.path" v-for="(menu,index) in menuData" :key="index">
-            <template slot="title">
-              <i :class="menu.icon"></i>
-              <span slot="title">{{menu.title}}</span>
-            </template>
-            <el-menu-item-group v-if="menu.children">
-              <span slot="title" style="display:none">分组一</span>
-              <el-menu-item
-                :index="subMenu.path"
-                v-for="(subMenu, index2) in menu.children"
-                :key="index2">
-                {{subMenu.title}}
-              </el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
-        </el-menu> -->
       </div>
       <div class="other-menu">
         <div
@@ -93,11 +42,16 @@
     <div id="right-content">
       <div id="topbar-wrapper">
         <!-- 顶部导航 -->
-        <div class="float-left full-height">
+        <div class="float-left full-height bread-nav">
           <div class="float-left"><i class="el-icon-dogma-menu"></i></div>
           <el-breadcrumb separator=">">
             <el-breadcrumb-item :to="{ path: item.path }" v-for="(item, index) in currentPath" :key="index">{{item.title}}</el-breadcrumb-item>
           </el-breadcrumb>
+        </div>
+        <div class="system-operate float-right">
+          <span class="el-icon-minus" @click="windwowOperate('mini')"></span>
+          <span class="el-icon-news"  @click="windwowOperate('max')"></span>
+          <span class="el-icon-close" @click="windwowOperate('close')"></span>
         </div>
         <div class="sign-out float-right" @click="exit">退出系统</div>
         <div class="system-title float-right">ERCP信息录入管理系统</div>
@@ -139,7 +93,7 @@ export default {
     checkAuth () {
       let token = this.$store.state.token || sessionStorage.getItem('token')
       if (!token || sessionStorage.getItem('token') === '') {
-        this.$message.success('请登录')
+        // this.$message.success('请登录')
         this.$router.replace('/login')
       } else {
         console.log(token)
@@ -198,6 +152,23 @@ export default {
         currentPathArr.push(obj)
       }
       return currentPathArr
+    },
+    windwowOperate (operate) {
+      // console.log(ele)
+      // console.log(ipc)
+      switch (operate) {
+        case 'mini':
+          // ipc.send('window-min')
+          break
+        case 'max':
+          // ipc.send('window-max')
+          break
+        case 'close':
+          // ipc.send('window-close')
+          break
+      }
+      console.log(operate)
+      // console.log(ipc)
     }
   },
   watch: {
@@ -345,6 +316,8 @@ export default {
       display: flex;
       flex-direction: column;
       #topbar-wrapper{
+        // 顶部区域可拖拽
+        -webkit-app-region: drag;
         box-sizing: border-box;
         overflow: hidden;
         height:48px;
@@ -354,6 +327,7 @@ export default {
         background-color: #fff;
         border-bottom:1px solid #B4B4B4;
         .sign-out{
+          -webkit-app-region: no-drag;
           color:teal;
           padding:0 10px;
           cursor: pointer;
@@ -366,6 +340,7 @@ export default {
           background-color:#f9f9f9;
         }
         .el-breadcrumb{
+          -webkit-app-region: no-drag;
           float: left;
           margin-left:14px;
           height:100%;
@@ -377,6 +352,7 @@ export default {
           }
         }
         .quick-search{
+          -webkit-app-region: no-drag;
           padding:0 10px;
           width:200px;
           float:right;
@@ -385,6 +361,13 @@ export default {
               border-radius:15px;
             }
           }
+        }
+        .system-operate{
+          width: 100px;
+          height:100%;
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
         }
       }
       #main-content{

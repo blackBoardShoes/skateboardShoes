@@ -17,13 +17,13 @@ ipcMain.on('synchronous-message', (event, arg) => {
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 1366, height: 768, frame: false})
+  mainWindow = new BrowserWindow({width: 1366, height: 768})
 
   // and load the index.html of the app.
   mainWindow.loadFile('vcl-pc/dist/index.html')
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -33,7 +33,6 @@ function createWindow () {
     mainWindow = null
   })
 }
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
