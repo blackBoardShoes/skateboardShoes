@@ -5,10 +5,11 @@
         <el-tooltip
           placement="right"
           v-for="(menu,index) in menuData"
-          :key="index" @click="skip(index,menu)"
-          :disabled="!menu.children">
+          :key="index"
+          @click="skip(index,menu)"
+          :disabled="menu.children.length < 2">
           <div
-            :class="{menu: true, active: menu.path === ($route.path.split('/')[1] === 'home' ? '/home' : '/' + $route.path.split('/')[1])}"
+            :class="{menu: true, active: menu.path === ($route.path.split('/')[1] === 'home' ? '/home' : '/' +  $route.path.split('/')[1])}"
             @click="skip(index,menu)">
             <div class="icon">
               <span :class="menu.icon"></span>
@@ -20,13 +21,12 @@
               <div class="round" v-for="round in 4" :key="round"></div>
             </div>
           </div>
-          <div class="sub-menu" v-if="menu.children"  slot="content">
+          <div class="sub-menu" slot="content">
             <div class="child-menu" v-for="(child, index2) in menu.children" :key="index2" @click="skip(index2,child)">
-              <span style="display:block;height:30px;line-height:30px;font-size:12px;padding:0 10px;text-align: left;cursor:pointer;">{{child.title}}</span>
+              <span style="display:block;height:30px;line-height:30px;font-size:12px;padding:0 10px;text-align: left;cursor:pointer;">
+                {{child.meta.title}}</span>
             </div>
           </div>
-           <div class="sub-menu" v-else  slot="content" style="display:none;">
-           </div>
         </el-tooltip>
       </div>
       <div class="other-menu">
@@ -34,13 +34,13 @@
           v-for="(item, index) in otherData"
           :key="index"
           @click="skip(index,item)"
-          :class="{'link-menu': true, active: item.path === ($route.path.split('/')[1] === 'home' ? '/home' : '/' + $route.path.split('/')[1])}">
+          :class="{'link-menu': true, active: item.path === ($route.path.split('/')[1] === 'home' ? '/home' : '/' +  $route.path.split('/')[1])}">
           <span class="menu-title">{{item.title}}</span>
         </div>
       </div>
     </div>
     <div id="right-content">
-      <div id="topbar-wrapper">
+      <div id="topbar-wrapper" @contextmenu.prevent.stop="ban">
         <!-- 顶部导航 -->
         <div class="float-left full-height bread-nav">
           <div class="float-left"><i class="el-icon-dogma-menu"></i></div>
@@ -48,7 +48,7 @@
             <el-breadcrumb-item :to="{ path: item.path }" v-for="(item, index) in currentPath" :key="index">{{item.title}}</el-breadcrumb-item>
           </el-breadcrumb>
         </div>
-        <div class="system-operate float-right">
+        <div class="system-operate float-right" v-if="env === 'production'">
           <span class="el-icon-minus" @click="windwowOperate('mini')"></span>
           <span class="el-icon-news"  @click="windwowOperate('max')"></span>
           <span class="el-icon-close" @click="windwowOperate('close')"></span>
@@ -68,12 +68,16 @@
   </div>
 </template>
 <script>
-import layout from '../../data/layout.json'
+// import layout from '../../data/layout.json'
 import sessionStorage from '../../assets/js/storage/sessionStorage'
+import { setMenu, getCurrentPath } from '../../../src/assets/js/util'
+import { userMixin } from '../../../src/mixin/index'
 export default {
   name: 'layout',
+  mixins: [userMixin],
   data () {
     return {
+      env: {},
       menuData: [],
       otherData: [],
       currentPath: '',
@@ -81,19 +85,30 @@ export default {
     }
   },
   created () {
-    this.menuData = layout.data
-    this.otherData = layout.otherData
+    this.initMenu(this.menu)
+    this.env = process.env.NODE_ENV
   },
   mounted () {
     // fixed: 页面刷新清空缓存
     this.checkAuth()
-    this.currentPath = this.getCurrentPath(this.$route)
+    // fixed：刷新后面包屑重置
+    this.currentPath = getCurrentPath(this, this.$route)
   },
   methods: {
+    initMenu (menu) {
+      menu.forEach((item) => {
+        if (item.title === '帮助中心' || item.title === '信息反馈' || item.title === '关于系统') {
+          this.otherData.push(item)
+        } else {
+          this.menuData.push(item)
+        }
+      })
+    },
     checkAuth () {
+      // 检查用户权限
       let token = this.$store.state.token || sessionStorage.getItem('token')
       if (!token || sessionStorage.getItem('token') === '') {
-        // this.$message.success('请登录')
+        this.$message.success('请登录')
         this.$router.replace('/login')
       } else {
         console.log(token)
@@ -116,64 +131,41 @@ export default {
     },
     skip (index, menu) {
       this.$router.push(menu.path)
-      window.document.title = menu.title
     },
     search () {
       console.log(this.searchText)
     },
-    getCurrentPath (router) {
-      let currentPathArr = []
-      if (router.name !== 'home') {
-        if (router.name.indexOf('_index') > -1) {
-          currentPathArr.push({
-            title: router.meta.title,
-            path: router.path,
-            name: router.name
-          })
-        } else {
-          router.matched.forEach(item => {
-            let obj = {
-              title: item.meta.title,
-              path: item.path,
-              name: item.name
-            }
-            if (item.path.indexOf('/:id') > -1) {
-              obj.path = router.path
-            }
-            currentPathArr.push(obj)
-          })
-        }
-      } else {
-        let obj = {
-          name: 'home',
-          path: '/home',
-          title: '系统首页'
-        }
-        currentPathArr.push(obj)
-      }
-      return currentPathArr
-    },
     windwowOperate (operate) {
-      // console.log(ele)
-      // console.log(ipc)
+      // 按钮操控主进程窗口
+      let ipc = this.$electron.ipcRenderer
       switch (operate) {
         case 'mini':
-          // ipc.send('window-min')
+          ipc.send('min')
           break
         case 'max':
-          // ipc.send('window-max')
+          ipc.send('max')
           break
         case 'close':
-          // ipc.send('window-close')
+          ipc.send('close')
           break
       }
       console.log(operate)
       // console.log(ipc)
+    },
+    ban () {
+      console.log('阻止默认的右键出现菜单事件')
+    }
+  },
+  computed: {
+    menu () {
+      if (this.user) {
+        return setMenu(this.$store.state.routers, this.user.userType)
+      }
     }
   },
   watch: {
     '$route' (to) {
-      this.currentPath = this.getCurrentPath(to)
+      this.currentPath = getCurrentPath(this, to)
     }
   }
 }
@@ -189,6 +181,7 @@ export default {
     #left-wrapper{
       cursor: pointer;
       width:150px;
+      min-width: 150px;
       height:100%;
       box-sizing: border-box;
       background-color: $siderbarBgColor;
@@ -204,6 +197,8 @@ export default {
         .menu{
           flex:1;
           width: 100%;
+          max-height:126px;
+          min-height:100px;
           box-sizing: border-box;
           position: relative;
           color:$siderbarTextColor;
@@ -247,12 +242,24 @@ export default {
           }
           .sub-menu{
             background-color: $siderbarBgColor;
-            .child-menu{
-              height:30px;
-              line-height:30px;
-              font-size:12px;
-              text-indent: 2em;
-              text-align: left;
+          }
+          .none{
+            width: 0;
+            height: 0;
+            display: none !important;
+          }
+        }
+        .menu:hover{
+          transition: all 1.5s linear;
+          .icon{
+            color:#fff;
+          }
+          .text{
+            color:#fff;
+          }
+          .underline{
+            .round{
+              background-color: #fff;
             }
           }
         }
@@ -306,7 +313,7 @@ export default {
           text-align: center;
           font-size: 13px;
         }
-        .active{
+        .active, .link-menu:hover{
           color:#fff;
         }
       }
@@ -337,7 +344,7 @@ export default {
           text-align: center;
           font-size:16px;
           font-weight: 900;
-          background-color:#f9f9f9;
+          // background-color:#f9f9f9;
         }
         .el-breadcrumb{
           -webkit-app-region: no-drag;
@@ -363,11 +370,16 @@ export default {
           }
         }
         .system-operate{
+          cursor: pointer;
+          -webkit-app-region: no-drag;
           width: 100px;
           height:100%;
           display: flex;
           justify-content: space-around;
           align-items: center;
+          span:hover{
+            background-color: #eee;
+          }
         }
       }
       #main-content{

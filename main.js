@@ -5,25 +5,26 @@ const {app, BrowserWindow, ipcMain} = require('electron')
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
-ipcMain.on('asynchronous-message', (event, arg) => {
-  console.log(arg);  // prints "ping"
-  event.sender.send('asynchronous-reply', 'pong');
-});
-
-ipcMain.on('synchronous-message', (event, arg) => {
-  console.log(arg);  // prints "ping"
-  event.returnValue = 'pong';
-});
+// 渲染进程与主进程互相通信 
+ipcMain.on('min', e=> mainWindow.minimize())
+ipcMain.on('max', e=> {
+    if (mainWindow.isMaximized()) {
+        mainWindow.unmaximize()
+    } else {
+        mainWindow.maximize()
+    }
+})
+ipcMain.on('close', e=> mainWindow.close())
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 1366, height: 768})
+  mainWindow = new BrowserWindow({width: 1366, height: 768, frame: false})
 
   // and load the index.html of the app.
   mainWindow.loadFile('vcl-pc/dist/index.html')
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {

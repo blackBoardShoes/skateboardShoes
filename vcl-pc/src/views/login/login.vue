@@ -11,13 +11,13 @@
           :rules="rules">
           <el-form-item prop="username">
             <el-input v-model="form.username" placeholder="请输入账号">
-              <i slot="prefix" class="el-input__icon el-icon-adm-user" style="font-size: 18px;"></i>
+              <i slot="prefix" class="el-input__icon el-icon-dogma-user" style="font-size: 18px;"></i>
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
             <el-input :type="passwordType" v-model="form.password" placeholder="请输入密码">
-              <i slot="prefix" class="el-input__icon el-icon-adm-password" style="font-size: 18px;"></i>
-              <i slot="suffix" class="el-input__icon el-icon-view" style="cursor: pointer;"
+              <i slot="prefix" class="el-input__icon el-icon-dogma-password" style="font-size: 18px;"></i>
+              <i slot="suffix" class="el-input__icon el-icon-dogma-preview" style="cursor: pointer;"
                  @click="_togglePasswordType"></i>
             </el-input>
           </el-form-item>
@@ -25,7 +25,7 @@
             <div class="check-code-wrapper">
               <div class="yanzhengma-wrapper">
                 <el-input v-model="form.yanzhengma" @keyup.enter.native="login('loginForm')" placeholder="请输入验证码">
-                  <i slot="prefix" class="el-input__icon el-icon-adm-vertification" style="font-size: 18px;"></i>
+                  <i slot="prefix" class="el-input__icon el-icon-dogma-passed" style="font-size: 18px;"></i>
                 </el-input>
               </div>
               <div class="validate-code-wrapper">
@@ -40,7 +40,7 @@
                   type="primary"
                   class="login-btn"
                   style="width: 100%;"
-                  @click="loginHandle('loginForm')">
+                  @click="login('loginForm')">
                   登陆系统
                 </el-button>
               </el-form-item>
@@ -48,6 +48,9 @@
           </el-form-item>
         </el-form>
       </div>
+    </div>
+    <div class="bottom-wrapper">
+      <b>Copyright © 2018 MITI Genomics Inc, All Rights Reserved</b>
     </div>
   </div>
 </template>
@@ -91,34 +94,40 @@ export default {
     }
   },
   methods: {
+    // 更换验证码
     _setCheckCode (value) {
       this.checkCode = value
     },
+    // 密码是否可见
     _togglePasswordType () {
-      if (this.passwordType === 'password') {
-        this.passwordType = 'text'
-      } else {
-        this.passwordType = 'password'
-      }
+      this.passwordType = this.passwordType === 'password' ? 'text' : 'password'
     },
-    loginHandle (formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.login()
-        }
-      })
+    // 验证码绘制
+    _updateCheckCode () {
+      this.$refs['validate-code'].draw()
     },
-    login () {
+    login (formName) {
       /*
        *  在这边可以进行登陆请求
        *  将请求返回的Token对象存到store中
        *  @Token  token对象
       */
-      let token = 'a94756da-2962-40ae-bdea-787fd02c9d92'
-      let user = '熊护士'
-      this.$store.commit('SET_TOKEN', token)
-      this.$store.commit('SET_USER', user)
-      this.$router.replace('home')
+      this.$refs[formName].validate(valid => {
+        this.form.yanzhengma = ''
+        this._updateCheckCode()
+        if (valid) {
+          let token = 'a94756da-2962-40ae-bdea-787fd02c9d92'
+          let user = {
+            userName: this.form.username,
+            userType: 1
+          }
+          this.$store.commit('SET_TOKEN', token)
+          this.$store.commit('SET_USER', user)
+          this.$router.replace('home')
+        } else {
+          return false
+        }
+      })
     }
   },
   components: {
@@ -133,7 +142,7 @@ export default {
     right: 0;
     top: 0;
     bottom: 0;
-    background-color:teal;
+    background-color:darkcyan;
 
     .middle-wrapper {
       position: fixed;
@@ -185,6 +194,13 @@ export default {
           }
         }
       }
+    }
+    .bottom-wrapper{
+      position: fixed;
+      bottom: 50px;
+      margin: 0 auto;
+      width: 100%;
+      text-align: center;
     }
   }
 </style>

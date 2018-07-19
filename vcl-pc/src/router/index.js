@@ -3,10 +3,8 @@ import VueRouter from 'vue-router'
 import store from '../../src/store'
 import { routers } from './router'
 import { Loading } from 'element-ui'
-// import { setTitle } from 'src/assets/js/util'
-
+import sessionStorage from '../../src/assets/js/storage/sessionStorage'
 Vue.use(VueRouter)
-
 const routerConfig = {
   mode: 'hash',
   linkActiveClass: 'active',
@@ -17,6 +15,7 @@ const router = new VueRouter(routerConfig)
 
 let loading
 router.beforeEach((to, form, next) => {
+  let codeTpye = sessionStorage.getItem('user') === null ? null : sessionStorage.getItem('user').userType
   loading = Loading.service({
     fullscreen: true,
     target: '.content-wrapper',
@@ -30,7 +29,14 @@ router.beforeEach((to, form, next) => {
     })
   } else if (to.name === 'home' && !token && sessionStorage.getItem('token') === '') {
     next({
-      path: '/login'
+      path: '/login',
+      replace: true
+    })
+    // 判断用户是否有权限进入该页面
+  } else if (codeTpye !== null && (to.meta.role).indexOf(codeTpye) === -1) {
+    next({
+      path: '/error/403',
+      replace: true
     })
   } else {
     next()

@@ -27,9 +27,11 @@ axios.interceptors.response.use(
       switch (err.response.status) {
         case 500:
           console.log('oh shit md fuck 又 500 了')
+          this.$router.push('/error/500')
           break
         case 404:
           console.log('啥玩意又找不到了')
+          this.$router.push('/error/404')
           break
         default:
           console.log('这个错 --->', err.response.status, '!!!!!!!!!!', err.response.status, '!!!!!!!!!!')

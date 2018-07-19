@@ -11,6 +11,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import router from './router'
 
+import VCharts from 'v-charts'
 import sxForm from './components/form'
 import Viewer from 'v-viewer'
 import 'viewerjs/dist/viewer.css'
@@ -19,18 +20,18 @@ import '../src/assets/css/variable.scss'
 import '../src/assets/css/base.scss'
 import '../src/assets/css/common.scss'
 import '../src/assets/css/iconfont.css'
-
 // 引入svg组件
 import iconSvg from './components/icon.vue'
 // 全局注册icon-svg
 Vue.component('iconSvg', iconSvg)
 Vue.component('sx-form', sxForm)
-if (!process.env.IS_WEB) {
+if (process.env.NODE_ENV === 'production') {
   Vue.use(window.require('vue-electron'))
 }
 // Vue.component(VeLine.name, VeLine)
 Vue.use(ElementUI)
 Vue.use(Viewer)
+Vue.use(VCharts)
 Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
