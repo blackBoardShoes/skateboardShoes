@@ -12,7 +12,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import router from './router'
 
 import VCharts from 'v-charts'
-import sxForm from './components/form'
+import sxForm from './components/dynamicForm'
 import Viewer from 'v-viewer'
 import 'viewerjs/dist/viewer.css'
 // 引入样式文件

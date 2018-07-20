@@ -110,10 +110,10 @@
           <!-- 菜肴反馈 -->
         </el-form>
         <div class="formContentLeftControl">
-          <el-button v-if="sort" @click="sortAfterData" >sortAfterData</el-button>
-          <el-button v-if="sort" @click="openRelation(false)">openRelation</el-button>
-          <el-button @click="consoleData">consoleData</el-button>
-          <el-button v-if="sort" @click="notVerifying">notVerifying</el-button>
+          <!-- <el-button v-if="sort" @click="sortAfterData">sortAfterData</el-button> -->
+          <el-button v-if="sort" @click="openRelation(false)">关联关系</el-button>
+          <el-button @click="consoleData" type="primary">确定</el-button>
+          <el-button v-if="sort" @click="notVerifying" type="primary" plain>无验证确定</el-button>
           <!-- <el-button @click="resetData">resetData</el-button> -->
         </div>
       </div>
