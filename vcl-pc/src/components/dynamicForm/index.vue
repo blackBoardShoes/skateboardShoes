@@ -16,7 +16,7 @@
               v-if="tf(items)"
               v-for="(items, index) in newFields"
               :key="index" style="display:flex;align-items:flex-start">
-              <div class="iconErrorClass">
+              <div class="iconErrorClass" @click="deleteError(items)">
                 <i class="el-icon-error" v-if="iconTf(items)"></i>
               </div>
               <el-form-item
@@ -593,6 +593,14 @@ export default {
     },
     iconTf (items) {
       return (this.errors[items.id] & this.disabled)
+    },
+    deleteError (items) {
+      console.log(items)
+      // this.errors[items.id] = false
+      // this.$set(this.errors, items.id, false)
+      // this.comments[items.id] = ''
+      this.$delete(this.errors, items.id)
+      this.$delete(this.comments, items.id)
     },
     // form conversion rules
     // { "type": "INPUT", "id": "", "label": "", "pattern": "", "message": "", "required": "" }

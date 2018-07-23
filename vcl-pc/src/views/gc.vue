@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <div class="content">
-      <sx-form add edit sort
+      <sx-form add edit sort disabled
         :momo="momo"
         :mozhu="mozhu"
         v-if="gainData"
