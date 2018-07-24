@@ -3,7 +3,7 @@
     <div class="content">
       <sx-form
         :labelPosition="'top'"
-        add edit sort 
+        add edit sort
         :momo="momo"
         :mozhu="mozhu"
         v-if="gainData"
