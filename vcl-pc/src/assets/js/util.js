@@ -17,22 +17,23 @@ export function setMenu (routers, code) {
   let menu = []
   routers.forEach(router => {
     const INDEX = router
-    if (INDEX.meta.role.indexOf(code) > -1) {
+    if (INDEX.meta.role.indexOf(code) > -1 && INDEX.meta.navigator === true) {
       // 确定子路由
       let children = []
       router.children.forEach((child) => {
-        if (child.meta.role.indexOf(code) > -1) {
+        if (child.meta.role.indexOf(code) > -1 && child.meta.navigator === true) {
           children.push(child)
         }
       })
       let obj = {
         title: INDEX.meta.title,
-        path: INDEX.path,
+        path: INDEX.meta.title === '首页' ? '/home' : INDEX.path,
         icon: `el-icon-dogma-${INDEX.meta.icon}`,
         children: children
       }
       menu.push(obj)
     }
+    console.log(menu)
   })
   return menu
 }

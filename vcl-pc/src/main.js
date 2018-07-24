@@ -19,6 +19,7 @@ import 'viewerjs/dist/viewer.css'
 import '../src/assets/css/variable.scss'
 import '../src/assets/css/base.scss'
 import '../src/assets/css/common.scss'
+import '../src/assets/css/element-variable.scss'
 import '../src/assets/css/iconfont.css'
 // 引入svg组件
 import iconSvg from './components/icon.vue'

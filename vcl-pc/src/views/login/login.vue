@@ -142,8 +142,9 @@ export default {
     right: 0;
     top: 0;
     bottom: 0;
-    background-color:darkcyan;
-
+    // background-color:darkcyan;
+    background-image:url('../../assets/login-bg.png');
+    background-size: cover;
     .middle-wrapper {
       position: fixed;
       width: 100%;

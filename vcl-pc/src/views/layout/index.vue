@@ -53,12 +53,20 @@
           <span class="el-icon-news"  @click="windwowOperate('max')"></span>
           <span class="el-icon-close" @click="windwowOperate('close')"></span>
         </div>
-        <div class="sign-out float-right" @click="exit">退出系统</div>
-        <div class="system-title float-right">ERCP信息录入管理系统</div>
-        <div class="quick-search">
-          <el-input v-model="searchText" @keyup.enter.native="search" size="small" placeholder="快速查找">
-            <i slot="suffix" class="el-input__icon el-icon-search" @click="search" style="cursor:pointer;"></i>
-          </el-input>
+        <div class="system-title float-right">
+          <img src="../../assets/ercp标题.png" alt="">
+          <span>信息录入管理系统</span>
+        </div>
+        <div class="user-operate">
+          <div class="sign-out float-right " @click="exit"><i class="el-icon-dogma-exit"></i></div>
+          <div class="message float-right">
+            <i class="el-icon-dogma-message"></i>
+            <span class="mes-count">2</span>
+          </div>
+          <div class="user-info float-right">
+            <i class="el-icon-dogma-user"></i>
+            <span>{{user.userName}}</span>
+          </div>
         </div>
       </div>
       <div id="main-content">
@@ -68,7 +76,6 @@
   </div>
 </template>
 <script>
-// import layout from '../../data/layout.json'
 import sessionStorage from '../../assets/js/storage/sessionStorage'
 import { setMenu, getCurrentPath } from '../../../src/assets/js/util'
 import { userMixin } from '../../../src/mixin/index'
@@ -130,6 +137,7 @@ export default {
         })
     },
     skip (index, menu) {
+      console.log(menu.path)
       this.$router.push(menu.path)
     },
     search () {
@@ -166,6 +174,7 @@ export default {
   watch: {
     '$route' (to) {
       this.currentPath = getCurrentPath(this, to)
+      console.log(this.currentPath)
     }
   }
 }
@@ -183,10 +192,8 @@ export default {
       width:150px;
       min-width: 150px;
       height:100%;
-      box-sizing: border-box;
       background-color: $siderbarBgColor;
-      overflow-y: auto;
-      overflow-x: hidden;
+      overflow: hidden;
       .slider-menu{
         width:100%;
         height:80%;
@@ -196,70 +203,56 @@ export default {
         overflow-y: auto;
         .menu{
           flex:1;
-          width: 100%;
           max-height:126px;
-          min-height:100px;
+          min-height:96px;
           box-sizing: border-box;
           position: relative;
-          color:$siderbarTextColor;
+          color:$minorTextColor;
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
+          text-align: center;
           transition: all 1.5s linear;
           .icon{
-            margin-top:10px;
-            width:100%;
             height:40px;
             font-size:32px;
-            text-align: center;
-            color:#878787;
-            border-radius: 50%;
           }
           .text{
             margin-top:5px;
             font-size: 14px;
             height:30px;
             line-height:30px;
-            color:#878787;
           }
           .underline{
             position: absolute;
             bottom: 0;
-            left: 50%;
-            transform: translate(-50%);
+            width: 100%;
             display: flex;
             justify-content: center;
-            height:4px;
             .round{
-              float: left;
               margin:0 2px;
               width: 4px;
               height:4px;
               border-radius: 50%;
-              background-color: #878787;
+              background-color: $minorTextColor;
             }
           }
           .sub-menu{
             background-color: $siderbarBgColor;
           }
-          .none{
-            width: 0;
-            height: 0;
-            display: none !important;
-          }
         }
         .menu:hover{
-          transition: all 1.5s linear;
+          transition: all .5s linear;
           .icon{
-            color:#fff;
+            color:$lightTextColor;
           }
           .text{
-            color:#fff;
+            color:$lightTextColor;
           }
           .underline{
             .round{
-              background-color: #fff;
+              background-color: $lightTextColor;
             }
           }
         }
@@ -269,11 +262,11 @@ export default {
             color:$themeColor;
           }
           .text{
-            color:#fff;
+            color:$lightTextColor;
           }
           .underline{
             .round{
-              background-color: #fff;
+              background-color: $lightTextColor;
             }
           }
         }
@@ -326,46 +319,71 @@ export default {
         // 顶部区域可拖拽
         -webkit-app-region: drag;
         box-sizing: border-box;
-        overflow: hidden;
+        overflow-y: hidden;
+        overflow-x: auto;
         height:48px;
         line-height:48px;
-        width:100%;
-        padding:0 0 0 20px;
         background-color: #fff;
         border-bottom:1px solid #B4B4B4;
-        .sign-out{
-          -webkit-app-region: no-drag;
-          color:teal;
-          padding:0 10px;
-          cursor: pointer;
-        }
         .system-title{
           width:300px;
           text-align: center;
-          font-size:16px;
+          font-size:18px;
           font-weight: 900;
-          // background-color:#f9f9f9;
-        }
-        .el-breadcrumb{
-          -webkit-app-region: no-drag;
-          float: left;
-          margin-left:14px;
-          height:100%;
-          line-height:48px;
-          font-size:15px;
-          .el-breadcrumb__inner{
-            color: #000;
-            cursor: pointer;
+          background-color: rgba($color: $themeColor, $alpha: 0.05);
+          img{
+            width: 80px;
+            height: 18px;
+            vertical-align: middle;
           }
         }
-        .quick-search{
+        .bread-nav{
+          padding:0 15px;
           -webkit-app-region: no-drag;
+          .el-breadcrumb{
+            float: left;
+            margin-left:14px;
+            height:100%;
+            line-height:48px;
+            font-size:15px;
+            .el-breadcrumb__inner{
+              color: $mainTextColor;
+              cursor: pointer;
+            }
+          }
+        }
+        .user-operate{
           padding:0 10px;
-          width:200px;
-          float:right;
-          .el-input{
-            input{
-              border-radius:15px;
+          -webkit-app-region: no-drag;
+          cursor: pointer;
+          float: right;
+          .sign-out{
+            padding:0 10px;
+          }
+          .user-info{
+            padding:0 15px;
+            span{
+              padding:0 5px;
+              color:$themeColor;
+              font-size:15px;
+            }
+          }
+          .message{
+            padding:0 10px;
+            position: relative;
+            .mes-count{
+              position: absolute;
+              top:10px;
+              right: 6px;
+              font-size: 6px;
+              color:$lightTextColor;
+              display: block;
+              width: 12px;
+              height: 12px;
+              line-height: 12px;
+              text-align: center;
+              border-radius:50%;
+              background-color: $themeColor;
             }
           }
         }
@@ -378,14 +396,14 @@ export default {
           justify-content: space-around;
           align-items: center;
           span:hover{
-            background-color: #eee;
+            color: $themeColor;
           }
         }
       }
       #main-content{
         flex:1;
-        background-color: #E6E6E6;
-        overflow:auto;
+        background-color: $mainBackgroundColor;
+        overflow:hidden;
       }
     }
   }

@@ -1,16 +1,21 @@
 // 全局引用的元素样式
 // 引用： @import '../../assets/css/variable';
+
 $themeColor:#117FD1;
+
 $siderbarBgColor: #242B31;
-$siderbarTextColor: #ffffff;
-$siderbarActiveTextColor: #ffd04b;
-$siderbarWidth: 220px;
-$topbarHeight: 48px;
-$mainBackgroundColor: #f5f5f5;
-$topbarBackgroundColor: #ffffff;
-$siderbarBackgroundColor: #424f63;
-$cardBackgroundColor: #0277BD;
-$cardTextColor: #fff;
-// border的颜色
-$borderColor: #e6ebf5;
-$tableHeaderBgColor: #f5f7fa;
+$topbarBgColor: #FFFFFF;
+
+$mainBackgroundColor: #F3F4F5;
+
+$deepBorderColor: #C1C1C1;
+$lightBorderColor: #D1D1D1;
+
+$groupColor: #E8E9EA;
+
+$mainTextColor: #303133;
+$commonTetxColor: #606266;
+$minorTextColor: #9DA0A3;
+$placeHolderColor: #C0C4CC;
+$lightTextColor: #F3F3F3;
+$minorLightTextColor: #F5F577;

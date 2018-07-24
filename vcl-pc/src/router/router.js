@@ -15,9 +15,7 @@ export const errorRouter = {
   path: '/error/:code',
   name: 'error',
   meta: {
-    title: 'error',
-    requireAuth: false,
-    role: [1, 2, 3, 4]
+    title: 'error-错误'
   },
   component: () =>
     import('../views/error/index')
@@ -25,10 +23,11 @@ export const errorRouter = {
 
 // 子页面子组件
 export const otherRouter = {
-  path: '/home',
+  path: '',
   name: 'otherRouter',
   redirect: '/home',
   meta: {
+    navigator: true,
     requireAuth: true,
     title: '首页',
     role: [1, 2, 3, 4],
@@ -42,8 +41,8 @@ export const otherRouter = {
       meta: {
         requireAuth: true,
         title: '首页',
-        role: [1, 2, 3, 4],
-        icon: 'home'
+        navigator: true,
+        role: [1, 2, 3, 4]
       },
       component: () => import('../../src/views/home/index.vue')
     }
@@ -60,6 +59,7 @@ export const appRouter = [
     meta: {
       requireAuth: true,
       title: '患者中心',
+      navigator: true,
       role: [1, 2, 3, 4],
       icon: 'patient'
     },
@@ -69,11 +69,12 @@ export const appRouter = [
         path: 'index',
         name: 'patient_index',
         title: '患者中心',
+        navigator: true,
         meta: {
           requireAuth: true,
           title: '患者中心',
-          role: [1],
-          icon: 'patient'
+          navigator: true,
+          role: [1]
         },
         component: () => import('../../src/views/patient/index.vue')
       }
@@ -87,6 +88,7 @@ export const appRouter = [
     meta: {
       requireAuth: true,
       title: '数据统计',
+      navigator: true,
       role: [1],
       icon: 'statistics'
     },
@@ -98,8 +100,8 @@ export const appRouter = [
         meta: {
           requireAuth: true,
           title: '数据统计',
-          role: [1],
-          icon: 'statistics'
+          navigator: true,
+          role: [1]
         },
         component: () => import('../../src/views/statistics/index.vue')
       }
@@ -112,7 +114,8 @@ export const appRouter = [
     redirect: '/form/index',
     meta: {
       requireAuth: true,
-      title: '数据统计',
+      title: '表单中心',
+      navigator: true,
       role: [1],
       icon: 'statistics'
     },
@@ -123,9 +126,9 @@ export const appRouter = [
         name: 'form_index',
         meta: {
           requireAuth: true,
-          title: '数据统计',
-          role: [1],
-          icon: 'statistics'
+          title: '表单中心',
+          navigator: true,
+          role: [1]
         },
         component: () => import('../../src/views/form/index.vue')
       }
@@ -138,7 +141,8 @@ export const appRouter = [
     redirect: '/message/index',
     meta: {
       requireAuth: true,
-      title: '数据统计',
+      title: '消息中心',
+      navigator: false,
       role: [1],
       icon: 'statistics'
     },
@@ -149,9 +153,9 @@ export const appRouter = [
         name: 'message_index',
         meta: {
           requireAuth: true,
-          title: '数据统计',
-          role: [1],
-          icon: 'statistics'
+          title: '消息中心',
+          navigator: false,
+          role: [1]
         },
         component: () => import('../../src/views/message/index.vue')
       }
@@ -164,6 +168,7 @@ export const appRouter = [
     redirect: '/helpCenter/index',
     meta: {
       title: '帮助中心',
+      navigator: true,
       requireAuth: false,
       role: [1, 2, 3, 4]
     },
@@ -174,6 +179,7 @@ export const appRouter = [
         name: 'helpCenter_index',
         meta: {
           title: '帮助中心',
+          navigator: true,
           requireAuth: false,
           role: [1, 2, 3, 4]
         },
@@ -188,6 +194,7 @@ export const appRouter = [
     redirect: '/mesFeedback/index',
     meta: {
       title: '信息反馈',
+      navigator: true,
       requireAuth: false,
       role: [1, 2, 3, 4]
     },
@@ -198,6 +205,7 @@ export const appRouter = [
         name: 'mesFeedback_index',
         meta: {
           title: '信息反馈',
+          navigator: true,
           requireAuth: false,
           role: [1, 2, 3, 4]
         },
@@ -212,6 +220,7 @@ export const appRouter = [
     redirect: '/aboutSystem/index',
     meta: {
       title: '关于系统',
+      navigator: true,
       requireAuth: false,
       role: [1, 2, 3, 4]
     },
@@ -222,6 +231,7 @@ export const appRouter = [
         name: 'aboutSystem_index',
         meta: {
           title: '关于系统',
+          navigator: true,
           requireAuth: false,
           role: [1, 2, 3, 4]
         },
@@ -235,6 +245,7 @@ export const appRouter = [
     title: '开发测试',
     meta: {
       title: '开发测试',
+      navigator: true,
       requireAuth: true,
       role: [1, 2, 3, 4],
       icon: 'piechart'
@@ -247,9 +258,9 @@ export const appRouter = [
         name: 'test_index',
         meta: {
           title: '开发测试',
+          navigator: false,
           requireAuth: false,
-          role: [1, 2, 3, 4],
-          icon: 'piechart'
+          role: [1, 2, 3, 4]
         },
         component: () => import('../../src/views/test/index.vue')
       },
@@ -258,6 +269,7 @@ export const appRouter = [
         name: 'editInput',
         meta: {
           title: '可编辑文本域',
+          navigator: true,
           requireAuth: false,
           role: [2, 3, 4]
         },
@@ -268,6 +280,7 @@ export const appRouter = [
         name: 'print',
         meta: {
           title: '打印',
+          navigator: true,
           requireAuth: false,
           role: [1, 2, 3, 4]
         },
@@ -278,6 +291,7 @@ export const appRouter = [
         name: 'imgView',
         meta: {
           title: '图片预览',
+          navigator: true,
           requireAuth: false,
           role: [1, 2, 3, 4]
         },
@@ -288,6 +302,7 @@ export const appRouter = [
         name: 'start',
         meta: {
           title: '表单1',
+          navigator: true,
           requireAuth: false,
           role: [1, 2, 3, 4]
         },
@@ -298,6 +313,7 @@ export const appRouter = [
         name: 'c',
         meta: {
           title: '表单2',
+          navigator: true,
           requireAuth: false,
           role: [1, 2, 3, 4]
         },
@@ -308,6 +324,7 @@ export const appRouter = [
         name: 'cartogram',
         meta: {
           title: '统计图测试',
+          navigator: true,
           requireAuth: false,
           role: [1, 2, 3, 4]
         },
