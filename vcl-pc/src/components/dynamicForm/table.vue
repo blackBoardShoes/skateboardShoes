@@ -29,8 +29,8 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-button style="margin-top:15px;" size="small" @click="addRow">addRow</el-button>
-    <el-button style="margin-top:15px;" size="small" @click="getData">getData</el-button>
+    <el-button style="margin-top:15px;" size="small" @click="addRow">新增</el-button>
+    <!-- <el-button style="margin-top:15px;" size="small" @click="getData">getData</el-button> -->
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible">

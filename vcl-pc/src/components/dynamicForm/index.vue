@@ -99,14 +99,14 @@
                     1-5字符长度区间： ^.{1,5}$ &nbsp;&nbsp;&nbsp; 5字符长度： ^.{5}$
                   </span>
                 </div>
-                <el-button-group v-if="edit">
+                <el-button-group v-if="edit" style="margin-top:10px">
                   <!-- <el-button @click="editFormRow(items, index)">editFormRow</el-button> -->
-                  <el-button type="danger" @click="deleteFormRow(items, index)">deleteFormRow</el-button>
+                  <el-button type="danger" @click="deleteFormRow(items, index)">删除当前行</el-button>
                 </el-button-group>
               </el-form-item>
             </div>
           <!-- </draggable> -->
-          {{formModel}}<br><br>
+          <!-- {{formModel}}<br><br> -->
           <!-- 菜肴反馈 -->
         </el-form>
         <div class="formContentLeftControl">
@@ -119,7 +119,7 @@
       </div>
       <!-- 鱼塘展示 -->
       <div class="formTemplateElement" v-if="add">
-        <el-row v-for="(items, index) in repositoryData" :key="index">
+        <el-row v-for="(items, index) in repositoryData" :key="index" class="formTemplateElementRow">
           <el-button
             @click="addElement(items, index)"
             plain round>{{items.type + ' - ' + items.label}}</el-button>
@@ -134,7 +134,7 @@
         </el-row>
         <br>
         <!-- 钓了条what鱼 -->
-        <el-button @click="openCreateFish">openCreateFish</el-button>
+        <el-button class="createElementRow" @click="openCreateFish" size="medium">创建标签</el-button>
         <br><br>
         <!-- <el-checkbox-group v-model="tabelCheckboxGroup">
           <el-checkbox-button v-for="(row, i) in repositoryData" :label="row.label" :key="i">{{row.label}}</el-checkbox-button>
@@ -362,17 +362,6 @@ export default {
             label: '正则例子',
             type: 'EXAMPLE'
           },
-          // required
-          {
-            id: 'required',
-            label: '是否必填',
-            value: '',
-            type: 'RADIO',
-            values: [
-              {label: '是', value: 1},
-              {label: '否', value: 0}
-            ]
-          },
           // tree
           {
             id: 'tree',
@@ -386,6 +375,17 @@ export default {
             label: '创建选项',
             type: 'LAYERTREE',
             values: []
+          },
+          // required
+          {
+            id: 'required',
+            label: '是否必填',
+            value: '',
+            type: 'RADIO',
+            values: [
+              {label: '是', value: 1},
+              {label: '否', value: 0}
+            ]
           },
           {
             id: 'createCalculate',
@@ -923,6 +923,7 @@ export default {
 
 <style lang="scss" scoped>
 .formAll {
+  height: 100%;
   width: 100%;
   .iconErrorClass {
     height: 20px;
@@ -932,6 +933,7 @@ export default {
     color: #F56C6C
   }
   .formContent {
+    height: 100%;
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -951,12 +953,25 @@ export default {
     }
   }
   .formTemplateElement {
-    border: 1px solid lightblue;
+    // border: 1px solid lightblue;
     padding: 10px;
     width: 100%;
+    height: 100%;
+    // max-height: 700px;
+    overflow: auto;
+    margin-left: 20px;
     min-width: 240px;
     max-width: 30%;
-    text-align: center;
+    // display: flex;
+    // flex-direction: column;
+    .formTemplateElementRow {
+      width: 100%;
+      margin-top: 5px;
+    }
+    .createElementRow {
+      width: 100%;
+    }
+    // text-align: center;
   }
 }
 </style>
