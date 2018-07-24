@@ -1,7 +1,9 @@
 <template>
   <div class="hello">
     <div class="content">
-      <sx-form add edit sort
+      <sx-form
+        :labelPosition="'top'"
+        add edit sort 
         :momo="momo"
         :mozhu="mozhu"
         v-if="gainData"
@@ -130,13 +132,15 @@ export default {
 <style lang="scss" scoped>
 .hello {
   width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   .content {
     width: 80%;
-    padding-top:100px;
-    padding-bottom:100px;
+    height: 90%;
+    // padding-top:100px;
+    // padding-bottom:100px;
   }
 }
 </style>

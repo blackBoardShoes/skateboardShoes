@@ -1,12 +1,13 @@
 <template>
   <div class="treeAll">
-    <div style="width:100%;display:flex;align-items:flex-start">
-      <el-form ref="sizeForm" :model="sizeForm" label-width="0px" size="mini" style="width:100%">
+    <div class="treeContent">
+      <el-form ref="sizeForm" :model="sizeForm" label-width="0px" size="mini" style="flex-grow:1">
         <el-form-item style="width:100%" prop="treeName" :rules="[{ required: true, message: '请输入要创建的名字', trigger: 'change' }]">
           <el-input style="width:100%" clearable v-model='sizeForm.treeName' placeholder="请输入要创建的名字"></el-input>
         </el-form-item>
       </el-form>
       <el-button
+        style="flex-grow:0.5"
         slot="append"
         type="text"
         @click="append(false)">新建</el-button>
@@ -18,29 +19,36 @@
       default-expand-all
       :expand-on-click-node="false">
       <span class="custom-tree-node" slot-scope="{ node, data }">
-        <span>{{ node.label }}</span>
-        <span>
-          <el-button
-            type="text"
-            size="mini"
-            @click="() => append(data)">
-            Append
-          </el-button>
-          <el-button
-            type="text"
-            size="mini"
-            @click="() => remove(node, data)">
-            Delete
-          </el-button>
-        </span>
+        <div style="display:flex;">
+          <el-tooltip class="item" effect="dark" :content="node.label" placement="bottom-start">
+            <span style="flex-grow:0.5;width:85px;text-overflow:ellipsis;overflow:hidden; ">{{ node.label }}</span>
+          </el-tooltip>
+          <span style="flex-grow:0.9;margin-left:8px;">
+            <span>
+              <el-button
+                type="text"
+                size="mini"
+                @click="() => append(data)">
+                新增
+              </el-button>
+              <el-button
+                style="color:#FF455B"
+                type="text"
+                size="mini"
+                @click="() => remove(node, data)">
+                删除
+              </el-button>
+            </span>
+          </span>
+        </div>
       </span>
     </el-tree>
-    <el-button
+    <!-- <el-button
       type="text"
       size="mini"
       @click="showTreeData">
       showTreeData
-    </el-button>
+    </el-button> -->
   </div>
 </template>
 
@@ -107,5 +115,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.treeAll {
+  .treeContent {
+    width:  100%;
+    display:  flex;
+    align-items:  flex-start;
+  }
+  .custom-tree-node {
+    width:  90%;
+  }
+}
 
 </style>
