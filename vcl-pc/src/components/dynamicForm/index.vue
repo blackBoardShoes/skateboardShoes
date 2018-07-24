@@ -5,8 +5,8 @@
         class="formContentLeft"
         :style="{ 'width': !add ? '100%' : '70%' }">
         <el-form
-          label-width="160px"
-          label-position="left"
+          :label-width="labelWidth"
+          :label-position="labelPosition"
           :disabled="disabled"
           ref='formModel' :model='formModel' size='mini'>
           <!-- 菜肴展示 -->
@@ -16,8 +16,8 @@
               v-if="tf(items)"
               v-for="(items, index) in newFields"
               :key="index" style="display:flex;align-items:flex-start">
-              <div class="iconErrorClass" @click="deleteError(items)">
-                <i class="el-icon-error" v-if="iconTf(items)"></i>
+              <div class="iconErrorClass" @click="deleteError(items)" v-if="disabled">
+                <i class="el-icon-error"  v-if="iconTf(items)"></i>
               </div>
               <el-form-item
                 style="width: 100%"
@@ -26,34 +26,34 @@
                 :label="items.label"
                 @dblclick.native="evaluate(items, index)"
                 >
-                <el-input clearable v-if="items.type === 'INPUT'" v-model.trim='formModel[items.id]'></el-input>
-                <el-input clearable v-if="items.type === 'INT'" v-model.number='formModel[items.id]'></el-input>
-                <el-input clearable v-if="items.type === 'DOUBLE'" v-model.number='formModel[items.id]'></el-input>
-                <el-input v-if="items.type === 'TEXTAREA'" type="textarea"  v-model='formModel[items.id]'></el-input>
-                <el-radio-group v-model="formModel[items.id]" v-if="items.type === 'RADIO'">
+                <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'INPUT'" v-model.trim='formModel[items.id]'></el-input>
+                <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'INT'" v-model.number='formModel[items.id]'></el-input>
+                <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'DOUBLE'" v-model.number='formModel[items.id]'></el-input>
+                <el-input :disabled="items.disabled" :placeholder="items.placeholder" v-if="items.type === 'TEXTAREA'" type="textarea"  v-model='formModel[items.id]'></el-input>
+                <el-radio-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'RADIO'">
                   <el-radio v-for="(it, ii) in items.values" :key="ii" :label="it.value">{{it.label}}</el-radio>
                 </el-radio-group>
-                <div v-if="items.type === 'CHECKBOX'">
-                  <el-checkbox-group v-model="formModel[items.id]">
-                    <el-checkbox v-for="(it, ii) in items.values" :key="ii" :label="it.value" >{{it.label}}</el-checkbox>
-                  </el-checkbox-group>
-                </div>
-                <el-switch v-if="items.type === 'SWITCH'" v-model="formModel[items.id]" ></el-switch>
-                <el-select clearable filterable v-if="items.type === 'SELECT'" v-model="formModel[items.id]" style="width:100%;">
+                <el-checkbox-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'CHECKBOX'">
+                  <el-checkbox v-for="(it, ii) in items.values" :key="ii" :label="it.value" >{{it.label}}</el-checkbox>
+                </el-checkbox-group>
+                <el-switch :disabled="items.disabled" :active-text="items.activeText" :inactive-text="items.inactiveText" v-if="items.type === 'SWITCH'" v-model="formModel[items.id]" ></el-switch>
+                <el-select :disabled="items.disabled" :placeholder="items.placeholder" clearable filterable v-if="items.type === 'SELECT'" v-model="formModel[items.id]" style="width:100%;">
                   <el-option v-for="(it, ii) in items.values" :key="ii" :label="it.label" :value="it.value" ></el-option>
                 </el-select>
-                <el-select multiple clearable filterable v-if="items.type === 'SELECTMUTIPLE'" v-model="formModel[items.id]" style="width:100%;">
+                <el-select :disabled="items.disabled" :placeholder="items.placeholder" multiple clearable filterable v-if="items.type === 'SELECTMUTIPLE'" v-model="formModel[items.id]" style="width:100%;">
                   <el-option v-for="(it, ii) in items.values" :key="ii" :label="it.label" :value="it.value" ></el-option>
                 </el-select>
                 <el-date-picker
+                  :disabled="items.disabled"
                   clearable
                   style="width:100%;"
                   v-if="items.type === 'DATE'"
                   v-model="formModel[items.id]"
                   type="date"
-                  placeholder="选择日期时间">
+                  placeholder="选择日期">
                 </el-date-picker>
                 <el-date-picker
+                  :disabled="items.disabled"
                   clearable
                   style="width:100%;"
                   v-if="items.type === 'DATETIME'"
@@ -63,6 +63,8 @@
                 </el-date-picker>
                 <!-- value-format="yyyy-MM-dd/HH:mm:ss" -->
                 <el-cascader
+                  :disabled="items.disabled"
+                  :placeholder="items.placeholder"
                   clearable filterable
                   style="width:100%;"
                   v-if="items.type === 'CASCADER'"
@@ -99,7 +101,7 @@
                     1-5字符长度区间： ^.{1,5}$ &nbsp;&nbsp;&nbsp; 5字符长度： ^.{5}$
                   </span>
                 </div>
-                <el-button-group v-if="edit" style="margin-top:10px">
+                <el-button-group v-if="edit" style="margin-top:3px">
                   <!-- <el-button @click="editFormRow(items, index)">editFormRow</el-button> -->
                   <el-button type="danger" @click="deleteFormRow(items, index)">删除当前行</el-button>
                 </el-button-group>
@@ -111,6 +113,7 @@
         </el-form>
         <div class="formContentLeftControl">
           <!-- <el-button v-if="sort" @click="sortAfterData">sortAfterData</el-button> -->
+          <el-button v-if="cancel" @click="cancelData" type="info">取消</el-button>
           <el-button v-if="sort" @click="openRelation(false)">关联关系</el-button>
           <el-button @click="consoleData" type="primary">确定</el-button>
           <el-button v-if="sort" @click="notVerifying" type="primary" plain>无验证确定</el-button>
@@ -146,7 +149,9 @@
       v-if="dialogVisible"
       :visible.sync="dialogVisible">
       <div style="width:100%;">
-        <sx-form v-if="dialogVisible" :momo="repositoryData" :mozhu="allFish" :formModel="fishData" @consoleData="createFish"></sx-form>
+        <sx-form
+          v-if="dialogVisible" :momo="repositoryData"
+          :mozhu="allFish" :formModel="fishData" @consoleData="createFish"></sx-form>
       </div>
     </el-dialog>
     <el-dialog
@@ -162,14 +167,19 @@
     </el-dialog>
     <el-dialog
       :modal="false"
-      title="错误反馈"
       :visible.sync="evaluateDialogVisible"
-      width="30%">
-      <div style="width:100%;">
-        <sx-form
-          v-if="evaluateDialogVisible" :mozhu="allEvaluate"
-          :formModel="evaluateData" @consoleData="createEvaluate"></sx-form>
+      width="21%">
+      <div slot="title">
+        <i class="el-icon-error" style="color: #FF455B"></i>
+        <span style="font-weight: bold">错误原因</span>
       </div>
+      <sx-form
+        :labelPosition="'top'"
+        :labelWidth="'0px'"
+        cancel
+        @cancelData="evaluateDialogVisible = false"
+        v-if="evaluateDialogVisible" :mozhu="allEvaluate"
+        :formModel="evaluateData" @consoleData="createEvaluate"></sx-form>
     </el-dialog>
   </div>
 </template>
@@ -191,6 +201,24 @@ export default {
     draggable
   },
   props: {
+    labelWidth: {
+      type: String,
+      default () {
+        return '130px'
+      }
+    },
+    labelPosition: {
+      type: String,
+      default () {
+        return 'left'
+      }
+    },
+    cancel: {
+      type: Boolean,
+      default () {
+        return false
+      }
+    },
     mozhu: {
       type: Object,
       default () {
@@ -302,12 +330,12 @@ export default {
               {label: '输入框', value: 'INPUT'},
               {label: '整数类型输入框', value: 'INT'},
               {label: '浮点数类型输入框', value: 'DOUBLE'},
+              {label: '文本标签', value: 'TEXTAREA'},
               {label: '选择器', value: 'SELECT'},
               {label: '多选选择器', value: 'SELECTMUTIPLE'},
               {label: '日期选择器', value: 'DATE'},
               {label: '日期时间选择器', value: 'DATETIME'},
               {label: '单选框', value: 'RADIO'},
-              {label: '文本标签', value: 'TEXTAREA'},
               {label: '多选框', value: 'CHECKBOX'},
               {label: '级联选择器', value: 'CASCADER'},
               {label: '创建表格', value: 'CREATETABLE'},
@@ -325,7 +353,7 @@ export default {
             type: 'INPUT',
             validations: [
               { required: true, message: '请输入组件ID', trigger: 'change' },
-              { pattern: '^[a-zA-Z][a-zA-Z0-9]*$', message: '只能输入以英文字母开头的英文或数字', trigger: 'change' }
+              { pattern: '^[a-zA-Z][a-zA-Z0-9]+$', message: '只能输入以英文字母开头的英文或数字(两位以上)', trigger: 'change' }
             ]
           },
           // label
@@ -408,22 +436,22 @@ export default {
       allEvaluate: {
         fields: [
           {
-            id: 'id',
-            label: 'ID',
+            id: 'type',
+            label: '',
             value: '',
-            type: 'INPUT',
-            validations: [
-              { required: true, message: '请输入组件ID', trigger: 'change' }
+            type: 'RADIO',
+            values: [
+              {label: '字迹模糊潦草无法分辨', value: 'one'},
+              {label: '上下文逻辑关系错误', value: 'two'},
+              {label: '原始资料缺失无法校验', value: 'three'}
             ]
           },
           {
-            id: 'label',
-            label: 'label',
+            id: 'otherType',
+            label: '',
             value: '',
-            type: 'INPUT',
-            validations: [
-              { required: true, message: '请输入组件ID', trigger: 'change' }
-            ]
+            placeholder: '其他原因',
+            type: 'TEXTAREA'
           }
         ]
       },
@@ -676,6 +704,9 @@ export default {
       }
       return idGroup
     },
+    cancelData () {
+      this.$emit('cancelData', true)
+    },
     consoleData () {
       this.$nextTick(() => {
         if (this.$refs['sxtable']) {
@@ -753,15 +784,21 @@ export default {
             values.push(0)
             // throw "the data is empty: " + patternList[i];
           values.push(Number(data[patternList[i]]));
-        } else
-          throw 'something wrong while calculating value 2'
+        } else {
+          this.$message({
+            showClose: true,
+            message: '公式存在问题，请检查',
+            type: 'warning'
+          })
+        }
+          // throw 'something wrong while calculating value 2'
       }
       return values[0].toString()
       /* eslint-disable */
     },
     // form element operation (计算)
     onEval (ev) {
-      console.log(ev.calculate)
+      console.log(this.formModel, ev.calculate)
       this.formModel[ev.id] = this.calculate(this.formModel, ev.calculate)
       // this.formModel[ev.id] = this.calculate(this.formModel, this.compute[ev.id])  
     },
@@ -809,8 +846,16 @@ export default {
     addElement (row, index) {
       let idGroup = this.formatData()
       if (row.type === 'CALCULATE') {
+        // if (!idGroup.length) {
+        //   this.$message({
+        //     showClose: true,
+        //     message: '标签中未检出计算ID请检查',
+        //     type: 'warning'
+        //   })
+        //   return
+        // }
         let pattern = /[a-zA-Z][a-zA-Z0-9]*/g
-        let patternAfter = row.calculate.match(pattern)
+        let patternAfter = row.calculate.match(pattern) ? row.calculate.match(pattern) : []
         let matchingArr = []
         let notHaveArr = []
         let b = false
@@ -826,7 +871,20 @@ export default {
         }
         console.log(notHaveArr)
         if (!notHaveArr.length) {
-          this.newFields.push(row)
+          let w = false
+          for (let z of idGroup) {
+            if (z.id === row.id) {
+              w = true
+              break
+            }
+          }
+          if (!w) this.newFields.push(row)
+          else this.$message({
+            showClose: true,
+            message: '模板内已添加',
+            type: 'warning'
+          })
+          // this.newFields.push(row)
         } else {
           console.log(notHaveArr)
           this.$message({
@@ -948,8 +1006,8 @@ export default {
     .el-radio, .el-checkbox {
       min-width: 140px;
       margin: 5px;
-      margin-left: 15px;
-      margin-right: 15px;
+      // margin-left: 15px;
+      margin-right: 25px;
     }
   }
   .formTemplateElement {
@@ -972,6 +1030,12 @@ export default {
       width: 100%;
     }
     // text-align: center;
+  }
+  .radioAndCheckbox {
+    // width: 100%;
+    // background: white;
+    // border: 1px solid #D1D1D1;
+    // border-radius: 5px; 
   }
 }
 </style>
