@@ -51,64 +51,64 @@ export default {
     return {
       imgArr: [
         {
-          source: require('../assets/xbx.jpg'),
-          thumbnail: require('../assets/xbx.jpg'),
+          source: require('../../../src/assets/xbx.jpg'),
+          thumbnail: require('../../../src/assets/xbx.jpg'),
           checked: false,
           information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
         },
         {
-          source: require('../assets/xbx.jpg'),
-          thumbnail: require('../assets/xbx.jpg'),
+          source: require('../../../src/assets/xbx.jpg'),
+          thumbnail: require('../../../src/assets/xbx.jpg'),
           checked: false,
           information: '镜检照片2'
         },
         {
-          source: require('../assets/xbx.jpg'),
-          thumbnail: require('../assets/xbx.jpg'),
+          source: require('../../../src/assets/xbx.jpg'),
+          thumbnail: require('../../../src/assets/xbx.jpg'),
           checked: false,
           information: '镜检照片3'
         },
         {
-          source: require('../assets/xbx.jpg'),
-          thumbnail: require('../assets/xbx.jpg'),
+          source: require('../../../src/assets/xbx.jpg'),
+          thumbnail: require('../../../src/assets/xbx.jpg'),
           checked: false,
           information: '镜检照片4'
         },
         {
-          source: require('../assets/xbx.jpg'),
-          thumbnail: require('../assets/xbx.jpg'),
+          source: require('../../../src/assets/xbx.jpg'),
+          thumbnail: require('../../../src/assets/xbx.jpg'),
           checked: false,
           information: '镜检照片5'
         },
         {
-          source: require('../assets/xbx.jpg'),
-          thumbnail: require('../assets/xbx.jpg'),
+          source: require('../../../src/assets/xbx.jpg'),
+          thumbnail: require('../../../src/assets/xbx.jpg'),
           checked: false,
           information: '镜检照片6'
         },
         {
-          source: require('../assets/xbx.jpg'),
-          thumbnail: require('../assets/xbx.jpg'),
+          source: require('../../../src/assets/xbx.jpg'),
+          thumbnail: require('../../../src/assets/xbx.jpg'),
           checked: false,
           information: '镜检照片7'
         },
         {
-          source: require('../assets/xbx.jpg'),
-          thumbnail: require('../assets/xbx.jpg'),
+          source: require('../../../src/assets/xbx.jpg'),
+          thumbnail: require('../../../src/assets/xbx.jpg'),
           checked: false,
           information: '镜检照片8'
         },
         {
-          source: require('../assets/xbx.jpg'),
-          thumbnail: require('../assets/xbx.jpg'),
+          source: require('../../../src/assets/xbx.jpg'),
+          thumbnail: require('../../../src/assets/xbx.jpg'),
           checked: false,
           information: '镜检照片9'
         }
       ],
       previewImages: [
         {
-          source: require('../assets/xbx.jpg'),
-          thumbnail: require('../assets/xbx.jpg')
+          source: require('../../../src/assets/xbx.jpg'),
+          thumbnail: require('../../../src/assets/xbx.jpg')
         }
       ],
       options: {
