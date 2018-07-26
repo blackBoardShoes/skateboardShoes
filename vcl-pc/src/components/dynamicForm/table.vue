@@ -29,7 +29,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-button style="margin-top:15px;" size="small" @click="addRow">新增</el-button>
+    <el-button style="margin-top:15px;" size="small" @click="addRow" v-if="showBtn">新增</el-button>
     <!-- <el-button style="margin-top:15px;" size="small" @click="getData">getData</el-button> -->
     <el-dialog
       title="提示"
@@ -51,6 +51,12 @@ export default {
           sub_fields: [],
           relation: {}
         }
+      }
+    },
+    showBtn: {
+      type: Boolean,
+      default () {
+        return false
       }
     }
   },

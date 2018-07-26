@@ -93,7 +93,7 @@ export default {
         }
       }
       for (let w of this.subFields) {
-        if (w.type === 'RADIO') {
+        if (w.type === 'RADIO' | w.type === 'SELECT') {
           for (let r of this.options) {
             for (let u of r.children) {
               u.children.push({value: w.id, label: w.label, children: [...w.values]})
