@@ -33,7 +33,7 @@ export default {
     // 设置padding-bottom 滑动最底部
     let parent = this.silderBox.parentNode
     let padding = parent.offsetHeight - this.detailBox[this.detailBox.length - 1].offsetHeight
-    this.silderBox.style.paddingBottom = padding + 'px'
+    this.silderBox.style.paddingBottom = padding > 0 ? padding + 'px' : 0
     // 内容元素具体元素（类名一致、外盒子）
     let content = this.silderBox
     content.addEventListener('scroll', this.changeIndex)
