@@ -257,7 +257,7 @@ export const appRouter = [
         path: 'index',
         name: 'test_index',
         meta: {
-          title: '开发测试',
+          title: '开发测试-导航列表同步滑动',
           navigator: false,
           requireAuth: false,
           role: [1, 2, 3, 4]
@@ -273,7 +273,7 @@ export const appRouter = [
           requireAuth: false,
           role: [2, 3, 4]
         },
-        component: () => import('../components/editInput.vue')
+        component: () => import('../components/editInput/editInput.vue')
       },
       {
         path: '/test/print',
@@ -284,7 +284,7 @@ export const appRouter = [
           requireAuth: false,
           role: [1, 2, 3, 4]
         },
-        component: () => import('../components/print.vue')
+        component: () => import('../components/print/print.vue')
       },
       {
         path: '/test/imgView',
@@ -295,7 +295,7 @@ export const appRouter = [
           requireAuth: false,
           role: [1, 2, 3, 4]
         },
-        component: () => import('../components/imgView.vue')
+        component: () => import('../components/imgView/imgView.vue')
       },
       {
         path: '/test/c1',
@@ -329,6 +329,17 @@ export const appRouter = [
           role: [1, 2, 3, 4]
         },
         component: () => import('../components/cartogram/scalingChart.vue')
+      },
+      {
+        path: '/test/syncSlider',
+        name: 'syncSlider',
+        meta: {
+          title: '同步滑动导航',
+          navigator: true,
+          requireAuth: false,
+          role: [1, 2, 3, 4]
+        },
+        component: () => import('../components/syncSlider/syncSlider.vue')
       }
     ]
   }

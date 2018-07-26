@@ -404,6 +404,7 @@ export default {
         flex:1;
         background-color: $mainBackgroundColor;
         overflow:hidden;
+        position: relative;
       }
     }
   }
