@@ -242,11 +242,8 @@ export default {
       stageLookUpArr: ['术前', '术中', '术后', '随访'],
       // transferModel: [],
       transferData: [],
-      formModel: {},
-      // relation: {},
-      renderFunc (h, option) {
-        return <span>&nbsp; <i class={ option.icon }></i> &nbsp; { option.label }</span>
-      }
+      formModel: {}
+      // relation: {}
     }
   },
   created () {
@@ -284,6 +281,61 @@ export default {
       this.fewStepsTF = false
     },
     // two
+    iconJudgeChoose (type) {
+      let icon = ''
+      switch (type) {
+        case 'INPUT':
+          icon = 'el-icon-info'
+          break
+        case 'INT':
+          icon = 'el-icon-error'
+          break
+        case 'DOUBLE':
+          icon = 'el-icon-success'
+          break
+        case 'TEXTAREA':
+          icon = 'el-icon-warning'
+          break
+        case 'RADIO':
+          icon = 'el-icon-question'
+          break
+        case 'CHECKBOX':
+          icon = 'el-icon-back'
+          break
+        case 'SWITCH':
+          icon = 'el-icon-arrow-left'
+          break
+        case 'SELECT':
+          icon = 'el-icon-arrow-down'
+          break
+        case 'SELECTMUTIPLE':
+          icon = 'el-icon-remove'
+          break
+        case 'DATE':
+          icon = 'el-icon-circle-plus'
+          break
+        case 'DATETIME':
+          icon = 'el-icon-rank'
+          break
+        case 'CASCADER':
+          icon = 'el-icon-location'
+          break
+        case 'CALCULATE':
+          icon = 'el-icon-menu'
+          break
+        case 'TABLE':
+          icon = 'el-icon-edit'
+          break
+        default:
+          icon = 'el-icon-info'
+          break
+      }
+      return icon
+    },
+    renderFunc (h, option) {
+      let iconClass = this.iconJudgeChoose(option.type)
+      return <span>&nbsp; <i class={ iconClass }></i> &nbsp; { option.label }</span>
+    },
     transferHandleChange (value, direction, movedKeys) {
       console.log(value)
     },

@@ -21,7 +21,8 @@
           class="listItem"
           v-for="(item, index) in listData" :key="index">
           <div class="listItemLeft">
-            <i :class="item.icon"></i>
+            <!-- el-icon-ercp-xxxx -->
+            <i :class="iconJudgeChoose(item.type)"></i>
             &nbsp;{{item.label}}
           </div>
           <div class="listItemRight">
@@ -72,6 +73,57 @@ export default {
   methods: {
     lookupChange (item) {
       return Object.values(item).toString().includes(this.lookupData)
+    },
+    iconJudgeChoose (type) {
+      let icon = ''
+      switch (type) {
+        case 'INPUT':
+          icon = 'el-icon-info'
+          break
+        case 'INT':
+          icon = 'el-icon-error'
+          break
+        case 'DOUBLE':
+          icon = 'el-icon-success'
+          break
+        case 'TEXTAREA':
+          icon = 'el-icon-warning'
+          break
+        case 'RADIO':
+          icon = 'el-icon-question'
+          break
+        case 'CHECKBOX':
+          icon = 'el-icon-back'
+          break
+        case 'SWITCH':
+          icon = 'el-icon-arrow-left'
+          break
+        case 'SELECT':
+          icon = 'el-icon-arrow-down'
+          break
+        case 'SELECTMUTIPLE':
+          icon = 'el-icon-remove'
+          break
+        case 'DATE':
+          icon = 'el-icon-circle-plus'
+          break
+        case 'DATETIME':
+          icon = 'el-icon-rank'
+          break
+        case 'CASCADER':
+          icon = 'el-icon-location'
+          break
+        case 'CALCULATE':
+          icon = 'el-icon-menu'
+          break
+        case 'TABLE':
+          icon = 'el-icon-edit'
+          break
+        default:
+          icon = 'el-icon-info'
+          break
+      }
+      return icon
     },
     openRelation (item) {
       this.needCreatedRelation = item
@@ -126,6 +178,10 @@ $full: 100%;
           color: $commonTetxColor;
         }
         .listItemRight {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 85px;
           font-size: 16px;
           color: $minorTextColor;
         }
