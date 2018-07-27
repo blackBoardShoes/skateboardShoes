@@ -1,13 +1,17 @@
 <template>
   <div class="tableAll">
-    <el-table :data="tableValues">
+    <el-table
+      show-overflow-tooltip
+      style="width: 100%;"
+      :data="tableValues">
       <el-table-column
         align="center"
         type="index"
         min-width="50">
       </el-table-column>
       <el-table-column
-        min-width="140px"
+        min-width="110"
+        show-overflow-tooltip
         align="center"
         v-for="(item, index) in subFields"
         :key="index"

@@ -223,6 +223,8 @@ export default {
     newCreateFish () {
       this.fishNeedEditData = {}
       this.$refs['thatForm'].resetData()
+      this.$set(this.thatFish, 'fields', [])
+      this.$refs['thatFormPreview'].againData()
     },
     //  CREATECALCULATE TREE LAYERTREE CREATETABLE
     auxiliaryType (formModel) {
@@ -376,8 +378,8 @@ $full: 100%;
       height: $full;
       display: flex;
       .zdkContentBottomLeft {
-        width: 70%;
-        flex-grow: 1;
+        width: 72%;
+        // flex-grow: 1;
       }
       .zdkContentBottomRight {
         flex-grow: 1;

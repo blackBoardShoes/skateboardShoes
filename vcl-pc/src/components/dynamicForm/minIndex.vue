@@ -75,7 +75,7 @@
                     <el-button @click="onEval(items)">计算</el-button>
                   </div>
                 </div>
-                <div v-if="items.type === 'TABLE'">
+                <div v-if="items.type === 'TABLE'" style="max-width: 650px;width:100%">
                   <sx-table ref="sxtable" :tableData="items" @getData="getData"></sx-table>
                 </div>
                 <!-- 辅助创建 新增 编辑 -->
