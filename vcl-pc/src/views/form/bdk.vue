@@ -37,7 +37,7 @@
       <div class="createFormContent"  v-if="!fewStepsTF">
         <div class="createTop">
           <el-button type="info" icon="el-icon-back" @click="editAddBack">返回</el-button>
-          <el-button type="primary" icon="el-icon-document" @click="editAddForm">保存修改</el-button>
+          <el-button type="primary" icon="el-icon-document" @click="editAddForm">保存</el-button>
         </div>
         <div class="createTopForm">
           <el-form size="small" ref="formModel" :model="formModel" label-width="90px"
@@ -503,11 +503,18 @@ $topH: 100px;
           display: flex;
           align-items: center;
           // el-checkbox-group el-transfer-panel__list is-filterable
-          /deep/ .el-transfer-panel, /deep/ .el-transfer-panel__body, /deep/ .el-transfer-panel__list.is-filterable {
-            height: $full;
-            overflow: auto;
+          /deep/ .el-transfer-panel {
             flex-grow: 1;
+            height: $full;
           }
+          /deep/ .el-transfer-panel__list {
+            height: 350px;
+          }
+          // /deep/ .el-transfer-panel, /deep/ .el-transfer-panel__body, /deep/ .el-transfer-panel__list.is-filterable {
+          //   // height: $full;
+          //   // overflow: auto;
+          //   flex-grow: 1;
+          // }
           /deep/ .el-transfer-panel {
             overflow: hidden;
           }
