@@ -26,7 +26,7 @@
           </div>
           <div class="listItemRight">
             {{item.type}}
-            <el-button @click="openRelation(item)" v-if="item.type === 'TABLE'"
+            <el-button @click.stop="openRelation(item)" v-if="item.type === 'TABLE'"
               circle type="primary" size="mini" icon="el-icon-setting"></el-button>
           </div>
         </div>
@@ -80,35 +80,15 @@ export default {
     getRealationData (data, id) {
       for (let i of this.listData) {
         if (i.id === id) {
-          Object.assign(i.relation, data)
+          this.$set(i, 'relation', data)
         }
       }
+      this.relationDialogVisible = false
     },
     newCreateFish () {
       this.$emit('newCreateFish', true)
     },
-    async createFish (mozhuId, formModel, relation, newFields, idGroup) {
-      console.log(mozhuId, formModel, relation, newFields, idGroup)
-      // formModel['calculate'] = formModel['createCalculate'] ? formModel['createCalculate'] : ''
-      // formModel['children'] = [...formModel['tree']].length ? [...formModel['tree']] : []
-      // formModel['values'] = [...formModel['layerTree']].length ? [...formModel['layerTree']] : []
-      // let what = this.conversion(formModel)
-      // if ('edit' in this.fishEdit) {
-      //   this.repositoryData.splice(this.fishEdit.index, 1, what)
-      // } else {
-      //   this.repositoryData.push(what)
-      // }
-      // this.$emit('createFish', what)
-      // this.dialogVisible = false
-      // console.timeEnd('createFish --- ')
-    },
     editFish (row, index) {
-      // if (row['type'] === 'TABLE') {
-      //   this.fishData['type'] = 'CREATETABLE'
-      // } else if (row['type'] === 'CALCULATE') {
-      //   this.fishData['type'] = 'CREATECALCULATE'
-      //   this.fishData['createCalculate'] = this.fishData['calculate']
-      // }
       this.$emit('editFish', row, index)
     }
   }

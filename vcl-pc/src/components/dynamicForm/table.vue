@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tableAll">
     <el-table :data="tableValues">
       <el-table-column
         align="center"
@@ -8,8 +8,7 @@
       </el-table-column>
       <el-table-column
         align="center"
-        min-width="180"
-        v-for="(item, index) in sub_fields"
+        v-for="(item, index) in subFields"
         :key="index"
         :prop="item.id"
         :formatter="formatter"
@@ -24,8 +23,8 @@
         label="操作"
         width="100">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="editClick(scope.row, scope.$index, sub_fields)">编辑</el-button>
-          <el-button @click="deleteClick(scope.row, scope.$index, sub_fields)" type="text" size="small">删除</el-button>
+          <el-button type="text" size="small" @click="editClick(scope.row, scope.$index, subFields)">编辑</el-button>
+          <el-button @click="deleteClick(scope.row, scope.$index, subFields)" type="text" size="small"   style="color:#FF455B">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -35,7 +34,7 @@
       title="提示"
       :visible.sync="dialogVisible">
       <!-- :mozhu="mozhu" -->
-      <sx-form v-if="dialogVisible" :mozhu="mozhu"  :formModel="formModel" @consoleData="consoleData"></sx-form>
+      <sx-min-form submitTF v-if="dialogVisible" :mozhu="mozhu"  v-model="formModel" @consoleData="consoleData"></sx-min-form>
     </el-dialog>
   </div>
 </template>
@@ -48,7 +47,7 @@ export default {
       default () {
         return {
           values: [],
-          sub_fields: [],
+          subFields: [],
           relation: {}
         }
       }
@@ -56,7 +55,7 @@ export default {
     showBtn: {
       type: Boolean,
       default () {
-        return false
+        return true
       }
     }
   },
@@ -70,7 +69,7 @@ export default {
   },
   data () {
     return {
-      sub_fields: 'sub_fields' in this.tableData ? [...this.tableData['sub_fields']] : [],
+      subFields: 'subFields' in this.tableData ? [...this.tableData['subFields']] : [],
       tableValues: 'values' in this.tableData ? [...this.tableData['values']] : [],
       dialogVisible: false,
       mozhu: {
@@ -89,7 +88,7 @@ export default {
   },
   methods: {
     init () {
-      for (let i of this.sub_fields) {
+      for (let i of this.subFields) {
         this.formLabel[i.id] = { type: i.type, values: i.values, children: i.children ? i.children : [] }
       }
     },
@@ -199,9 +198,9 @@ export default {
     },
     addRow () {
       this.addEdit.add = 1
-      // this.fields = this.tableData['sub_fields']
+      // this.fields = this.tableData['subFields']
       this.mozhu['relation'] = this.tableData['relation']
-      this.mozhu['fields'] = this.tableData['sub_fields']
+      this.mozhu['fields'] = this.tableData['subFields']
       this.formModel = {}
       this.dialogVisible = true
     },
@@ -213,5 +212,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.tableAll {
+  width: 100%;
+}
 </style>

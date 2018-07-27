@@ -69,6 +69,11 @@ export default {
       }
     }
   },
+  // watch: {
+  //   value () {
+  //     this.layerTreeData = [...this.value]
+  //   }
+  // },
   created () {
     this.treeId = this.treeId + this.layerTreeData.length
     console.log(this.layerTreeData, '拿到的数据')

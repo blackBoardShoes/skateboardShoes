@@ -55,7 +55,7 @@ export default {
   },
   data () {
     return {
-      subFields: 'sub_fields' in this.needCreatedRelation ? this.needCreatedRelation['sub_fields'] : [],
+      subFields: 'subFields' in this.needCreatedRelation ? this.needCreatedRelation['subFields'] : [],
       relation: 'relation' in this.needCreatedRelation ? this.needCreatedRelation['relation'] : {},
       id: 'id' in this.needCreatedRelation ? this.needCreatedRelation['id'] : '',
       options: [],
@@ -125,6 +125,7 @@ export default {
           value: i[3]
         }
       }
+      console.log(this.formatAfter)
       this.$emit('getRealationData', this.formatAfter, this.id)
     }
   }

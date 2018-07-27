@@ -111,7 +111,7 @@ export const appRouter = [
     path: '/form',
     name: 'form',
     title: '表单中心',
-    redirect: '/form/index/bdk',
+    redirect: '/form/index',
     meta: {
       requireAuth: true,
       title: '表单中心',
@@ -122,6 +122,7 @@ export const appRouter = [
     component: Layout,
     children: [
       {
+        redirect: '/form/index/bdk',
         path: 'index',
         name: 'form_index',
         meta: {

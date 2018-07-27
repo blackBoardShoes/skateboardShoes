@@ -92,7 +92,7 @@
                 <div v-if="items.type === 'CREATETABLE'">
                   <el-checkbox-group v-model="formModel['createTable']">
                     <el-checkbox-button v-if="row.type !== 'TABLE' &  row.type !== 'CALCULATE'"
-                      v-for="(row, i) in newFields" :label="row.id" :key="i">{{row.label + ' - ' + row.type}}</el-checkbox-button>
+                      v-for="(row, i) in repositoryData" :label="row.id" :key="i">{{row.label + ' - ' + row.type}}</el-checkbox-button>
                   </el-checkbox-group>
                 </div>
                 <div v-if="items.type === 'EXAMPLE'">
@@ -130,7 +130,7 @@
         cancel submitTF
         @cancelData="evaluateDialogVisible = false"
         v-if="evaluateDialogVisible" :mozhu="allEvaluate"
-        :formModel="evaluateData" @consoleData="createEvaluate"></sx-min-form>
+        v-model="evaluateData" @consoleData="createEvaluate"></sx-min-form>
     </el-dialog>
   </div>
 </template>
@@ -180,7 +180,7 @@ export default {
         return []
       }
     },
-    formModel: {
+    value: {
       type: Object,
       default () {
         return {}
@@ -215,7 +215,6 @@ export default {
     return {
       newFields: 'fields' in this.mozhu ? [...this.mozhu['fields']] : [],
       relation: 'relation' in this.mozhu ? Object.assign({}, this.mozhu['relation']) : {},
-      // compute: 'compute' in this.mozhu ? Object.assign({}, this.mozhu['compute']) : {},
       errors: 'errors' in this.mozhu ? Object.assign({}, this.mozhu['errors']) : {},
       comments: 'comments' in this.mozhu ? Object.assign({}, this.mozhu['comments']) : {},
       mozhuId: 'id' in this.mozhu ? this.mozhu['id'] : '',
@@ -253,7 +252,16 @@ export default {
       relationDialogVisible: false,
       needCreatedRelation: {},
       whatTF: false,
-      calculateData: []
+      calculateData: [],
+      formModel: this.value
+    }
+  },
+  watch: {
+    value () {
+      this.formModel = Object.assign({}, this.value)
+    },
+    momo () {
+      this.repositoryData = this.momo.length ? [...this.momo] : []
     }
   },
   created () {
@@ -268,11 +276,10 @@ export default {
       let accordWithCalculateData = ['INT', 'DOUBLE', 'RADIO']
       if (this.repositoryData) {
         this.calculateData = []
-        console.log(this.repositoryData, 'repositoryData-=-=-=-=')
         for (let i in this.repositoryData) {
           if (this.repositoryData[i].type === 'TABLE') {
             this.repositoryData[i]['createTable'] = []
-            for (let j of this.repositoryData[i].sub_fields) {
+            for (let j of this.repositoryData[i].subFields) {
               this.repositoryData[i]['createTable'].push(j.label)
             }
           }
@@ -563,8 +570,26 @@ export default {
       this.$emit('cancelData', true)
     },
     resetData () {
-      this.repositoryData = []
       this.$refs['formModel'].resetFields()
+      if ('createCalculate' in this.formModel) {
+        this.$set(this.formModel, 'createCalculate', '')
+        // this.formModel['createCalculate'] = ''
+      }
+      if ('tree' in this.formModel) {
+        this.$set(this.formModel, 'tree', [])
+        // this.formModel['tree'] = []
+      }
+      if ('layerTree' in this.formModel) {
+        this.$set(this.formModel, 'layerTree', [])
+        // this.formModel['layerTree'] = []
+      }
+      if ('createTable' in this.formModel) {
+        this.$set(this.formModel, 'createTable', [])
+        // this.formModel['createTable'] = []
+      }
+    },
+    againData () {
+      this.newFields = this.mozhu['fields']
     },
     // table element data -> current
     getData (data) {

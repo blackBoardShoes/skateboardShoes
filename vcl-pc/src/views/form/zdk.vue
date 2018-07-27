@@ -5,22 +5,26 @@
         <div class="zdkContentBottomLeft">
           <segmenting-line>
             <div slot="prepend" class="centerCenter">
-              <i class="el-icon-setting centerCenterIcon"></i>&nbsp;字段浏览
-            </div>
-          </segmenting-line>
-          <div style="padding: 20px;">
-            <sx-min-form
-              ref="thatForm"
-              :mozhu="allFish" :momo="listData" :formModel="fishData" @consoleData="createFish"></sx-min-form>
-          </div>
-          <segmenting-line>
-            <div slot="prepend" class="centerCenter">
               <i class="el-icon-setting centerCenterIcon"></i>&nbsp;字段属性
             </div>
             <div slot="append" class="centerCenter">
               <el-button type="text" @click="saveFish" icon="el-icon-edit" style="padding:0;margin:0;font-size: 16px;">保存</el-button>
             </div>
           </segmenting-line>
+          <div style="padding: 20px;">
+            <sx-min-form
+              v-model="fishData"
+              ref="thatForm"
+              :mozhu="allFish" :momo="listData" @consoleData="createFish"></sx-min-form>
+          </div>
+          <segmenting-line>
+            <div slot="prepend" class="centerCenter">
+              <i class="el-icon-setting centerCenterIcon"></i>&nbsp;字段浏览
+            </div>
+          </segmenting-line>
+          <div style="padding: 20px;height:100px;">
+            <sx-min-form ref="thatFormPreview" v-model="thatFishData" :mozhu="thatFish"></sx-min-form>
+          </div>
         </div>
         <div class="zdkContentBottomRight">
           <field-library
@@ -207,44 +211,131 @@ export default {
       },
       fishData: {},
       listData: [],
-      fishNeedEditData: {}
+      fishNeedEditData: {},
+      // 展示
+      thatFish: {},
+      thatFishData: {}
     }
   },
   methods: {
-    firstShow () {
-      this.listData = []
-    },
+    firstShow () {},
     newCreateFish () {
+      this.fishNeedEditData = {}
       this.$refs['thatForm'].resetData()
     },
-    // CREATECALCULATE TREE LAYERTREE CREATETABLE
+    //  CREATECALCULATE TREE LAYERTREE CREATETABLE
     auxiliaryType (formModel) {
       switch (formModel['type']) {
         case 'CREATETABLE':
+          formModel['values'] = []
+          formModel['tree'] = []
+          formModel['layerTree'] = []
+          formModel['createCalculate'] = ''
+          // formModel['subFields'] = formModel['createTable']
+          formModel['subFields'] = []
+          for (let i of this.listData) {
+            if (formModel['createTable'].includes(i.id)) {
+              formModel['subFields'].push(i)
+            }
+          }
           formModel['type'] = 'TABLE'
           break
         case 'TABLE':
           formModel['type'] = 'CREATETABLE'
           break
+        case 'SELECT':
+        case 'SELECTMUTIPLE':
+        case 'RADIO':
+        case 'CHECKBOX':
+          formModel['createTable'] = []
+          formModel['values'] = formModel['layerTree']
+          formModel['tree'] = []
+          formModel['createCalculate'] = ''
+          break
+        case 'CASCADER':
+          formModel['createTable'] = []
+          formModel['children'] = formModel['tree']
+          formModel['layerTree'] = []
+          formModel['createCalculate'] = ''
+          break
+        case 'CREATECALCULATE':
+          formModel['createTable'] = []
+          formModel['layerTree'] = []
+          formModel['tree'] = []
+          formModel['type'] = 'CALCULATE'
+          formModel['values'] = formModel['createCalculate']
+          break
+        case 'CALCULATE':
+          formModel['type'] = 'CREATECALCULATE'
+          break
+        default:
+          formModel['createCalculate'] = ''
+          formModel['createTable'] = []
+          formModel['layerTree'] = []
+          formModel['tree'] = []
+          formModel['values'] = []
+          break
       }
+      console.log(formModel)
       return formModel
+    },
+    conversion (what = {}) {
+      what['validations'] = []
+      switch (what.type) {
+        case 'INPUT':
+        case 'INT':
+        case 'DOUBLE':
+        case 'SELECT':
+        case 'DATE':
+        case 'DATETIME':
+        case 'RADIO':
+        case 'TEXTAREA':
+        case 'CHECKBOX':
+        case 'CASCADER':
+        case 'SELECTMUTIPLE':
+          if (what['required']) {
+            what['validations'].push(
+              { required: (Boolean(what['required'])), message: '请输入或选择' + what['label'], trigger: 'change' }
+            )
+          }
+          if (what.type === 'INPUT' | what.type === 'INT' | what.type === 'DOUBLE' | what.type === 'TEXTAREA') {
+            if (what['pattern']) {
+              what['validations'].push(
+                { pattern: what['pattern'], message: what['message'] ? what['message'] : '请按规则填写', trigger: 'change' }
+              )
+            }
+          }
+          break
+      }
+      return what
     },
     async createFish (mozhuId, formModel, relation, newFields, idGroup) {
       // console.log(mozhuId, formModel, relation, newFields, idGroup)
+      // formModel['values'] = [...formModel['layerTree']].length ? [...formModel['layerTree']] : []
+      let what = this.conversion(this.auxiliaryType(Object.assign({}, formModel)))
       if (this.fishNeedEditData['row']) {
-        this.listData.splice(this.fishNeedEditData['index'], 1, this.auxiliaryType(Object.assign({}, formModel)))
+        this.listData.splice(this.fishNeedEditData['index'], 1, what)
       } else {
-        this.listData.push(this.auxiliaryType(Object.assign({}, formModel)))
+        this.listData.push(what)
       }
       this.$refs['thatForm'].resetData()
+      this.fishNeedEditData = {}
     },
     saveFish () {
       this.$refs['thatForm'].consoleData()
     },
-    editFish (row, index) {
+    async editFish (row, index) {
       this.fishNeedEditData = { index: index, row: row }
       this.fishData = this.auxiliaryType(Object.assign({}, row))
-      console.log(row, index)
+      let rowData = this.auxiliaryType(Object.assign({}, row))
+      if (rowData['type'] === 'CREATETABLE') rowData['type'] = 'TABLE'
+      if (rowData['type'] === 'CREATECALCULATE') rowData['type'] = 'CALCULATE'
+      this.$set(this.thatFish, 'fields', [])
+      this.thatFish['fields'].push(rowData)
+      // this.thatFish['fields'].splice(0, 1, rowData)
+      this.$refs['thatFormPreview'].resetData()
+      this.$refs['thatFormPreview'].againData()
+      // this.thatFishTF = true
     }
   }
 }
