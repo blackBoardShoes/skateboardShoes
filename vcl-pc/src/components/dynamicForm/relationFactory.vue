@@ -55,7 +55,7 @@ export default {
   },
   data () {
     return {
-      subFields: 'sub_fields' in this.needCreatedRelation ? this.needCreatedRelation['sub_fields'] : [],
+      subFields: 'subFields' in this.needCreatedRelation ? this.needCreatedRelation['subFields'] : [],
       relation: 'relation' in this.needCreatedRelation ? this.needCreatedRelation['relation'] : {},
       id: 'id' in this.needCreatedRelation ? this.needCreatedRelation['id'] : '',
       options: [],
@@ -93,7 +93,7 @@ export default {
         }
       }
       for (let w of this.subFields) {
-        if (w.type === 'RADIO') {
+        if (w.type === 'RADIO' | w.type === 'SELECT') {
           for (let r of this.options) {
             for (let u of r.children) {
               u.children.push({value: w.id, label: w.label, children: [...w.values]})
@@ -125,6 +125,7 @@ export default {
           value: i[3]
         }
       }
+      console.log(this.formatAfter)
       this.$emit('getRealationData', this.formatAfter, this.id)
     }
   }

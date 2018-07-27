@@ -13,6 +13,7 @@ import router from './router'
 
 import VCharts from 'v-charts'
 import sxForm from './components/dynamicForm'
+import sxMinForm from './components/dynamicForm/minIndex'
 import Viewer from 'v-viewer'
 import 'viewerjs/dist/viewer.css'
 // 引入样式文件
@@ -26,6 +27,7 @@ import iconSvg from './components/icon.vue'
 // 全局注册icon-svg
 Vue.component('iconSvg', iconSvg)
 Vue.component('sx-form', sxForm)
+Vue.component('sx-min-form', sxMinForm)
 if (process.env.NODE_ENV === 'production') {
   Vue.use(window.require('vue-electron'))
 }

@@ -122,15 +122,51 @@ export const appRouter = [
     component: Layout,
     children: [
       {
+        redirect: '/form/index/bdk',
         path: 'index',
         name: 'form_index',
         meta: {
           requireAuth: true,
-          title: '表单中心',
+          title: '表单管理',
           navigator: true,
           role: [1]
         },
-        component: () => import('../../src/views/form/index.vue')
+        component: () => import('../../src/views/form/index.vue'),
+        children: [
+          {
+            path: 'bdk',
+            name: 'bdk',
+            meta: {
+              requireAuth: true,
+              title: '表单库',
+              navigator: true,
+              role: [1]
+            },
+            component: () => import('../../src/views/form/bdk.vue')
+          },
+          {
+            path: 'zdk',
+            name: 'zdk',
+            meta: {
+              requireAuth: true,
+              title: '字段库',
+              navigator: true,
+              role: [1]
+            },
+            component: () => import('../../src/views/form/zdk.vue')
+          },
+          {
+            path: 'syk',
+            name: 'syk',
+            meta: {
+              requireAuth: true,
+              title: '术语库',
+              navigator: true,
+              role: [1]
+            },
+            component: () => import('../../src/views/form/syk.vue')
+          }
+        ]
       }
     ]
   },

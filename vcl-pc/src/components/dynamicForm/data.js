@@ -5,7 +5,7 @@ export default {
     // radio
     {
       id: 'liveRADIO',
-      label: 'liveRADIO',
+      label: 'liveRADIOLabel',
       value: '',
       type: 'RADIO',
       values: [
@@ -19,7 +19,7 @@ export default {
     // INPUT
     {
       id: 'INTnumAdult',
-      label: 'INTnumAdult',
+      label: 'INTbelLabelLabel',
       value: '',
       type: 'INT',
       validations: [
@@ -30,7 +30,7 @@ export default {
     // INPUT
     {
       id: 'numAdultaINPUT',
-      label: '除了自己以外18岁以上成年人有几位11111',
+      label: 'numALabel',
       value: '',
       type: 'INPUT',
       validations: [
@@ -40,7 +40,7 @@ export default {
     },
     // CHECKBOX
     {
-      id: 'heartAttackUnder50',
+      id: 'heartCHECKBOX',
       label: '我CHECKBOX',
       value: '',
       type: 'CHECKBOX',

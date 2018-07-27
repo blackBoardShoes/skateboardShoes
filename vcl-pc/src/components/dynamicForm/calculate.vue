@@ -102,6 +102,10 @@ export default {
   watch: {
     formula () {
       this.$emit('input', this.formula)
+    },
+    calculateData (value) {
+      console.log(value, 'cacacacacacca')
+      this.calculateData = value
     }
   },
   methods: {
