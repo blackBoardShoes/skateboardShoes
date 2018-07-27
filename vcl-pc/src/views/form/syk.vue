@@ -1,8 +1,11 @@
 <template>
   <div class="sykAll">
-    <sx-table
-      ref="sxtable" :tableData="tableData"
-      :showOperation="false" :showBtn="false"></sx-table>
+    <div class="sykContent">
+      <div class="sykContentTop">
+        <sx-table
+          ref="sxtable" :tableData="tableData"
+          :showOperation="false" :showBtn="false"></sx-table>
+      </div>
       <sx-segmenting-line>
         <div slot="prepend" class="centerCenter">
           <i class="el-icon-setting centerCenterIcon"></i>&nbsp;术语详情-道损伤分型
@@ -11,6 +14,10 @@
           <el-button type="text" @click="saveWhat" icon="el-icon-edit" style="padding:0;margin:0;font-size: 16px;">保存</el-button>
         </div>
       </sx-segmenting-line>
+      <div class="sykContentBottom">
+        <div>fuck</div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -52,9 +59,27 @@ export default {
 </script>
 <style lang="scss" scoped>
 $full: 100%;
+$contentW: 95%;
+$padding: 30px;
 .sykAll {
   width: $full;
-  border:1px solid red;
+  .sykContent {
+    width: $full;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    .sykContentTop {
+      width: $contentW;
+      padding-top: $padding;
+      padding-bottom: $padding;
+    }
+    .sykContentBottom {
+      width: $contentW;
+      padding-top: $padding;
+      padding-bottom: $padding;
+    }
+  }
   .centerCenter {
     display: flex;
     align-items: center;
