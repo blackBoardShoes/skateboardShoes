@@ -1,24 +1,24 @@
 <template>
   <div class="formAll">
     <div class="formContent">
-      <sx-form-control :navArr="navArr">
+      <sx-submenu-control :navArr="navArr">
         <div slot="title">
           <div class="slotFormClass">
             <h1> 表单管理 </h1>
             <span>Form Management</span>
           </div>
         </div>
-      </sx-form-control>
+      </sx-submenu-control>
       <router-view></router-view>
     </div>
   </div>
 </template>
 <script>
-import sxFormControl from '../../components/submenu/formControl'
+import sxSubmenuControl from '../../components/submenu/submenuControl'
 export default {
   name: 'form_index',
   components: {
-    sxFormControl
+    sxSubmenuControl
   },
   data () {
     return {
