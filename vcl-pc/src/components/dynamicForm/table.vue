@@ -23,6 +23,7 @@
         </template> -->
       </el-table-column>
       <el-table-column
+        v-if="showOperation"
         align="center"
         fixed="right"
         label="操作"
@@ -55,6 +56,12 @@ export default {
           subFields: [],
           relation: {}
         }
+      }
+    },
+    showOperation: {
+      type: Boolean,
+      default () {
+        return true
       }
     },
     showBtn: {
