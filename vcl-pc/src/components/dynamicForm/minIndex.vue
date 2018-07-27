@@ -262,6 +262,7 @@ export default {
     },
     momo () {
       this.repositoryData = this.momo.length ? [...this.momo] : []
+      this.firstShow()
     }
   },
   created () {
@@ -343,7 +344,7 @@ export default {
           }
         }
       }
-      // this.firstShow()
+      this.firstShow()
     },
     // form element relation (dynamic binding) -> relation
     tf (items) {
