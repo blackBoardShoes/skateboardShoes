@@ -329,17 +329,6 @@ export const appRouter = [
           role: [1, 2, 3, 4]
         },
         component: () => import('../components/cartogram/scalingChart.vue')
-      },
-      {
-        path: '/test/syncSlider',
-        name: 'syncSlider',
-        meta: {
-          title: '同步滑动导航',
-          navigator: true,
-          requireAuth: false,
-          role: [1, 2, 3, 4]
-        },
-        component: () => import('../components/syncSlider/syncSlider.vue')
       }
     ]
   }

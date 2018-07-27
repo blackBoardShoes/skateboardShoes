@@ -15,19 +15,20 @@ const router = new VueRouter(routerConfig)
 
 let loading
 router.beforeEach((to, form, next) => {
+  let token = store.state.token
   let codeTpye = sessionStorage.getItem('user') === null ? null : sessionStorage.getItem('user').userType
   loading = Loading.service({
     fullscreen: true,
     target: '.content-wrapper',
     text: '跳转中...'
   })
-  let token = store.state.token
   if (!to.matched.length) {
     next({
       path: '/error/404',
       replace: true
     })
-  } else if (to.name === 'home' && !token && sessionStorage.getItem('token') === '') {
+  } else if (to.name === 'home' && (token === '' || !token) && sessionStorage.getItem('token') === '') {
+    console.log('to login')
     next({
       path: '/login',
       replace: true

@@ -1,10 +1,12 @@
 <template>
   <div class="login">
     <div class="middle-wrapper">
-      <div class="title-wrapper">
-        <div class="title">ERCP信息录入管理系统</div>
-      </div>
       <div class="login-form">
+        <div class="bgi">
+          <div class="system-title">
+            <span>信息录入管理系统</span>
+          </div>
+        </div>
         <el-form
           ref="loginForm"
           :model="form"
@@ -33,15 +35,15 @@
               </div>
             </div>
           </el-form-item>
-          <el-form-item style="margin-bottom: 0;">
-            <el-col :span="10" :offset="14">
+          <el-form-item style="margin-bottom: 0;margin-top:40px;">
+            <el-col :span="10" :offset="7">
               <el-form-item>
                 <el-button
                   type="primary"
                   class="login-btn"
                   style="width: 100%;"
                   @click="login('loginForm')">
-                  登陆系统
+                  登录系统
                 </el-button>
               </el-form-item>
             </el-col>
@@ -142,7 +144,6 @@ export default {
     right: 0;
     top: 0;
     bottom: 0;
-    // background-color:darkcyan;
     background-image:url('../../assets/login-bg.png');
     background-size: cover;
     .middle-wrapper {
@@ -150,25 +151,40 @@ export default {
       width: 100%;
       margin: 0 auto;
       top: 50%;
-      transform: translateY(-60%);
+      transform: translateY(-55%);
 
-      .title-wrapper {
-        margin-top: 50px;
-        margin-bottom: 30px;
-        text-align: center;
-        font-size: 30px;
-        font-weight: bold;
-        color: #ffffff;
-      }
       .login-form {
         position: relative;
         margin: 0 auto;
-        width: 520px;
-        padding: 30px 50px;
+        width: 480px;
+        height: 360px;
+        padding: 30px;
         box-sizing: border-box;
         border-radius: 5px;
         background-color: #ffffff;
-
+        .bgi{
+          position: absolute;
+          top: -120px;
+          left: -10px;
+          height: 490px;
+          width: 500px;
+          background-image: url('../../assets/登录框.png');
+          background-repeat: no-repeat;
+          .system-title{
+            height: 40px;
+            line-height: 40px;
+            color:#000;
+            margin-top: 150px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 900;
+            display: block;
+          }
+        }
+        .el-form{
+          margin-top: 50px;
+          padding:0 15px;
+        }
         .el-row {
           margin-bottom: 20px;
 
@@ -198,9 +214,10 @@ export default {
     }
     .bottom-wrapper{
       position: fixed;
-      bottom: 50px;
+      bottom: 40px;
       margin: 0 auto;
       width: 100%;
+      font-size: 14px;
       text-align: center;
     }
   }

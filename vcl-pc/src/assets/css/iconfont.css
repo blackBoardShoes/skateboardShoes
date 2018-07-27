@@ -1,6 +1,6 @@
 /* TODO 引入本项目的字体图标库 */
 @import "https://at.alicdn.com/t/font_452702_h4vwh59dgta9k9.css";
-[class^="el-icon-dogma"]{
+[class^="el-icon-dogma"], [class*=" el-icon-dogma"] {
   font-family: "iconfont" !important;
   
   /* 以下内容参照第三方图标库本身的规则 */

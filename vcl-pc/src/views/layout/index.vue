@@ -44,7 +44,7 @@
         <!-- 顶部导航 -->
         <div class="float-left full-height bread-nav">
           <div class="float-left"><i class="el-icon-dogma-menu"></i></div>
-          <el-breadcrumb separator=">">
+          <el-breadcrumb separator="/">
             <el-breadcrumb-item :to="{ path: item.path }" v-for="(item, index) in currentPath" :key="index">{{item.title}}</el-breadcrumb-item>
           </el-breadcrumb>
         </div>
@@ -65,7 +65,7 @@
           </div>
           <div class="user-info float-right">
             <i class="el-icon-dogma-user"></i>
-            <span>{{user.userName}}</span>
+            <!-- <span v-if="user.userName">{{user.userName}}</span> -->
           </div>
         </div>
       </div>
@@ -92,30 +92,31 @@ export default {
     }
   },
   created () {
+    this.checkAuth()
     this.initMenu(this.menu)
     this.env = process.env.NODE_ENV
   },
   mounted () {
     // fixed: 页面刷新清空缓存
-    this.checkAuth()
     // fixed：刷新后面包屑重置
     this.currentPath = getCurrentPath(this, this.$route)
   },
   methods: {
     initMenu (menu) {
-      menu.forEach((item) => {
-        if (item.title === '帮助中心' || item.title === '信息反馈' || item.title === '关于系统') {
-          this.otherData.push(item)
-        } else {
-          this.menuData.push(item)
-        }
-      })
+      if (menu) {
+        menu.forEach((item) => {
+          if (item.title === '帮助中心' || item.title === '信息反馈' || item.title === '关于系统') {
+            this.otherData.push(item)
+          } else {
+            this.menuData.push(item)
+          }
+        })
+      }
     },
     checkAuth () {
       // 检查用户权限
       let token = this.$store.state.token || sessionStorage.getItem('token')
       if (!token || sessionStorage.getItem('token') === '') {
-        this.$message.success('请登录')
         this.$router.replace('/login')
       } else {
         console.log(token)

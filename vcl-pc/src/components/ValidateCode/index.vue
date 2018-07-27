@@ -18,7 +18,7 @@ export default {
     return {
       codes: [],
       ctx: '',
-      colors: ['red', 'yellow', 'blue', 'green', 'pink', 'black'],
+      colors: ['#000', '#000', '#000', '#000', '#000'],
       code_Len: this.codeLength
     }
   },
@@ -39,7 +39,7 @@ export default {
   methods: {
     generateRandom () {
       this.codes = []
-      const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+      const chars = 'qwertyuiopasdfghjklzxcvbnm0123456789'
       const charsArr = chars.split('')
       for (let i = 0; i < this.code_Len; i++) {
         const num = Math.floor(Math.random() * charsArr.length)
@@ -51,21 +51,24 @@ export default {
       this.drawText()
     },
     drawLine () {
-      const lineNumber = 3 // 线条条数
+      const lineNumber = 300 // 线条条数
       const lineX = 160
-      const lineY = 30 // 最大线条坐标
+      const lineY = 40 // 最大线条坐标
       for (let i = 0; i < lineNumber; i++) {
         this.ctx.strokeStyle = this.colors[Math.floor(Math.random() * 5)]
         this.ctx.beginPath()
-        this.ctx.moveTo(Math.floor(Math.random() * lineX), Math.floor(Math.random() * lineY))
-        this.ctx.lineTo(Math.floor(Math.random() * lineX), Math.floor(Math.random() * lineY))
+        let ori = Math.random() * lineX
+        let eni = Math.floor(Math.random() * lineY)
+        this.ctx.moveTo(ori, eni)
+        this.ctx.lineTo(ori + 1, eni + 1)
+        // this.ctx.lineTo(Math.floor(Math.random() * lineX), Math.floor(Math.random() * lineY))
         this.ctx.stroke()
       }
     },
     drawText () {
       const canvas = this.$refs['canvas']
       this.ctx = canvas.getContext('2d')
-      this.ctx.fillStyle = '#BFEFFF'
+      this.ctx.fillStyle = '#ffffff'
       this.ctx.fillRect(0, 0, 160, 40)
       this.ctx.font = '20px Verdana'
       let x = 15
@@ -83,8 +86,10 @@ export default {
   .validate-code {
     width: 100%;
     height: 100%;
+    box-sizing: border-box;
     border-radius: 4px;
     overflow: hidden;
+    border: 1px solid #ddd;
 
     canvas {
       cursor: pointer;
