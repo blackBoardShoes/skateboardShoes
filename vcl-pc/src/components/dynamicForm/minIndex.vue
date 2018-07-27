@@ -265,11 +265,7 @@ export default {
     }
   },
   created () {
-    console.time('---form init-------')
     this.init()
-  },
-  mounted () {
-    console.timeEnd('---form init-------')
   },
   methods: {
     firstShow () {

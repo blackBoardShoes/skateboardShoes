@@ -3,49 +3,49 @@
     <div class="zdkContent">
       <div class="zdkContentBottom">
         <div class="zdkContentBottomLeft">
-          <segmenting-line>
+          <sx-segmenting-line>
             <div slot="prepend" class="centerCenter">
               <i class="el-icon-setting centerCenterIcon"></i>&nbsp;字段属性
             </div>
             <div slot="append" class="centerCenter">
               <el-button type="text" @click="saveFish" icon="el-icon-edit" style="padding:0;margin:0;font-size: 16px;">暂存</el-button>
             </div>
-          </segmenting-line>
+          </sx-segmenting-line>
           <div style="padding: 20px;">
             <sx-min-form
               v-model="fishData"
               ref="thatForm"
               :mozhu="allFish" :momo="listData" @consoleData="createFish"></sx-min-form>
           </div>
-          <segmenting-line>
+          <sx-segmenting-line>
             <div slot="prepend" class="centerCenter">
               <i class="el-icon-setting centerCenterIcon"></i>&nbsp;字段浏览
             </div>
-          </segmenting-line>
+          </sx-segmenting-line>
           <div style="padding: 20px;height:100px;">
             <sx-min-form ref="thatFormPreview" v-model="thatFishData" :mozhu="thatFish"></sx-min-form>
           </div>
         </div>
         <div class="zdkContentBottomRight">
-          <field-library
+          <sx-field-library
             v-model="listData"
             @newCreateFish="newCreateFish"
             @editFish="editFish"
             @saveAllFish="saveAllFish"
-            ></field-library>
+            ></sx-field-library>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import segmentingLine from '@/components/segmentingLine'
-import fieldLibrary from '../../components/dynamicForm/fieldLibrary'
+import sxSegmentingLine from '@/components/segmentingLine'
+import sxFieldLibrary from '../../components/dynamicForm/fieldLibrary'
 
 export default {
   components: {
-    segmentingLine,
-    fieldLibrary
+    sxSegmentingLine,
+    sxFieldLibrary
   },
   data () {
     return {
@@ -313,24 +313,26 @@ export default {
     async createFish (mozhuId, formModel, relation, newFields, idGroup) {
       // console.log(mozhuId, formModel, relation, newFields, idGroup)
       // formModel['values'] = [...formModel['layerTree']].length ? [...formModel['layerTree']] : []
-      for (let i of this.listData) {
-        if (formModel['id'] === i.id) {
-          this.$message({
-            showClose: true,
-            message: '暂存失败, ID已存在',
-            type: 'warning'
-          })
-          return
-        }
-      }
       let what = this.conversion(this.auxiliaryType(Object.assign({}, formModel)))
       if (this.fishNeedEditData['row']) {
         this.listData.splice(this.fishNeedEditData['index'], 1, what)
       } else {
+        for (let i of this.listData) {
+          if (formModel['id'] === i.id) {
+            this.$message({
+              showClose: true,
+              message: '暂存失败, ID已存在',
+              type: 'warning'
+            })
+            return
+          }
+        }
         this.listData.push(what)
       }
       this.$refs['thatForm'].resetData()
       this.fishNeedEditData = {}
+      this.$set(this.thatFish, 'fields', [])
+      this.$refs['thatFormPreview'].againData()
     },
     async editFish (row, index) {
       this.fishNeedEditData = { index: index, row: row }

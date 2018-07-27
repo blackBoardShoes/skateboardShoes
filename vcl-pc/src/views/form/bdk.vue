@@ -26,9 +26,9 @@
           </div>
         </div>
         <div class="formCard">
-          <formCard
+          <sx-form-card
             @templateEdit="templateEdit"
-            v-for="(item, index) in cardArr" :key="index" :cardObj='item' :index="index"></formCard>
+            v-for="(item, index) in cardArr" :key="index" :cardObj='item' :index="index"></sx-form-card>
           <div v-if="cardArrComplement.length"
             style="width: 24%; border: 0.5px solid transparent"
             v-for="(x, i) in cardArrComplement" :key="cardArr.length + i"></div>
@@ -75,11 +75,11 @@
             </el-form-item>
           </el-form>
         </div>
-        <segmenting-line>
+        <sx-segmenting-line>
           <div slot="prepend" class="centerCenter">
             <i class="el-icon-setting centerCenterIcon"></i>&nbsp;字段设置
           </div>
-        </segmenting-line>
+        </sx-segmenting-line>
         <br>
         <div class="createContent">
           <!-- transferModel -->
@@ -106,24 +106,24 @@
       v-if="relationDialogVisible"
       :visible.sync="relationDialogVisible">
       <div style="width:100%;">
-        <relation-factory
+        <sx-relation-factory
           :needCreatedRelation="needCreatedRelation"
           @getRealationData="getRealationData">
-          </relation-factory>
+          </sx-relation-factory>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
-import formCard from '@/components/allCard/formCard'
-import segmentingLine from '@/components/segmentingLine'
-import relationFactory from '@/components/dynamicForm/relationFactory'
+import sxFormCard from '@/components/allCard/formCard'
+import sxSegmentingLine from '@/components/segmentingLine'
+import sxRelationFactory from '@/components/dynamicForm/relationFactory'
 import data from '@/components/dynamicForm/data.js'
 export default {
   components: {
-    formCard,
-    relationFactory,
-    segmentingLine
+    sxFormCard,
+    sxRelationFactory,
+    sxSegmentingLine
   },
   data () {
     return {

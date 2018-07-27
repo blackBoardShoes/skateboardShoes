@@ -46,21 +46,21 @@
       v-if="relationDialogVisible"
       :visible.sync="relationDialogVisible">
       <div style="width:100%;">
-        <relation-factory
+        <sx-relation-factory
           :needCreatedRelation="needCreatedRelation"
           @getRealationData="getRealationData">
-          </relation-factory>
+          </sx-relation-factory>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import relationFactory from '@/components/dynamicForm/relationFactory'
+import sxRelationFactory from '@/components/dynamicForm/relationFactory'
 
 export default {
   components: {
-    relationFactory
+    sxRelationFactory
   },
   props: {
     value: {
