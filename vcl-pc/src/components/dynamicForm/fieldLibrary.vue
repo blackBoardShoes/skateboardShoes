@@ -7,6 +7,11 @@
             style="border:0px;border-radius:0px;height:46px;"
             @click="newCreateFish"
             type="primary">新增字段</el-button>
+          <el-button
+            style="border:0px;border-radius:0px;height:46px;"
+            @click="saveAllFish"
+            icon="el-icon-tickets"
+            type="info">保存</el-button>
         </div>
         <el-input
           v-model="lookupData"
@@ -27,11 +32,11 @@
           </div>
           <div class="listItemRight">
             {{item.type}}
+            <el-button @click.stop="openRelation(item)" v-if="item.type === 'TABLE'"
+              circle type="primary" size="mini" icon="el-icon-setting"></el-button>
             <el-button
               @click.stop="deleteFishElement(item, index)"
               circle type="danger" size="mini" icon="el-icon-delete"></el-button>
-            <el-button @click.stop="openRelation(item)" v-if="item.type === 'TABLE'"
-              circle type="primary" size="mini" icon="el-icon-setting"></el-button>
           </div>
         </div>
       </div>
@@ -148,6 +153,9 @@ export default {
     },
     editFish (row, index) {
       this.$emit('editFish', row, index)
+    },
+    saveAllFish () {
+      this.$emit('saveAllFish', this.listData)
     }
   }
 }
@@ -187,7 +195,7 @@ $full: 100%;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          width: 105px;
+          width: 130px;
           font-size: 16px;
           color: $minorTextColor;
         }

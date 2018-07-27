@@ -8,7 +8,7 @@
               <i class="el-icon-setting centerCenterIcon"></i>&nbsp;字段属性
             </div>
             <div slot="append" class="centerCenter">
-              <el-button type="text" @click="saveFish" icon="el-icon-edit" style="padding:0;margin:0;font-size: 16px;">保存</el-button>
+              <el-button type="text" @click="saveFish" icon="el-icon-edit" style="padding:0;margin:0;font-size: 16px;">暂存</el-button>
             </div>
           </segmenting-line>
           <div style="padding: 20px;">
@@ -31,6 +31,7 @@
             v-model="listData"
             @newCreateFish="newCreateFish"
             @editFish="editFish"
+            @saveAllFish="saveAllFish"
             ></field-library>
         </div>
       </div>
@@ -312,6 +313,16 @@ export default {
     async createFish (mozhuId, formModel, relation, newFields, idGroup) {
       // console.log(mozhuId, formModel, relation, newFields, idGroup)
       // formModel['values'] = [...formModel['layerTree']].length ? [...formModel['layerTree']] : []
+      for (let i of this.listData) {
+        if (formModel['id'] === i.id) {
+          this.$message({
+            showClose: true,
+            message: '暂存失败, ID已存在',
+            type: 'warning'
+          })
+          return
+        }
+      }
       let what = this.conversion(this.auxiliaryType(Object.assign({}, formModel)))
       if (this.fishNeedEditData['row']) {
         this.listData.splice(this.fishNeedEditData['index'], 1, what)
@@ -320,9 +331,6 @@ export default {
       }
       this.$refs['thatForm'].resetData()
       this.fishNeedEditData = {}
-    },
-    saveFish () {
-      this.$refs['thatForm'].consoleData()
     },
     async editFish (row, index) {
       this.fishNeedEditData = { index: index, row: row }
@@ -336,6 +344,14 @@ export default {
       this.$refs['thatFormPreview'].resetData()
       this.$refs['thatFormPreview'].againData()
       // this.thatFishTF = true
+    },
+    saveFish () {
+      // ----> createFish
+      this.$refs['thatForm'].consoleData()
+      // this.saveAllFish()
+    },
+    saveAllFish () {
+      console.log(this.listData)
     }
   }
 }

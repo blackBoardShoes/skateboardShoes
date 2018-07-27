@@ -7,6 +7,7 @@
         min-width="50">
       </el-table-column>
       <el-table-column
+        min-width="140px"
         align="center"
         v-for="(item, index) in subFields"
         :key="index"
@@ -57,6 +58,12 @@ export default {
       default () {
         return true
       }
+    }
+  },
+  watch: {
+    tableData (value) {
+      this.subFields = [...this.tableData['subFields']]
+      this.tableValues = [...this.tableData['values']]
     }
   },
   created () {
