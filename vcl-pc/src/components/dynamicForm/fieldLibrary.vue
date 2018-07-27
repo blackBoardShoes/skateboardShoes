@@ -27,6 +27,9 @@
           </div>
           <div class="listItemRight">
             {{item.type}}
+            <el-button
+              @click.stop="deleteFishElement(item, index)"
+              circle type="danger" size="mini" icon="el-icon-delete"></el-button>
             <el-button @click.stop="openRelation(item)" v-if="item.type === 'TABLE'"
               circle type="primary" size="mini" icon="el-icon-setting"></el-button>
           </div>
@@ -125,6 +128,9 @@ export default {
       }
       return icon
     },
+    deleteFishElement (item, index) {
+      this.$delete(this.listData, index)
+    },
     openRelation (item) {
       this.needCreatedRelation = item
       this.relationDialogVisible = true
@@ -181,7 +187,7 @@ $full: 100%;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          width: 85px;
+          width: 105px;
           font-size: 16px;
           color: $minorTextColor;
         }
