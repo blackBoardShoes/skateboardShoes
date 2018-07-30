@@ -23,7 +23,7 @@
         <div
           @click="editFish(item, index)"
           v-if="lookupChange(item)"
-          class="listItem"
+          :class="{listItem: true, checkedClass: checkedClass === index}"
           v-for="(item, index) in listData" :key="index">
           <div class="listItemLeft">
             <!-- el-icon-ercp-xxxx -->
@@ -76,6 +76,7 @@ export default {
   },
   data () {
     return {
+      checkedClass: null,
       lookupData: '',
       listData: this.value,
       needCreatedRelation: {},
@@ -155,7 +156,11 @@ export default {
     newCreateFish () {
       this.$emit('newCreateFish', true)
     },
+    resetData () {
+      this.checkedClass = null
+    },
     editFish (row, index) {
+      this.checkedClass = index
       this.$emit('editFish', row, index)
     },
     saveAllFish () {
@@ -184,6 +189,7 @@ $full: 100%;
     }
     .listContent {
       width: $full;
+      background: white;
       .listItem {
         padding: 10px;
         border-bottom: 0.5px dashed $lightBorderColor;
@@ -215,6 +221,9 @@ $full: 100%;
           font-size: 16px;
           color: $minorTextColor;
         }
+      }
+      .checkedClass {
+        background: $linearGradient;
       }
     }
   }

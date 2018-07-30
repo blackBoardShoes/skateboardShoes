@@ -22,7 +22,7 @@
             </div>
           </div>
           <div class="formTopRight">
-            <el-button type="primary" icon="el-icon-plus" @click="addForm">新增表单</el-button>
+            <el-button type="primary" @click="addForm">新增表单</el-button>
           </div>
         </div>
         <div class="formCard">
@@ -36,8 +36,8 @@
       </div>
       <div class="createFormContent"  v-if="!fewStepsTF">
         <div class="createTop">
-          <el-button type="info" icon="el-icon-back" @click="editAddBack">返回</el-button>
-          <el-button type="primary" icon="el-icon-document" @click="editAddForm">保存</el-button>
+          <el-button type="info"  @click="editAddBack">返回</el-button>
+          <el-button type="primary"  @click="editAddForm">保存</el-button>
         </div>
         <div class="createTopForm">
           <el-form size="small" ref="formModel" :model="formModel" label-width="90px"
@@ -84,6 +84,7 @@
         <div class="createContent">
           <!-- transferModel -->
           <el-transfer
+            style="height:500px;"
             v-model="formModel['fields']"
             filterable
             :render-content="renderFunc"
@@ -95,7 +96,7 @@
             }"
             @change="transferHandleChange"
             :data="transferData">
-            <div class="transfer-footer"></div>
+            <div class="transfer-footer" slot="left-footer"></div>
             <el-button @click="openRelation" class="transfer-footer" slot="right-footer" size="mini">关联关系</el-button>
           </el-transfer>
         </div>
@@ -494,30 +495,36 @@ $topH: 100px;
       // .createTopForm {}
       .createContent {
         width: $full;
-        display: flex;
-        justify-content: center;
-        height: 50%;
+        // display: flex;
+        // justify-content: center;
+        // height: 50%;
         .el-transfer {
-          height: $full;
           width: $full;
           display: flex;
           align-items: center;
-          // el-checkbox-group el-transfer-panel__list is-filterable
+        //   // el-checkbox-group el-transfer-panel__list is-filterable
           /deep/ .el-transfer-panel {
             flex-grow: 1;
-            height: $full;
+            height: 450px;
           }
-          /deep/ .el-transfer-panel__list {
-            height: 350px;
+        //   /deep/ .transfer-footer {
+        //     margin-left: 20px;
+        //     padding: 6px 5px;
+        //   }
+          /deep/ .el-transfer-panel__body {
+            height: 450px;
           }
-          // /deep/ .el-transfer-panel, /deep/ .el-transfer-panel__body, /deep/ .el-transfer-panel__list.is-filterable {
-          //   // height: $full;
-          //   // overflow: auto;
-          //   flex-grow: 1;
-          // }
-          /deep/ .el-transfer-panel {
-            overflow: hidden;
+          /deep/ .el-transfer-panel__list.is-filterable {
+            height: calc(450px - 140px);
           }
+        //   // /deep/ .el-transfer-panel, /deep/ .el-transfer-panel__body, /deep/ .el-transfer-panel__list.is-filterable {
+        //   //   // height: $full;
+        //   //   // overflow: auto;
+        //   //   flex-grow: 1;
+        //   // }
+        //   /deep/ .el-transfer-panel {
+        //     // overflow: hidden;
+        //   }
         }
       }
       .transfer-footer {
@@ -535,5 +542,18 @@ $topH: 100px;
       }
     }
   }
+}
+</style>
+<style lang="scss">
+.el-transfer-panel {
+  width: 250px;
+}
+
+.el-transfer-panel__body {
+  height: 500px;
+}
+
+.el-transfer-panel__list.is-filterable {
+  height: 468px;
 }
 </style>

@@ -8,7 +8,8 @@
               <i class="el-icon-setting centerCenterIcon"></i>&nbsp;字段属性
             </div>
             <div slot="append" class="centerCenter">
-              <el-button type="text" @click="saveFish" icon="el-icon-edit" style="padding:0;margin:0;font-size: 16px;">暂存</el-button>
+              <!-- <el-button type="danger" @click="deleteFish" style="padding:0;margin:0;font-size: 16px;">删除</el-button> -->
+              <el-button type="text" @click="saveFish" style="padding:0;margin:0;font-size: 16px;">暂存</el-button>
             </div>
           </sx-segmenting-line>
           <div style="padding: 20px;">
@@ -29,6 +30,7 @@
         <div class="zdkContentBottomRight">
           <sx-field-library
             v-model="listData"
+            ref="thatFieldLibrary"
             @newCreateFish="newCreateFish"
             @editFish="editFish"
             @saveAllFish="saveAllFish"
@@ -223,6 +225,7 @@ export default {
     newCreateFish () {
       this.fishNeedEditData = {}
       this.$refs['thatForm'].resetData()
+      this.$refs['thatFieldLibrary'].resetData()
       this.$set(this.thatFish, 'fields', [])
       this.$refs['thatFormPreview'].againData()
     },
@@ -331,6 +334,7 @@ export default {
         }
         this.listData.push(what)
       }
+      this.$refs['thatFieldLibrary'].resetData()
       this.$refs['thatForm'].resetData()
       this.fishNeedEditData = {}
       this.$set(this.thatFish, 'fields', [])
