@@ -18,9 +18,7 @@
       </div>
       <div class="bottomContent">
         <i class="el-icon-edit" @click="templateEdit"></i>
-        <i class="el-icon-goods"></i>
-        <i class="el-icon-close"></i>
-        <i class="el-icon-share"></i>
+        <i class="el-icon-close" @click="templateDelete"></i>
       </div>
     </div>
   </div>
@@ -45,6 +43,9 @@ export default {
   methods: {
     templateEdit () {
       this.$emit('templateEdit', this.cardObj, this.index)
+    },
+    templateDelete () {
+      this.$emit('templateDelete', this.cardObj, this.index)
     }
   }
 }
@@ -98,8 +99,13 @@ export default {
     }
   }
   .bottomContent {
+    i:hover {
+      cursor: pointer;
+    }
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }
 </style>
