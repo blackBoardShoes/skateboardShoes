@@ -1,12 +1,14 @@
 <template>
   <div class="fileAll">
-    <input
-      ref="inputFile"
-      class="fileClass"
-      @change="onRead($event, model, index)"
-      v-bind="$props"
-      type="file" :accept="accept" />
-    <slot class="slotClass"></slot>
+    <label>
+      <slot class="slotClass"></slot>
+      <input
+        ref="inputFile"
+        class="fileClass"
+        @change="onRead($event, model, index)"
+        v-bind="$props"
+        type="file" :accept="accept" />
+    </label>
   </div>
 </template>
 <script>
@@ -47,15 +49,17 @@ $full: 100%;
     cursor: pointer;
   }
   .fileClass {
-    width: $full;
-    height: $full;
+    display: none;
     cursor: pointer;
-    position: absolute;
-    opacity: 0;
+    left:0;
+    right:0;
+    top:0;
+    bottom:0;
+    // height: auto;
+    // width: auto;
+    // opacity: 0;
   }
   .slotClass {
-    width: $full;
-    height: $full;
   }
 }
 </style>

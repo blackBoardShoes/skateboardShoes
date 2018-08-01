@@ -6,42 +6,46 @@
       </div>
     </div> -->
     <slot name="title"></slot>
-    <el-menu
-      class="menuClass"
-      router :default-active="'path' in navArr[0] ? $route.path : $route.name">
-      <el-menu-item
+    <div class="menuClass">
+      <div
+        :class="{menuClassItem: true, isActive: isActive === index}"
         v-for="(item, index) in navArr"
         :index="item.path ? item.path : item.index"
         @click="emitClick(item, index)"
         :key="index">
         <i :class="item.icon"></i>
         <span class="menuName">{{item.name}}</span>
-      </el-menu-item>
-    </el-menu>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  // watch: {
-  //   $route (val, oldVal) {
-  //     console.log(val)
-  //   }
-  // },
   props: {
     navArr: {
       type: Array,
       default () {
         return []
       }
+    },
+    activeIndex: {
+      type: Number,
+      default () {
+        return null
+      }
     }
   },
   data () {
-    return {}
+    return {
+      isActive: this.activeIndex
+    }
   },
   methods: {
     emitClick (item, index) {
-      this.$emit('emitClick', {path: this.$route.path, name: this.$route.name, item: item, index: index})
+      console.log(item, index)
+      this.isActive = index
+      this.$emit('emitClick', {item: item, index: index})
     }
   }
 }
@@ -50,19 +54,30 @@ export default {
 <style lang="scss" scoped>
 @import '../../assets/css/variable';
 $full: 100%;
-$minW: 160px;
+$minW: 180px;
 $W: 16%;
 .formControlAll {
   height: $full;
   width: $W;
   min-width: $minW;
-  background-color: $groupColor;
+  background-color: white;
   .menuClass {
-    background-color: $groupColor;
+    background-color: white;
     color: $mainTextColor;
-    border: none;
-    .is-active {
-      background: $mainBackgroundColor
+    .menuClassItem {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      padding: 0 30px;
+      border-bottom:0.5px dashed $lightBorderColor;
+      i {
+        width: 24px;
+      }
+      font-size: 14px;
+    }
+    .isActive {
+      background: $linearGradient;
+      color: $themeColor;
     }
   }
   .menuName {

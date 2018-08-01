@@ -260,6 +260,13 @@ export default {
     value () {
       this.formModel = Object.assign({}, this.value)
     },
+    mozhu () {
+      this.newFields = 'fields' in this.mozhu ? [...this.mozhu['fields']] : []
+      this.relation = 'relation' in this.mozhu ? Object.assign({}, this.mozhu['relation']) : {}
+      this.errors = 'errors' in this.mozhu ? Object.assign({}, this.mozhu['errors']) : {}
+      this.comments = 'comments' in this.mozhu ? Object.assign({}, this.mozhu['comments']) : {}
+      this.mozhuId = 'id' in this.mozhu ? this.mozhu['id'] : ''
+    },
     momo () {
       this.repositoryData = this.momo.length ? [...this.momo] : []
       this.firstShow()
