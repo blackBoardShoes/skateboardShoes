@@ -9,6 +9,11 @@
         <div class="formContentRight">
           <div class="rightContentControl"></div>
           <div class="rightContent">
+            <!--
+              inline
+              label-position="right"
+              label-width="100px"
+            -->
             <sx-min-form
               v-model="fishData"
               ref="thatForm"
@@ -213,7 +218,7 @@ export default {
         fields: [
           {
             id: 'type',
-            label: '请选择类型',
+            label: '请选择类型请选择类型请选择类型请选择类型请选择类型请选择类型请选择类型',
             value: '',
             type: 'RADIO',
             values: [
@@ -360,7 +365,7 @@ $topControl: 42px;
         overflow: auto;
         .rightContentControl {
           height: $topControl;
-          width: $full;
+          width: calc($full - 5px);
           border: 1px solid red;
         }
         .rightContent {
