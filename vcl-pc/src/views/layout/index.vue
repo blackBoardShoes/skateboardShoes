@@ -404,7 +404,7 @@ export default {
       #main-content{
         flex:1;
         background-color: $mainBackgroundColor;
-        overflow:hidden;
+        overflow-y: auto;
         position: relative;
       }
     }

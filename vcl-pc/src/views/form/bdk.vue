@@ -466,6 +466,8 @@ $bottomH: 200px;
     .formContentTop {
       width: $full;
       height: $full;
+      display: flex;
+      flex-direction: column;
       .formTop {
         width: $full;
         height: $topH;
@@ -493,7 +495,8 @@ $bottomH: 200px;
         }
       }
       .formCard {
-        height: $full;
+        // height: $full;
+        flex-grow: 1;
         overflow: auto;
         padding: 10px;
         .formCardContent {

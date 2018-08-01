@@ -383,10 +383,11 @@ $full: 100%;
       display: flex;
       .zdkContentBottomLeft {
         width: 72%;
-        // flex-grow: 1;
+        flex-grow: 1;
       }
       .zdkContentBottomRight {
-        flex-grow: 1;
+        width: 290px;
+        // flex-grow: 1;
       }
     }
     .centerCenter {
