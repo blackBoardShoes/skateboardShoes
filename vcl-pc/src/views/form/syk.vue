@@ -49,7 +49,7 @@
           &nbsp;术语详情-道损伤分型
         </div>
         <div slot="append" class="centerCenter">
-          <el-button type="text" @click="saveWhat" style="padding:0;margin:0;font-size: 17px; color: #FF455B;">删除</el-button>
+          <el-button type="text" @click="deleteWhat" style="padding:0;margin:0;font-size: 17px; color: #FF455B;">删除</el-button>
           &nbsp;&nbsp;
           <el-button type="text" @click="saveWhat" style="padding:0;margin:0;font-size: 17px;">保存</el-button>
         </div>
@@ -78,8 +78,10 @@
             <div class="exampleImg">
               <img src="https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=116399c62434349b6b066885f9eb1521/91ef76c6a7efce1ba958b016a351f3deb58f65fe.jpg" alt="">
               <div class="exampleImgBtn">
+                <sx-file @onRead="onRead">
+                  <i class="el-icon-edit"></i>
+                </sx-file>
                 <i class="el-icon-close"></i>
-                <i class="el-icon-edit"></i>
               </div>
             </div>
           </el-form-item>
@@ -90,9 +92,11 @@
 </template>
 <script>
 import sxSegmentingLine from '@/components/segmentingLine'
+import sxFile from '@/components/dynamicForm/file'
 
 export default {
   components: {
+    sxFile,
     sxSegmentingLine
   },
   data () {
@@ -113,6 +117,7 @@ export default {
     }
   },
   methods: {
+    deleteWhat () {},
     saveWhat () {},
     handleCurrentChange (val) {
       console.log(val)
@@ -121,6 +126,13 @@ export default {
       console.log(value, row, column)
       const property = column['property']
       return row[property] === value
+    },
+    onRead (data) {
+      if (data) {
+        console.log(data)
+      } else {
+        console.log(data)
+      }
     }
   }
 }
