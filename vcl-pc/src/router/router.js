@@ -131,6 +131,17 @@ export const appRouter = [
           role: [1]
         },
         component: () => import('../../src/views/rules/index.vue')
+      },
+      {
+        path: 'sh/:data',
+        name: 'sh',
+        meta: {
+          requireAuth: true,
+          title: '数据审核',
+          navigator: false,
+          role: [1]
+        },
+        component: () => import('../../src/views/rules/sh.vue')
       }
     ]
   },

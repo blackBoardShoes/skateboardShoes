@@ -8,8 +8,8 @@
     <slot name="title"></slot>
     <div class="menuClass">
       <div
-        :class="{menuClassItem: true, isActive: isActive === index}"
-        v-for="(item, index) in navArr"
+        :class="{menuClassItem: true, isActive: isActive === index, isDisabled: item.isDisabled}"
+        v-for="(item, index) in newNavArr"
         :index="item.path ? item.path : item.index"
         @click="emitClick(item, index)"
         :key="index">
@@ -36,16 +36,27 @@ export default {
       }
     }
   },
+  watch: {
+    navArr () {
+      this.newNavArr = [...this.navArr]
+    },
+    activeIndex () {
+      this.isActive = this.activeIndex * 1
+    }
+  },
   data () {
     return {
-      isActive: this.activeIndex
+      isActive: this.activeIndex,
+      newNavArr: this.navArr
     }
   },
   methods: {
     emitClick (item, index) {
       console.log(item, index)
-      this.isActive = index
-      this.$emit('emitClick', {item: item, index: index})
+      if (!item['isDisabled']) {
+        this.isActive = index
+        this.$emit('emitClick', {item: item, index: index})
+      }
     }
   }
 }
@@ -78,6 +89,11 @@ $W: 16%;
     .isActive {
       background: $linearGradient;
       color: $themeColor;
+    }
+    .isDisabled {
+      opacity: .25;
+      cursor: not-allowed;
+      background: none !important;
     }
   }
   .menuName {
