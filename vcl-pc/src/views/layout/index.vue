@@ -40,10 +40,11 @@
       </div>
     </div>
     <div id="right-content">
-      <div id="topbar-wrapper" @contextmenu.prevent.stop="ban">
+      <!-- <div id="topbar-wrapper" @contextmenu.prevent.stop="ban"> -->
+      <div id="topbar-wrapper">
         <!-- 顶部导航 -->
         <div class="float-left full-height bread-nav">
-          <div class="float-left"><i class="el-icon-dogma-menu"></i></div>
+          <div class="float-left"><i class="ercp-icon-general-menu"></i></div>
           <el-breadcrumb separator="/">
             <el-breadcrumb-item :to="{ path: item.path }" v-for="(item, index) in currentPath" :key="index">{{item.title}}</el-breadcrumb-item>
           </el-breadcrumb>
@@ -58,15 +59,30 @@
           <span>信息录入管理系统</span>
         </div>
         <div class="user-operate">
-          <div class="sign-out float-right " @click="exit"><i class="el-icon-dogma-exit"></i></div>
-          <div class="message float-right">
-            <i class="el-icon-dogma-message"></i>
-            <span class="mes-count">2</span>
+          <!-- <div class="sign-out float-right " @click="exit"><i class="el-icon-dogma-exit"></i></div> -->
+          <div class="message float-right" @click="toMessage">
+            <i class="ercp-icon-module-message"></i>
+            <span class="right-corner-primary">2</span>
           </div>
-          <div class="user-info float-right">
-            <i class="el-icon-dogma-user"></i>
-            <!-- <span v-if="user.userName">{{user.userName}}</span> -->
-          </div>
+          <el-popover
+            placement="bottom"
+            width="400">
+            <div class="operator">
+              我是内容
+            </div>
+            <div class="user-info"  slot="reference">
+              <i class="ercp-icon-module-user"></i>
+              <span v-if="user.userName">{{user.userName}}</span>
+            </div>
+            <!-- dsaddsadsadsa -->
+          </el-popover>
+          <!-- <div class="user-info float-right">
+            <i class="ercp-icon-module-user"></i>
+            <span v-if="user.userName">{{user.userName}}</span>
+            <div class="user-info-operate">
+              退出
+            </div>
+          </div> -->
         </div>
       </div>
       <div id="main-content">
@@ -137,6 +153,9 @@ export default {
           return false
         })
     },
+    toMessage () {
+      this.$router.push('/message/index')
+    },
     skip (index, menu) {
       console.log(menu.path)
       this.$router.push(menu.path)
@@ -195,9 +214,12 @@ export default {
       height:100%;
       background-color: $siderbarBgColor;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
       .slider-menu{
         width:100%;
-        height:80%;
+        flex:1;
+        // height:90%;
         display: flex;
         flex-direction: column;
         overflow-x: hidden;
@@ -294,15 +316,15 @@ export default {
         }
       }
       .other-menu{
-        height:20%;
-        padding-bottom:30px;
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
+        height:80px;
+        padding:15px 0;
+        // box-sizing: border-box;
+        // display: flex;
+        // flex-direction: column;
+        // justify-content: flex-end;
         .link-menu{
-          height: 26px;
-          line-height: 26px;
+          height: 80px;
+          line-height: 80px;
           color: #878787;
           text-align: center;
           font-size: 13px;
@@ -363,6 +385,16 @@ export default {
           }
           .user-info{
             padding:0 15px;
+            position: relative;
+            .user-info-operate{
+              position: absolute;
+              top: 48px;
+              left: -50%;
+              width: 200px;
+              height: 200px;
+              background-color: #fff;
+              z-index: 2054;
+            }
             span{
               padding:0 5px;
               color:$themeColor;
@@ -372,20 +404,6 @@ export default {
           .message{
             padding:0 10px;
             position: relative;
-            .mes-count{
-              position: absolute;
-              top:10px;
-              right: 6px;
-              font-size: 6px;
-              color:$lightTextColor;
-              display: block;
-              width: 12px;
-              height: 12px;
-              line-height: 12px;
-              text-align: center;
-              border-radius:50%;
-              background-color: $themeColor;
-            }
           }
         }
         .system-operate{
@@ -402,6 +420,7 @@ export default {
         }
       }
       #main-content{
+        z-index: 1;
         flex:1;
         background-color: $mainBackgroundColor;
         overflow:hidden;

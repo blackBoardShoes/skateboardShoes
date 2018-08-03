@@ -1,5 +1,6 @@
 // 设置全局可选复用的css类名
 // 清除浮动
+@import '../../assets/css/variable';
 .clearfix{
 
   &::after{
@@ -45,4 +46,31 @@
 .text-overflow-hidden {
   width: 100%;
   text-overflow: ellipsis;
+}
+
+.radial-text-primary{
+  border-radius:50%;
+  display: inline-block;
+  height: 17px;
+  width: 17px;
+  line-height: 17px;
+  text-align: center;
+  color:$lightTextColor;
+  font-size:12px;
+  margin:0 5px;
+  background-color: $themeColor;
+}
+.right-corner-primary{
+  position: absolute;
+  top:10px;
+  right: 6px;
+  font-size: 6px;
+  color:$lightTextColor;
+  display: block;
+  width: 12px;
+  height: 12px;
+  line-height: 12px;
+  text-align: center;
+  border-radius:50%;
+  background-color: $themeColor;
 }

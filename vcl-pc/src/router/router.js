@@ -31,7 +31,7 @@ export const otherRouter = {
     requireAuth: true,
     title: '首页',
     role: [1, 2, 3, 4],
-    icon: 'home'
+    icon: 'module-home'
   },
   component: Layout,
   children: [
@@ -61,7 +61,7 @@ export const appRouter = [
       title: '患者中心',
       navigator: true,
       role: [1, 2, 3, 4],
-      icon: 'patient'
+      icon: 'module-patient'
     },
     component: Layout,
     children: [
@@ -77,6 +77,19 @@ export const appRouter = [
           role: [1]
         },
         component: () => import('../../src/views/patient/index.vue')
+      },
+      {
+        path: 'detail/:id',
+        name: 'patient_detail',
+        title: '患者详情',
+        navigator: true,
+        meta: {
+          requireAuth: true,
+          title: '患者详情',
+          navigator: true,
+          role: [1]
+        },
+        component: () => import('../../src/views/patient/detail.vue')
       }
     ]
   },
@@ -84,13 +97,13 @@ export const appRouter = [
     path: '/statistics',
     name: 'statistics',
     redirect: '/statistics/index',
-    title: '数据统计',
+    title: '数据中心',
     meta: {
       requireAuth: true,
-      title: '数据统计',
+      title: '数据中心',
       navigator: true,
       role: [1],
-      icon: 'statistics'
+      icon: 'module-data'
     },
     component: Layout,
     children: [
@@ -99,7 +112,7 @@ export const appRouter = [
         name: 'statistics_index',
         meta: {
           requireAuth: true,
-          title: '数据统计',
+          title: '数据中心',
           navigator: true,
           role: [1]
         },
@@ -110,14 +123,14 @@ export const appRouter = [
   {
     path: '/form',
     name: 'form',
-    title: '表单中心',
+    title: '任务中心',
     redirect: '/form/index',
     meta: {
       requireAuth: true,
-      title: '表单中心',
+      title: '任务中心',
       navigator: true,
       role: [1],
-      icon: 'statistics'
+      icon: 'module-task'
     },
     component: Layout,
     children: [
@@ -224,58 +237,6 @@ export const appRouter = [
     ]
   },
   {
-    path: '/mesFeedback',
-    name: 'mesFeedback',
-    title: '信息反馈',
-    redirect: '/mesFeedback/index',
-    meta: {
-      title: '信息反馈',
-      navigator: true,
-      requireAuth: false,
-      role: [1, 2, 3, 4]
-    },
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'mesFeedback_index',
-        meta: {
-          title: '信息反馈',
-          navigator: true,
-          requireAuth: false,
-          role: [1, 2, 3, 4]
-        },
-        component: () => import('../../src/views/mesFeedback/index.vue')
-      }
-    ]
-  },
-  {
-    path: '/aboutSystem',
-    name: 'aboutSystem',
-    title: '关于系统',
-    redirect: '/aboutSystem/index',
-    meta: {
-      title: '关于系统',
-      navigator: true,
-      requireAuth: false,
-      role: [1, 2, 3, 4]
-    },
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'aboutSystem_index',
-        meta: {
-          title: '关于系统',
-          navigator: true,
-          requireAuth: false,
-          role: [1, 2, 3, 4]
-        },
-        component: () => import('../../src/views/aboutSystem/index.vue')
-      }
-    ]
-  },
-  {
     path: '/test',
     name: 'test',
     title: '开发测试',
@@ -284,7 +245,7 @@ export const appRouter = [
       navigator: true,
       requireAuth: true,
       role: [1, 2, 3, 4],
-      icon: 'piechart'
+      icon: 'general-relation'
     },
     component: Layout,
     redirect: '/test/index',

@@ -1,17 +1,22 @@
 <template>
   <div id="patient">
-    <el-card class="patient-statistics" style="margin-bottom: 4px;">
-      <div class="card-title" slot="header">
-        <i class="el-icon-dogma-summary"></i> <b>系统概览</b>
+    <el-card class="patient-statistics" :body-style="{flex:1,'box-sizing': 'border-box','padding':'10px'}">
+      <div class="card-title" slot="header" style="height:0px;">
+        <i class="ercp-icon-general-summary"></i> <b>系统概览</b>
         <span class="float-right light-text">患者总数：{{patientAccount}}人</span>
       </div>
       <div class="card-content">
-        <!-- 图表1 ： 图表2 -->
+        <div class="gender">
+          <chart ref="A" :options="optionA" auto-resize style="width: 100%;height: 100%;"></chart>
+        </div>
+        <div class="area">
+          <chart ref="B" :options="optionB" auto-resize style="width: 100%;height: 100%;"></chart>
+        </div>
       </div>
     </el-card>
     <el-card class="patient-list" :body-style="{height:'100%','box-sizing': 'border-box'}">
       <div class="card-title" slot="header">
-        <i class="el-icon-dogma-patient"></i><b>患者列表</b>
+        <i class="ercp-icon-module-patient"></i><b>患者列表</b>
       </div>
       <div class="card-content">
         <div class="operate">
@@ -26,8 +31,8 @@
             </el-input>
           </div>
           <div class="refresh float-right">
-            <el-button type="primary" icon="el-icon-refresh" @click="refresh">更新患者</el-button>
-            <el-button type="primary" icon="el-icon-dogma-insert" @click="add">添加患者</el-button>
+            <el-button type="primary" @click="refresh">更新患者</el-button>
+            <el-button type="primary" @click="add">添加患者</el-button>
           </div>
         </div>
         <!-- 患者列表 -->
@@ -38,11 +43,11 @@
             size="small"
             fit
             height="100%">
-            <el-table-column
+            <!-- <el-table-column
               type="index"
               :width="60"
               fixed="left">
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column
               prop="name"
               align="center"
@@ -104,14 +109,67 @@
             :total="total"
             :current-page="currentpage"
             :page-size="pagesize"
+            @size-change= "pageSize"
+            @current-change = "changePage"
           >
           </el-pagination>
         </div>
       </div>
+      <el-dialog title="添加患者" :visible.sync="dialogTableVisible">
+        <el-form ref="basicForm" :rules="rules" :model="basicInfo" label-position="right" label-width="100px">
+          <el-col :span="24">
+            <el-form-item label="患者姓名:" prop="name">
+              <el-input v-model="basicInfo.name" size="small"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="患者性别:" prop="gender">
+              <el-radio-group v-model="basicInfo.gender">
+                <el-radio label="男" value="0"></el-radio>
+                <el-radio label="女" value="1"></el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="患者名族:" prop="nation">
+              <el-input v-model="basicInfo.nation" size="small"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="住院编号:" prop="hospitalNumber">
+              <el-input v-model="basicInfo.hospitalNumber" size="small"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="身份证号:" prop="identity">
+              <el-input v-model="basicInfo.identity" size="small"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="联系方式:" prop="concatNumber">
+              <el-input v-model="basicInfo.concatNumber" size="small"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="常居住地:" prop="permanentAddress">
+             <el-select v-model="basicInfo.permanentAddress" placeholder="请选择">
+              <el-option label="甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第一家" value="甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第一家"></el-option>
+              <el-option label="甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第二家" value="甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第二家"></el-option>
+              <el-option label="甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第三家" value="甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第三家"></el-option>
+            </el-select>
+            </el-form-item>
+          </el-col>
+        </el-form>
+        <div class="operate align-center">
+          <el-button type="info" size="small" @click="cancel">取消</el-button>
+          <el-button type="primary" size="small" @click="confirmAdd">确定</el-button>
+        </div>
+      </el-dialog>
     </el-card>
   </div>
 </template>
 <script>
+import {charts} from '../../data/chartTemplates/chart'
 export default {
   name: 'patient_index',
   data () {
@@ -150,45 +208,147 @@ export default {
         }
       ],
       searchText: '',
+      dialogTableVisible: false,
       // 分页信息：
       pagesize: 10,
       currentpage: 1,
-      total: 100
+      total: 100,
+      optionA: {},
+      optionB: {},
+      basicInfo: {
+        name: '',
+        gender: '',
+        nation: '',
+        hospitalNumber: '',
+        identity: '',
+        concatNumber: '',
+        permanentAddress: ''
+      },
+      rules: {
+        name: [{
+          required: true,
+          message: '必填项不能为空',
+          trigger: 'change'
+        }],
+        gender: [{
+          required: true,
+          message: '必填项不能为空',
+          trigger: 'change'
+        }],
+        nation: [{
+          required: true,
+          message: '必填项不能为空',
+          trigger: 'change'
+        }],
+        hospitalNumber: [{
+          required: true,
+          message: '必填项不能为空',
+          trigger: 'change'
+        }],
+        identity: [{
+          required: true,
+          message: '必填项不能为空',
+          trigger: 'change'
+        }],
+        concatNumber: [{
+          required: true,
+          message: '必填项不能为空',
+          trigger: 'change'
+        }],
+        permanentAddress: [{
+          required: true,
+          message: '必填项不能为空',
+          trigger: 'change'
+        }]
+      }
     }
   },
   methods: {
+    initCharts () {
+      this.optionA = charts[1]
+      this.optionB = charts[2]
+    },
     search () {
       console.log(this.searchText)
     },
     viewPatient (value) {
       console.log(value)
+      this.$router.push(`/patient/detail/${value.hospitalNumber}`)
     },
     refresh () {
       console.log('refresh')
     },
     add () {
-      console.log('add')
+      this.dialogTableVisible = true
+    },
+    cancel () {
+      this.dialogTableVisible = false
+      this.$refs.basicForm.resetFields()
+    },
+    confirmAdd () {
+      this.$refs.basicForm.validate(valid => {
+        if (valid) {
+          console.log(this.basicInfo)
+        } else {
+          return false
+        }
+      })
+    },
+    pageSize (size) {
+      console.log(size)
+    },
+    changePage (page) {
+      console.log(page)
     }
+  },
+  mounted () {
+    this.initCharts()
   }
 }
 </script>
 <style lang="scss" scoped>
 #patient{
   position: absolute;
-  left: 8px;
-  right: 8px;
-  bottom: 8px;
-  top: 8px;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  top: 16px;
   display: flex;
   flex-direction: column;
   .patient-statistics{
-    flex: 0 0 200px;
-    .card-content{
-      padding: 10px;
+    flex: 0 0 240px;
+    display: flex;
+    flex-direction: column;
+    .el-card_header{
+      height: 50px;
+      box-sizing: border-box;
+      padding: 10px 20px;
+    }
+    .el-card__body{
+      .card-content{
+        height:100%;
+        padding: 0px;
+        .gender{
+          width:30%;
+          height:100%;
+          float: left;
+          padding: 5px 10px;
+          box-sizing: border-box;
+          border-right:1px dotted #eee;
+        }
+        .area{
+          width: 70%;
+          height:100%;
+          float: left;
+          padding: 5px 10px;
+          box-sizing: border-box;
+        }
+      }
     }
   }
   .patient-list{
     flex: 1;
+    margin-top: 8px;
     display: flex;
     flex-direction: column;
     .el-card_header{
@@ -221,6 +381,8 @@ export default {
     }
   }
   .card-title{
+    height: 10px;
+    line-height: 10px;
     font-size: 15px;
     b{
       padding-left:10px;

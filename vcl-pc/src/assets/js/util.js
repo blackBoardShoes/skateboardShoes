@@ -28,12 +28,12 @@ export function setMenu (routers, code) {
       let obj = {
         title: INDEX.meta.title,
         path: INDEX.meta.title === '首页' ? '/home' : INDEX.path,
-        icon: `el-icon-dogma-${INDEX.meta.icon}`,
+        icon: `ercp-icon-${INDEX.meta.icon}`,
         children: children
       }
       menu.push(obj)
     }
-    console.log(menu)
+    // console.log(menu)
   })
   return menu
 }
