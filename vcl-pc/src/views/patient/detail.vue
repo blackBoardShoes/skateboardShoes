@@ -62,15 +62,39 @@
     </div>
     <div class="records er-card">
       <el-collapse accordion>
-        <el-collapse-item>
+        <el-collapse-item v-for="item in 4" :key="item">
           <template slot="title">
             <div class="record-title ">
               <i class="ercp-icon-medicine-hospital"></i>
               <b>住院记录</b>
-            </div> 
+              <span class="square-grey-text">2</span>
+            </div>
+            <div class="record-title ">
+              <span class="light-text">主管医生：</span>
+              <span>苗雪峰</span>
+            </div>
+            <div class="record-title ">
+              <span class="light-text">术后诊断：</span>
+              <span>无胆囊胆总管结石</span>
+            </div>
+            <div class="record-title ">
+              <span class="light-text">出院状态：</span>
+              <span class="success-text">治愈</span>
+            </div>
+            <div class="record-title ">
+              <span class="light-text">出院日期：</span>
+              <span>2018-03-29</span>
+            </div>
           </template>
           <div class="content">
-            我是内容
+            <div class="er-card" v-for="item in 6" :key="item">
+              <div class="card-title">
+                术前记录
+              </div>
+              <div class="card-content">
+                我是主要内容
+              </div>
+            </div>
           </div>
         </el-collapse-item>
       </el-collapse>
@@ -183,10 +207,26 @@ export default {
       flex:1;
       box-sizing: border-box;
       .record-title{
+        float: left;
         font-size: 15px;
         padding: 0 20px;
         b{
          padding-left:10px;
+        }
+      }
+      .content{
+        padding: 20px;
+        height: 280px;
+        width: 100%;
+        white-space: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        box-sizing: border-box;
+        .er-card{
+          width: 240px;
+          height: 220px;
+          display: inline-block;
+          margin: 10px 30px;
         }
       }
     }

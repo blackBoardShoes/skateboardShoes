@@ -30,7 +30,7 @@ export const otherRouter = {
     navigator: true,
     requireAuth: true,
     title: '首页',
-    role: [1, 2, 3, 4],
+    role: [1, 2, 3, 4, 5, 6],
     icon: 'module-home'
   },
   component: Layout,
@@ -42,7 +42,7 @@ export const otherRouter = {
         requireAuth: true,
         title: '首页',
         navigator: true,
-        role: [1, 2, 3, 4]
+        role: [1, 2, 3, 4, 5, 6]
       },
       component: () => import('../../src/views/home/index.vue')
     }
@@ -60,7 +60,7 @@ export const appRouter = [
       requireAuth: true,
       title: '患者中心',
       navigator: true,
-      role: [1, 2, 3, 4],
+      role: [1, 2, 3, 4, 5, 6],
       icon: 'module-patient'
     },
     component: Layout,
@@ -74,7 +74,7 @@ export const appRouter = [
           requireAuth: true,
           title: '患者中心',
           navigator: true,
-          role: [1]
+          role: [1, 2, 3, 4, 5, 6]
         },
         component: () => import('../../src/views/patient/index.vue')
       },
@@ -87,7 +87,7 @@ export const appRouter = [
           requireAuth: true,
           title: '患者详情',
           navigator: true,
-          role: [1]
+          role: [1, 2, 3, 4, 5, 6]
         },
         component: () => import('../../src/views/patient/detail.vue')
       }
@@ -97,12 +97,12 @@ export const appRouter = [
     path: '/statistics',
     name: 'statistics',
     redirect: '/statistics/index',
-    title: '数据中心',
+    title: '数据统计',
     meta: {
       requireAuth: true,
-      title: '数据中心',
+      title: '数据统计',
       navigator: true,
-      role: [1],
+      role: [1, 2, 3],
       icon: 'module-data'
     },
     component: Layout,
@@ -112,9 +112,9 @@ export const appRouter = [
         name: 'statistics_index',
         meta: {
           requireAuth: true,
-          title: '数据中心',
+          title: '数据统计',
           navigator: true,
-          role: [1]
+          role: [1, 2, 3]
         },
         component: () => import('../../src/views/statistics/index.vue')
       }
@@ -129,7 +129,8 @@ export const appRouter = [
       requireAuth: true,
       title: '任务中心',
       navigator: true,
-      role: [1],
+      // role: [2, 3, 4, 5, 6],
+      role: [2, 3, 4, 5, 6],
       icon: 'module-task'
     },
     component: Layout,
@@ -141,7 +142,8 @@ export const appRouter = [
           requireAuth: true,
           title: '任务中心',
           navigator: true,
-          role: [1]
+          // role: [2, 3, 4, 5, 6]
+          role: [2, 3, 4, 5, 6]
         },
         component: () => import('../../src/views/rules/index.vue')
       },
@@ -152,7 +154,7 @@ export const appRouter = [
           requireAuth: true,
           title: '数据审核',
           navigator: false,
-          role: [1]
+          role: [1, 2, 3, 4, 5, 6]
         },
         component: () => import('../../src/views/rules/sh.vue')
       }
@@ -161,11 +163,11 @@ export const appRouter = [
   {
     path: '/form',
     name: 'form',
-    title: '表单中心',
+    title: '表单管理',
     redirect: '/form/index',
     meta: {
       requireAuth: true,
-      title: '表单中心',
+      title: '表单管理',
       navigator: true,
       role: [1],
       icon: 'module-form'
@@ -222,6 +224,60 @@ export const appRouter = [
     ]
   },
   {
+    path: '/systemManage',
+    name: 'systemManage',
+    title: '系统管理',
+    redirect: '/systemManage/index',
+    meta: {
+      requireAuth: true,
+      title: '系统管理',
+      navigator: true,
+      role: [1],
+      icon: 'module-system'
+    },
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'systemManage_index',
+        meta: {
+          requireAuth: true,
+          title: '系统管理',
+          navigator: false,
+          role: [1]
+        },
+        component: () => import('../../src/views/systemManage/index.vue')
+      }
+    ]
+  },
+  {
+    path: '/project',
+    name: 'project',
+    title: '项目管理',
+    redirect: '/project/index',
+    meta: {
+      requireAuth: true,
+      title: '项目管理',
+      navigator: true,
+      role: [1, 2, 3],
+      icon: 'module-project'
+    },
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'project_index',
+        meta: {
+          requireAuth: true,
+          title: '项目管理',
+          navigator: false,
+          role: [1, 2, 3]
+        },
+        component: () => import('../../src/views/project/index.vue')
+      }
+    ]
+  },
+  {
     path: '/message',
     name: 'message',
     title: '消息中心',
@@ -230,7 +286,7 @@ export const appRouter = [
       requireAuth: true,
       title: '消息中心',
       navigator: false,
-      role: [1],
+      role: [1, 2, 3, 4, 5, 6],
       icon: 'statistics'
     },
     component: Layout,
@@ -242,7 +298,7 @@ export const appRouter = [
           requireAuth: true,
           title: '消息中心',
           navigator: false,
-          role: [1]
+          role: [1, 2, 3, 4, 5, 6]
         },
         component: () => import('../../src/views/message/index.vue')
       }
@@ -257,7 +313,7 @@ export const appRouter = [
       title: '帮助中心',
       navigator: true,
       requireAuth: false,
-      role: [1, 2, 3, 4]
+      role: [1, 2, 3, 4, 5, 6]
     },
     component: Layout,
     children: [
@@ -268,105 +324,105 @@ export const appRouter = [
           title: '帮助中心',
           navigator: true,
           requireAuth: false,
-          role: [1, 2, 3, 4]
+          role: [1, 2, 3, 4, 5, 6]
         },
         component: () => import('../../src/views/helpCenter/index.vue')
       }
     ]
-  },
-  {
-    path: '/test',
-    name: 'test',
-    title: '开发测试',
-    meta: {
-      title: '开发测试',
-      navigator: true,
-      requireAuth: true,
-      role: [1, 2, 3, 4],
-      icon: 'general-relation'
-    },
-    component: Layout,
-    redirect: '/test/index',
-    children: [
-      {
-        path: 'index',
-        name: 'test_index',
-        meta: {
-          title: '开发测试-导航列表同步滑动',
-          navigator: false,
-          requireAuth: false,
-          role: [1, 2, 3, 4]
-        },
-        component: () => import('../../src/views/test/index.vue')
-      },
-      {
-        path: '/test/editInput',
-        name: 'editInput',
-        meta: {
-          title: '可编辑文本域',
-          navigator: true,
-          requireAuth: false,
-          role: [2, 3, 4]
-        },
-        component: () => import('../components/editInput/editInput.vue')
-      },
-      {
-        path: '/test/print',
-        name: 'print',
-        meta: {
-          title: '打印',
-          navigator: true,
-          requireAuth: false,
-          role: [1, 2, 3, 4]
-        },
-        component: () => import('../components/print/print.vue')
-      },
-      {
-        path: '/test/imgView',
-        name: 'imgView',
-        meta: {
-          title: '图片预览',
-          navigator: true,
-          requireAuth: false,
-          role: [1, 2, 3, 4]
-        },
-        component: () => import('../components/imgView/imgView.vue')
-      },
-      {
-        path: '/test/c1',
-        name: 'start',
-        meta: {
-          title: '表单1',
-          navigator: true,
-          requireAuth: false,
-          role: [1, 2, 3, 4]
-        },
-        component: () => import('../views/content.vue')
-      },
-      {
-        path: '/test/c2',
-        name: 'c',
-        meta: {
-          title: '表单2',
-          navigator: true,
-          requireAuth: false,
-          role: [1, 2, 3, 4]
-        },
-        component: () => import('../views/gc.vue')
-      },
-      {
-        path: '/test/cartogram',
-        name: 'cartogram',
-        meta: {
-          title: '统计图测试',
-          navigator: true,
-          requireAuth: false,
-          role: [1, 2, 3, 4]
-        },
-        component: () => import('../components/cartogram/scalingChart.vue')
-      }
-    ]
   }
+  // {
+  //   path: '/test',
+  //   name: 'test',
+  //   title: '开发测试',
+  //   meta: {
+  //     title: '开发测试',
+  //     navigator: true,
+  //     requireAuth: true,
+  //     role: [1, 2, 3, 4, 5, 6],
+  //     icon: 'general-relation'
+  //   },
+  //   component: Layout,
+  //   redirect: '/test/index',
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'test_index',
+  //       meta: {
+  //         title: '开发测试-导航列表同步滑动',
+  //         navigator: false,
+  //         requireAuth: false,
+  //         role: [1, 2, 3, 4, 5, 6]
+  //       },
+  //       component: () => import('../../src/views/test/index.vue')
+  //     },
+  //     {
+  //       path: '/test/editInput',
+  //       name: 'editInput',
+  //       meta: {
+  //         title: '可编辑文本域',
+  //         navigator: true,
+  //         requireAuth: false,
+  //         role: [1, 2, 3, 4, 5, 6]
+  //       },
+  //       component: () => import('../components/editInput/editInput.vue')
+  //     },
+  //     {
+  //       path: '/test/print',
+  //       name: 'print',
+  //       meta: {
+  //         title: '打印',
+  //         navigator: true,
+  //         requireAuth: false,
+  //         role: [1, 2, 3, 4, 5, 6]
+  //       },
+  //       component: () => import('../components/print/print.vue')
+  //     },
+  //     {
+  //       path: '/test/imgView',
+  //       name: 'imgView',
+  //       meta: {
+  //         title: '图片预览',
+  //         navigator: true,
+  //         requireAuth: false,
+  //         role: [1, 2, 3, 4, 5, 6]
+  //       },
+  //       component: () => import('../components/imgView/imgView.vue')
+  //     },
+  //     {
+  //       path: '/test/c1',
+  //       name: 'start',
+  //       meta: {
+  //         title: '表单1',
+  //         navigator: true,
+  //         requireAuth: false,
+  //         role: [1, 2, 3, 4, 5, 6]
+  //       },
+  //       component: () => import('../views/content.vue')
+  //     },
+  //     {
+  //       path: '/test/c2',
+  //       name: 'c',
+  //       meta: {
+  //         title: '表单2',
+  //         navigator: true,
+  //         requireAuth: false,
+  //         role: [1, 2, 3, 4, 5, 6]
+  //       },
+  //       component: () => import('../views/gc.vue')
+  //     },
+  //     {
+  //       path: '/test/cartogram',
+  //       name: 'cartogram',
+  //       meta: {
+  //         title: '统计图测试',
+  //         navigator: true,
+  //         requireAuth: false,
+  //         role: [1, 2, 3, 4, 5, 6]
+  //       },
+  //       component: () => import('../components/cartogram/scalingChart.vue')
+  //     }
+  //   ]
+  // }
 ]
 
 export const routers = [

@@ -365,7 +365,7 @@ export default {
         }
         .table{
           flex:1;
-          height:300px;
+          height:100px;
         }
         .pagination{
           margin-top: 10px;

@@ -93,7 +93,6 @@
         append-to-body
         :close-on-click-modal="false"
         :visible.sync="dialogVisible"
-        size="small"
         width="500px">
         <el-form :model="psw" :rules="rules" ref="pswForm" label-position="left" label-width="80px">
           <el-form-item label="当前密码" prop="oldPassword">
@@ -414,6 +413,7 @@ export default {
       .other-menu{
         height:80px;
         padding:15px 0;
+        margin-top: 10px;
         .link-menu{
           height: 80px;
           line-height: 80px;
