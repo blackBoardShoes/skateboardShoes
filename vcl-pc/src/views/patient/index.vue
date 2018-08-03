@@ -43,11 +43,6 @@
             size="small"
             fit
             height="100%">
-            <!-- <el-table-column
-              type="index"
-              :width="60"
-              fixed="left">
-            </el-table-column> -->
             <el-table-column
               prop="name"
               align="center"
@@ -115,7 +110,7 @@
           </el-pagination>
         </div>
       </div>
-      <el-dialog title="添加患者" :visible.sync="dialogTableVisible">
+      <el-dialog title="添加患者" :visible.sync="dialogTableVisible" :modal="true" append-to-body>
         <el-form ref="basicForm" :rules="rules" :model="basicInfo" label-position="right" label-width="100px">
           <el-col :span="24">
             <el-form-item label="患者姓名:" prop="name">
@@ -161,8 +156,8 @@
           </el-col>
         </el-form>
         <div class="operate align-center">
-          <el-button type="info" size="small" @click="cancel">取消</el-button>
-          <el-button type="primary" size="small" @click="confirmAdd">确定</el-button>
+          <el-button type="info" @click="cancel">取消</el-button>
+          <el-button type="primary" @click="confirmAdd">确定</el-button>
         </div>
       </el-dialog>
     </el-card>

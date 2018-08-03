@@ -13,13 +13,13 @@
           :rules="rules">
           <el-form-item prop="username">
             <el-input v-model="form.username" placeholder="请输入账号">
-              <i slot="prefix" class="el-input__icon el-icon-dogma-user" style="font-size: 18px;"></i>
+              <i slot="prefix" class="el-input__icon ercp-icon-general-account" style="font-size: 18px;"></i>
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
             <el-input :type="passwordType" v-model="form.password" placeholder="请输入密码">
-              <i slot="prefix" class="el-input__icon el-icon-dogma-password" style="font-size: 18px;"></i>
-              <i slot="suffix" class="el-input__icon el-icon-dogma-preview" style="cursor: pointer;"
+              <i slot="prefix" class="el-input__icon ercp-icon-general-password" style="font-size: 18px;"></i>
+              <i slot="suffix" class="el-input__icon ercp-icon-general-preview" style="cursor: pointer;"
                  @click="_togglePasswordType"></i>
             </el-input>
           </el-form-item>
@@ -27,7 +27,7 @@
             <div class="check-code-wrapper">
               <div class="yanzhengma-wrapper">
                 <el-input v-model="form.yanzhengma" @keyup.enter.native="login('loginForm')" placeholder="请输入验证码">
-                  <i slot="prefix" class="el-input__icon el-icon-dogma-passed" style="font-size: 18px;"></i>
+                  <i slot="prefix" class="el-input__icon ercp-icon-module-authority" style="font-size: 18px;"></i>
                 </el-input>
               </div>
               <div class="validate-code-wrapper">
@@ -120,8 +120,12 @@ export default {
         if (valid) {
           let token = 'a94756da-2962-40ae-bdea-787fd02c9d92'
           let user = {
+            userAccount: 10000,
             userName: this.form.username,
-            userType: 1
+            userType: 1,
+            gender: '女',
+            department: '科研管理员',
+            status: 0
           }
           this.$store.commit('SET_TOKEN', token)
           this.$store.commit('SET_USER', user)

@@ -50,44 +50,67 @@
           </el-breadcrumb>
         </div>
         <div class="system-operate float-right" v-if="env === 'production'">
-          <span class="el-icon-minus" @click="windwowOperate('mini')"></span>
-          <span class="el-icon-news"  @click="windwowOperate('max')"></span>
-          <span class="el-icon-close" @click="windwowOperate('close')"></span>
+          <span class="ercp-icon-general-minimine" @click="windwowOperate('mini')"></span>
+          <span class="ercp-icon-general-restore"  @click="windwowOperate('max')"></span>
+          <span class="ercp-icon-general-close" @click="windwowOperate('close')"></span>
         </div>
         <div class="system-title float-right">
           <img src="../../assets/ercp标题.png" alt="">
           <span>信息录入管理系统</span>
         </div>
-        <div class="user-operate">
-          <!-- <div class="sign-out float-right " @click="exit"><i class="el-icon-dogma-exit"></i></div> -->
-          <div class="message float-right" @click="toMessage">
+        <div class="message float-right">
+          <span>
             <i class="ercp-icon-module-message"></i>
-            <span class="right-corner-primary">2</span>
-          </div>
-          <el-popover
-            placement="bottom"
-            width="400">
-            <div class="operator">
-              我是内容
-            </div>
-            <div class="user-info"  slot="reference">
+            <span class="radial-text-primary">{{messageNum}}</span>
+          </span>
+        </div>
+        <div class="user-operate float-right">
+          <el-dropdown
+            :show-timeout="10"
+            :hide-timeout="10"
+            @command="handleCommand">
+            <span class="el-dropdown-link">
               <i class="ercp-icon-module-user"></i>
-              <span v-if="user.userName">{{user.userName}}</span>
-            </div>
-            <!-- dsaddsadsadsa -->
-          </el-popover>
-          <!-- <div class="user-info float-right">
-            <i class="ercp-icon-module-user"></i>
-            <span v-if="user.userName">{{user.userName}}</span>
-            <div class="user-info-operate">
-              退出
-            </div>
-          </div> -->
+              <span>{{user.department + '-'}}</span>
+              <span>{{user.userName}}</span>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>{{'性别：' + user.gender}}</el-dropdown-item>
+              <el-dropdown-item>{{user.status === 0 ? '状态：有效' :'状态：无效'}}</el-dropdown-item>
+              <el-dropdown-item>{{'账号：' + user.userAccount}}</el-dropdown-item>
+              <el-dropdown-item command="exit">退出登陆</el-dropdown-item>
+              <el-dropdown-item command="changePs">修改密码</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </div>
       </div>
       <div id="main-content">
         <router-view></router-view>
       </div>
+      <el-dialog
+        title="修改密码"
+        :modal="true"
+        append-to-body
+        :close-on-click-modal="false"
+        :visible.sync="dialogVisible"
+        size="small"
+        width="500px">
+        <el-form :model="psw" :rules="rules" ref="pswForm" label-position="left" label-width="80px">
+          <el-form-item label="当前密码" prop="oldPassword">
+            <el-input type="password" v-model="psw.oldPassword"></el-input>
+          </el-form-item>
+          <el-form-item label="新的密码" prop="newPassword">
+            <el-input type="password" v-model="psw.newPassword"></el-input>
+          </el-form-item>
+          <el-form-item label="确认密码" prop="checkPassword">
+            <el-input type="password" v-model="psw.checkPassword"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer align-center">
+          <el-button @click="cancelChange('pswForm')">取 消</el-button>
+          <el-button type="primary" @click="changPassword('pswForm')">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -99,12 +122,55 @@ export default {
   name: 'layout',
   mixins: [userMixin],
   data () {
+    let validateOldPassword = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('请输入当前密码'))
+      }
+      callback()
+    }
+    let validateNewPassword = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入新的密码'))
+      } else {
+        if (this.psw.checkPassword !== '') {
+          this.$refs.pswForm.validateField('checkPassword')
+        }
+        callback()
+      }
+    }
+    let validateCheckPassword = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.psw.newPassword) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
     return {
       env: {},
       menuData: [],
       otherData: [],
       currentPath: '',
-      searchText: ''
+      searchText: '',
+      dialogVisible: false,
+      psw: {
+        oldPassword: '',
+        newPassword: '',
+        checkPassword: ''
+      },
+      rules: {
+        oldPassword: [
+          { validator: validateOldPassword, trigger: 'blur' }
+        ],
+        newPassword: [
+          { validator: validateNewPassword, trigger: 'blur' }
+        ],
+        checkPassword: [
+          { validator: validateCheckPassword, trigger: 'blur' }
+        ]
+      },
+      messageNum: 9
     }
   },
   created () {
@@ -113,6 +179,7 @@ export default {
     this.env = process.env.NODE_ENV
   },
   mounted () {
+    console.log(this.user)
     // fixed: 页面刷新清空缓存
     // fixed：刷新后面包屑重置
     this.currentPath = getCurrentPath(this, this.$route)
@@ -138,6 +205,27 @@ export default {
         console.log(token)
       }
     },
+    handleCommand (command) {
+      if (command === 'changePs') {
+        this.changePs()
+      } else if (command === 'exit') {
+        this.exit()
+      }
+    },
+    changPassword (formName) {
+      console.log(this.$refs)
+      this.$refs.pswForm.validate((valid) => {
+        if (valid) {
+          let newPassword = this.psw.newPassword
+          let oldPassword = this.psw.oldPassword
+          console.log(oldPassword)
+          console.log(newPassword)
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
     exit () {
       this.$confirm('即将退出系统登陆，是否继续？', '提示', {
         confirmButtonText: '确定',
@@ -152,6 +240,14 @@ export default {
         .catch(() => {
           return false
         })
+    },
+    cancelChange (formName) {
+      this.$refs[formName].resetFields()
+      this.dialogVisible = false
+    },
+    changePs () {
+      console.log(1)
+      this.dialogVisible = true
     },
     toMessage () {
       this.$router.push('/message/index')
@@ -318,10 +414,6 @@ export default {
       .other-menu{
         height:80px;
         padding:15px 0;
-        // box-sizing: border-box;
-        // display: flex;
-        // flex-direction: column;
-        // justify-content: flex-end;
         .link-menu{
           height: 80px;
           line-height: 80px;
@@ -375,37 +467,6 @@ export default {
             }
           }
         }
-        .user-operate{
-          padding:0 10px;
-          -webkit-app-region: no-drag;
-          cursor: pointer;
-          float: right;
-          .sign-out{
-            padding:0 10px;
-          }
-          .user-info{
-            padding:0 15px;
-            position: relative;
-            .user-info-operate{
-              position: absolute;
-              top: 48px;
-              left: -50%;
-              width: 200px;
-              height: 200px;
-              background-color: #fff;
-              z-index: 2054;
-            }
-            span{
-              padding:0 5px;
-              color:$themeColor;
-              font-size:15px;
-            }
-          }
-          .message{
-            padding:0 10px;
-            position: relative;
-          }
-        }
         .system-operate{
           cursor: pointer;
           -webkit-app-region: no-drag;
@@ -416,6 +477,27 @@ export default {
           align-items: center;
           span:hover{
             color: $themeColor;
+          }
+        }
+        .message{
+          position: relative;
+          padding: 0 15px;
+          .radial-text-primary{
+            position: absolute;
+            // height: 15px;
+            // width: 15px;
+            // line-height: 15px;
+            font-size: 6px;
+            top: 10px;
+            right: 0px;
+          }
+        }
+        .user-operate{
+          padding:0 10px;
+          .el-dropdown-link{
+            display: block;
+            cursor: pointer;
+            height: 100%;
           }
         }
       }

@@ -1,6 +1,6 @@
 <template>
   <div id="patient">
-    <div class="basic">
+    <div class="basic er-card">
       <div class="title">
         <span><i class="ercp-icon-module-patient"></i> <b>基本信息</b></span>
         <span>患者ID: {{patientId}}</span>
@@ -60,8 +60,21 @@
         </div>
       </div>
     </div>
-    <div class="records">
-      <div class="title">
+    <div class="records er-card">
+      <el-collapse accordion>
+        <el-collapse-item>
+          <template slot="title">
+            <div class="record-title ">
+              <i class="ercp-icon-medicine-hospital"></i>
+              <b>住院记录</b>
+            </div> 
+          </template>
+          <div class="content">
+            我是内容
+          </div>
+        </el-collapse-item>
+      </el-collapse>
+      <!-- <div class="title">
         <span><i class="ercp-icon-medicine-followup"></i> <b>随访记录</b></span>
         <span class="radial-text-primary">2</span>
         <span class="light-text">最近随访: </span>
@@ -70,7 +83,7 @@
         <span>杨青云</span>
         <span class="light-text">随访状态:</span>
         <span>正常</span>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -151,10 +164,6 @@ export default {
       display: flex;
       flex-direction: column;
       box-sizing: border-box;
-      background-color: #fff;
-      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-      border-radius: 4px;
-      border: 1px solid #ebeef5;
       height: 300px;
       margin-bottom: 8px;
       .basic-information{
@@ -172,12 +181,14 @@ export default {
     }
     .records{
       flex:1;
-      // padding: 8px;
       box-sizing: border-box;
-      background-color: #fff;
-      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-      border-radius: 4px;
-      border: 1px solid #ebeef5;
+      .record-title{
+        font-size: 15px;
+        padding: 0 20px;
+        b{
+         padding-left:10px;
+        }
+      }
     }
   }
   .title{
