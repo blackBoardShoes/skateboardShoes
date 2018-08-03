@@ -121,6 +121,44 @@ export const appRouter = [
     ]
   },
   {
+    path: '/rules',
+    name: 'rules',
+    title: '任务中心',
+    redirect: '/rules/index',
+    meta: {
+      requireAuth: true,
+      title: '任务中心',
+      navigator: true,
+      role: [1],
+      icon: 'statistics'
+    },
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'rules_index',
+        meta: {
+          requireAuth: true,
+          title: '任务中心',
+          navigator: true,
+          role: [1]
+        },
+        component: () => import('../../src/views/rules/index.vue')
+      },
+      {
+        path: 'sh/:data',
+        name: 'sh',
+        meta: {
+          requireAuth: true,
+          title: '数据审核',
+          navigator: false,
+          role: [1]
+        },
+        component: () => import('../../src/views/rules/sh.vue')
+      }
+    ]
+  },
+  {
     path: '/form',
     name: 'form',
     title: '任务中心',

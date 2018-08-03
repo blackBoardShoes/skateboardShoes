@@ -8,10 +8,11 @@
     <slot name="title"></slot>
     <el-menu
       class="menuClass"
-      router :default-active="$route.name">
+      router :default-active="'path' in navArr[0] ? $route.path : $route.name">
       <el-menu-item
         v-for="(item, index) in navArr"
-        :index="item.index"
+        :index="item.path ? item.path : item.index"
+        @click="emitClick(item, index)"
         :key="index">
         <i :class="item.icon"></i>
         <span class="menuName">{{item.name}}</span>
@@ -22,11 +23,11 @@
 
 <script>
 export default {
-  watch: {
-    $route (val, oldVal) {
-      console.log(val)
-    }
-  },
+  // watch: {
+  //   $route (val, oldVal) {
+  //     console.log(val)
+  //   }
+  // },
   props: {
     navArr: {
       type: Array,
@@ -37,6 +38,11 @@ export default {
   },
   data () {
     return {}
+  },
+  methods: {
+    emitClick (item, index) {
+      this.$emit('emitClick', {path: this.$route.path, name: this.$route.name, item: item, index: index})
+    }
   }
 }
 </script>

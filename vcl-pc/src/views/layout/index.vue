@@ -423,7 +423,7 @@ export default {
         z-index: 1;
         flex:1;
         background-color: $mainBackgroundColor;
-        overflow:hidden;
+        overflow-y: auto;
         position: relative;
       }
     }

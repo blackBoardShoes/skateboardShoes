@@ -5,10 +5,12 @@
         <div class="formTop">
           <div class="formTopLeft">
             <div class="formTopLeftLeft">
+              <!-- @blur="lookupFormInput" -->
               <el-input
+                @keyup.enter.native="lookupFormInput"
                 size="small"
                 placeholder="检索表单"
-                v-model="lookupFormInput"
+                v-model="lookupFormInputData"
                 clearable
                 prefix-icon="el-icon-search"></el-input>
             </div>
@@ -22,22 +24,25 @@
             </div>
           </div>
           <div class="formTopRight">
-            <el-button type="primary" icon="el-icon-plus" @click="addForm">新增表单</el-button>
+            <el-button type="primary" @click="addForm">新增表单</el-button>
           </div>
         </div>
         <div class="formCard">
-          <sx-form-card
-            @templateEdit="templateEdit"
-            v-for="(item, index) in cardArr" :key="index" :cardObj='item' :index="index"></sx-form-card>
-          <div v-if="cardArrComplement.length"
-            style="width: 24%; border: 0.5px solid transparent"
-            v-for="(x, i) in cardArrComplement" :key="cardArr.length + i"></div>
+          <div class="formCardContent">
+            <sx-form-card
+              @templateEdit="templateEdit"
+              @templateDelete="templateDelete"
+              v-for="(item, index) in cardArr" :key="index" :cardObj='item' :index="index"></sx-form-card>
+            <div v-if="cardArrComplement.length"
+              style="width: 24%; border: 0.5px solid transparent"
+              v-for="(x, i) in cardArrComplement" :key="cardArr.length + i"></div>
+          </div>
         </div>
       </div>
       <div class="createFormContent"  v-if="!fewStepsTF">
         <div class="createTop">
-          <el-button type="info" icon="el-icon-back" @click="editAddBack">返回</el-button>
-          <el-button type="primary" icon="el-icon-document" @click="editAddForm">保存修改</el-button>
+          <el-button type="info"  @click="editAddBack">返回</el-button>
+          <el-button type="primary"  @click="editAddForm">保存</el-button>
         </div>
         <div class="createTopForm">
           <el-form size="small" ref="formModel" :model="formModel" label-width="90px"
@@ -84,6 +89,7 @@
         <div class="createContent">
           <!-- transferModel -->
           <el-transfer
+            style="height:500px;"
             v-model="formModel['fields']"
             filterable
             :render-content="renderFunc"
@@ -95,7 +101,7 @@
             }"
             @change="transferHandleChange"
             :data="transferData">
-            <div class="transfer-footer"></div>
+            <div class="transfer-footer" slot="left-footer"></div>
             <el-button @click="openRelation" class="transfer-footer" slot="right-footer" size="mini">关联关系</el-button>
           </el-transfer>
         </div>
@@ -130,7 +136,7 @@ export default {
       mozhu: data,
       relationDialogVisible: false,
       needCreatedRelation: {},
-      fewStepsTF: false,
+      fewStepsTF: true,
       cardArr: [
         {
           num: '111',
@@ -237,7 +243,7 @@ export default {
         }
       ],
       cardArrComplement: [],
-      lookupFormInput: '',
+      lookupFormInputData: '',
       stagelookupData: ['术前', '术中', '术后', '随访'],
       stageLookUpArr: ['术前', '术中', '术后', '随访'],
       // transferModel: [],
@@ -252,15 +258,18 @@ export default {
   },
   methods: {
     firstShow () {
-      // 补位
-      for (let i = 0; i < (4 - this.cardArr.length % 4); i++) {
-        this.cardArrComplement.push({i: i})
-      }
       // transferData
       this.transferData = [...this.mozhu.fields]
       for (let i in this.mozhu.fields) {
         this.transferData[i]['key'] = this.mozhu.fields[i].id
         // this.$set(this.transferData[i], 'key', this.mozhu.fields[i].id)
+      }
+      this.cardComplementShow()
+    },
+    cardComplementShow () {
+      // 补位 card
+      for (let i = 0; i < (4 - this.cardArr.length % 4); i++) {
+        this.cardArrComplement.push({i: i})
       }
     },
     init () {
@@ -279,6 +288,10 @@ export default {
       this.cardIndex = index
       this.editOrAdd = true
       this.fewStepsTF = false
+    },
+    templateDelete (value, index) {
+      this.cardArr.splice(index, 1)
+      this.cardComplementShow()
     },
     // two
     iconJudgeChoose (type) {
@@ -336,6 +349,9 @@ export default {
       let iconClass = this.iconJudgeChoose(option.type)
       return <span>&nbsp; <i class={ iconClass }></i> &nbsp; { option.label }</span>
     },
+    lookupFormInput () {
+      console.log('lookupFormInput')
+    },
     transferHandleChange (value, direction, movedKeys) {
       console.log(value)
     },
@@ -344,7 +360,7 @@ export default {
       this.formModel['fields'] = this.formModel['fields'] ? this.formModel['fields'] : []
       this.formModel['relation'] = this.formModel['relation'] ? this.formModel['relation'] : {}
       for (let i of this.formModel['fields']) {
-        for (let j of this.mozhu.fields) {
+        for (let j of this.mozhu['fields']) {
           if (j.id === i) {
             newFields.push(j)
           }
@@ -353,7 +369,7 @@ export default {
       this.needCreatedRelation = {
         id: this.mozhu.id,
         relation: this.formModel['relation'],
-        sub_fields: newFields
+        subFields: newFields
       }
       // this.needCreatedRelation = this.mozhu
       this.relationDialogVisible = true
@@ -437,6 +453,7 @@ export default {
 $full:100%;
 $contentW: 95%;
 $topH: 100px;
+$bottomH: 200px;
 .formAll {
   width: $full;
   display: flex;
@@ -448,6 +465,9 @@ $topH: 100px;
     width: $contentW;
     .formContentTop {
       width: $full;
+      height: $full;
+      display: flex;
+      flex-direction: column;
       .formTop {
         width: $full;
         height: $topH;
@@ -475,10 +495,17 @@ $topH: 100px;
         }
       }
       .formCard {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
+        // height: $full;
+        flex-grow: 1;
+        overflow: auto;
+        padding: 10px;
+        .formCardContent {
+          width: 100%;
+          padding-bottom: $bottomH;
+          display: flex;
+          justify-content: space-between;
+          flex-wrap: wrap;
+        }
       }
     }
     .createFormContent {
@@ -494,22 +521,19 @@ $topH: 100px;
       // .createTopForm {}
       .createContent {
         width: $full;
-        display: flex;
-        justify-content: center;
-        height: 50%;
         .el-transfer {
-          height: $full;
           width: $full;
           display: flex;
           align-items: center;
-          // el-checkbox-group el-transfer-panel__list is-filterable
-          /deep/ .el-transfer-panel, /deep/ .el-transfer-panel__body, /deep/ .el-transfer-panel__list.is-filterable {
-            height: $full;
-            overflow: auto;
-            flex-grow: 1;
-          }
           /deep/ .el-transfer-panel {
-            overflow: hidden;
+            flex-grow: 1;
+            height: 450px;
+          }
+          /deep/ .el-transfer-panel__body {
+            height: 450px;
+          }
+          /deep/ .el-transfer-panel__list.is-filterable {
+            height: calc(450px - 140px);
           }
         }
       }
@@ -528,5 +552,18 @@ $topH: 100px;
       }
     }
   }
+}
+</style>
+<style lang="scss">
+.el-transfer-panel {
+  width: 250px;
+}
+
+.el-transfer-panel__body {
+  height: 500px;
+}
+
+.el-transfer-panel__list.is-filterable {
+  height: 468px;
 }
 </style>

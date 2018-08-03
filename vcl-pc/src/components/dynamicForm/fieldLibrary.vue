@@ -19,28 +19,30 @@
           prefix-icon="el-icon-search"
           placeholder="字段名称"></el-input>
       </div>
-      <div class="listContent">
-        <div
-          @click="editFish(item, index)"
-          v-if="lookupChange(item)"
-          class="listItem"
-          v-for="(item, index) in listData" :key="index">
-          <div class="listItemLeft">
-            <!-- el-icon-ercp-xxxx -->
-            <el-tooltip class="item" effect="dark" :content="item.label" placement="left">
-              <i :class="iconJudgeChoose(item.type)"></i>
-            </el-tooltip>
-            <div class="listItemLeftText">&nbsp;{{item.label}}</div>
-          </div>
-          <div class="listItemRight">
-            <el-tooltip class="item" effect="dark" :content="item.type" placement="left">
-              <div class="listItemRightText">{{item.type}}</div>
-            </el-tooltip>
-            <el-button @click.stop="openRelation(item)" v-if="item.type === 'TABLE'"
-              circle type="primary" size="mini" icon="el-icon-setting"></el-button>
-            <el-button
-              @click.stop="deleteFishElement(item, index)"
-              circle type="danger" size="mini" icon="el-icon-delete"></el-button>
+      <div class="listContentBottom">
+        <div class="listContent">
+          <div
+            @click="editFish(item, index)"
+            v-if="lookupChange(item)"
+            :class="{listItem: true, checkedClass: checkedClass === index}"
+            v-for="(item, index) in listData" :key="index">
+            <div class="listItemLeft">
+              <!-- el-icon-ercp-xxxx -->
+              <el-tooltip class="item" effect="dark" :content="item.label" placement="left">
+                <i :class="iconJudgeChoose(item.type)"></i>
+              </el-tooltip>
+              <div class="listItemLeftText">&nbsp;{{item.label}}</div>
+            </div>
+            <div class="listItemRight">
+              <el-tooltip class="item" effect="dark" :content="item.type" placement="left">
+                <div class="listItemRightText">{{item.type}}</div>
+              </el-tooltip>
+              <el-button @click.stop="openRelation(item)" v-if="item.type === 'TABLE'"
+                circle type="primary" size="mini" icon="el-icon-setting"></el-button>
+              <el-button
+                @click.stop="deleteFishElement(item, index)"
+                circle type="danger" size="mini" icon="el-icon-delete"></el-button>
+            </div>
           </div>
         </div>
       </div>
@@ -76,6 +78,7 @@ export default {
   },
   data () {
     return {
+      checkedClass: null,
       lookupData: '',
       listData: this.value,
       needCreatedRelation: {},
@@ -155,7 +158,11 @@ export default {
     newCreateFish () {
       this.$emit('newCreateFish', true)
     },
+    resetData () {
+      this.checkedClass = null
+    },
     editFish (row, index) {
+      this.checkedClass = index
       this.$emit('editFish', row, index)
     },
     saveAllFish () {
@@ -171,6 +178,7 @@ export default {
 // $placeHolderColor: #C0C4CC;
 // $lightTextColor: #F3F3F3;
 $full: 100%;
+$bottomH: 200px;
 .fieldAll {
   width: $full;
   height: $full;
@@ -182,39 +190,49 @@ $full: 100%;
       border-radius: 0px;
       border: 0px;
     }
-    .listContent {
+    .listContentBottom {
+      overflow: auto;
       width: $full;
-      .listItem {
-        padding: 10px;
-        border-bottom: 0.5px dashed $lightBorderColor;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+      // height: $full;
+      .listContent {
+        margin-bottom: $bottomH;
+        width: $full;
         background: white;
-        .listItemLeft {
+        .listItem {
+          padding: 10px;
+          border-bottom: 0.5px dashed $lightBorderColor;
           display: flex;
-          align-items: center;
-          font-size: 16px;
-          color: $commonTetxColor;
-          .listItemLeftText {
-            text-overflow: ellipsis;
-            overflow: hidden;
-            width: 130px;
-          }
-        }
-        .listItemRight {
-          .listItemRightText {
-            text-overflow: ellipsis;
-            overflow: hidden;
-            width: 90px;
-          }
-          display: flex;
-          align-items: center;
           justify-content: space-between;
-          width: 110px;
-          font-size: 16px;
-          color: $minorTextColor;
-        }
+          align-items: center;
+          background: white;
+          .listItemLeft {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            color: $commonTetxColor;
+            .listItemLeftText {
+              text-overflow: ellipsis;
+              overflow: hidden;
+              width: 130px;
+            }
+          }
+          .listItemRight {
+            .listItemRightText {
+              text-overflow: ellipsis;
+              overflow: hidden;
+              width: 90px;
+            }
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 110px;
+            font-size: 16px;
+            color: $minorTextColor;
+          }
+          }
+          .checkedClass {
+            background: $linearGradient;
+          }
       }
     }
   }

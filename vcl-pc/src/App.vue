@@ -19,5 +19,7 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   height: 100%;
   width: 100%;
+  /* min-width: 1366px;
+  min-height: 768px; */
 }
 </style>

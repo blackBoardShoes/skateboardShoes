@@ -8,7 +8,14 @@ Vue.use(VueRouter)
 const routerConfig = {
   mode: 'hash',
   linkActiveClass: 'active',
-  routes: routers
+  routes: routers,
+  scrollBehavior (to, from, savedPosition) {
+    if (to.hash) {
+      return {
+        selector: to.hash
+      }
+    }
+  }
 }
 
 const router = new VueRouter(routerConfig)

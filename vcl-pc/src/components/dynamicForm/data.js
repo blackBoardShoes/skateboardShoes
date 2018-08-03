@@ -196,7 +196,7 @@ export default {
         CHECKBOX: ['0', '2', '3']
       }],
       type: 'TABLE',
-      sub_fields: [
+      subFields: [
         // TEXTAREA
         {
           id: 'TEXTAREA',
