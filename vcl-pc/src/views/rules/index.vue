@@ -85,14 +85,16 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   data () {
     return {
       rulesContainTop: [
-        { title: '全部', icon: 'el-icon-delete', num: 55 },
-        { title: '待录入', icon: 'el-icon-delete', num: 55 },
-        { title: '带修正', icon: 'el-icon-delete', num: 55 },
-        { title: '带随访', icon: 'el-icon-delete', num: 55 }
+        { title: '全部', icon: 'el-icon-delete', num: 55, userType: [1, 2, 3, 4, 5, 6] },
+        { title: '待录入', icon: 'el-icon-delete', num: 55, userType: [1, 2, 3, 4, 5, 6] },
+        { title: '带修正', icon: 'el-icon-delete', num: 55, userType: [1, 2, 3, 4, 5, 6] },
+        { title: '带随访', icon: 'el-icon-delete', num: 55, userType: [1, 2, 3, 4, 5, 6] }
       ],
       activeIndex: 0,
       lookupFormInputData: '',
@@ -114,10 +116,34 @@ export default {
       ]
     }
   },
+  computed: mapState({
+    user: state => state.user
+  }),
   created () {
-    console.log(this.$store)
+    // 管理员医生 无页面
+    // 科研管理员临床质控员 诊疗中心 科研护士
+    // 1 - 6 userType
+    // 科研管理员 ---> 1.任务概览：工作量统计 2.总表：查看 3.待审核 4.列表：分页及计数
+    // 临床质控员 ---> 同上
+    // 诊疗中心 ---> 1.任务概览：工作量统计 2.总表：查看 3.待录入：编辑、删除 4.待修正：编辑 5.列表：分页及计数
+    // 科研护士 ---> 1.任务概览：工作量统计 2.总表：查看 3.待录入：编辑、删除 4.待修正：编辑 5.待随访：编辑、删除 6.列表：分页及计数
+    console.log(this.user)
+    this.init()
   },
   methods: {
+    init () {
+      let topArr = []
+      for (let i of this.rulesContainTop) {
+        if (i['userType']) {
+          if (i['userType'].includes(this.user.userType)) {
+            topArr.push(i)
+          }
+        } else {
+          topArr.push(i)
+        }
+      }
+      this.rulesContainTop = [...topArr]
+    },
     rulesContainTopControl (item, index) {
       this.activeIndex = index
       // this.$router.push({name: 'sh', params: { data: JSON.stringify({a: 1}) }})
