@@ -101,7 +101,7 @@ export default {
   },
   data () {
     return {
-      tableData: [{}, {}, {}, {}],
+      tableData: [{name: 'cccc'}, {name: 'aaa'}, {name: 'ddd'}, {}],
       formModel: {
         name: '',
         region: '',
@@ -117,9 +117,22 @@ export default {
     }
   },
   methods: {
-    deleteWhat () {},
-    saveWhat () {},
+    deleteWhat () {
+      console.log('111')
+      this.$refs['formModel'].resetFields()
+    },
+    saveWhat () {
+      this.$refs['formModel'].validate(valid => {
+        if (valid) {
+          console.log(1)
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
     handleCurrentChange (val) {
+      this.formModel = Object.assign({}, val)
       console.log(val)
     },
     filterHandler (value, row, column) {
