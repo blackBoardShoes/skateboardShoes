@@ -130,7 +130,7 @@ export const appRouter = [
       title: '任务中心',
       navigator: true,
       role: [1],
-      icon: 'statistics'
+      icon: 'module-task'
     },
     component: Layout,
     children: [
@@ -161,14 +161,14 @@ export const appRouter = [
   {
     path: '/form',
     name: 'form',
-    title: '任务中心',
+    title: '表单中心',
     redirect: '/form/index',
     meta: {
       requireAuth: true,
-      title: '任务中心',
+      title: '表单中心',
       navigator: true,
       role: [1],
-      icon: 'module-task'
+      icon: 'module-form'
     },
     component: Layout,
     children: [
