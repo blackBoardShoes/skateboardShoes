@@ -12,6 +12,9 @@ const mutations = {
   SET_TOKEN (state, token) {
     sessionStorage.setItem('token', token)
     state.token = token
+  },
+  GET_USER (state) {
+    state.user = sessionStorage.getItem('user')
   }
 }
 

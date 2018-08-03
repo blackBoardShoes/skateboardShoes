@@ -40,7 +40,7 @@
               <el-button @click.stop="openRelation(item)" v-if="item.type === 'TABLE'"
                 circle type="primary" size="mini" icon="el-icon-setting"></el-button>
               <el-button
-                @click.stop="deleteFishElement(item, index)"
+                @click.stop="deleteFish(item, index)"
                 circle type="danger" size="mini" icon="el-icon-delete"></el-button>
             </div>
           </div>
@@ -140,7 +140,8 @@ export default {
       }
       return icon
     },
-    deleteFishElement (item, index) {
+    deleteFish (item, index) {
+      this.$emit('deleteFish', item, index)
       this.$delete(this.listData, index)
     },
     openRelation (item) {

@@ -33,6 +33,7 @@
             ref="thatFieldLibrary"
             @newCreateFish="newCreateFish"
             @editFish="editFish"
+            @deleteFish="deleteFish"
             @saveAllFish="saveAllFish"
             ></sx-field-library>
         </div>
@@ -224,10 +225,11 @@ export default {
     firstShow () {},
     newCreateFish () {
       this.fishNeedEditData = {}
+      this.thatFish = {}
       this.$refs['thatForm'].resetData()
       this.$refs['thatFieldLibrary'].resetData()
-      this.$set(this.thatFish, 'fields', [])
-      this.$refs['thatFormPreview'].againData()
+      // this.$set(this.thatFish, 'fields', [])
+      // this.$refs['thatFormPreview'].againData()
     },
     //  CREATECALCULATE TREE LAYERTREE CREATETABLE
     auxiliaryType (formModel) {
@@ -352,6 +354,12 @@ export default {
       this.$refs['thatFormPreview'].resetData()
       this.$refs['thatFormPreview'].againData()
       // this.thatFishTF = true
+    },
+    async deleteFish (row, index) {
+      this.fishNeedEditData = {}
+      this.thatFish = {}
+      this.$refs['thatForm'].resetData()
+      this.$refs['thatFieldLibrary'].resetData()
     },
     saveFish () {
       // ----> createFish

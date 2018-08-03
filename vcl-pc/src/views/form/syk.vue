@@ -8,10 +8,10 @@
           highlight-current-row
           @current-change="handleCurrentChange"
           style="width: 100%">
-          <el-table-column
+          <!-- <el-table-column
             type="index"
             width="50">
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column
             show-overflow-tooltip
             prop="name"

@@ -15,6 +15,12 @@
         <div class="centerTitle">
           {{cardObj.name}}
         </div>
+        <div class="centerTitleAddTime">
+          {{cardObj.addTime ? cardObj.addTime : '新增日期: 2018-06-08'}}
+        </div>
+        <div class="centerTitleEditTime">
+          {{cardObj.editTime ? cardObj.editTime : '修改日期: 2018-06-08'}}
+        </div>
       </div>
       <div class="bottomContent">
         <i class="el-icon-edit" @click="templateEdit"></i>
@@ -86,10 +92,12 @@ export default {
   }
   .centerContent {
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     flex-direction: column;
     align-items: center;
-    height: 120px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    height: 150px;
     .centerIcon {
       font-size: 55px;
     }
@@ -97,10 +105,20 @@ export default {
       font-size: 18px;
       font-weight: bold;
     }
+    .centerTitleAddTime, .centerTitleEditTime {
+      font-size: 14px;
+      color: $minorTextColor;
+    }
+    .centerTitleAddTime {
+      padding-top: 10px;
+    }
   }
   .bottomContent {
     i:hover {
       cursor: pointer;
+    }
+    i {
+      font-size: 20px;
     }
     display: flex;
     justify-content: space-between;
