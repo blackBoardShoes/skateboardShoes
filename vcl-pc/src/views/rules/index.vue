@@ -46,7 +46,7 @@
               show-overflow-tooltip
               align="center"
               v-for="(item, index) in mozhu"
-              :key="index"
+              :key="index + Math.random()"
               :prop="item.prop"
               :label="item.label"
               :sortable="item.sortable"
@@ -54,8 +54,21 @@
               :filter-method="filterHandler"
               filter-placement="bottom-end"
               :width="item.width">
+              <template slot-scope="scope">
+                <el-button
+                  v-if="item.option"
+                  v-for="(x, key) in item.contain"
+                  :key="key"
+                  :type="x.type ? x.type : 'text'"
+                  :size="x.size ? x.size : 'mini'"
+                  :style="x.style"
+                  @click="handleShow(scope.row, scope.$index, x)">{{x.label}}</el-button>
+                  <div v-if="!item.option">
+                    {{scope.row[item.prop]}}
+                  </div>
+              </template>
             </el-table-column>
-            <el-table-column
+            <!-- <el-table-column
               width="100"
               align="center"
               label="操作">
@@ -65,7 +78,7 @@
                   size="mini"
                   @click="handleShow(scope.$index, scope.row)">查看</el-button>
               </template>
-              </el-table-column>
+              </el-table-column> -->
           </el-table>
           <div style="text-align: right;margin-top:15px;">
             <el-pagination
@@ -98,21 +111,35 @@ export default {
       ],
       activeIndex: 0,
       lookupFormInputData: '',
-      tableData: [{name: 1}, {name: 1}, {name: 12}, {name: 1}, {name: 1}],
+      tableData: [{name: 15555}, {name: 1, namec: 'woo', ccc: 'aaa'}, {name: 12}, {name: 1}, {name: 1}],
       currentpage: 1,
       pagesize: 5,
       total: 100,
-      mozhu: [
+      mozhu: [],
+      // 总表 ---> 住院号 编号 姓名 性别 入院日期 术前记录 术中记录 术后记录 是否纳入随访记录
+      AlltableColumn: [
         { prop: 'name', label: '住院编号' },
-        { prop: 'name', label: '系统编号' },
-        { prop: 'name', label: '姓名' },
+        { prop: 'name', label: '编号' },
+        { prop: 'namec', label: '姓名' },
         { prop: 'name', label: '性别', sortable: true },
         { prop: 'name', label: '入院日期' },
-        { prop: 'name', label: '手术日期' },
         { prop: 'name', label: '术前记录', width: '130', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] },
         { prop: 'name', label: '术中记录', width: '130', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] },
         { prop: 'name', label: '术后记录', width: '130', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] },
-        { prop: 'name', label: '纳入随访', width: '130', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] }
+        { prop: 'name', label: '是否纳入随访记录', width: '180', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] },
+        { option: true, label: '操作', contain: [{label: '查看'}] }
+      ],
+      // 待录入 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (编辑、删除)
+      pendingEntryColumn: [
+        { prop: 'name', label: '住院号' },
+        { prop: 'name', label: '编号' },
+        { prop: 'name', label: '科室' },
+        { prop: 'name', label: '床号' },
+        { prop: 'name', label: '姓名' },
+        { prop: 'name', label: '性别', sortable: true },
+        { prop: 'name', label: '数据阶段' },
+        { prop: 'name', label: '记录者', width: '130', sortable: true },
+        { option: true, label: '操作', contain: [{label: '编辑'}, {label: '删除', style: 'color: #FF455B'}] }
       ]
     }
   },
@@ -143,17 +170,25 @@ export default {
         }
       }
       this.rulesContainTop = [...topArr]
+      // mozhu 赋值
+      this.mozhu = [...this.AlltableColumn]
     },
-    rulesContainTopControl (item, index) {
+    rulesContainTopControl (row, index) {
+      console.log(row, index)
       this.activeIndex = index
+      if (row.title === '待录入') {
+        this.mozhu = [...this.pendingEntryColumn]
+      } else {
+        this.mozhu = [...this.AlltableColumn]
+      }
       // this.$router.push({name: 'sh', params: { data: JSON.stringify({a: 1}) }})
     },
     lookupFormInput () {
       console.log('111')
     },
     handleCurrentChange (val) {
-      this.formModel = Object.assign({}, val)
-      console.log(val)
+      // this.formModel = Object.assign({}, val)
+      // console.log(val)
     },
     filterHandler (value, row, column) {
       console.log(value, row, column)
@@ -166,7 +201,9 @@ export default {
     changePage (val) {
       console.log(val, this.pagesize)
     },
-    handleShow () {}
+    handleShow (row, index, x) {
+      console.log(row, index, x, '----------')
+    }
   }
 }
 </script>
