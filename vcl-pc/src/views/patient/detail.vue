@@ -255,9 +255,10 @@ export default {
         }
       }
       .content{
-        // padding: 20px;
-        height: 260px;
+        padding:0 20px;
+        height: 240px;
         width: 100%;
+        box-sizing: border-box;
         overflow-y: auto;
         // display: flex;
         white-space: nowrap;
@@ -265,7 +266,7 @@ export default {
         box-sizing: border-box;
         .er-card{
           width: 240px;
-          height: 220px;
+          height: 200px;
           white-space: normal;
           word-wrap: break-word;
           word-break: break-all;
@@ -282,7 +283,7 @@ export default {
             padding: 10px;
             .info{
               padding: 5px 0;
-              line-height: 25px;
+              line-height: 21px;
               width: 100%;
               border-bottom: 1px dotted #D1D1D1;
             }

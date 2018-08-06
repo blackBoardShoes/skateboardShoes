@@ -67,12 +67,12 @@
               label="住院编号"
               :width="120">
             </el-table-column>
-            <el-table-column
+            <!-- <el-table-column
               prop="identity"
               align="center"
               label="身份证编号"
               :width="200">
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column
               prop="concatNumber"
               align="center"
@@ -279,7 +279,7 @@ export default {
     },
     // 搜索患者
     search () {
-      console.log(this.searchText)
+      this.$message.success(this.searchText)
     },
     // 查看具体患者
     viewPatient (value) {
@@ -288,7 +288,7 @@ export default {
     },
     // 更新患者列表
     refresh () {
-      console.log('refresh')
+      this.$message.success('更新患者成功，成功添加3名患者')
     },
     // 地区
     handleChange (data) {
