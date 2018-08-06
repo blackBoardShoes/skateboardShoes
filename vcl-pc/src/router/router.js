@@ -82,11 +82,11 @@ export const appRouter = [
         path: 'detail/:id',
         name: 'patient_detail',
         title: '患者详情',
-        navigator: true,
+        navigator: false,
         meta: {
           requireAuth: true,
           title: '患者详情',
-          navigator: true,
+          navigator: false,
           role: [1, 2, 3, 4, 5, 6]
         },
         component: () => import('../../src/views/patient/detail.vue')
