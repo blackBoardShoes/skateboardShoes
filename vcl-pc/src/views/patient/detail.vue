@@ -62,7 +62,7 @@
     </div>
     <div class="records er-card">
       <el-collapse accordion>
-        <el-collapse-item v-for="item in 4" :key="item">
+        <el-collapse-item v-for="item in 2" :key="item">
           <template slot="title">
             <div class="record-title ">
               <i class="ercp-icon-medicine-hospital"></i>
@@ -87,12 +87,23 @@
             </div>
           </template>
           <div class="content">
-            <div class="er-card" v-for="item in 6" :key="item">
+            <div class="er-card" v-for="(item, index) in 6" :key="index" :style="{order: index + 1}">
               <div class="card-title">
-                术前记录
+                术前记录 {{index}}
               </div>
               <div class="card-content">
-                我是主要内容
+                <div class="info">
+                  <div class="case">系统编号 : 32132133312</div>
+                  <div class="case">内镜编号 : 32132123213213</div>
+                </div>
+                <div class="info">
+                  <div class="case">录入情况 : 张雪峰2018-08-03</div>
+                  <div class="case">审核情况 : 马小跳2018-08-03</div>
+                  <div class="case">审核状态 : 已审核</div>
+                </div>
+                <div class="status">
+                  已审核通过
+                </div>
               </div>
             </div>
           </div>
@@ -174,6 +185,7 @@ export default {
   }
 }
 </script>
+@import '../../assets/css/variable'
 <style lang="scss" scoped>
   #patient{
     position: absolute;
@@ -205,6 +217,7 @@ export default {
     }
     .records{
       flex:1;
+      overflow-y: auto;
       box-sizing: border-box;
       .record-title{
         float: left;
@@ -216,17 +229,36 @@ export default {
       }
       .content{
         padding: 20px;
-        height: 280px;
+        height: 260px;
         width: 100%;
-        white-space: nowrap;
-        overflow-x: auto;
-        overflow-y: hidden;
+        display: flex;
+        flex-direction: row;
+        // flex-wrap: nowrap;
         box-sizing: border-box;
         .er-card{
           width: 240px;
           height: 220px;
           display: inline-block;
-          margin: 10px 30px;
+          margin: 0px 25px;
+          .card-title{
+            padding: 0 10px;
+            height: 30px;
+            line-height: 30px;
+            background-color: #D1D1D1;
+          }
+          .card-content{
+            padding: 10px;
+            .info{
+              padding: 5px 0;
+              line-height: 25px;
+              width: 100%;
+              border-bottom: 1px dotted #D1D1D1;
+            }
+            .status{
+              line-height: 30px;
+              text-align: center;
+            }
+          }
         }
       }
     }

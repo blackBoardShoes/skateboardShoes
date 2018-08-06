@@ -130,7 +130,7 @@ export const appRouter = [
       title: '任务中心',
       navigator: true,
       // role: [2, 3, 4, 5, 6],
-      role: [2, 3, 4, 5, 6],
+      role: [1, 2, 3, 4, 5, 6],
       icon: 'module-task'
     },
     component: Layout,
@@ -143,7 +143,7 @@ export const appRouter = [
           title: '任务中心',
           navigator: true,
           // role: [2, 3, 4, 5, 6]
-          role: [2, 3, 4, 5, 6]
+          role: [1, 2, 3, 4, 5, 6]
         },
         component: () => import('../../src/views/rules/index.vue')
       },

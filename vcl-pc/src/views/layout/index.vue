@@ -411,9 +411,8 @@ export default {
         }
       }
       .other-menu{
-        height:80px;
+        height:60px;
         padding:15px 0;
-        margin-top: 10px;
         .link-menu{
           height: 80px;
           line-height: 80px;
