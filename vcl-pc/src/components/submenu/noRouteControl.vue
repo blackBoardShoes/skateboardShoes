@@ -8,7 +8,7 @@
     <slot name="title"></slot>
     <div class="menuClass">
       <div
-        :class="{menuClassItem: true, isActive: isActive === index, isDisabled: item.isDisabled}"
+        :class="{menuClassItem: true, isActive: isActive === index, isDisabled: item.disabled}"
         v-for="(item, index) in newNavArr"
         :index="item.path ? item.path : item.index"
         @click="emitClick(item, index)"
@@ -53,7 +53,7 @@ export default {
   methods: {
     emitClick (item, index) {
       console.log(item, index)
-      if (!item['isDisabled']) {
+      if (!item['disabled']) {
         this.isActive = index
         this.$emit('emitClick', {item: item, index: index})
       }

@@ -9,6 +9,10 @@
           :class="{controlFormClass: inline}"
           ref='formModel' :model='formModel' size='mini'>
           <!-- 菜肴展示 -->
+          <!--
+            style="display: flex; flex-wrap: wrap;justify-content: space-between"
+            :style="{display: 'flex', alignItems: 'flexStart', width: items.type === 'INPUT' ? '45%' : '100%'}"
+           -->
           <!-- <draggable v-model="newFields"> -->
             <!-- :rules="items.validations" -->
             <div

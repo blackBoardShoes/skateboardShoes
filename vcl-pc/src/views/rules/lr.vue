@@ -43,7 +43,8 @@
               :mozhu="allFish"></sx-min-form>
             <!-- static Form -->
             <div class="rightContentStatic">
-              <sx-operation-report></sx-operation-report>
+              <sx-operation-report v-model="aaa"></sx-operation-report>
+              {{aaa}}
             </div>
           </div>
         </div>
@@ -298,7 +299,8 @@ export default {
       },
       activeIndexNav: 'sq',
       activeIndex: 0,
-      patientInfo: {}
+      patientInfo: {},
+      aaa: {}
     }
   },
   created () {
@@ -424,7 +426,9 @@ $marginW: 15px;
           }
         }
         .rightContent {
-          .rightContentStatic {}
+          width: $full;
+          .rightContentStatic {
+          }
         }
       }
     }
