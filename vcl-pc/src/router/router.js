@@ -148,6 +148,17 @@ export const appRouter = [
         component: () => import('../../src/views/rules/index.vue')
       },
       {
+        path: 'lr/:data',
+        name: 'lr',
+        meta: {
+          requireAuth: true,
+          title: '数据录入',
+          navigator: false,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../../src/views/rules/lr.vue')
+      },
+      {
         path: 'sh/:data',
         name: 'sh',
         meta: {
@@ -157,6 +168,28 @@ export const appRouter = [
           role: [1, 2, 3, 4, 5, 6]
         },
         component: () => import('../../src/views/rules/sh.vue')
+      },
+      {
+        path: 'xz/:data',
+        name: 'xz',
+        meta: {
+          requireAuth: true,
+          title: '数据修正',
+          navigator: false,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../../src/views/rules/xz.vue')
+      },
+      {
+        path: 'sf/:data',
+        name: 'sf',
+        meta: {
+          requireAuth: true,
+          title: '随访',
+          navigator: false,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../../src/views/rules/sf.vue')
       }
     ]
   },

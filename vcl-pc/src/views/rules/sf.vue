@@ -36,15 +36,15 @@
             </div>
           </div>
           <div class="rightContent">
+            <!--
+              inline
+              label-position="right"
+              label-width="100px"
+            -->
             <sx-min-form
-              v-if="!navArr[activeIndex].static"
               v-model="fishData"
               ref="thatForm"
               :mozhu="allFish"></sx-min-form>
-            <!-- static Form -->
-            <div class="rightContentStatic">
-              <sx-operation-report></sx-operation-report>
-            </div>
           </div>
         </div>
       </div>
@@ -53,87 +53,27 @@
 </template>
 <script>
 import sxNoRouteControl from '../../components/submenu/noRouteControl'
-import sxOperationReport from '../../components/staticForm/operationReport'
 export default {
   name: 'rules_index',
   components: {
-    sxNoRouteControl,
-    sxOperationReport
+    sxNoRouteControl
   },
   data () {
     return {
-      // 中间数组
-      navArr: [],
-      allArr: {
-        sq: {
-          label: '术前记录',
-          value: 'sq',
-          subFields: [
-            {
-              icon: 'ercp-icon-medicine-report',
-              name: '手术报告',
-              static: true
-            },
-            {
-              icon: 'ercp-icon-medicine-guidewire',
-              name: '导丝',
-              disabled: true
-            }
-          ]
+      navArr: [
+        {
+          icon: 'ercp-icon-medicine-report',
+          name: '手术报告'
         },
-        sz: {
-          label: '术前记录',
-          value: 'sq',
-          subFields: [
-            {
-              icon: 'ercp-icon-medicine-report',
-              name: '手术报告'
-            },
-            {
-              icon: 'ercp-icon-medicine-guidewire',
-              name: '导丝'
-            },
-            {
-              icon: 'ercp-icon-medicine-guidewire',
-              name: '导丝',
-              disabled: true
-            }
-          ]
+        {
+          icon: 'ercp-icon-medicine-cannula',
+          name: '插管'
         },
-        sh: {
-          label: '术后记录',
-          value: 'sh',
-          subFields: [
-            {
-              icon: 'ercp-icon-medicine-report',
-              name: '手术报告'
-            },
-            {
-              icon: 'ercp-icon-medicine-cannula',
-              name: '插管'
-            },
-            {
-              icon: 'ercp-icon-medicine-guidewire',
-              name: '导丝'
-            }
-          ]
-        },
-        sf: {
-          label: '术后记录',
-          value: 'sf',
-          subFields: [
-            {
-              icon: 'ercp-icon-medicine-cannula',
-              name: '插管'
-            },
-            {
-              icon: 'ercp-icon-medicine-guidewire',
-              name: '导丝',
-              disabled: true
-            }
-          ]
+        {
+          icon: 'ercp-icon-medicine-guidewire',
+          name: '导丝'
         }
-      },
+      ],
       fishData: {},
       allFish: {
         relation: {
@@ -305,32 +245,18 @@ export default {
     if (this.$route.params.data) {
       this.patientInfo = JSON.parse(this.$route.params.data)
     }
-    this.init()
   },
   methods: {
-    init () {
-      this.navArr = this.allArr[this.activeIndexNav].subFields
-    },
     emitClick (data = {}) {
       this.activeIndex = data['index']
       console.log(data)
     },
-    handleSelect (key, keyPath) {
-      console.log(key, keyPath)
-      this.activeIndexNav = key
-      this.navArr = this.allArr[key].subFields
-    },
-    generalSubmit () {
-      console.log(this.navArr)
-      console.log(this.activeIndex)
-      console.log(this.activeIndexNav)
-    },
+    handleSelect () {},
+    generalSubmit () {},
     generalDelete () {},
     generalStorage () {},
     generalSave () {},
-    generalBack () {
-      this.$router.go(-1)
-    }
+    generalBack () {}
   }
 }
 </script>
@@ -371,16 +297,13 @@ $marginW: 15px;
       // padding: 0 28px;
     }
     .formContentContent {
-      width: $full;
       display: flex;
       height: $full;
       .formContentRight {
         height: $full;
-        width: $full;
         overflow: auto;
         .rightContentControl {
           height: $topControl;
-          width: $full;
           background: white;
           width: calc($full - 5px);
           display: flex;
@@ -424,7 +347,7 @@ $marginW: 15px;
           }
         }
         .rightContent {
-          .rightContentStatic {}
+          padding: 20px;
         }
       }
     }

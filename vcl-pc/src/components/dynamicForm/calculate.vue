@@ -64,7 +64,7 @@ export default {
     calculateData: {
       type: Array,
       default () {
-        return ['1', '2', '3', '1', '2', '3', '1', '2', '3', '1', '2', '3', '1', '2', '3', '1', '2', '3']
+        return []
       }
     }
   },
