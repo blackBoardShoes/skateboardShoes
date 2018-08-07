@@ -40,6 +40,10 @@
   width:100%;
 }
 
+.small-text{
+  font-size:8px;
+}
+
 .light-text{
   color:#9DA0A3;
 }
@@ -115,8 +119,19 @@
 .er-card{
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   border-radius: 4px;
+  // padding: 4px;
   border: 1px solid #ebeef5;
   background-color: #fff;
   overflow: hidden;
   color: #303133;
+  .card-title{
+    font-size: 15px;
+    padding: 12px 20px;
+    height: 10px;
+    line-height: 10px;
+    border-bottom: 1px solid #ebeef5;
+    b{
+      margin-left: 10px;
+    }
+  }
 }

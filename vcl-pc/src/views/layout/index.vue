@@ -58,7 +58,7 @@
           <img src="../../assets/ercp标题.png" alt="">
           <span>信息录入管理系统</span>
         </div>
-        <div class="message float-right">
+        <div class="message float-right" @click="$router.push('/message/index')">
           <span>
             <i class="ercp-icon-module-message"></i>
             <span class="radial-text-primary">{{messageNum}}</span>
@@ -345,7 +345,7 @@ export default {
           .underline{
             position: absolute;
             bottom: 0;
-            width: 100%;
+            width: 30px;
             display: flex;
             justify-content: center;
             .round{
@@ -411,9 +411,8 @@ export default {
         }
       }
       .other-menu{
-        height:80px;
+        height:60px;
         padding:15px 0;
-        margin-top: 10px;
         .link-menu{
           height: 80px;
           line-height: 80px;
@@ -480,6 +479,7 @@ export default {
           }
         }
         .message{
+          cursor: pointer;
           position: relative;
           padding: 0 15px;
           .radial-text-primary{

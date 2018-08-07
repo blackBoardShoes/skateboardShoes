@@ -67,12 +67,12 @@
               label="住院编号"
               :width="120">
             </el-table-column>
-            <el-table-column
+            <!-- <el-table-column
               prop="identity"
               align="center"
               label="身份证编号"
               :width="200">
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column
               prop="concatNumber"
               align="center"
@@ -145,13 +145,18 @@
               <el-input v-model="basicInfo.concatNumber" size="small"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
-            <el-form-item label="常居住地:" prop="permanentAddress">
-             <el-select v-model="basicInfo.permanentAddress" placeholder="请选择">
-              <el-option label="甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第一家" value="甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第一家"></el-option>
-              <el-option label="甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第二家" value="甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第二家"></el-option>
-              <el-option label="甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第三家" value="甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第三家"></el-option>
-            </el-select>
+          <el-col :span="12">
+            <el-form-item label="常居住地" prop="province">
+              <el-cascader
+                :options="addressOption"
+                v-model="basicInfo.province"
+                @change="handleChange">
+              </el-cascader>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="permanentAddress" label="">
+              <el-input v-model="basicInfo.permanentAddress"></el-input>
             </el-form-item>
           </el-col>
         </el-form>
@@ -164,6 +169,7 @@
   </div>
 </template>
 <script>
+import {addressData} from '../../data/address/addressData'
 import {charts} from '../../data/chartTemplates/chart'
 export default {
   name: 'patient_index',
@@ -217,6 +223,7 @@ export default {
         hospitalNumber: '',
         identity: '',
         concatNumber: '',
+        province: [],
         permanentAddress: ''
       },
       rules: {
@@ -250,36 +257,53 @@ export default {
           message: '必填项不能为空',
           trigger: 'change'
         }],
+        province: [{
+          required: true,
+          message: '必填项不能为空',
+          trigger: 'change'
+        }],
         permanentAddress: [{
           required: true,
           message: '必填项不能为空',
           trigger: 'change'
         }]
-      }
+      },
+      addressOption: []
     }
   },
   methods: {
+    // 初始化图表信息
     initCharts () {
       this.optionA = charts[1]
       this.optionB = charts[2]
     },
+    // 搜索患者
     search () {
-      console.log(this.searchText)
+      this.$message.success(this.searchText)
     },
+    // 查看具体患者
     viewPatient (value) {
       console.log(value)
       this.$router.push(`/patient/detail/${value.hospitalNumber}`)
     },
+    // 更新患者列表
     refresh () {
-      console.log('refresh')
+      this.$message.success('更新患者成功，成功添加3名患者')
     },
+    // 地区
+    handleChange (data) {
+      console.log(data)
+    },
+    // 弹出添加患者的对话框
     add () {
       this.dialogTableVisible = true
     },
+    // 取消添加
     cancel () {
       this.dialogTableVisible = false
       this.$refs.basicForm.resetFields()
     },
+    // 确认添加患者
     confirmAdd () {
       this.$refs.basicForm.validate(valid => {
         if (valid) {
@@ -289,6 +313,7 @@ export default {
         }
       })
     },
+    // 列表页码信息
     pageSize (size) {
       console.log(size)
     },
@@ -297,6 +322,7 @@ export default {
     }
   },
   mounted () {
+    this.addressOption = addressData
     this.initCharts()
   }
 }

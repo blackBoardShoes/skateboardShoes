@@ -1,10 +1,17 @@
 <template>
-   <div class="support-center">
-     <div class="search">
-      <div class="search-input">
-        帮助中心
+    <div class="support-center">
+      <div class="search">
+        <div class="help-title float-left">
+          <h4>帮助中心</h4>
+          <h5 class="light-text">Help Center</h5>
+        </div>
+        <div class="serch-input float-left">
+          <el-input size="medium" v-model="searchText" placeholder="请输入问题"  suffix-icon="ercp-icon-general-search"></el-input>
+        </div>
+        <div class="our-connection">
+          <span class="light-text">0571-886554555 SUPPORT@MITIGENOMICS.COM</span>
+        </div>
       </div>
-    </div>
     <div class="main-question">
        <!-- 导航 -->
         <div class="qus-nav">
@@ -51,6 +58,7 @@
 export default {
   data () {
     return {
+      searchText: '',
       // treeQuestions - trunkQuestions - leafQuestions - main - tips - img - ask - answer
       treeQuestions: [
         {
@@ -224,20 +232,35 @@ export default {
     // 搜索
     .search{
       width:100%;
-      height:100px;
-      background-color:rgba(17,127,209,0.1);
+      height:80px;
+      background-color:#E8E9EA;
       text-align: center;
-      line-height: 100px;
-      .search-input{
-        // width:200px;
-        // margin:50px auto;
-        font-size: 30px;
-        // 图片
-        img{
-          vertical-align:bottom;
-          width:200px;
-          height:100px;
+      // line-height: 100px;
+      .help-title{
+        float: left;
+        width: 180px;
+        height: 100%;
+        padding: 15px 0;
+        text-align: center;
+        line-height: 25px;
+        background: url('../../../src/assets/标题栏.png') center top no-repeat;
+        h4{
+          font-size: 26px;
         }
+      }
+      .serch-input{
+        margin-top: 22px;
+        width: 300px;
+        float: left;
+      }
+      .our-connection{
+        height: 30px;
+        float: right;
+        margin-right: 20px;
+        font-style: italic;
+        line-height: 30px;
+        margin-top: 25px;
+        font-size: 14px;
       }
     }
     // 问题中心

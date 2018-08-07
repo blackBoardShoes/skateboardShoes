@@ -40,7 +40,7 @@ export const charts = [
         // 位置
         center: ['60%', '50%'],
         // 圆环宽度
-        radius: ['50%', '70%'],
+        radius: ['40%', '60%'],
         // 防止标签重叠
         avoidLabelOverlap: false,
         // 显示的文字标签
@@ -324,7 +324,7 @@ export const charts = [
     grid: {
       left: '3%',
       right: 0,
-      bottom: '18%',
+      bottom: '20%',
       containLabel: true,
       show: true
     },
