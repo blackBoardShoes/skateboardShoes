@@ -273,7 +273,75 @@ export const appRouter = [
           navigator: false,
           role: [1, 2, 3]
         },
-        component: () => import('../../src/views/project/index.vue')
+        component: () => import('../../src/views/project/index/index.vue')
+      },
+      {
+        path: 'detail/:id',
+        name: 'project_detail',
+        meta: {
+          requireAuth: true,
+          title: '项目详情',
+          navigator: false,
+          role: [1, 2, 3]
+        },
+        component: () => import('../../src/views/project/detail/detail.vue'),
+        children: [
+          {
+            path: 'basic',
+            name: 'project_basic',
+            meta: {
+              requireAuth: true,
+              title: '基本信息',
+              navigator: false,
+              role: [1, 2, 3]
+            },
+            component: () => import('../../src/views/project/detail/case/basic.vue')
+          },
+          {
+            path: 'member',
+            name: 'project_member',
+            meta: {
+              requireAuth: true,
+              title: '项目成员',
+              navigator: false,
+              role: [1, 2, 3]
+            },
+            component: () => import('../../src/views/project/detail/case/member.vue')
+          },
+          {
+            path: 'patientCase',
+            name: 'project_patientCase',
+            meta: {
+              requireAuth: true,
+              title: '入组案例',
+              navigator: false,
+              role: [1, 2, 3]
+            },
+            component: () => import('../../src/views/project/detail/case/patientCase.vue')
+          },
+          {
+            path: 'projectStatistics',
+            name: 'project_projectStatistics',
+            meta: {
+              requireAuth: true,
+              title: '项目统计',
+              navigator: false,
+              role: [1, 2, 3]
+            },
+            component: () => import('../../src/views/project/detail/case/projectStatistics.vue')
+          },
+          {
+            path: 'projectExport',
+            name: 'project_projectExport',
+            meta: {
+              requireAuth: true,
+              title: '数据导出',
+              navigator: false,
+              role: [1, 2, 3]
+            },
+            component: () => import('../../src/views/project/detail/case/projectExport.vue')
+          }
+        ]
       }
     ]
   },

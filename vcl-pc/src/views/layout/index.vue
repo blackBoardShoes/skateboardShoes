@@ -421,7 +421,7 @@ export default {
           font-size: 13px;
         }
         .active, .link-menu:hover{
-          color:#fff;
+          color:$themeColor;
         }
       }
     }

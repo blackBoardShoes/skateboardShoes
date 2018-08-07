@@ -44,6 +44,12 @@ ul {
   background-color: rgba(125, 125, 125, 0.7);
 }
 
+.el-table__header-wrapper{
+  tr{
+    background-color: green !important;
+  }
+}
+
 // input[type="text"],
 // input[type="number"]{
 //   -webkit-appearance: none;

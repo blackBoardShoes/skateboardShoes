@@ -6,7 +6,9 @@
           <h5 class="light-text">Help Center</h5>
         </div>
         <div class="serch-input float-left">
-          <el-input size="medium" v-model="searchText" placeholder="请输入问题"  suffix-icon="ercp-icon-general-search"></el-input>
+          <el-input size="medium" v-model="searchText" placeholder="请输入问题" @keyup.enter.native="search">
+            <i class="ercp-icon-general-search el-input__icon" slot="suffix" @click="search"></i>
+          </el-input>
         </div>
         <div class="our-connection">
           <span class="light-text">0571-886554555 SUPPORT@MITIGENOMICS.COM</span>
@@ -198,6 +200,9 @@ export default {
   mounted () {
   },
   methods: {
+    search () {
+      this.$message.success(this.searchText)
+    },
     handleChange: function (activeNames) {
     },
     handSelect (index1, index2) {
@@ -246,6 +251,9 @@ export default {
         background: url('../../../src/assets/标题栏.png') center top no-repeat;
         h4{
           font-size: 26px;
+        }
+        h5{
+          font-weight: 300;
         }
       }
       .serch-input{
