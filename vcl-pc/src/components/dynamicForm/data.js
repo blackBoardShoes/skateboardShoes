@@ -6,7 +6,6 @@ export default {
     {
       id: 'liveRADIO',
       label: 'liveRADIOLabel',
-      value: '',
       type: 'RADIO',
       values: [
         {label: '是', value: '0'},
@@ -20,7 +19,6 @@ export default {
     {
       id: 'INTnumAdult',
       label: 'INTbelLabelLabel',
-      value: '',
       type: 'INT',
       validations: [
         { required: true, message: 'INTnumAdult', trigger: 'change' },
@@ -31,7 +29,6 @@ export default {
     {
       id: 'numAdultaINPUT',
       label: 'numALabel',
-      value: '',
       type: 'INPUT',
       validations: [
         { required: true, message: 'numAdultaINPUT', trigger: 'change' },
@@ -42,7 +39,6 @@ export default {
     {
       id: 'heartCHECKBOX',
       label: '我CHECKBOX',
-      value: '',
       type: 'CHECKBOX',
       values: [
         {label: 'A', value: '0'},
@@ -58,7 +54,6 @@ export default {
     {
       id: 'aCascader',
       label: '我帅么111',
-      value: '',
       type: 'CASCADER',
       children: [{
         value: '0',
@@ -88,7 +83,6 @@ export default {
     {
       id: 'heartAttackUnder53',
       label: '我帅么',
-      value: '',
       type: 'SWITCH'
     },
     // RADIO
@@ -159,7 +153,6 @@ export default {
     {
       id: 'heartAttackUnder51',
       label: '我SELECTSELECT',
-      value: '',
       type: 'SELECT',
       values: [
         {label: '是', value: '0'},
@@ -221,7 +214,6 @@ export default {
         {
           id: 'SELECT',
           label: 'SELECT',
-          value: '',
           type: 'SELECT',
           values: [
             {label: '是', value: '0'},
@@ -253,7 +245,6 @@ export default {
         {
           id: 'CHECKBOX',
           label: 'CHECKBOX',
-          value: '',
           type: 'CHECKBOX',
           values: [
             {label: 'A', value: '0'},
@@ -269,14 +260,12 @@ export default {
         {
           id: 'SWITCH',
           label: 'SWITCH',
-          value: '',
           type: 'SWITCH'
         },
         // RADIO
         {
           id: 'RADIO',
           label: 'RADIO',
-          value: '',
           type: 'RADIO',
           values: [
             {label: '是', value: '0'},

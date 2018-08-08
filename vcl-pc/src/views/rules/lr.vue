@@ -3,9 +3,12 @@
     <div class="formContent">
       <div class="formTopContent">
         <el-menu :default-active="activeIndexNav" class="formTopLeft" mode="horizontal" @select="handleSelect">
-          <el-menu-item index="sq">术前记录</el-menu-item>
-          <el-menu-item index="sz">术中记录</el-menu-item>
-          <el-menu-item index="sh">术后记录</el-menu-item>
+          <el-submenu index="2">
+            <template slot="title">手术记录</template>
+            <el-menu-item index="sq">术前记录</el-menu-item>
+            <el-menu-item index="sz">术中记录</el-menu-item>
+            <el-menu-item index="sh">术后记录</el-menu-item>
+          </el-submenu>
           <el-menu-item index="sf">随访记录</el-menu-item>
         </el-menu>
         <div class="formTopRight">
@@ -36,15 +39,15 @@
             </div>
           </div>
           <div class="rightContent">
-            <sx-min-form
-              v-if="!navArr[activeIndex].static"
-              v-model="fishData"
-              ref="thatForm"
-              :mozhu="allFish"></sx-min-form>
+            <div class="rightContentDynamic" v-if="!navArr[activeIndex].static">
+              <sx-min-form
+                v-model="fishData"
+                ref="thatForm"
+                :mozhu="allFish"></sx-min-form>
+            </div>
             <!-- static Form -->
             <div class="rightContentStatic">
-              <sx-operation-report v-model="aaa"></sx-operation-report>
-              {{aaa}}
+              <sx-operation-report v-model="aaa" v-if="navArr[activeIndex].static === 'ssbg'"></sx-operation-report>
             </div>
           </div>
         </div>
@@ -73,7 +76,7 @@ export default {
             {
               icon: 'ercp-icon-medicine-report',
               name: '手术报告',
-              static: true
+              static: 'ssbg'
             },
             {
               icon: 'ercp-icon-medicine-guidewire',
@@ -115,7 +118,8 @@ export default {
             },
             {
               icon: 'ercp-icon-medicine-guidewire',
-              name: '导丝'
+              name: '手术报告',
+              static: 'ssbg'
             }
           ]
         },
@@ -359,7 +363,7 @@ $marginW: 15px;
       .formTopLeft {
         background: $mainBackgroundColor;
         border: none;
-        /deep/ .el-menu-item, .el-submenu__title, .is-active {
+        /deep/ .el-menu-item, /deep/ .el-submenu__title, /deep/ .is-active {
           height: $full;
           line-height: 37px;
           background: transparent;
@@ -427,6 +431,9 @@ $marginW: 15px;
         }
         .rightContent {
           width: $full;
+          .rightContentDynamic {
+            padding: 25px;
+          }
           .rightContentStatic {
           }
         }

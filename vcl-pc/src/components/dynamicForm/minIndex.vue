@@ -65,6 +65,7 @@
                 </el-date-picker>
                 <!-- value-format="yyyy-MM-dd/HH:mm:ss" -->
                 <el-cascader
+                  expand-trigger="hover"
                   :disabled="items.disabled"
                   :placeholder="items.placeholder"
                   clearable filterable
@@ -79,7 +80,7 @@
                     <el-button @click="onEval(items)">计算</el-button>
                   </div>
                 </div>
-                <div v-if="items.type === 'TABLE'" style="max-width: 650px;width:100%">
+                <div v-if="items.type === 'TABLE'" style="width:100%">
                   <sx-table ref="sxtable" :tableData="items" @getData="getData"></sx-table>
                 </div>
                 <!-- 辅助创建 新增 编辑 -->

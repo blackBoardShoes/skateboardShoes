@@ -88,7 +88,7 @@
         <br>
         <div class="createContent">
           <!-- transferModel -->
-          <el-transfer
+          <!-- <el-transfer
             style="height:500px;"
             v-model="formModel['fields']"
             filterable
@@ -103,12 +103,47 @@
             :data="transferData">
             <div class="transfer-footer" slot="left-footer"></div>
             <el-button @click="openRelation" class="transfer-footer" slot="right-footer" size="mini">关联关系</el-button>
-          </el-transfer>
+          </el-transfer> -->
+          <sx-min-tree
+            ref="minTreeOne"
+            :title="'字段库'"
+            :mark="'leftChecked'"
+            v-model="transferData" showCheckbox style="min-width: 400px"
+            @handleCheckChange="handleCheckChange"></sx-min-tree>
+          <div style="display: flex;flex-grow: 0.1;flex-direction: column;align-self: center;justify-content: center;padding: 35px">
+            <div>
+              <el-button
+                :disabled="Boolean(!rightChecked.length)"
+                type="primary"
+                style="width:100%;" @click="deleteField" icon="el-icon-arrow-left">
+                删除字段</el-button>
+            </div>
+            <div style="margin-top: 15px;">
+              <el-button
+                :disabled="Boolean(!leftChecked.length)"
+                type="primary"
+                style="width:100%;" @click="addField" icon="el-icon-arrow-right">
+                增加字段</el-button>
+            </div>
+          </div>
+          <sx-min-tree
+            ref="minTreeTwo"
+            :title="'当前表'"
+            :mark="'rightChecked'"
+            v-model="formModel['fields']" draggable
+            showCheckbox style="min-width: 400px" @handleCheckChange="handleCheckChange">
+            <div slot="bottom" class="createContentBottom">
+              <el-button @click="openRelation" size="mini">关联关系</el-button>
+              <el-button @click="openRelation" size="mini">排版</el-button>
+              <el-button @click="previewDialogVisible = true" size="mini">预览</el-button>
+            </div>
+          </sx-min-tree>
         </div>
       </div>
     </div>
     <el-dialog
       title="关联关系"
+      append-to-body
       v-if="relationDialogVisible"
       :visible.sync="relationDialogVisible">
       <div style="width:100%;">
@@ -118,23 +153,37 @@
           </sx-relation-factory>
       </div>
     </el-dialog>
+    <!-- fullscreen -->
+    <el-dialog
+    width="60%"
+      title="预览"
+      append-to-body
+      v-if="previewDialogVisible"
+      :visible.sync="previewDialogVisible">
+      <div style="width:100%;">
+        <sx-min-form ref="thatFormPreview" v-model="previewFishData" :mozhu="formModel"></sx-min-form>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
 import sxFormCard from '@/components/allCard/formCard'
 import sxSegmentingLine from '@/components/segmentingLine'
 import sxRelationFactory from '@/components/dynamicForm/relationFactory'
+import sxMinTree from '@/components/dynamicForm/minTree'
 import data from '@/components/dynamicForm/data.js'
 export default {
   components: {
     sxFormCard,
     sxRelationFactory,
-    sxSegmentingLine
+    sxSegmentingLine,
+    sxMinTree
   },
   data () {
     return {
       mozhu: data,
       relationDialogVisible: false,
+      previewDialogVisible: false,
       needCreatedRelation: {},
       fewStepsTF: true,
       cardArr: [
@@ -248,22 +297,33 @@ export default {
       stageLookUpArr: ['术前', '术中', '术后', '随访'],
       // transferModel: [],
       transferData: [],
-      formModel: {}
+      formModel: {},
+      leftChecked: [],
+      rightChecked: [],
+      previewFishData: {}
       // relation: {}
     }
   },
   created () {
+    console.log(this.leftChecked, '---------')
     this.firstShow()
     this.init()
   },
   methods: {
     firstShow () {
       // transferData
+      // this.transferData = [
+      //   {
+      //     label: '字段库',
+      //     id: 'zdk',
+      //     childrens: [...this.mozhu.fields]
+      //   }
+      // ]
       this.transferData = [...this.mozhu.fields]
-      for (let i in this.mozhu.fields) {
-        this.transferData[i]['key'] = this.mozhu.fields[i].id
-        // this.$set(this.transferData[i], 'key', this.mozhu.fields[i].id)
-      }
+      // for (let i in this.mozhu.fields) {
+      // this.transferData[i]['key'] = this.mozhu.fields[i].id
+      // this.$set(this.transferData[i], 'key', this.mozhu.fields[i].id)
+      // }
       this.cardComplementShow()
     },
     cardComplementShow () {
@@ -345,12 +405,43 @@ export default {
       }
       return icon
     },
+    lookupFormInput () {
+      console.log('lookupFormInput')
+    },
+    handleCheckChange (getCheckedNodes, getCheckedKeys, mark) {
+      if (mark === 'leftChecked') {
+        this.leftChecked = getCheckedNodes
+      } else {
+        this.rightChecked = getCheckedNodes
+      }
+    },
+    deleteField () {
+      this.transferData = this.transferData.concat([...this.rightChecked])
+      for (let i in this.formModel.fields) {
+        for (let j in this.rightChecked) {
+          if (this.formModel.fields[i].id === this.rightChecked[j].id) {
+            this.$delete(this.formModel.fields, i)
+          }
+        }
+      }
+      this.rightChecked = []
+      this.$refs.minTreeTwo.clearCheckAll()
+    },
+    addField () {
+      this.$set(this.formModel, 'fields', this.formModel.fields.concat([...this.leftChecked]))
+      for (let i in this.transferData) {
+        for (let j in this.leftChecked) {
+          if (this.transferData[i].id === this.leftChecked[j].id) {
+            this.$delete(this.transferData, i)
+          }
+        }
+      }
+      this.leftChecked = []
+      this.$refs.minTreeOne.clearCheckAll()
+    },
     renderFunc (h, option) {
       let iconClass = this.iconJudgeChoose(option.type)
       return <span>&nbsp; <i class={ iconClass }></i> &nbsp; { option.label }</span>
-    },
-    lookupFormInput () {
-      console.log('lookupFormInput')
     },
     transferHandleChange (value, direction, movedKeys) {
       console.log(value)
@@ -371,13 +462,10 @@ export default {
         relation: this.formModel['relation'],
         subFields: newFields
       }
-      // this.needCreatedRelation = this.mozhu
       this.relationDialogVisible = true
     },
     getRealationData (data, id) {
       this.formModel['relation'] = Object.assign({}, data)
-      // this.relation = Object.assign({}, data)
-      // console.log(data, id)
       this.relationDialogVisible = false
     },
     addForm () {
@@ -400,6 +488,7 @@ export default {
               this.cardArr.push(this.formModel)
             }
             this.fewStepsTF = true
+            console.log(this.formModel)
           }
         } else {
           return false
@@ -511,6 +600,12 @@ $bottomH: 200px;
     .createFormContent {
       width: $full;
       height: $full;
+      .createContentBottom {
+        height: 30px;
+        padding: 10px;
+        padding-left: 15px;
+        border-top: 1px solid $lightBorderColor;
+      }
       .createTop {
         width: $full;
         height: $topH;
@@ -521,26 +616,27 @@ $bottomH: 200px;
       // .createTopForm {}
       .createContent {
         width: $full;
-        .el-transfer {
-          width: $full;
-          display: flex;
-          align-items: center;
-          /deep/ .el-transfer-panel {
-            flex-grow: 1;
-            height: 450px;
-          }
-          /deep/ .el-transfer-panel__body {
-            height: 450px;
-          }
-          /deep/ .el-transfer-panel__list.is-filterable {
-            height: calc(450px - 140px);
-          }
-        }
+        display: flex;
+        // .el-transfer {
+        //   width: $full;
+        //   display: flex;
+        //   align-items: center;
+        //   /deep/ .el-transfer-panel {
+        //     flex-grow: 1;
+        //     height: 450px;
+        //   }
+        //   /deep/ .el-transfer-panel__body {
+        //     height: 450px;
+        //   }
+        //   /deep/ .el-transfer-panel__list.is-filterable {
+        //     height: calc(450px - 140px);
+        //   }
+        // }
       }
-      .transfer-footer {
-        margin-left: 20px;
-        padding: 6px 5px;
-      }
+      // .transfer-footer {
+      //   margin-left: 20px;
+      //   padding: 6px 5px;
+      // }
     }
     .centerCenter {
       display: flex;
