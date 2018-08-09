@@ -7,18 +7,21 @@
           :label-position="labelPosition"
           :disabled="disabled"
           :class="{controlFormClass: inline}"
+          style="display: flex; flex-wrap: wrap;justify-content: space-between"
           ref='formModel' :model='formModel' size='mini'>
           <!-- 菜肴展示 -->
           <!--
             style="display: flex; flex-wrap: wrap;justify-content: space-between"
             :style="{display: 'flex', alignItems: 'flexStart', width: items.type === 'INPUT' ? '45%' : '100%'}"
+            style="display:flex;align-items:flex-start"
            -->
           <!-- <draggable v-model="newFields"> -->
             <!-- :rules="items.validations" -->
             <div
               v-if="tf(items)"
               v-for="(items, index) in newFields"
-              :key="index" style="display:flex;align-items:flex-start">
+              :style="{display: 'flex', alignItems: 'flexStart', width: coordinate[items.id] ? coordinate[items.id] + '%' : '100%'}"
+              :key="index">
               <div class="iconErrorClass" @click="deleteError(items)" v-if="disabled">
                 <i class="el-icon-error"  v-if="iconTf(items)"></i>
               </div>
@@ -164,7 +167,7 @@ export default {
     labelWidth: {
       type: String,
       default () {
-        return '130px'
+        return '120px'
       }
     },
     labelPosition: {
@@ -220,6 +223,7 @@ export default {
     return {
       newFields: 'fields' in this.mozhu ? [...this.mozhu['fields']] : [],
       relation: 'relation' in this.mozhu ? Object.assign({}, this.mozhu['relation']) : {},
+      coordinate: 'coordinate' in this.mozhu ? Object.assign({}, this.mozhu['coordinate']) : {},
       errors: 'errors' in this.mozhu ? Object.assign({}, this.mozhu['errors']) : {},
       comments: 'comments' in this.mozhu ? Object.assign({}, this.mozhu['comments']) : {},
       mozhuId: 'id' in this.mozhu ? this.mozhu['id'] : '',
@@ -268,6 +272,7 @@ export default {
     mozhu () {
       this.newFields = 'fields' in this.mozhu ? [...this.mozhu['fields']] : []
       this.relation = 'relation' in this.mozhu ? Object.assign({}, this.mozhu['relation']) : {}
+      this.coordinate = 'coordinate' in this.mozhu ? Object.assign({}, this.mozhu['coordinate']) : {}
       this.errors = 'errors' in this.mozhu ? Object.assign({}, this.mozhu['errors']) : {}
       this.comments = 'comments' in this.mozhu ? Object.assign({}, this.mozhu['comments']) : {}
       this.mozhuId = 'id' in this.mozhu ? this.mozhu['id'] : ''
@@ -571,8 +576,8 @@ export default {
     },
     // form element operation (计算)
     onEval (ev) {
-      console.log(this.formModel, ev.calculate)
-      this.formModel[ev.id] = this.calculate(this.formModel, ev.calculate)
+      console.log(this.formModel, ev.values)
+      this.formModel[ev.id] = this.calculate(this.formModel, ev.values)
       // this.formModel[ev.id] = this.calculate(this.formModel, this.compute[ev.id])  
     },
     cancelData () {
@@ -642,11 +647,16 @@ $full: 100%;
       text-align: center;
     }
     .el-radio, .el-checkbox {
-      min-width: 140px;
+      // min-width: 140px;
       margin: 5px;
       // margin-left: 15px;
       margin-right: 25px;
     }
+  }
+  /deep/ .el-form-item__label {
+    white-space:normal;
+    word-break:break-all;
+    word-wrap:break-word; 
   }
 }
 </style>

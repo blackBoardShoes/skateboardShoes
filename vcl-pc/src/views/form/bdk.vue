@@ -108,7 +108,7 @@
             ref="minTreeOne"
             :title="'字段库'"
             :mark="'leftChecked'"
-            v-model="transferData" showCheckbox style="min-width: 400px"
+            v-model="leftData" showCheckbox style="min-width: 400px"
             @handleCheckChange="handleCheckChange"></sx-min-tree>
           <div style="display: flex;flex-grow: 0.1;flex-direction: column;align-self: center;justify-content: center;padding: 35px">
             <div>
@@ -130,17 +130,18 @@
             ref="minTreeTwo"
             :title="'当前表'"
             :mark="'rightChecked'"
-            v-model="formModel['fields']" draggable
+            v-model="rightData" draggable
             showCheckbox style="min-width: 400px" @handleCheckChange="handleCheckChange">
             <div slot="bottom" class="createContentBottom">
               <el-button @click="openRelation" size="mini">关联关系</el-button>
-              <el-button @click="openRelation" size="mini">排版</el-button>
-              <el-button @click="previewDialogVisible = true" size="mini">预览</el-button>
+              <el-button @click="openCoordinate" size="mini">排版</el-button>
+              <el-button @click="openPreview" size="mini">预览</el-button>
             </div>
           </sx-min-tree>
         </div>
       </div>
     </div>
+    <!-- 关联关系-->
     <el-dialog
       title="关联关系"
       append-to-body
@@ -153,9 +154,21 @@
           </sx-relation-factory>
       </div>
     </el-dialog>
-    <!-- fullscreen -->
+    <!-- 排版-->
     <el-dialog
-    width="60%"
+      title="排版"
+      append-to-body
+      v-if="coordinateDialogVisible"
+      :visible.sync="coordinateDialogVisible">
+      <div style="width:100%;">
+        <sx-coordinate-factory
+        :needCreatedCoordinate="needCreatedCoordinate"
+        @getCoordinateData="getCoordinateData"></sx-coordinate-factory>
+      </div>
+    </el-dialog>
+    <!-- 预览-->
+    <el-dialog
+      width="1000px"
       title="预览"
       append-to-body
       v-if="previewDialogVisible"
@@ -170,12 +183,14 @@
 import sxFormCard from '@/components/allCard/formCard'
 import sxSegmentingLine from '@/components/segmentingLine'
 import sxRelationFactory from '@/components/dynamicForm/relationFactory'
+import sxCoordinateFactory from '../../components/dynamicForm/coordinateFactory'
 import sxMinTree from '@/components/dynamicForm/minTree'
 import data from '@/components/dynamicForm/data.js'
 export default {
   components: {
     sxFormCard,
     sxRelationFactory,
+    sxCoordinateFactory,
     sxSegmentingLine,
     sxMinTree
   },
@@ -184,6 +199,7 @@ export default {
       mozhu: data,
       relationDialogVisible: false,
       previewDialogVisible: false,
+      coordinateDialogVisible: false,
       needCreatedRelation: {},
       fewStepsTF: true,
       cardArr: [
@@ -296,10 +312,12 @@ export default {
       stagelookupData: ['术前', '术中', '术后', '随访'],
       stageLookUpArr: ['术前', '术中', '术后', '随访'],
       // transferModel: [],
-      transferData: [],
+      // transferData: [],
       formModel: {},
       leftChecked: [],
       rightChecked: [],
+      leftData: [],
+      rightData: [],
       previewFishData: {}
       // relation: {}
     }
@@ -319,7 +337,8 @@ export default {
       //     childrens: [...this.mozhu.fields]
       //   }
       // ]
-      this.transferData = [...this.mozhu.fields]
+      // this.transferData = [...this.mozhu.fields]
+      this.leftData = [...this.mozhu.fields]
       // for (let i in this.mozhu.fields) {
       // this.transferData[i]['key'] = this.mozhu.fields[i].id
       // this.$set(this.transferData[i], 'key', this.mozhu.fields[i].id)
@@ -335,6 +354,7 @@ export default {
     init () {
       this.$set(this.formModel, 'relation', {})
       this.$set(this.formModel, 'fields', [])
+      console.log(this.formModel)
       // this.$set(this.formModel, 'fields', this.formModel['fields'] ? this.formModel['fields'] : [])
       // this.$set(this.formModel, 'relation', this.formModel['relation'] ? this.formModel['relation'] : {})
       for (let i of this.createTopForm) {
@@ -343,8 +363,21 @@ export default {
     },
     // one
     templateEdit (value, index) {
-      console.log(value)
       this.formModel = Object.assign({}, value)
+      console.log(this.formModel, '-----')
+      if (this.formModel.fields) {
+        this.rightData = [...this.formModel.fields]
+        for (let i in this.leftData) {
+          for (let j in this.rightData) {
+            if (this.leftData[i].id === this.rightData[j].id) {
+              this.$delete(this.leftData, i)
+            }
+          }
+        }
+      } else {
+        this.rightData = []
+        this.leftData = [...this.mozhu.fields]
+      }
       this.cardIndex = index
       this.editOrAdd = true
       this.fewStepsTF = false
@@ -416,11 +449,11 @@ export default {
       }
     },
     deleteField () {
-      this.transferData = this.transferData.concat([...this.rightChecked])
-      for (let i in this.formModel.fields) {
+      this.leftData = this.leftData.concat([...this.rightChecked])
+      for (let i in this.rightData) {
         for (let j in this.rightChecked) {
-          if (this.formModel.fields[i].id === this.rightChecked[j].id) {
-            this.$delete(this.formModel.fields, i)
+          if (this.rightData[i].id === this.rightChecked[j].id) {
+            this.$delete(this.rightData, i)
           }
         }
       }
@@ -428,11 +461,11 @@ export default {
       this.$refs.minTreeTwo.clearCheckAll()
     },
     addField () {
-      this.$set(this.formModel, 'fields', this.formModel.fields.concat([...this.leftChecked]))
-      for (let i in this.transferData) {
+      this.rightData = this.rightData.concat([...this.leftChecked])
+      for (let i in this.leftData) {
         for (let j in this.leftChecked) {
-          if (this.transferData[i].id === this.leftChecked[j].id) {
-            this.$delete(this.transferData, i)
+          if (this.leftData[i].id === this.leftChecked[j].id) {
+            this.$delete(this.leftData, i)
           }
         }
       }
@@ -448,11 +481,12 @@ export default {
     },
     openRelation () {
       let newFields = []
+      this.$set(this.formModel, 'fields', [...this.rightData])
       this.formModel['fields'] = this.formModel['fields'] ? this.formModel['fields'] : []
       this.formModel['relation'] = this.formModel['relation'] ? this.formModel['relation'] : {}
       for (let i of this.formModel['fields']) {
         for (let j of this.mozhu['fields']) {
-          if (j.id === i) {
+          if (j.id === i.id) {
             newFields.push(j)
           }
         }
@@ -468,6 +502,23 @@ export default {
       this.formModel['relation'] = Object.assign({}, data)
       this.relationDialogVisible = false
     },
+    openCoordinate () {
+      this.$set(this.formModel, 'fields', [...this.rightData])
+      this.needCreatedCoordinate = {
+        coordinate: this.formModel['coordinate'],
+        subFields: this.formModel['fields']
+      }
+      this.coordinateDialogVisible = true
+    },
+    getCoordinateData (data, modelData) {
+      this.formModel['coordinate'] = Object.assign({}, data)
+      // this.$set(this.formModel, 'fields', [...modelData])
+      this.coordinateDialogVisible = false
+    },
+    openPreview () {
+      this.$set(this.formModel, 'fields', [...this.rightData])
+      this.previewDialogVisible = true
+    },
     addForm () {
       this.init()
       this.editOrAdd = false
@@ -481,14 +532,17 @@ export default {
     editAddForm () {
       this.$refs['formModel'].validate(valid => {
         if (valid) {
+          this.$set(this.formModel, 'fields', [...this.rightData])
           if (this.checkUpData()) {
+            console.log(this.formModel, '1------')
+            console.log(this.rightData, '2------')
             if (this.editOrAdd) {
               this.cardArr[this.cardIndex] = this.formModel
             } else {
               this.cardArr.push(this.formModel)
             }
             this.fewStepsTF = true
-            console.log(this.formModel)
+            console.log(this.formModel, 'this.formModel')
           }
         } else {
           return false
@@ -499,7 +553,7 @@ export default {
       let pattern = /[a-zA-Z][a-zA-Z0-9]*/g
       for (let i of this.formModel.fields) {
         for (let j of this.mozhu.fields) {
-          if (j.id === i & j.type === 'CALCULATE') {
+          if (j.id === i.id & j.type === 'CALCULATE') {
             let patternAfter = j.values.match(pattern) ? j.values.match(pattern) : []
             let notHaveLabelArr = []
             let notHaveArr = []
@@ -507,7 +561,7 @@ export default {
             for (let g of patternAfter) {
               b = false
               for (let z of this.formModel['fields']) {
-                if (z === g) {
+                if (z.id === g) {
                   b = true
                   break
                 }

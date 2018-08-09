@@ -5,7 +5,7 @@ export default {
     // radio
     {
       id: 'liveRADIO',
-      label: 'liveRADIOLabel',
+      label: '我我我我我我我',
       type: 'RADIO',
       values: [
         {label: '是', value: '0'},
