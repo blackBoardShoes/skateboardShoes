@@ -338,7 +338,6 @@ export default {
       //   }
       // ]
       // this.transferData = [...this.mozhu.fields]
-      this.leftData = [...this.mozhu.fields]
       // for (let i in this.mozhu.fields) {
       // this.transferData[i]['key'] = this.mozhu.fields[i].id
       // this.$set(this.transferData[i], 'key', this.mozhu.fields[i].id)
@@ -354,6 +353,8 @@ export default {
     init () {
       this.$set(this.formModel, 'relation', {})
       this.$set(this.formModel, 'fields', [])
+      this.leftData = [...this.mozhu.fields]
+      this.rightData = []
       console.log(this.formModel)
       // this.$set(this.formModel, 'fields', this.formModel['fields'] ? this.formModel['fields'] : [])
       // this.$set(this.formModel, 'relation', this.formModel['relation'] ? this.formModel['relation'] : {})

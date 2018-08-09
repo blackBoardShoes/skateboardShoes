@@ -577,7 +577,8 @@ export default {
     // form element operation (计算)
     onEval (ev) {
       console.log(this.formModel, ev.values)
-      this.formModel[ev.id] = this.calculate(this.formModel, ev.values)
+      this.$set(this.formModel, ev.id, this.calculate(this.formModel, ev.values))
+      // this.formModel[ev.id] = this.calculate(this.formModel, ev.values)
       // this.formModel[ev.id] = this.calculate(this.formModel, this.compute[ev.id])  
     },
     cancelData () {
