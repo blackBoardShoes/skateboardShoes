@@ -447,25 +447,17 @@ export default {
           break
         case 'CREATETABLE':
           what.type = 'TABLE'
-          what['sub_fields'] = []
+          what['subFields'] = []
           for (let i in what.createTable) {
             for (let j of this.repositoryData) {
               if (what.createTable[i] === j.label) {
-                what['sub_fields'].push(j)
+                what['subFields'].push(j)
               }
             }
           }
           break
         case 'CREATECALCULATE':
           what.type = 'CALCULATE'
-          // for (let i in what.CREATECALCULATE) {
-          //   for (let j of this.repositoryData) {
-          //     if (what.createTable[i] === j.label) {
-          //       what['sub_fields'].push(j)
-          //     }
-          //   }
-          // }
-          console.log(what, '---------------')
           break
       }
       return what

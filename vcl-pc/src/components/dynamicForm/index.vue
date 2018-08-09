@@ -484,7 +484,7 @@ export default {
         for (let i in this.repositoryData) {
           if (this.repositoryData[i].type === 'TABLE') {
             this.repositoryData[i]['createTable'] = []
-            for (let j of this.repositoryData[i].sub_fields) {
+            for (let j of this.repositoryData[i].subFields) {
               this.repositoryData[i]['createTable'].push(j.label)
             }
           }
@@ -665,11 +665,11 @@ export default {
           break
         case 'CREATETABLE':
           what.type = 'TABLE'
-          what['sub_fields'] = []
+          what['subFields'] = []
           for (let i in what.createTable) {
             for (let j of this.repositoryData) {
               if (what.createTable[i] === j.label) {
-                what['sub_fields'].push(j)
+                what['subFields'].push(j)
               }
             }
           }
@@ -679,7 +679,7 @@ export default {
           // for (let i in what.CREATECALCULATE) {
           //   for (let j of this.repositoryData) {
           //     if (what.createTable[i] === j.label) {
-          //       what['sub_fields'].push(j)
+          //       what['subFields'].push(j)
           //     }
           //   }
           // }
@@ -936,7 +936,7 @@ export default {
         this.needCreatedRelation = {
           id: this.mozhuId,
           relation: this.relation,
-          sub_fields: this.newFields
+          subFields: this.newFields
         }
       }
       // let fts = await fieldTests()

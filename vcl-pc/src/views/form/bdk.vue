@@ -392,46 +392,43 @@ export default {
       let icon = ''
       switch (type) {
         case 'INPUT':
-          icon = 'el-icon-info'
+          icon = 'ercp-icon-component-input'
           break
         case 'INT':
-          icon = 'el-icon-error'
+          icon = 'ercp-icon-component-integer'
           break
         case 'DOUBLE':
-          icon = 'el-icon-success'
+          icon = 'ercp-icon-component-integer'
           break
         case 'TEXTAREA':
-          icon = 'el-icon-warning'
+          icon = 'ercp-icon-component-textarea'
           break
         case 'RADIO':
-          icon = 'el-icon-question'
+          icon = 'ercp-icon-component--radio'
           break
         case 'CHECKBOX':
-          icon = 'el-icon-back'
-          break
-        case 'SWITCH':
-          icon = 'el-icon-arrow-left'
+          icon = 'ercp-icon-component-check'
           break
         case 'SELECT':
-          icon = 'el-icon-arrow-down'
+          icon = 'ercp-icon-component-checklist'
           break
         case 'SELECTMUTIPLE':
-          icon = 'el-icon-remove'
+          icon = 'ercp-icon-component-checklist'
           break
         case 'DATE':
-          icon = 'el-icon-circle-plus'
+          icon = 'ercp-icon-component-date'
           break
         case 'DATETIME':
-          icon = 'el-icon-rank'
+          icon = 'ercp-icon-component-time'
           break
         case 'CASCADER':
-          icon = 'el-icon-location'
+          icon = 'ercp-icon-component-cascade'
           break
         case 'CALCULATE':
-          icon = 'el-icon-menu'
+          icon = 'ercp-icon-component-compute'
           break
         case 'TABLE':
-          icon = 'el-icon-edit'
+          icon = 'ercp-icon-component-table'
           break
         default:
           icon = 'el-icon-info'
