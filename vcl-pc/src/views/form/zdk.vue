@@ -343,6 +343,7 @@ export default {
       this.$refs['thatFormPreview'].againData()
     },
     async editFish (row, index) {
+      this.thatFishData = {}
       this.fishNeedEditData = { index: index, row: row }
       this.fishData = this.auxiliaryType(Object.assign({}, row))
       let rowData = this.auxiliaryType(Object.assign({}, row))

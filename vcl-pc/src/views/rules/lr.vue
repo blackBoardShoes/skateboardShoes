@@ -3,13 +3,13 @@
     <div class="formContent">
       <div class="formTopContent">
         <el-menu :default-active="activeIndexNav" class="formTopLeft" mode="horizontal" @select="handleSelect">
-          <el-submenu index="2">
-            <template slot="title">手术记录</template>
-            <el-menu-item index="sq">术前记录</el-menu-item>
-            <el-menu-item index="sz">术中记录</el-menu-item>
-            <el-menu-item index="sh">术后记录</el-menu-item>
-          </el-submenu>
-          <el-menu-item index="sf">随访记录</el-menu-item>
+          <template v-for="(item, index) in allArr">
+            <el-submenu :index="item.value" :key="index" v-if="item.submenu" :show-timeout="100">
+              <template slot="title">{{item.label}}</template>
+              <el-menu-item v-for="(x, i) in item.submenu" :index="x.value" :key="i">{{x.label}}</el-menu-item>
+            </el-submenu>
+            <el-menu-item :key="index" :index="item.value" v-else>{{item.label}}</el-menu-item>
+          </template>
         </el-menu>
         <div class="formTopRight">
           患者: <span style="color: #117FD1;opacity: 0.9">{{patientInfo.name}}</span> ({{patientInfo.sex}}) 住院编号：{{patientInfo.bh}}
@@ -19,7 +19,7 @@
         <sx-no-route-control :navArr="navArr" :activeIndex="activeIndex" @emitClick="emitClick"></sx-no-route-control>
         <div class="formContentRight">
           <div class="rightContentControl">
-            <div class="rightContentControlName">{{navArr[activeIndex].name}}</div>
+            <div class="rightContentControlName">{{navArr[activeIndex] ? navArr[activeIndex].name : ''}}</div>
             <div class="rightContentControlBtn">
               <div @click="generalSubmit">
                 <i class="ercp-icon-general-submit"></i>&nbsp;
@@ -27,9 +27,6 @@
               <div @click="generalDelete" style="color: #FF455B;" >
                 <i class="ercp-icon-general-delete"></i>&nbsp;
                 删除</div>
-              <div @click="generalStorage">
-                <i class="ercp-icon-general-storage"></i>&nbsp;
-                暂存</div>
               <div @click="generalSave">
                 <i class="ercp-icon-general-save"></i>&nbsp;
                 保存</div>
@@ -39,15 +36,16 @@
             </div>
           </div>
           <div class="rightContent">
-            <div class="rightContentDynamic" v-if="!navArr[activeIndex].static">
+            <div class="rightContentDynamic" v-if="!(navArr[activeIndex] ? navArr[activeIndex].static : false)">
               <sx-min-form
                 v-model="fishData"
                 ref="thatForm"
-                :mozhu="allFish"></sx-min-form>
+                :mozhu="allFish"
+                @notVerifying="notVerifying"
+                @consoleData="consoleData"></sx-min-form>
             </div>
-            <!-- static Form -->
             <div class="rightContentStatic">
-              <sx-operation-report v-model="aaa" v-if="navArr[activeIndex].static === 'ssbg'"></sx-operation-report>
+              <sx-operation-report v-model="aaa" v-if="navArr[activeIndex] ? navArr[activeIndex].static === 'ssbg' : false"></sx-operation-report>
             </div>
           </div>
         </div>
@@ -69,9 +67,9 @@ export default {
       // 中间数组
       navArr: [],
       allArr: {
-        sq: {
-          label: '术前记录',
-          value: 'sq',
+        zyjb: {
+          label: '住院基本情况',
+          value: 'zyjb',
           subFields: [
             {
               icon: 'ercp-icon-medicine-report',
@@ -85,46 +83,102 @@ export default {
             }
           ]
         },
-        sz: {
-          label: '术前记录',
-          value: 'sq',
-          subFields: [
-            {
-              icon: 'ercp-icon-medicine-report',
-              name: '手术报告'
+        ssjl: {
+          label: '手术记录',
+          value: 'ssjl',
+          submenu: {
+            sq: {
+              label: '术前记录',
+              value: 'sq',
+              subFields: [
+                {
+                  icon: 'ercp-icon-medicine-report',
+                  name: '手术报告'
+                },
+                {
+                  icon: 'ercp-icon-medicine-guidewire',
+                  name: '导丝'
+                },
+                {
+                  icon: 'ercp-icon-medicine-guidewire',
+                  name: '导丝',
+                  disabled: true
+                }
+              ]
             },
-            {
-              icon: 'ercp-icon-medicine-guidewire',
-              name: '导丝'
+            sz: {
+              label: '术中记录',
+              value: 'sz',
+              subFields: [
+                {
+                  icon: 'ercp-icon-medicine-report',
+                  name: '手术报告'
+                },
+                {
+                  icon: 'ercp-icon-medicine-guidewire',
+                  name: '导丝'
+                },
+                {
+                  icon: 'ercp-icon-medicine-guidewire',
+                  name: '导丝',
+                  disabled: true
+                }
+              ]
             },
-            {
-              icon: 'ercp-icon-medicine-guidewire',
-              name: '导丝',
-              disabled: true
+            sh: {
+              label: '术后记录',
+              value: 'sh',
+              subFields: [
+                {
+                  icon: 'ercp-icon-medicine-report',
+                  name: '手术报告'
+                },
+                {
+                  icon: 'ercp-icon-medicine-cannula',
+                  name: '插管'
+                },
+                {
+                  icon: 'ercp-icon-medicine-guidewire',
+                  name: '手术报告',
+                  static: 'ssbg'
+                }
+              ]
             }
-          ]
+          }
         },
-        sh: {
-          label: '术后记录',
-          value: 'sh',
+        cyzh: {
+          label: '出院综合评估',
+          value: 'cyzh',
           subFields: [
-            {
-              icon: 'ercp-icon-medicine-report',
-              name: '手术报告'
-            },
             {
               icon: 'ercp-icon-medicine-cannula',
               name: '插管'
             },
             {
               icon: 'ercp-icon-medicine-guidewire',
+              name: '导丝',
+              disabled: true
+            }
+          ]
+        },
+        zyjb1: {
+          label: '住院基本情况',
+          value: 'zyjb1',
+          subFields: [
+            {
+              icon: 'ercp-icon-medicine-report',
               name: '手术报告',
               static: 'ssbg'
+            },
+            {
+              icon: 'ercp-icon-medicine-guidewire',
+              name: '导丝',
+              disabled: true
             }
           ]
         },
         sf: {
-          label: '术后记录',
+          label: '随访记录',
           value: 'sf',
           subFields: [
             {
@@ -311,11 +365,27 @@ export default {
     if (this.$route.params.data) {
       this.patientInfo = JSON.parse(this.$route.params.data)
     }
-    this.init()
+    this.navArrAssignment()
   },
   methods: {
-    init () {
-      this.navArr = this.allArr[this.activeIndexNav].subFields
+    init () {},
+    navArrAssignment () {
+      let a = (_) => {
+        for (let i in _) {
+          if (_[i].value === this.activeIndexNav) {
+            return _[i]
+          } else {
+            if ('submenu' in _[i]) {
+              if (a(_[i].submenu)) {
+                return a(_[i].submenu)
+              }
+            }
+          }
+        }
+      }
+      let b = a(this.allArr)
+      console.log(b, 'bbbbbbbbbbbbbbbbbbbbbbbb')
+      this.navArr = b ? b.subFields : []
     },
     emitClick (data = {}) {
       this.activeIndex = data['index']
@@ -324,16 +394,26 @@ export default {
     handleSelect (key, keyPath) {
       console.log(key, keyPath)
       this.activeIndexNav = key
-      this.navArr = this.allArr[key].subFields
+      this.navArrAssignment()
+      // this.navArr = this.allArr[key].subFields
     },
     generalSubmit () {
       console.log(this.navArr)
       console.log(this.activeIndex)
       console.log(this.activeIndexNav)
+      this.$refs.thatForm.consoleData()
     },
     generalDelete () {},
     generalStorage () {},
-    generalSave () {},
+    generalSave () {
+      this.$refs.thatForm.notVerifying()
+    },
+    notVerifying (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
+      console.log(mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate)
+    },
+    consoleData (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
+      console.log(mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate)
+    },
     generalBack () {
       this.$router.go(-1)
     }
@@ -361,6 +441,7 @@ $marginW: 15px;
       justify-content: space-between;
       background: $mainBackgroundColor;
       .formTopLeft {
+        display: flex;
         background: $mainBackgroundColor;
         border: none;
         /deep/ .el-menu-item, /deep/ .el-submenu__title, /deep/ .is-active {

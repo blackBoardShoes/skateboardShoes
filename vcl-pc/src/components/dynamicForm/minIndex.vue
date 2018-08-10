@@ -120,6 +120,7 @@
         </el-form>
         <div class="formContentLeftControl">
           <el-button v-if="cancel" @click="cancelData" type="info">取消</el-button>
+          <el-button v-if="verifyingTF" @click="notVerifying" type="primary" plain>无验证确定</el-button>
           <el-button @click="consoleData" v-if="submitTF" type="primary">确定</el-button>
         </div>
       </div>
@@ -201,6 +202,12 @@ export default {
       }
     },
     cancel: {
+      type: Boolean,
+      default () {
+        return false
+      }
+    },
+    verifyingTF: {
       type: Boolean,
       default () {
         return false
@@ -470,6 +477,10 @@ export default {
       }
       return idGroup
     },
+    notVerifying () {
+      let idGroup = this.formatData()
+      this.$emit('notVerifying', this.mozhuId, this.formModel, this.relation, this.newFields, idGroup, this.errors, this.comments, this.coordinate)
+    },
     consoleData () {
       this.$nextTick(() => {
         if (this.$refs['sxtable']) {
@@ -481,7 +492,7 @@ export default {
       this.$refs['formModel'].validate(valid => {
         if (valid) {
           let idGroup = this.formatData()
-          this.$emit('consoleData', this.mozhuId, this.formModel, this.relation, this.newFields, idGroup, this.errors, this.comments)
+          this.$emit('consoleData', this.mozhuId, this.formModel, this.relation, this.newFields, idGroup, this.errors, this.comments, this.coordinate)
         } else {
           console.log('error submit!!')
           return false
@@ -558,7 +569,7 @@ export default {
         this.evaluateDialogVisible = true
       }
     },
-    createEvaluate (mozhuId, formModel, relation, newFields, idGroup, errors, comments) {
+    createEvaluate (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
       this.errors[this.evaluateRowData.id] = true
       this.comments[this.evaluateRowData.id] = formModel
       // this.$set(this.errors, this.evaluateRowData.id, true)
