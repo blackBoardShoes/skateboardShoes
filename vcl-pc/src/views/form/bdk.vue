@@ -352,6 +352,7 @@ export default {
     },
     init () {
       this.$set(this.formModel, 'relation', {})
+      this.$set(this.formModel, 'coordinate', {})
       this.$set(this.formModel, 'fields', [])
       this.leftData = [...this.mozhu.fields]
       this.rightData = []

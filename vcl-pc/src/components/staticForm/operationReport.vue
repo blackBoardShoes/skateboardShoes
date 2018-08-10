@@ -76,7 +76,7 @@
         </el-collapse-item>
       </el-collapse>
     </el-form>
-    <imgView></imgView>
+    <imgView :imgArr="imgArr"></imgView>
   </div>
 </template>
 
@@ -94,6 +94,14 @@ export default {
   data () {
     return {
       activeNames: ['1', '2'],
+      imgArr: [
+        {
+          source: require('../../../src/assets/xbx.jpg'),
+          thumbnail: require('../../../src/assets/xbx.jpg'),
+          checked: false,
+          information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
+        }
+      ],
       formModel: {
         operationCheckBox: [],
         operationSelect: [],

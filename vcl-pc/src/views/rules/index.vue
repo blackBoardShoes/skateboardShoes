@@ -253,10 +253,13 @@ export default {
             this.$router.push({ name: 'lr', params: { data: JSON.stringify(row) } })
             break
           case '待审核':
+            this.$router.push({ name: 'sh', params: { data: JSON.stringify(row) } })
             break
           case '待修正':
+            this.$router.push({ name: 'xz', params: { data: JSON.stringify(row) } })
             break
           case '待随访':
+            this.$router.push({ name: 'sf', params: { data: JSON.stringify(row) } })
             break
         }
       }
