@@ -94,6 +94,11 @@ export default {
       }
     }
   },
+  watch: {
+    value () {
+      this.listData = this.value
+    }
+  },
   data () {
     return {
       checkedClass: null,
@@ -126,7 +131,6 @@ export default {
       return Object.values(item).toString().includes(this.lookupData)
     },
     filterItem (item) {
-      console.log(this.checkList)
       return this.checkList.includes(item.type)
     },
     oneToOneText (type) {

@@ -283,6 +283,7 @@ export default {
       this.errors = 'errors' in this.mozhu ? Object.assign({}, this.mozhu['errors']) : {}
       this.comments = 'comments' in this.mozhu ? Object.assign({}, this.mozhu['comments']) : {}
       this.mozhuId = 'id' in this.mozhu ? this.mozhu['id'] : ''
+      // this.init()
     },
     momo () {
       this.repositoryData = this.momo.length ? [...this.momo] : []
@@ -291,6 +292,7 @@ export default {
   },
   created () {
     this.init()
+    console.log(this.newFields)
   },
   methods: {
     firstShow () {
@@ -320,6 +322,7 @@ export default {
           case 'TREE':
           case 'LAYERTREE':
           case 'CREATETABLE':
+          case 'SELECT':
           case 'SELECTMUTIPLE':
             if (!this.formModel[i.id]) {
               if ('value' in i) {
@@ -368,6 +371,7 @@ export default {
           }
         }
       }
+      console.log(this.formModel, 'this.formModel')
       this.firstShow()
     },
     // form element relation (dynamic binding) -> relation
@@ -475,6 +479,16 @@ export default {
       for (let i of this.newFields) {
         idGroup.push({id: i.id})
       }
+      // switch (this.formModel.type) {
+      //   case 'RADIO':
+      //   case 'CHECKBOX':
+      //   case 'SELECTMUTIPLE':
+      //     this.$set(this.formModel, 'values', this.formModel.layerTree)
+      //     break
+      //   case 'CASCADER':
+      //     this.$set(this.formModel, 'values', this.formModel.tree)
+      //     break
+      // }
       return idGroup
     },
     notVerifying () {
@@ -608,6 +622,8 @@ export default {
     },
     againData () {
       this.newFields = this.mozhu['fields']
+      // this.init()
+      console.log(this.newFields, 'this.newFieldsthis.newFieldsthis.newFields')
     },
     // table element data -> current
     getData (data) {

@@ -64,6 +64,11 @@ export default {
       type: Array
     }
   },
+  watch: {
+    value () {
+      this.treeData = [...this.value]
+    }
+  },
   data () {
     return {
       treeData: this.value,
