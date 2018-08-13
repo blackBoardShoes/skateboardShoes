@@ -215,7 +215,7 @@ export default {
 }
 </script>
 <style lang="scss" rel="stylesheet/scss" scoped>
-  @import '../../assets/css/variable';
+  @import '../../../assets/css/variable';
   .question{
     text-indent:2.5em;
     font-size:14px;
@@ -248,7 +248,7 @@ export default {
         padding: 15px 0;
         text-align: center;
         line-height: 25px;
-        background: url('../../../src/assets/标题栏.png') center top no-repeat;
+        background: url('../../../../src/assets/images/标题栏.png') center top no-repeat;
         h4{
           font-size: 26px;
         }

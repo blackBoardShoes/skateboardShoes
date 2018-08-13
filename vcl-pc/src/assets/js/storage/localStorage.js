@@ -15,8 +15,5 @@ export default {
   },
   clear () {
     localStorage.clear()
-  },
-  keys () {
-    return localStorage.keys()
   }
 }

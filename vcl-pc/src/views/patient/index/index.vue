@@ -32,7 +32,7 @@
           </div>
           <div class="refresh float-right">
             <el-button type="primary" @click="refresh">更新患者</el-button>
-            <el-button type="primary" @click="add">添加患者</el-button>
+            <el-button type="primary" @click="add">新增患者</el-button>
           </div>
         </div>
         <!-- 患者列表 -->
@@ -44,27 +44,27 @@
             fit
             height="100%">
             <el-table-column
+              prop="hospitalNumber"
+              align="center"
+              label="住院号"
+              :width="120">
+            </el-table-column>
+            <el-table-column
               prop="name"
               align="center"
-              label="姓名"
-              :width="80">
+              label="患者姓名"
+              :width="120">
             </el-table-column>
             <el-table-column
               prop="gender"
               align="center"
-              label="性别"
-              :width="60">
+              label="患者性别"
+              :width="120">
             </el-table-column>
             <el-table-column
               prop="nation"
               align="center"
-              label="民族"
-              :width="80">
-            </el-table-column>
-            <el-table-column
-              prop="hospitalNumber"
-              align="center"
-              label="住院编号"
+              label="患者民族"
               :width="120">
             </el-table-column>
             <!-- <el-table-column
@@ -110,8 +110,13 @@
           </el-pagination>
         </div>
       </div>
-      <el-dialog title="添加患者" :visible.sync="dialogTableVisible" :modal="true" append-to-body>
+      <el-dialog title="新增患者" :visible.sync="dialogTableVisible" :modal="true" append-to-body>
         <el-form ref="basicForm" :rules="rules" :model="basicInfo" label-position="right" label-width="100px">
+          <el-col :span="24">
+            <el-form-item label="住院号:" prop="hospitalNumber">
+              <el-input v-model="basicInfo.hospitalNumber" size="small"></el-input>
+            </el-form-item>
+          </el-col>
           <el-col :span="24">
             <el-form-item label="患者姓名:" prop="name">
               <el-input v-model="basicInfo.name" size="small"></el-input>
@@ -126,13 +131,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="患者名族:" prop="nation">
+            <el-form-item label="患者民族:" prop="nation">
               <el-input v-model="basicInfo.nation" size="small"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="住院编号:" prop="hospitalNumber">
-              <el-input v-model="basicInfo.hospitalNumber" size="small"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -155,7 +155,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item prop="permanentAddress" label="">
+            <el-form-item prop="permanentAddress" label="街道地址">
               <el-input v-model="basicInfo.permanentAddress"></el-input>
             </el-form-item>
           </el-col>
@@ -169,8 +169,8 @@
   </div>
 </template>
 <script>
-import {addressData} from '../../data/address/addressData'
-import {charts} from '../../data/chartTemplates/chart'
+import {addressData} from '../../../data/address/addressData'
+import {charts} from '../../../data/chartTemplates/chart'
 export default {
   name: 'patient_index',
   data () {
@@ -178,34 +178,34 @@ export default {
       patientAccount: 3515,
       tableData: [
         {
-          name: '一只鱼', gender: '男', nation: '汉族', hospitalNumber: '3213213213', identity: '3607311747657462637', concatNumber: '15558175716', permanentAddress: '甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第一家', operate: '查看'
+          name: '王小虎', gender: '男', nation: '汉族', hospitalNumber: '3213213213', identity: '3607311747657462637', concatNumber: '15558175716', permanentAddress: '甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第一家15号左边第一家', operate: '查看'
         },
         {
-          name: '一只鱼', gender: '男', nation: '汉族', hospitalNumber: '3213213213', identity: '3607311747657462637', concatNumber: '15558175716', permanentAddress: '甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第二家', operate: '查看'
+          name: '王小虎', gender: '男', nation: '汉族', hospitalNumber: '3213213213', identity: '3607311747657462637', concatNumber: '15558175716', permanentAddress: '甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第二家', operate: '查看'
         },
         {
-          name: '一只鱼', gender: '男', nation: '汉族', hospitalNumber: '3213213213', identity: '3607311747657462637', concatNumber: '15558175716', permanentAddress: '甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第三家', operate: '查看'
+          name: '王小虎', gender: '男', nation: '汉族', hospitalNumber: '3213213213', identity: '3607311747657462637', concatNumber: '15558175716', permanentAddress: '甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第三家', operate: '查看'
         },
         {
-          name: '一只鱼', gender: '男', nation: '汉族', hospitalNumber: '3213213213', identity: '3607311747657462637', concatNumber: '15558175716', permanentAddress: '甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第四家', operate: '查看'
+          name: '王小虎', gender: '男', nation: '汉族', hospitalNumber: '3213213213', identity: '3607311747657462637', concatNumber: '15558175716', permanentAddress: '甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第四家', operate: '查看'
         },
         {
-          name: '一只鱼', gender: '男', nation: '汉族', hospitalNumber: '3213213213', identity: '3607311747657462637', concatNumber: '15558175716', permanentAddress: '甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第五家', operate: '查看'
+          name: '王小虎', gender: '男', nation: '汉族', hospitalNumber: '3213213213', identity: '3607311747657462637', concatNumber: '15558175716', permanentAddress: '甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第五家', operate: '查看'
         },
         {
-          name: '一只鱼', gender: '男', nation: '汉族', hospitalNumber: '3213213213', identity: '3607311747657462637', concatNumber: '15558175716', permanentAddress: '甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第一家', operate: '查看'
+          name: '王小虎', gender: '男', nation: '汉族', hospitalNumber: '3213213213', identity: '3607311747657462637', concatNumber: '15558175716', permanentAddress: '甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第一家', operate: '查看'
         },
         {
-          name: '一只鱼', gender: '男', nation: '汉族', hospitalNumber: '3213213213', identity: '3607311747657462637', concatNumber: '15558175716', permanentAddress: '甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第二家', operate: '查看'
+          name: '王小虎', gender: '男', nation: '汉族', hospitalNumber: '3213213213', identity: '3607311747657462637', concatNumber: '15558175716', permanentAddress: '甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第二家', operate: '查看'
         },
         {
-          name: '一只鱼', gender: '男', nation: '汉族', hospitalNumber: '3213213213', identity: '3607311747657462637', concatNumber: '15558175716', permanentAddress: '甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第三家', operate: '查看'
+          name: '王小虎', gender: '男', nation: '汉族', hospitalNumber: '3213213213', identity: '3607311747657462637', concatNumber: '15558175716', permanentAddress: '甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第三家', operate: '查看'
         },
         {
-          name: '一只鱼', gender: '男', nation: '汉族', hospitalNumber: '3213213213', identity: '3607311747657462637', concatNumber: '15558175716', permanentAddress: '甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第四家', operate: '查看'
+          name: '王小虎', gender: '男', nation: '汉族', hospitalNumber: '3213213213', identity: '3607311747657462637', concatNumber: '15558175716', permanentAddress: '甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第四家', operate: '查看'
         },
         {
-          name: '一只鱼', gender: '男', nation: '汉族', hospitalNumber: '3213213213', identity: '3607311747657462637', concatNumber: '15558175716', permanentAddress: '甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第五家', operate: '查看'
+          name: '王小虎', gender: '男', nation: '汉族', hospitalNumber: '3213213213', identity: '3607311747657462637', concatNumber: '15558175716', permanentAddress: '甘肃省武威市凉州区武南镇小东河村毛家山组15号左边第五家', operate: '查看'
         }
       ],
       searchText: '',

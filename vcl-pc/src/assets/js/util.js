@@ -27,7 +27,7 @@ export function setMenu (routers, code) {
       })
       let obj = {
         title: INDEX.meta.title,
-        path: INDEX.meta.title === '首页' ? '/home' : INDEX.path,
+        path: INDEX.meta.title === '系统首页' ? '/home' : INDEX.path,
         icon: `ercp-icon-${INDEX.meta.icon}`,
         children: children
       }
@@ -41,6 +41,7 @@ export function setMenu (routers, code) {
 export function getCurrentPath (vm, router) {
   let currentPathArr = []
   if (router.name !== 'home') {
+    console.log(router)
     if (router.name.indexOf('_index') > -1) {
       currentPathArr.push({
         title: router.meta.title,

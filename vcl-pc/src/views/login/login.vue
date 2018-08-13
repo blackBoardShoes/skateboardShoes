@@ -148,7 +148,7 @@ export default {
     right: 0;
     top: 0;
     bottom: 0;
-    background-image:url('../../assets/login-bg.png');
+    background-image:url('../../assets/images/login-bg.png');
     background-size: cover;
     .middle-wrapper {
       position: fixed;
@@ -172,7 +172,7 @@ export default {
           left: -10px;
           height: 490px;
           width: 500px;
-          background-image: url('../../assets/登录框.png');
+          background-image: url('../../assets/images/登录框.png');
           background-repeat: no-repeat;
           .system-title{
             height: 40px;
