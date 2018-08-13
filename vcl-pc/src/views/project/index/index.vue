@@ -37,8 +37,12 @@
         <el-table
           :data="selfBuild === true ? tableData : tableData2"
           style="width: 100%"
-          size="small"
+          size="medium"
           fit>
+          <el-table-column
+            type="index"
+            width="80">
+          </el-table-column>
           <el-table-column
             prop="name"
             align="center"
@@ -60,7 +64,7 @@
             prop="members"
             align="center"
             label="项目成员数"
-            width="80">
+            width="100">
           </el-table-column>
           <el-table-column
             prop="status"
@@ -87,6 +91,7 @@
             prop="operate"
             align="center"
             label="操作"
+            width="220"
             fixed="right">
             <template slot-scope="scope">
               <el-button type="primary" size="small" plain @click="viewProject(scope.row)">查看</el-button>
@@ -99,22 +104,22 @@
       </div>
     </div>
     <el-dialog title="添加项目" :visible.sync="dialogTableVisible" :modal="true" append-to-body>
-        <el-form ref="addProject" :rules="rules" :model="addedProject" label-position="right" label-width="100px">
-          <el-form-item label="项目名称:" prop="name">
-            <el-input v-model="addedProject.name" size="small"></el-input>
-          </el-form-item>
-          <el-form-item label="项目简称:" prop="abbreviation">
-            <el-input v-model="addedProject.abbreviation" size="small"></el-input>
-          </el-form-item>
-          <el-form-item label="项目负责人:" prop="leader">
-            <el-input v-model="addedProject.leader" size="small"></el-input>
-          </el-form-item>
-        </el-form>
-        <div class="operate align-center">
-          <el-button type="info" @click="cancel">取消</el-button>
-          <el-button type="primary" @click="confirmAdd">确定</el-button>
-        </div>
-      </el-dialog>
+      <el-form ref="addProject" :rules="rules" :model="addedProject" label-position="right" label-width="100px">
+        <el-form-item label="项目名称:" prop="name">
+          <el-input v-model="addedProject.name" size="small"></el-input>
+        </el-form-item>
+        <el-form-item label="项目简称:" prop="abbreviation">
+          <el-input v-model="addedProject.abbreviation" size="small"></el-input>
+        </el-form-item>
+        <el-form-item label="项目负责:" prop="leader">
+          <el-input v-model="addedProject.leader" size="small"></el-input>
+        </el-form-item>
+      </el-form>
+      <div class="operate align-center">
+        <el-button type="info" @click="cancel">取消</el-button>
+        <el-button type="primary" @click="confirmAdd">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -128,7 +133,7 @@ export default {
         {
           name: 'ERCP患者用药对出院状态的影响',
           abbreviation: '用药影响评估',
-          leader: '上官玛利亚',
+          leader: '王小虎',
           members: 8,
           status: 0,
           patients: 108,
@@ -138,7 +143,7 @@ export default {
         {
           name: 'ERCP患者用药对出院状态的影响',
           abbreviation: '用药影响评估',
-          leader: '上官玛利亚',
+          leader: '王小虎',
           members: 8,
           status: 1,
           patients: 108,
@@ -148,7 +153,7 @@ export default {
         {
           name: 'ERCP患者用药对出院状态的影响',
           abbreviation: '用药影响评估',
-          leader: '上官玛利亚',
+          leader: '王小虎',
           members: 8,
           status: 0,
           patients: 108,
@@ -160,7 +165,7 @@ export default {
         {
           name: 'ERCP患者用药对出院状态的影响',
           abbreviation: '用药影响评估',
-          leader: '上官玛利亚',
+          leader: '王小虎',
           members: 8,
           status: 0,
           patients: 108,
@@ -170,7 +175,7 @@ export default {
         {
           name: 'ERCP患者用药对出院状态的影响',
           abbreviation: '用药影响评估',
-          leader: '上官玛利亚',
+          leader: '王小虎',
           members: 8,
           status: 0,
           patients: 108,
@@ -251,7 +256,7 @@ export default {
         padding: 30px 0;
         text-align: center;
         line-height: 25px;
-        background: url('../../../assets/标题栏.png') center center no-repeat;
+        background: url('../../../assets/images/标题栏.png') center center no-repeat;
         h4{
           font-size: 26px;
         }
@@ -273,6 +278,7 @@ export default {
           text-align: center;
         }
         .right-text{
+          font-size:14px;
           height: 80px;
           width: 80px;
           box-sizing: border-box;

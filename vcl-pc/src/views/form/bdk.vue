@@ -7,17 +7,16 @@
             <div class="formTopLeftLeft">
               <!-- @blur="lookupFormInput" -->
               <el-input
-                @keyup.enter.native="lookupFormInput"
+                @keyup.enter.native="lookupChange"
                 size="small"
                 placeholder="检索表单"
-                v-model="lookupFormInputData"
+                v-model="lookupData"
                 clearable
                 prefix-icon="el-icon-search"></el-input>
             </div>
             <div class="formTopLeftRight">
                 阶段筛选: &nbsp;&nbsp;&nbsp;&nbsp;
                 <el-checkbox-group
-                  class=""
                   v-model="stagelookupData">
                   <el-checkbox v-for="(item, index) in stageLookUpArr" :label="item" :key="index">{{item}}</el-checkbox>
                 </el-checkbox-group>
@@ -30,12 +29,14 @@
         <div class="formCard">
           <div class="formCardContent">
             <sx-form-card
+              class="formCardContentCard"
+              v-if="lookupChange(item) & filterItem(item)"
               @templateEdit="templateEdit"
               @templateDelete="templateDelete"
               v-for="(item, index) in cardArr" :key="index" :cardObj='item' :index="index"></sx-form-card>
-            <div v-if="cardArrComplement.length"
+            <!-- <div v-if="cardArrComplement.length"
               style="width: 24%; border: 0.5px solid transparent"
-              v-for="(x, i) in cardArrComplement" :key="cardArr.length + i"></div>
+              v-for="(x, i) in cardArrComplement" :key="cardArr.length + i"></div> -->
           </div>
         </div>
       </div>
@@ -307,8 +308,7 @@ export default {
           width: '67.5%'
         }
       ],
-      cardArrComplement: [],
-      lookupFormInputData: '',
+      lookupData: '',
       stagelookupData: ['术前', '术中', '术后', '随访'],
       stageLookUpArr: ['术前', '术中', '术后', '随访'],
       // transferModel: [],
@@ -342,13 +342,6 @@ export default {
       // this.transferData[i]['key'] = this.mozhu.fields[i].id
       // this.$set(this.transferData[i], 'key', this.mozhu.fields[i].id)
       // }
-      this.cardComplementShow()
-    },
-    cardComplementShow () {
-      // 补位 card
-      for (let i = 0; i < (4 - this.cardArr.length % 4); i++) {
-        this.cardArrComplement.push({i: i})
-      }
     },
     init () {
       this.$set(this.formModel, 'relation', {})
@@ -437,8 +430,12 @@ export default {
       }
       return icon
     },
-    lookupFormInput () {
-      console.log('lookupFormInput')
+    lookupChange (item) {
+      console.log(item)
+      return Object.values(item).toString().includes(this.lookupData)
+    },
+    filterItem (item) {
+      return this.stagelookupData.includes(item.state)
     },
     handleCheckChange (getCheckedNodes, getCheckedKeys, mark) {
       if (mark === 'leftChecked') {
@@ -645,8 +642,11 @@ $bottomH: 200px;
           width: 100%;
           padding-bottom: $bottomH;
           display: flex;
-          justify-content: space-between;
           flex-wrap: wrap;
+          .formCardContentCard {
+            margin-right: 4px;
+            margin-left: 4px;
+          }
         }
       }
     }

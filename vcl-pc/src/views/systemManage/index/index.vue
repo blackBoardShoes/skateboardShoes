@@ -1,14 +1,11 @@
 <template>
-  <div id="project-detail">
+  <div id="System-manage">
     <div class="left-nav">
       <div class="page-title">
-        <h4>项目详情</h4>
-        <h5 class="light-text">Project Detail</h5>
+        <h4>系统管理</h4>
+        <h5 class="light-text">System Manage</h5>
       </div>
-      <div class="project-name text-overflow-ellipsis">
-        用药影响综合评估
-      </div>
-      <div v-for="(item, index) in navOptions" :key="index" :class="{active: $route.path.split('/')[4] === item.path}" class="nav-case" @click="changeIndex(item, index)">
+      <div v-for="(item, index) in navOptions" :key="index" :class="{active: $route.path.split('/')[3] === item.path}" class="nav-case" @click="changeIndex(item, index)">
         <span class="left-icon nav-light-text" :class="item.icon">
         </span>
         <span class="right-text nav-light-text">
@@ -23,35 +20,30 @@
 </template>
 <script>
 export default {
-  name: 'Project_detail',
+  name: 'System_manage',
   data () {
     return {
       // activeIndex: 0,
       navOptions: [
         {
-          icon: 'ercp-icon-module-create',
-          title: '基本信息',
-          path: 'basic'
-        },
-        {
           icon: 'ercp-icon-module-user',
-          title: '项目成员',
-          path: 'member'
+          title: '用户管理',
+          path: 'user'
         },
         {
-          icon: 'ercp-icon-module-patient',
-          title: '入组病案',
-          path: 'patientCase'
+          icon: 'ercp-icon-module-authority',
+          title: '权限管理',
+          path: 'permission'
         },
         {
-          icon: 'ercp-icon-module-data',
-          title: '项目统计',
-          path: 'projectStatistics'
+          icon: 'ercp-icon-module-log',
+          title: '日志管理',
+          path: 'log'
         },
         {
-          icon: 'ercp-icon-module-export',
-          title: '数据导出',
-          path: 'projectExport'
+          icon: 'ercp-icon-module-setup',
+          title: '系统设置',
+          path: 'settings'
         }
       ]
     }
@@ -70,16 +62,18 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import '../../../assets/css/variable';
-  #project-detail{
-    width: 100%;
-    height: 100%;
+  #System-manage{
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
     display: flex;
     flex-direction: row;
     .left-nav{
       height: 100%;
-      // min-width: 160px;
-      // width: 160px;
-      flex: 0 0 160px;
+      min-width: 160px;
+      width: 160px;
       background-color:#E8E9EA;
       .page-title{
         width: 160px;
@@ -94,14 +88,6 @@ export default {
         h5{
           font-weight: 300;
         }
-      }
-      .project-name{
-        padding: 0 10px;
-        height: 48px;
-        line-height: 48px;
-        text-align: center;
-        font-weight:600;
-        color: $themeColor;
       }
       .nav-case{
         cursor: pointer;

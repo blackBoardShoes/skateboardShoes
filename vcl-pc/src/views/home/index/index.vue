@@ -13,9 +13,6 @@
               <div class="case-title light-text">{{item.title}}</div>
             </div>
           </div>
-          <!-- <div class="case"></div>
-          <div class="case"></div>
-          <div class="case"></div> -->
         </div>
       </div>
        <div class="statistics">
@@ -182,8 +179,8 @@
   </div>
 </template>
 <script>
-import {addressData} from '../../data/address/addressData'
-import {charts} from '../../data/chartTemplates/chart'
+import {addressData} from '../../../data/address/addressData'
+import {charts} from '../../../data/chartTemplates/chart'
 export default {
   name: 'home',
   data () {
@@ -449,10 +446,14 @@ export default {
 <style lang="scss" scoped>
   #home{
     position: absolute;
-    left: 16px;
-    right: 16px;
-    top: 16px;
-    bottom: 16px;
+    // left: 16px;
+    // right: 16px;
+    // top: 16px;
+    // bottom: 16px;
+    width:100%;
+    height: 100%;
+    padding: 16px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: row;
     .sys-view{
@@ -512,32 +513,33 @@ export default {
       }
       .statistics{
         flex: 1;
+        width:100%;
         display: flex;
         flex-direction: column;
         .case-top{
+          width:100%;
           height: 40%;
+          min-height: 40%;
           padding: 8px;
           margin-bottom: 8px;
           box-sizing: border-box;
         }
         .case-bottom{
-          flex:1;
+          height: 60%;
+          width:100%;
           display: flex;
           flex-direction: row;
-          .case-left{
-            flex:1;
-            margin-right: 8px;
-            padding: 8px;
-          }
-          .case-right{
-            flex:1;
+          justify-content: space-between;
+          .case-left, .case-right{
+            width: 49.5%;
+            box-sizing: border-box;
             padding: 8px;
           }
         }
       }
     }
     .daily{
-      width: 360px;
+      flex: 0 0 360px;
       min-width: 360px;
       margin-left: 8px;
       height: 100%;

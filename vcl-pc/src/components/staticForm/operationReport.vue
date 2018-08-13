@@ -96,8 +96,8 @@ export default {
       activeNames: ['1', '2'],
       imgArr: [
         {
-          source: require('../../../src/assets/xbx.jpg'),
-          thumbnail: require('../../../src/assets/xbx.jpg'),
+          source: require('../../../src/assets/images/xbx.jpg'),
+          thumbnail: require('../../../src/assets/images/xbx.jpg'),
           checked: false,
           information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
         }

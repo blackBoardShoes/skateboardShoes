@@ -13,12 +13,25 @@
       </div>
     </div>
     <br>
-    <el-input
-      style="width: 90.2%;"
-      clearable
-      placeholder="输入关键字进行过滤"
-      v-model="filterText">
-    </el-input>
+    <div style="width: 90.2%; display:flex">
+      <el-input
+        clearable
+        placeholder="输入关键字进行过滤"
+        v-model="filterText">
+      </el-input>
+        <el-popover
+        placement="bottom-start"
+        width="300"
+        trigger="click">
+        <el-button
+          slot="reference"
+          >筛选</el-button>
+        <el-checkbox-group v-model="checkList">
+          <el-checkbox style="width:100px;margin-left: 20px;margin-right: 20px;"
+            :label="x" v-for="(x, i) in checkListData" :key="i">{{oneToOneText(x)}}</el-checkbox>
+        </el-checkbox-group>
+      </el-popover>
+    </div>
     <br>
     <div class="treeContent">
       <el-tree
@@ -94,12 +107,40 @@ export default {
       defaultProps: {
         children: 'childrens',
         label: 'label'
-      }
+      },
+      oneToOne: [
+        {label: '选择器', value: 'SELECT'},
+        {label: '文本标签', value: 'TEXTAREA'},
+        {label: '多选选择器', value: 'SELECTMUTIPLE'},
+        {label: '日期时间选择器', value: 'DATETIME'},
+        {label: '计算', value: 'CREATECALCULATE'},
+        {label: '单选框', value: 'RADIO'},
+        {label: '创建表格', value: 'CREATETABLE'},
+        {label: '日期选择器', value: 'DATE'},
+        {label: '整数类型输入框', value: 'INT'},
+        {label: '多选框', value: 'CHECKBOX'},
+        {label: '输入框', value: 'INPUT'},
+        {label: '级联选择器', value: 'CASCADER'},
+        {label: '浮点类型输入框', value: 'DOUBLE'}
+      ],
+      checkList: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT'],
+      checkListData: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT']
     }
   },
   watch: {
     filterText (val) {
       this.$refs.minTreeData.filter(val)
+    },
+    checkList (val) {
+      let arr = []
+      if (Array.isArray(val)) {
+        for (let i of this.value) {
+          if (val.includes(i.type)) {
+            arr.push(i)
+          }
+        }
+      }
+      this.minTreeData = arr
     },
     value (val) {
       this.minTreeData = val
@@ -115,6 +156,11 @@ export default {
     console.log(this.minTreeData, 'minTreeData,-=-=-=-=-=-=')
   },
   methods: {
+    oneToOneText (type) {
+      for (let i of this.oneToOne) {
+        if (type === i.value) return i.label
+      }
+    },
     handleCheckAllChange (val) {
       this.$refs.minTreeData.setCheckedNodes(val ? this.minTreeData : [])
       this.isIndeterminate = false

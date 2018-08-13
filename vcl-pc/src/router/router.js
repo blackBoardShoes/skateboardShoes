@@ -28,8 +28,7 @@ export const otherRouter = {
   redirect: '/home',
   meta: {
     navigator: true,
-    requireAuth: true,
-    title: '首页',
+    title: '系统首页',
     role: [1, 2, 3, 4, 5, 6],
     icon: 'module-home'
   },
@@ -39,12 +38,11 @@ export const otherRouter = {
       path: '/home',
       name: 'home',
       meta: {
-        requireAuth: true,
-        title: '首页',
+        title: '系统首页',
         navigator: true,
         role: [1, 2, 3, 4, 5, 6]
       },
-      component: () => import('../../src/views/home/index.vue')
+      component: () => import('../../src/views/home/index/index.vue')
     }
   ]
 }
@@ -54,10 +52,8 @@ export const appRouter = [
   {
     path: '/patient',
     name: 'patient',
-    title: '患者中心',
     redirect: '/patient/index',
     meta: {
-      requireAuth: true,
       title: '患者中心',
       navigator: true,
       role: [1, 2, 3, 4, 5, 6],
@@ -68,28 +64,23 @@ export const appRouter = [
       {
         path: 'index',
         name: 'patient_index',
-        title: '患者中心',
-        navigator: true,
         meta: {
-          requireAuth: true,
           title: '患者中心',
           navigator: true,
           role: [1, 2, 3, 4, 5, 6]
         },
-        component: () => import('../../src/views/patient/index.vue')
+        component: () => import('../../src/views/patient/index/index.vue')
       },
       {
         path: 'detail/:id',
         name: 'patient_detail',
-        title: '患者详情',
         navigator: false,
         meta: {
-          requireAuth: true,
           title: '患者详情',
           navigator: false,
           role: [1, 2, 3, 4, 5, 6]
         },
-        component: () => import('../../src/views/patient/detail.vue')
+        component: () => import('../../src/views/patient/detail/detail.vue')
       }
     ]
   },
@@ -97,9 +88,7 @@ export const appRouter = [
     path: '/statistics',
     name: 'statistics',
     redirect: '/statistics/index',
-    title: '数据统计',
     meta: {
-      requireAuth: true,
       title: '数据统计',
       navigator: true,
       role: [1, 2, 3],
@@ -111,22 +100,19 @@ export const appRouter = [
         path: 'index',
         name: 'statistics_index',
         meta: {
-          requireAuth: true,
           title: '数据统计',
           navigator: true,
           role: [1, 2, 3]
         },
-        component: () => import('../../src/views/statistics/index.vue')
+        component: () => import('../../src/views/statistics/index/index.vue')
       }
     ]
   },
   {
     path: '/rules',
     name: 'rules',
-    title: '任务中心',
     redirect: '/rules/index',
     meta: {
-      requireAuth: true,
       title: '任务中心',
       navigator: true,
       // role: [2, 3, 4, 5, 6],
@@ -139,7 +125,6 @@ export const appRouter = [
         path: 'index',
         name: 'rules_index',
         meta: {
-          requireAuth: true,
           title: '任务中心',
           navigator: true,
           // role: [2, 3, 4, 5, 6]
@@ -151,7 +136,6 @@ export const appRouter = [
         path: 'lr/:data',
         name: 'lr',
         meta: {
-          requireAuth: true,
           title: '数据录入',
           navigator: false,
           role: [1, 2, 3, 4, 5, 6]
@@ -162,7 +146,6 @@ export const appRouter = [
         path: 'sh/:data',
         name: 'sh',
         meta: {
-          requireAuth: true,
           title: '数据审核',
           navigator: false,
           role: [1, 2, 3, 4, 5, 6]
@@ -173,7 +156,6 @@ export const appRouter = [
         path: 'xz/:data',
         name: 'xz',
         meta: {
-          requireAuth: true,
           title: '数据修正',
           navigator: false,
           role: [1, 2, 3, 4, 5, 6]
@@ -184,7 +166,6 @@ export const appRouter = [
         path: 'sf/:data',
         name: 'sf',
         meta: {
-          requireAuth: true,
           title: '随访',
           navigator: false,
           role: [1, 2, 3, 4, 5, 6]
@@ -196,10 +177,8 @@ export const appRouter = [
   {
     path: '/form',
     name: 'form',
-    title: '表单管理',
     redirect: '/form/index',
     meta: {
-      requireAuth: true,
       title: '表单管理',
       navigator: true,
       role: [1],
@@ -212,8 +191,12 @@ export const appRouter = [
         path: 'index',
         name: 'form_index',
         meta: {
+<<<<<<< HEAD
           requireAuth: true,
           title: '表单详情',
+=======
+          title: '表单管理',
+>>>>>>> d3155f3192acaf523086d19468f78fb45d383fa0
           navigator: true,
           role: [1]
         },
@@ -223,7 +206,6 @@ export const appRouter = [
             path: 'bdk',
             name: 'bdk',
             meta: {
-              requireAuth: true,
               title: '表单库',
               navigator: true,
               role: [1]
@@ -234,7 +216,6 @@ export const appRouter = [
             path: 'zdk',
             name: 'zdk',
             meta: {
-              requireAuth: true,
               title: '字段库',
               navigator: true,
               role: [1]
@@ -245,7 +226,6 @@ export const appRouter = [
             path: 'syk',
             name: 'syk',
             meta: {
-              requireAuth: true,
               title: '术语库',
               navigator: true,
               role: [1]
@@ -259,10 +239,8 @@ export const appRouter = [
   {
     path: '/systemManage',
     name: 'systemManage',
-    title: '系统管理',
     redirect: '/systemManage/index',
     meta: {
-      requireAuth: true,
       title: '系统管理',
       navigator: true,
       role: [1],
@@ -273,23 +251,63 @@ export const appRouter = [
       {
         path: 'index',
         name: 'systemManage_index',
+        redirect: '/systemManage/index/user',
         meta: {
-          requireAuth: true,
           title: '系统管理',
           navigator: false,
           role: [1]
         },
-        component: () => import('../../src/views/systemManage/index.vue')
+        component: () => import('../../src/views/systemManage/index/index.vue'),
+        children: [
+          {
+            path: 'user',
+            name: 'systemManage_user',
+            meta: {
+              title: '用户管理',
+              navigator: false,
+              role: [1]
+            },
+            component: () => import('../../src/views/systemManage/detail/user.vue')
+          },
+          {
+            path: 'permission',
+            name: 'systemManage_permission',
+            meta: {
+              title: '权限管理',
+              navigator: false,
+              role: [1]
+            },
+            component: () => import('../../src/views/systemManage/detail/permission.vue')
+          },
+          {
+            path: 'log',
+            name: 'systemManage_log',
+            meta: {
+              title: '日志管理',
+              navigator: false,
+              role: [1]
+            },
+            component: () => import('../../src/views/systemManage/detail/log.vue')
+          },
+          {
+            path: 'settings',
+            name: 'systemManage_settings',
+            meta: {
+              title: '系统设置',
+              navigator: false,
+              role: [1]
+            },
+            component: () => import('../../src/views/systemManage/detail/settings.vue')
+          }
+        ]
       }
     ]
   },
   {
     path: '/project',
     name: 'project',
-    title: '项目管理',
     redirect: '/project/index',
     meta: {
-      requireAuth: true,
       title: '项目管理',
       navigator: true,
       role: [1, 2, 3],
@@ -301,7 +319,6 @@ export const appRouter = [
         path: 'index',
         name: 'project_index',
         meta: {
-          requireAuth: true,
           title: '项目管理',
           navigator: false,
           role: [1, 2, 3]
@@ -312,7 +329,6 @@ export const appRouter = [
         path: 'detail/:id',
         name: 'project_detail',
         meta: {
-          requireAuth: true,
           title: '项目详情',
           navigator: false,
           role: [1, 2, 3]
@@ -323,7 +339,6 @@ export const appRouter = [
             path: 'basic',
             name: 'project_basic',
             meta: {
-              requireAuth: true,
               title: '基本信息',
               navigator: false,
               role: [1, 2, 3]
@@ -334,7 +349,6 @@ export const appRouter = [
             path: 'member',
             name: 'project_member',
             meta: {
-              requireAuth: true,
               title: '项目成员',
               navigator: false,
               role: [1, 2, 3]
@@ -345,7 +359,6 @@ export const appRouter = [
             path: 'patientCase',
             name: 'project_patientCase',
             meta: {
-              requireAuth: true,
               title: '入组案例',
               navigator: false,
               role: [1, 2, 3]
@@ -356,7 +369,6 @@ export const appRouter = [
             path: 'projectStatistics',
             name: 'project_projectStatistics',
             meta: {
-              requireAuth: true,
               title: '项目统计',
               navigator: false,
               role: [1, 2, 3]
@@ -367,7 +379,6 @@ export const appRouter = [
             path: 'projectExport',
             name: 'project_projectExport',
             meta: {
-              requireAuth: true,
               title: '数据导出',
               navigator: false,
               role: [1, 2, 3]
@@ -381,10 +392,8 @@ export const appRouter = [
   {
     path: '/message',
     name: 'message',
-    title: '消息中心',
     redirect: '/message/index',
     meta: {
-      requireAuth: true,
       title: '消息中心',
       navigator: false,
       role: [1, 2, 3, 4, 5, 6],
@@ -396,24 +405,21 @@ export const appRouter = [
         path: 'index',
         name: 'message_index',
         meta: {
-          requireAuth: true,
           title: '消息中心',
           navigator: false,
           role: [1, 2, 3, 4, 5, 6]
         },
-        component: () => import('../../src/views/message/index.vue')
+        component: () => import('../../src/views/message/index/index.vue')
       }
     ]
   },
   {
     path: '/helpCenter',
     name: 'helpCenter',
-    title: '帮助中心',
     redirect: '/helpCenter/index',
     meta: {
       title: '帮助中心',
       navigator: true,
-      requireAuth: false,
       role: [1, 2, 3, 4, 5, 6]
     },
     component: Layout,
@@ -424,106 +430,106 @@ export const appRouter = [
         meta: {
           title: '帮助中心',
           navigator: true,
-          requireAuth: false,
           role: [1, 2, 3, 4, 5, 6]
         },
-        component: () => import('../../src/views/helpCenter/index.vue')
+        component: () => import('../../src/views/helpCenter/index/index.vue')
+      }
+    ]
+  },
+  {
+    path: '/test',
+    name: 'test',
+    meta: {
+      title: '开发测试',
+      navigator: true,
+      role: [1, 2, 3, 4, 5, 6],
+      icon: 'general-relation'
+    },
+    component: Layout,
+    redirect: '/test/index',
+    children: [
+      {
+        path: 'index',
+        name: 'test_index',
+        meta: {
+          title: '开发测试-导航列表同步滑动',
+          navigator: false,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../../src/views/test/index.vue')
+      },
+      {
+        path: '/test/editInput',
+        name: 'editInput',
+        meta: {
+          title: '可编辑文本域',
+          navigator: true,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../components/editInput/editInput.vue')
+      },
+      {
+        path: '/test/print',
+        name: 'print',
+        meta: {
+          title: '打印',
+          navigator: true,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../components/print/print.vue')
+      },
+      {
+        path: '/test/imgView',
+        name: 'imgView',
+        meta: {
+          title: '图片预览',
+          navigator: true,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../components/imgView/imgView.vue')
+      },
+      {
+        path: '/test/c1',
+        name: 'start',
+        meta: {
+          title: '表单1',
+          navigator: true,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../views/content.vue')
+      },
+      {
+        path: '/test/c2',
+        name: 'c',
+        meta: {
+          title: '表单2',
+          navigator: true,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../views/gc.vue')
+      },
+      {
+        path: '/test/cartogram',
+        name: 'cartogram',
+        meta: {
+          title: '统计图测试',
+          navigator: true,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../components/cartogram/scalingChart.vue')
+      },
+      {
+        path: '/test/order',
+        name: 'order',
+        meta: {
+          title: 'order',
+          navigator: true,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../components/order/order.vue')
       }
     ]
   }
-  // {
-  //   path: '/test',
-  //   name: 'test',
-  //   title: '开发测试',
-  //   meta: {
-  //     title: '开发测试',
-  //     navigator: true,
-  //     requireAuth: true,
-  //     role: [1, 2, 3, 4, 5, 6],
-  //     icon: 'general-relation'
-  //   },
-  //   component: Layout,
-  //   redirect: '/test/index',
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'test_index',
-  //       meta: {
-  //         title: '开发测试-导航列表同步滑动',
-  //         navigator: false,
-  //         requireAuth: false,
-  //         role: [1, 2, 3, 4, 5, 6]
-  //       },
-  //       component: () => import('../../src/views/test/index.vue')
-  //     },
-  //     {
-  //       path: '/test/editInput',
-  //       name: 'editInput',
-  //       meta: {
-  //         title: '可编辑文本域',
-  //         navigator: true,
-  //         requireAuth: false,
-  //         role: [1, 2, 3, 4, 5, 6]
-  //       },
-  //       component: () => import('../components/editInput/editInput.vue')
-  //     },
-  //     {
-  //       path: '/test/print',
-  //       name: 'print',
-  //       meta: {
-  //         title: '打印',
-  //         navigator: true,
-  //         requireAuth: false,
-  //         role: [1, 2, 3, 4, 5, 6]
-  //       },
-  //       component: () => import('../components/print/print.vue')
-  //     },
-  //     {
-  //       path: '/test/imgView',
-  //       name: 'imgView',
-  //       meta: {
-  //         title: '图片预览',
-  //         navigator: true,
-  //         requireAuth: false,
-  //         role: [1, 2, 3, 4, 5, 6]
-  //       },
-  //       component: () => import('../components/imgView/imgView.vue')
-  //     },
-  //     {
-  //       path: '/test/c1',
-  //       name: 'start',
-  //       meta: {
-  //         title: '表单1',
-  //         navigator: true,
-  //         requireAuth: false,
-  //         role: [1, 2, 3, 4, 5, 6]
-  //       },
-  //       component: () => import('../views/content.vue')
-  //     },
-  //     {
-  //       path: '/test/c2',
-  //       name: 'c',
-  //       meta: {
-  //         title: '表单2',
-  //         navigator: true,
-  //         requireAuth: false,
-  //         role: [1, 2, 3, 4, 5, 6]
-  //       },
-  //       component: () => import('../views/gc.vue')
-  //     },
-  //     {
-  //       path: '/test/cartogram',
-  //       name: 'cartogram',
-  //       meta: {
-  //         title: '统计图测试',
-  //         navigator: true,
-  //         requireAuth: false,
-  //         role: [1, 2, 3, 4, 5, 6]
-  //       },
-  //       component: () => import('../components/cartogram/scalingChart.vue')
-  //     }
-  //   ]
-  // }
 ]
 
 export const routers = [
