@@ -1,13 +1,15 @@
 <template>
   <div class="operationAll">
-    <el-form ref="formModel" :model="formModel" :disabled="disabled" class="operationContent" inline size="small">
+    <el-form
+      ref="formModel" :model="formModel" :disabled="disabled"
+      class="operationContent" label-position="left" label-width="80px" size="small">
       <el-collapse v-model="activeNames" @change="handleChange">
         <el-collapse-item name="1">
           <div slot="title" class="titleClass">
             <div>术中采取方式 </div>
             <div>手术方式:ERCP+EST</div>
           </div>
-          <el-form-item prop="operationCheckBox">
+          <el-form-item prop="operationCheckBox" label-width="0px">
             <el-checkbox-group v-model="formModel['operationCheckBox']">
               <el-checkbox v-for="(it, ii) in formData['operationCheckBox']" :key="ii" :label="it.value" >{{it.label}}</el-checkbox>
             </el-checkbox-group>
@@ -19,12 +21,13 @@
             <div>特殊治疗:活检+FNA</div>
           </div>
           <div class="twoContentTop">
-            <div>
+            <div style="display: flex;">
               <el-form-item label="报告医师 :" prop="operationSelect">
                 <el-select clearable filterable v-model="formModel.operationSelect">
                   <el-option v-for="(it, ii) in formData['operationSelect']" :key="ii" :label="it.label" :value="it.value" ></el-option>
                 </el-select>
               </el-form-item>
+              &nbsp;&nbsp;&nbsp;
               <el-form-item label="报告日期 :" prop="operationDateTime">
                 <el-date-picker
                   v-model="formModel.operationDateTime"
@@ -41,33 +44,48 @@
             </div>
           </div>
           <div class="twoContentContain">
-            5555
+            <div class="twoContentContainEdit">
+              {{formModel}}<br>
+            </div>
+            <div class="imgGroup">
+              <img src="">
+              <img src="">
+              <img src="">
+              <img src="">
+              <img src="">
+              <img src="">
+            </div>
           </div>
           <div class="twoContentBottom">
-            <el-form-item label="麻醉方式 :" prop="operationSelect" style="flex-grow:1;">
-              <el-select clearable filterable v-model="formModel.operationSelect" style="width:100%;">
-                <el-option v-for="(it, ii) in formData['operationSelect']" :key="ii" :label="it.label" :value="it.value" ></el-option>
+            <el-form-item label="麻醉方式 :" prop="operationSelectMz" style="flex-grow:1;">
+              <el-select clearable filterable v-model="formModel.operationSelectMz" style="width:90%;">
+                <el-option v-for="(it, ii) in formData['operationSelectMz']" :key="ii" :label="it.label" :value="it.value" ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="检查诊断 :" prop="operationSelect">
-              <el-select clearable filterable v-model="formModel.operationSelect">
-                <el-option v-for="(it, ii) in formData['operationSelect']" :key="ii" :label="it.label" :value="it.value" ></el-option>
+            <el-form-item label="检查诊断 :" prop="operationSelectJc" style="flex-grow:1;">
+              <el-select clearable filterable v-model="formModel.operationSelectJc" style="width:90%;">
+                <el-option v-for="(it, ii) in formData['operationSelectJc']" :key="ii" :label="it.label" :value="it.value" ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="活检部位 :" prop="operationSelect">
-              <el-select clearable filterable v-model="formModel.operationSelect">
-                <el-option v-for="(it, ii) in formData['operationSelect']" :key="ii" :label="it.label" :value="it.value" ></el-option>
+            <el-form-item label="活检部位 :" prop="operationSelectHj" style="flex-grow:1;">
+              <el-select clearable filterable v-model="formModel.operationSelectHj" style="width:90%;">
+                <el-option v-for="(it, ii) in formData['operationSelectHj']" :key="ii" :label="it.label" :value="it.value" ></el-option>
               </el-select>
             </el-form-item>
           </div>
         </el-collapse-item>
       </el-collapse>
     </el-form>
+    <imgView :imgArr="imgArr"></imgView>
   </div>
 </template>
 
 <script>
+import imgView from '../../components/imgView/imgView.vue'
 export default {
+  components: {
+    imgView
+  },
   props: {
     disabled: {
       type: Boolean
@@ -76,9 +94,20 @@ export default {
   data () {
     return {
       activeNames: ['1', '2'],
+      imgArr: [
+        {
+          source: require('../../../src/assets/images/xbx.jpg'),
+          thumbnail: require('../../../src/assets/images/xbx.jpg'),
+          checked: false,
+          information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
+        }
+      ],
       formModel: {
         operationCheckBox: [],
         operationSelect: [],
+        operationSelectMz: [],
+        operationSelectJc: [],
+        operationSelectHj: [],
         operationDateTime: ''
       },
       formData: {
@@ -98,6 +127,15 @@ export default {
         ],
         operationSelect: [
           { value: 'ERCP1', label: 'ESR(网篮取石)' }
+        ],
+        operationSelectMz: [
+          { value: 'ERCP1', label: 'ESR(网篮取石)' }
+        ],
+        operationSelectJc: [
+          { value: 'ERCP1', label: 'ESR(网篮取石)' }
+        ],
+        operationSelectHj: [
+          { value: 'ERCP1', label: 'ESR(网篮取石)' }
         ]
       }
     }
@@ -112,7 +150,7 @@ export default {
   },
   methods: {
     handleChange (val) {
-      console.log(val)
+      // console.log(val)
     }
   }
 }
@@ -148,6 +186,25 @@ $marginContentW: 25px;
       width: $full;
       display: flex;
       justify-content: space-between;
+    }
+    .twoContentContain {
+      width: $full;
+      min-height: 300px;
+      .twoContentContainEdit {
+        border: 1px solid $lightBorderColor;
+      }
+      .imgGroup {
+        width: $full;
+        display: flex;
+        height: 140px;
+        justify-content: space-between;
+        margin-top: $marginW;
+        margin-bottom: $marginW;
+        img {
+          width: 140px;
+          height: 140px;
+        }
+      }
     }
     .twoContentBottom {
       width: $full;

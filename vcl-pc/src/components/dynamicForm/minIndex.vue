@@ -7,18 +7,21 @@
           :label-position="labelPosition"
           :disabled="disabled"
           :class="{controlFormClass: inline}"
+          style="display: flex; flex-wrap: wrap;justify-content: space-between"
           ref='formModel' :model='formModel' size='mini'>
           <!-- 菜肴展示 -->
           <!--
             style="display: flex; flex-wrap: wrap;justify-content: space-between"
             :style="{display: 'flex', alignItems: 'flexStart', width: items.type === 'INPUT' ? '45%' : '100%'}"
+            style="display:flex;align-items:flex-start"
            -->
           <!-- <draggable v-model="newFields"> -->
             <!-- :rules="items.validations" -->
             <div
               v-if="tf(items)"
               v-for="(items, index) in newFields"
-              :key="index" style="display:flex;align-items:flex-start">
+              :style="{display: 'flex', alignItems: 'flexStart', width: coordinate[items.id] ? coordinate[items.id] + '%' : '100%'}"
+              :key="index">
               <div class="iconErrorClass" @click="deleteError(items)" v-if="disabled">
                 <i class="el-icon-error"  v-if="iconTf(items)"></i>
               </div>
@@ -65,6 +68,7 @@
                 </el-date-picker>
                 <!-- value-format="yyyy-MM-dd/HH:mm:ss" -->
                 <el-cascader
+                  expand-trigger="hover"
                   :disabled="items.disabled"
                   :placeholder="items.placeholder"
                   clearable filterable
@@ -79,7 +83,7 @@
                     <el-button @click="onEval(items)">计算</el-button>
                   </div>
                 </div>
-                <div v-if="items.type === 'TABLE'" style="max-width: 650px;width:100%">
+                <div v-if="items.type === 'TABLE'" style="width:100%">
                   <sx-table ref="sxtable" :tableData="items" @getData="getData"></sx-table>
                 </div>
                 <!-- 辅助创建 新增 编辑 -->
@@ -116,6 +120,7 @@
         </el-form>
         <div class="formContentLeftControl">
           <el-button v-if="cancel" @click="cancelData" type="info">取消</el-button>
+          <el-button v-if="verifyingTF" @click="notVerifying" type="primary" plain>无验证确定</el-button>
           <el-button @click="consoleData" v-if="submitTF" type="primary">确定</el-button>
         </div>
       </div>
@@ -163,7 +168,7 @@ export default {
     labelWidth: {
       type: String,
       default () {
-        return '130px'
+        return '120px'
       }
     },
     labelPosition: {
@@ -202,6 +207,12 @@ export default {
         return false
       }
     },
+    verifyingTF: {
+      type: Boolean,
+      default () {
+        return false
+      }
+    },
     submitTF: {
       type: Boolean,
       default () {
@@ -219,6 +230,7 @@ export default {
     return {
       newFields: 'fields' in this.mozhu ? [...this.mozhu['fields']] : [],
       relation: 'relation' in this.mozhu ? Object.assign({}, this.mozhu['relation']) : {},
+      coordinate: 'coordinate' in this.mozhu ? Object.assign({}, this.mozhu['coordinate']) : {},
       errors: 'errors' in this.mozhu ? Object.assign({}, this.mozhu['errors']) : {},
       comments: 'comments' in this.mozhu ? Object.assign({}, this.mozhu['comments']) : {},
       mozhuId: 'id' in this.mozhu ? this.mozhu['id'] : '',
@@ -267,6 +279,7 @@ export default {
     mozhu () {
       this.newFields = 'fields' in this.mozhu ? [...this.mozhu['fields']] : []
       this.relation = 'relation' in this.mozhu ? Object.assign({}, this.mozhu['relation']) : {}
+      this.coordinate = 'coordinate' in this.mozhu ? Object.assign({}, this.mozhu['coordinate']) : {}
       this.errors = 'errors' in this.mozhu ? Object.assign({}, this.mozhu['errors']) : {}
       this.comments = 'comments' in this.mozhu ? Object.assign({}, this.mozhu['comments']) : {}
       this.mozhuId = 'id' in this.mozhu ? this.mozhu['id'] : ''
@@ -441,25 +454,17 @@ export default {
           break
         case 'CREATETABLE':
           what.type = 'TABLE'
-          what['sub_fields'] = []
+          what['subFields'] = []
           for (let i in what.createTable) {
             for (let j of this.repositoryData) {
               if (what.createTable[i] === j.label) {
-                what['sub_fields'].push(j)
+                what['subFields'].push(j)
               }
             }
           }
           break
         case 'CREATECALCULATE':
           what.type = 'CALCULATE'
-          // for (let i in what.CREATECALCULATE) {
-          //   for (let j of this.repositoryData) {
-          //     if (what.createTable[i] === j.label) {
-          //       what['sub_fields'].push(j)
-          //     }
-          //   }
-          // }
-          console.log(what, '---------------')
           break
       }
       return what
@@ -472,6 +477,10 @@ export default {
       }
       return idGroup
     },
+    notVerifying () {
+      let idGroup = this.formatData()
+      this.$emit('notVerifying', this.mozhuId, this.formModel, this.relation, this.newFields, idGroup, this.errors, this.comments, this.coordinate)
+    },
     consoleData () {
       this.$nextTick(() => {
         if (this.$refs['sxtable']) {
@@ -483,7 +492,7 @@ export default {
       this.$refs['formModel'].validate(valid => {
         if (valid) {
           let idGroup = this.formatData()
-          this.$emit('consoleData', this.mozhuId, this.formModel, this.relation, this.newFields, idGroup, this.errors, this.comments)
+          this.$emit('consoleData', this.mozhuId, this.formModel, this.relation, this.newFields, idGroup, this.errors, this.comments, this.coordinate)
         } else {
           console.log('error submit!!')
           return false
@@ -560,7 +569,7 @@ export default {
         this.evaluateDialogVisible = true
       }
     },
-    createEvaluate (mozhuId, formModel, relation, newFields, idGroup, errors, comments) {
+    createEvaluate (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
       this.errors[this.evaluateRowData.id] = true
       this.comments[this.evaluateRowData.id] = formModel
       // this.$set(this.errors, this.evaluateRowData.id, true)
@@ -570,8 +579,9 @@ export default {
     },
     // form element operation (计算)
     onEval (ev) {
-      console.log(this.formModel, ev.calculate)
-      this.formModel[ev.id] = this.calculate(this.formModel, ev.calculate)
+      console.log(this.formModel, ev.values)
+      this.$set(this.formModel, ev.id, this.calculate(this.formModel, ev.values))
+      // this.formModel[ev.id] = this.calculate(this.formModel, ev.values)
       // this.formModel[ev.id] = this.calculate(this.formModel, this.compute[ev.id])  
     },
     cancelData () {
@@ -641,11 +651,16 @@ $full: 100%;
       text-align: center;
     }
     .el-radio, .el-checkbox {
-      min-width: 140px;
+      // min-width: 140px;
       margin: 5px;
       // margin-left: 15px;
       margin-right: 25px;
     }
+  }
+  /deep/ .el-form-item__label {
+    white-space:normal;
+    word-break:break-all;
+    word-wrap:break-word; 
   }
 }
 </style>

@@ -100,6 +100,9 @@ export default {
   computed: {},
   created () {},
   watch: {
+    value () {
+      this.formula = this.value
+    },
     formula () {
       this.$emit('input', this.formula)
     },

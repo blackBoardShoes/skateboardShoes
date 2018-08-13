@@ -107,19 +107,19 @@ export default {
             value: '',
             type: 'RADIO',
             values: [
-              {label: '输入框', value: 'INPUT'},
-              {label: '整数类型输入框', value: 'INT'},
-              {label: '浮点数类型输入框', value: 'DOUBLE'},
-              {label: '文本标签', value: 'TEXTAREA'},
               {label: '选择器', value: 'SELECT'},
+              {label: '文本标签', value: 'TEXTAREA'},
               {label: '多选选择器', value: 'SELECTMUTIPLE'},
-              {label: '日期选择器', value: 'DATE'},
               {label: '日期时间选择器', value: 'DATETIME'},
+              {label: '计算', value: 'CREATECALCULATE'},
               {label: '单选框', value: 'RADIO'},
-              {label: '多选框', value: 'CHECKBOX'},
-              {label: '级联选择器', value: 'CASCADER'},
               {label: '创建表格', value: 'CREATETABLE'},
-              {label: '计算', value: 'CREATECALCULATE'}
+              {label: '日期选择器', value: 'DATE'},
+              {label: '整数类型输入框', value: 'INT'},
+              {label: '多选框', value: 'CHECKBOX'},
+              {label: '输入框', value: 'INPUT'},
+              {label: '级联选择器', value: 'CASCADER'},
+              {label: '浮点类型输入框', value: 'DOUBLE'}
             ],
             validations: [
               { required: true, message: '请选择类型', trigger: 'change' }
@@ -343,6 +343,7 @@ export default {
       this.$refs['thatFormPreview'].againData()
     },
     async editFish (row, index) {
+      this.thatFishData = {}
       this.fishNeedEditData = { index: index, row: row }
       this.fishData = this.auxiliaryType(Object.assign({}, row))
       let rowData = this.auxiliaryType(Object.assign({}, row))

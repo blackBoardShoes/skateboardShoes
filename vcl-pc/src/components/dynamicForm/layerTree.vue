@@ -16,6 +16,7 @@
     </div>
     <el-tree
       :data="layerTreeData"
+      :allow-drop="allowDrop"
       node-key="value"
       draggable
       default-expand-all
@@ -113,6 +114,9 @@ export default {
           return false
         }
       })
+    },
+    allowDrop (draggingNode, dropNode, type) {
+      return type === 'next' | type === 'prev'
     },
     remove (node, data) {
       const parent = node.parent

@@ -55,6 +55,7 @@ $full: 100%;
     display: flex;
   }
   .slotFormClass {
+    background: url('../../assets/images/标题栏.png') center center no-repeat;
     width: $full;
     height: 130px;
     display: flex;

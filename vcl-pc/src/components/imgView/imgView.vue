@@ -2,11 +2,11 @@
   <div id="img-view">
     <div class="title-header">
       <div class="float-left"> <i class="el-icon-picture-outline"></i> 请挑选镜检照片</div>
-      <div class="close" @click="close"><i class="el-icon-close"></i></div>
+      <div class="close" @click="closeAndCancel"><i class="el-icon-close"></i></div>
     </div>
     <div class="img-group">
       <div class="img-choosen">
-        <div class="img-choose" v-for="(img, index) in imgArr" :key="index"  :class="{active: activeIndex === index}" @click="changeImg(img, index)">
+        <div class="img-choose" v-for="(img, index) in newImgArr" :key="index"  :class="{active: activeIndex === index}" @click="changeImg(img, index)">
           <div class="img-index">{{index + 1}}</div>
           <img :src="img.source" alt="error">
           <el-checkbox v-model="img.checked" :disabled="imgCount > 5 && img.checked === false">{{img.information}}</el-checkbox>
@@ -37,8 +37,8 @@
       <div class="operate">
         <div class="info">当前查看第<span class="special">{{activeIndex + 1}}</span>张,已挑选<span class="special">{{imgCount}}张</span>,最多还有<span class="special">{{6-imgCount}}张</span>可挑选</div>
         <div class="buttons">
-          <el-button size="medium" type="info">取消</el-button>
-          <el-button size="medium" type="primary">确定</el-button>
+          <el-button size="medium" type="info" @click="closeAndCancel">取消</el-button>
+          <el-button size="medium" type="primary" @click="confirmData">确定</el-button>
         </div>
       </div>
     </div>
@@ -47,64 +47,80 @@
 <script>
 export default {
   name: 'imgView',
+  props: {
+    imgArr: {
+      type: Array,
+      default () {
+        return [
+          {
+            source: require('../../../src/assets/images/xbx.jpg'),
+            thumbnail: require('../../../src/assets/images/xbx.jpg'),
+            checked: false,
+            information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
+          },
+          {
+            source: require('../../../src/assets/images/xbx.jpg'),
+            thumbnail: require('../../../src/assets/images/xbx.jpg'),
+            checked: false,
+            information: '镜检照片2'
+          },
+          {
+            source: require('../../../src/assets/images/xbx.jpg'),
+            thumbnail: require('../../../src/assets/images/xbx.jpg'),
+            checked: false,
+            information: '镜检照片3'
+          },
+          {
+            source: require('../../../src/assets/images/xbx.jpg'),
+            thumbnail: require('../../../src/assets/images/xbx.jpg'),
+            checked: false,
+            information: '镜检照片4'
+          },
+          {
+            source: require('../../../src/assets/images/xbx.jpg'),
+            thumbnail: require('../../../src/assets/images/xbx.jpg'),
+            checked: false,
+            information: '镜检照片5'
+          },
+          {
+            source: require('../../../src/assets/images/xbx.jpg'),
+            thumbnail: require('../../../src/assets/images/xbx.jpg'),
+            checked: false,
+            information: '镜检照片6'
+          },
+          {
+            source: require('../../../src/assets/images/xbx.jpg'),
+            thumbnail: require('../../../src/assets/images/xbx.jpg'),
+            checked: false,
+            information: '镜检照片7'
+          },
+          {
+            source: require('../../../src/assets/images/xbx.jpg'),
+            thumbnail: require('../../../src/assets/images/xbx.jpg'),
+            checked: false,
+            information: '镜检照片8'
+          },
+          {
+            source: require('../../../src/assets/images/xbx.jpg'),
+            thumbnail: require('../../../src/assets/images/xbx.jpg'),
+            checked: false,
+            information: '镜检照片9'
+          }
+        ]
+      }
+    }
+  },
+  watch: {
+    imgArr: {
+      handler (val) {
+        this.newImgArr = val
+      },
+      deep: true
+    }
+  },
   data () {
     return {
-      imgArr: [
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg'),
-          checked: false,
-          information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
-        },
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg'),
-          checked: false,
-          information: '镜检照片2'
-        },
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg'),
-          checked: false,
-          information: '镜检照片3'
-        },
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg'),
-          checked: false,
-          information: '镜检照片4'
-        },
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg'),
-          checked: false,
-          information: '镜检照片5'
-        },
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg'),
-          checked: false,
-          information: '镜检照片6'
-        },
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg'),
-          checked: false,
-          information: '镜检照片7'
-        },
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg'),
-          checked: false,
-          information: '镜检照片8'
-        },
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg'),
-          checked: false,
-          information: '镜检照片9'
-        }
-      ],
+      newImgArr: this.imgArr,
       previewImages: [
         {
           source: require('../../../src/assets/images/xbx.jpg'),
@@ -132,7 +148,7 @@ export default {
   },
   methods: {
     clearAll () {
-      this.imgArr.forEach((item) => {
+      this.newImgArr.forEach((item) => {
         item.checked = false
       })
     },
@@ -144,14 +160,25 @@ export default {
       this.previewImages.push(item)
       this.activeIndex = index
     },
-    close () {
-      console.log('close this window')
+    closeAndCancel () {
+      console.log('close cancel this window')
+    },
+    confirmData () {
+      console.log(this.newImgArr)
+      let confirmData = []
+      for (let i of this.newImgArr) {
+        if (i.checked) {
+          confirmData.push(i)
+        }
+      }
+      console.log('confirmData', confirmData)
+      this.$emit('confirmData', confirmData)
     }
   },
   computed: {
     imgCount: function () {
       let num = 0
-      this.imgArr.forEach((item, index, array) => {
+      this.newImgArr.forEach((item, index, array) => {
         if (item.checked === true) {
           num += 1
         }
