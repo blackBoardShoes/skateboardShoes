@@ -119,9 +119,9 @@
           <!-- 菜肴反馈 -->
         </el-form>
         <div class="formContentLeftControl">
-          <el-button v-if="cancel" @click="cancelData" type="info">取消</el-button>
-          <el-button v-if="verifyingTF" @click="notVerifying" type="primary" plain>无验证确定</el-button>
-          <el-button @click="consoleData" v-if="submitTF" type="primary">确定</el-button>
+          <el-button v-if="cancel" @click="cancelData" size="small" type="info">取消</el-button>
+          <el-button v-if="verifyingTF" @click="notVerifying" size="small" type="primary" plain>无验证确定</el-button>
+          <el-button @click="consoleData" v-if="submitTF" size="small" type="primary">确定</el-button>
         </div>
       </div>
     </div>

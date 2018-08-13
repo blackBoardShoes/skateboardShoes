@@ -9,11 +9,12 @@
             </div>
             <div slot="append" class="centerCenter">
               <!-- <el-button type="danger" @click="deleteFish" style="padding:0;margin:0;font-size: 16px;">删除</el-button> -->
-              <el-button type="text" @click="saveFish" style="padding:0;margin:0;font-size: 17px;">暂存</el-button>
+              <!-- <el-button type="text" @click="saveFish" style="padding:0;margin:0;font-size: 17px;">暂存</el-button> -->
             </div>
           </sx-segmenting-line>
           <div style="padding: 20px;">
             <sx-min-form
+              submitTF
               v-model="fishData"
               ref="thatForm"
               :mozhu="allFish" :momo="listData" @consoleData="createFish"></sx-min-form>

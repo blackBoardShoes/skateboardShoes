@@ -2,22 +2,34 @@
   <div class="fieldAll">
     <div class="fieldContent">
       <div style="margin-bottom:5px;">
-        <div style="width:100%; text-align: right">
+        <div style="width:100%; text-align: right;display:flex;align-items:flex-end;height:46px;justify-content: space-between">
           <el-button
-            style="border:0px;border-radius:0px;height:46px;"
+            size="small"
+            style="border:0px;border-radius:0px;"
             @click="newCreateFish"
             type="primary">新增字段</el-button>
-          <el-button
-            style="border:0px;border-radius:0px;height:46px;"
-            @click="saveAllFish"
-            icon="el-icon-tickets"
-            type="info">保存</el-button>
+          <div style="margin-right:18px">
+            <el-button
+              size="small"
+              style="border:0px;border-radius:0px;"
+              @click="newCreateFish"
+              type="primary">筛选</el-button>
+              <el-badge :value="badgeValue" class="item">
+                <el-button
+                  size="small"
+                  style="border:0px;border-radius:0px;"
+                  @click="saveAllFish"
+                  icon="el-icon-tickets"
+                  type="info">保存</el-button>
+              </el-badge>
+          </div>
         </div>
         <el-input
           v-model="lookupData"
           clearable
           prefix-icon="el-icon-search"
           placeholder="字段名称"></el-input>
+        
       </div>
       <div class="listContentBottom">
         <div class="listContent">
@@ -49,6 +61,8 @@
     </div>
     <el-dialog
       title="关联关系"
+      append-to-body
+      modal-append-to-body
       v-if="relationDialogVisible"
       :visible.sync="relationDialogVisible">
       <div style="width:100%;">
@@ -82,7 +96,8 @@ export default {
       lookupData: '',
       listData: this.value,
       needCreatedRelation: {},
-      relationDialogVisible: false
+      relationDialogVisible: false,
+      badgeValue: '12'
     }
   },
   methods: {

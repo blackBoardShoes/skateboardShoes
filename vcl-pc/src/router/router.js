@@ -213,7 +213,7 @@ export const appRouter = [
         name: 'form_index',
         meta: {
           requireAuth: true,
-          title: '表单管理',
+          title: '表单详情',
           navigator: true,
           role: [1]
         },
