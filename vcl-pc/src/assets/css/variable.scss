@@ -1,25 +1,33 @@
 // 全局引用的元素样式
 // 引用： @import '../../assets/css/variable';
 
+// 基本主色
 $themeColor:#117FD1;
 
 $linearGradient: linear-gradient(left, rgba($color: #117FD1, $alpha: 0.05), rgba($color: #117FD1, $alpha: 0.1));
 
 
-
+// 导航底色
 $siderbarBgColor: #242B31;
+// 工作底色
 $topbarBgColor: #FFFFFF;
-
+// 背景底色
 $mainBackgroundColor: #F3F4F5;
 
+// 边框深色浅色
 $deepBorderColor: #C1C1C1;
 $lightBorderColor: #D1D1D1;
 
 $groupColor: #E8E9EA;
-
+// 主要文字
 $mainTextColor: #303133;
+// 常规文字
 $commonTetxColor: #606266;
+// 次要文字
 $minorTextColor: #9DA0A3;
+// 占位文字
 $placeHolderColor: #C0C4CC;
+// 文字浅色
 $lightTextColor: #F3F3F3;
+// 文字浅辅
 $minorLightTextColor: #F5F577;

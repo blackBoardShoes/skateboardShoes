@@ -98,13 +98,13 @@
             @command="handleCommand">
             <span class="el-dropdown-link">
               <i class="ercp-icon-module-user"></i>
-              <span>{{user.department + '-'}}</span>
-              <span class="primary-text">{{user.userName}}</span>
+              <span class="primary-text" v-if="user.userName">{{user.userName}}</span>
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item style="cursor:default;">{{'账号：' + user.userAccount}}</el-dropdown-item>
+              <el-dropdown-item style="cursor:default;">{{user.department}}</el-dropdown-item>
               <el-dropdown-item style="cursor:default;">{{'性别：' + user.gender}}</el-dropdown-item>
-              <el-dropdown-item style="cursor:default;">{{user.status === 0 ? '状态：有效' :'状态：无效'}}</el-dropdown-item>
+              <el-dropdown-item style="cursor:default;">{{'科室:' + user.department}}</el-dropdown-item>
               <el-dropdown-item command="exit" divided>退出登陆</el-dropdown-item>
               <el-dropdown-item command="changePs" divided>修改密码</el-dropdown-item>
             </el-dropdown-menu>
@@ -142,12 +142,10 @@
   </div>
 </template>
 <script>
-import sessionStorage from '../../assets/js/storage/sessionStorage'
+// import sessionStorage from '../../assets/js/storage/sessionStorage'
 import { setMenu, getCurrentPath } from '../../../src/assets/js/util'
-// import { userMixin } from '../../../src/mixin/index'
 export default {
   name: 'layout',
-  // mixins: [userMixin],
   data () {
     let validateOldPassword = (rule, value, callback) => {
       if (!value) {
@@ -242,8 +240,8 @@ export default {
     },
     checkAuth () {
       // 检查用户权限
-      let token = this.$store.state.token || sessionStorage.getItem('token')
-      if (!token || sessionStorage.getItem('token') === '') {
+      let token = this.$store.state.token
+      if (!token || token === '') {
         this.$router.replace('/login')
       } else {
         console.log(token)

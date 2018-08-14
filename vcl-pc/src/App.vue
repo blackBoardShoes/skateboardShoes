@@ -9,6 +9,7 @@ export default {
   name: 'App',
   created () {
     this.$store.commit('GET_USER')
+    this.$store.commit('GET_TOKEN')
   }
 }
 </script>

@@ -249,7 +249,6 @@ export default {
   mounted () {
     this.user = this.$store.state.user
     this.initView(this.user.userType)
-    console.log(this.user)
     this.optionA = charts[4]
     this.optionB = charts[0]
     this.optionC = charts[0]

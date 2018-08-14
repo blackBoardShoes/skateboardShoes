@@ -41,7 +41,6 @@ export function setMenu (routers, code) {
 export function getCurrentPath (vm, router) {
   let currentPathArr = []
   if (router.name !== 'home') {
-    console.log(router)
     if (router.name.indexOf('_index') > -1) {
       currentPathArr.push({
         title: router.meta.title,
@@ -50,15 +49,18 @@ export function getCurrentPath (vm, router) {
       })
     } else {
       router.matched.forEach(item => {
-        let obj = {
-          title: item.meta.title,
-          path: item.path,
-          name: item.name
+        if (item.redirect && item.name.indexOf('_index') > -1) {
+        } else {
+          let obj = {
+            title: item.meta.title,
+            path: item.path,
+            name: item.name
+          }
+          if (item.path.indexOf('/:id') > -1) {
+            obj.path = router.path
+          }
+          currentPathArr.push(obj)
         }
-        if (item.path.indexOf('/:id') > -1) {
-          obj.path = router.path
-        }
-        currentPathArr.push(obj)
       })
     }
   } else {

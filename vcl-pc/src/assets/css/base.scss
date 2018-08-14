@@ -1,3 +1,4 @@
+@import 'variable.scss';
 // 修改全局元素默认样式
 html {
   background: #f5f5f5;
@@ -44,9 +45,21 @@ ul {
   background-color: rgba(125, 125, 125, 0.7);
 }
 
-.el-table__header-wrapper{
-  tr{
-    background-color: green !important;
+// .el-table__header-wrapper{
+//   tr{
+//     background-color: $groupColor !important;
+//     th{
+//       background-color: $groupColor !important;
+//       .cell{
+//         background-color: $groupColor !important;
+//       }
+//     }
+//   }
+// }
+
+.el-table{
+  th{
+    background-color: $groupColor !important;
   }
 }
 
