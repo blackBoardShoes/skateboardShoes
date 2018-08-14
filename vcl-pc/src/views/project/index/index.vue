@@ -239,11 +239,13 @@ export default {
 <style lang="scss" scoped>
   @import '../../../assets/css/variable';
   #project-manage{
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
+    // position: absolute;
+    // left: 0;
+    // right: 0;
+    // bottom: 0;
+    // top: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: row;
     .left-nav{
@@ -304,7 +306,7 @@ export default {
     }
     .right-content{
       flex:1;
-      width: 100%;
+      height: 100%;
       transition: all .25s linear;
       padding: 16px;
       display: flex;

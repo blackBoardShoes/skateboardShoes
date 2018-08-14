@@ -78,14 +78,20 @@ export default {
       flex-direction: row;
       flex-wrap: wrap;
       justify-content: space-between;
+      overflow: auto;
       .chart{
+        float: left;
         border: 2px solid #AAA;
-        padding: 20px;
-        margin: 1% 0;
         box-sizing: border-box;
-        width: 100%;
+        // margin: 2px auto;
+        // padding: 20px;
+        // margin: 1% 0;
+        box-sizing: border-box;
+        // width: 100%;
+        width: 46%;
+        margin: 20px 2%;
         height: 300px;
-        overflow: auto;
+        // overflow: auto;
       }
     }
   }

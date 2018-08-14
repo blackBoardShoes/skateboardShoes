@@ -561,7 +561,7 @@ export default {
         }
       }
       #main-content{
-        z-index: 1;
+        // z-index: 1;
         // flex:1;
         position: fixed;
         left: 150px;

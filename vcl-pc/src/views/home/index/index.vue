@@ -444,7 +444,7 @@ export default {
 </script>
 <style lang="scss" scoped>
   #home{
-    position: absolute;
+    position: relative;
     // left: 16px;
     // right: 16px;
     // top: 16px;
@@ -530,9 +530,12 @@ export default {
           flex-direction: row;
           justify-content: space-between;
           .case-left, .case-right{
-            width: 49.5%;
+            flex: 1;
             box-sizing: border-box;
             padding: 8px;
+          }
+          .case-left{
+            margin-right: 8px;
           }
         }
       }
