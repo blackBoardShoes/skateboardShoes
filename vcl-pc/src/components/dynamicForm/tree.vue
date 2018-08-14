@@ -79,7 +79,9 @@ export default {
     }
   },
   created () {
-    this.treeId = this.treeId + this.treeData.length
+    if (Array.isArray(this.treeData)) {
+      this.treeId = this.treeId + this.treeData.length
+    }
     console.log(this.treeData, '拿到的数据')
   },
   methods: {

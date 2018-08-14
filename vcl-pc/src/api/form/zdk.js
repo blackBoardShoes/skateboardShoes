@@ -15,8 +15,8 @@ export const fieldFinish = data => {
   return axios.post(api + '/field/finish', data)
 }
 // 修改
-export const fieldEdit = data => {
-  return axios.post(api + '/field/edit', data)
+export const fieldUpdate = data => {
+  return axios.put(api + '/field/update', data)
 }
 // 删除
 export const fieldDelete = data => {

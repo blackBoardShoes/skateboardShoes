@@ -77,7 +77,9 @@ export default {
   },
   created () {
     console.log(this.layerTreeData, '拿到的数据')
-    this.treeId = this.treeId + this.layerTreeData.length
+    if (Array.isArray(this.layerTreeData)) {
+      this.treeId = this.treeId + this.layerTreeData.length
+    }
   },
   methods: {
     // tree

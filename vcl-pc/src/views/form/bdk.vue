@@ -67,7 +67,7 @@
               <el-popover
                 class="iconPopover"
                 v-if="item.type === 'ICON'"
-                placement="bottom"
+                placement="bottom-start"
                 title="表单图标"
                 width="260"
                 trigger="hover">
@@ -186,7 +186,9 @@ import sxSegmentingLine from '@/components/segmentingLine'
 import sxRelationFactory from '@/components/dynamicForm/relationFactory'
 import sxCoordinateFactory from '../../components/dynamicForm/coordinateFactory'
 import sxMinTree from '@/components/dynamicForm/minTree'
-import data from '@/components/dynamicForm/data.js'
+// import data from '@/components/dynamicForm/data.js'
+import { fieldAllFields } from '../../api/form/zdk.js'
+import { fieldAllForms } from '../../api/form/bdk.js'
 export default {
   components: {
     sxFormCard,
@@ -197,7 +199,7 @@ export default {
   },
   data () {
     return {
-      mozhu: data,
+      mozhu: {},
       relationDialogVisible: false,
       previewDialogVisible: false,
       coordinateDialogVisible: false,
@@ -325,9 +327,19 @@ export default {
   created () {
     console.log(this.leftChecked, '---------')
     this.firstShow()
-    this.init()
+    this.show()
   },
   methods: {
+    async show () {
+      let data = {
+        fieldsData: await fieldAllFields(),
+        formsData: await fieldAllForms()
+      }
+      console.log(data.fieldsData, 'data.fieldsData')
+      console.log(data.formsData, 'data.formsData')
+      this.mozhu = data.fieldsData ? data.fieldsData.data.entity : {}
+      this.cardArr = data.formsData ? data.formsData.data.entity : []
+    },
     firstShow () {
       // transferData
       // this.transferData = [
@@ -347,7 +359,7 @@ export default {
       this.$set(this.formModel, 'relation', {})
       this.$set(this.formModel, 'coordinate', {})
       this.$set(this.formModel, 'fields', [])
-      this.leftData = [...this.mozhu.fields]
+      this.leftData = [...this.mozhu]
       this.rightData = []
       console.log(this.formModel)
       // this.$set(this.formModel, 'fields', this.formModel['fields'] ? this.formModel['fields'] : [])

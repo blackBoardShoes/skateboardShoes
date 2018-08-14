@@ -7,7 +7,7 @@
             size="small"
             @click="newCreateFish"
             type="primary">新增字段</el-button>
-          <div style="margin-right:18px">
+          <div>
             <el-popover
               placement="bottom-start"
               width="300"
@@ -21,12 +21,12 @@
                   :label="x" v-for="(x, i) in checkListData" :key="i">{{oneToOneText(x)}}</el-checkbox>
               </el-checkbox-group>
             </el-popover>
-            <el-badge :value="badgeValue" class="item">
+            <!-- <el-badge :value="badgeValue" class="item">
               <el-button
                 size="small"
                 @click="saveAllFish"
-                type="info">保存</el-button>
-            </el-badge>
+                type="primary">保存</el-button>
+            </el-badge> -->
           </div>
         </div>
         <el-input
@@ -37,10 +37,11 @@
       </div>
       <div class="listContentBottom">
         <div class="listContent">
+          <!-- , listItemBg: !item.isFinished -->
           <div
             @click="editFish(item, index)"
             v-if="lookupChange(item) & filterItem(item)"
-            :class="{listItem: true, checkedClass: checkedClass === index, listItemBg: !item.isFinished}"
+            :class="{listItem: true, checkedClass: checkedClass === index}"
             v-for="(item, index) in listData" :key="index">
             <div class="listItemLeft">
               <!-- el-icon-ercp-xxxx -->
@@ -106,7 +107,6 @@ export default {
       listData: this.value,
       needCreatedRelation: {},
       relationDialogVisible: false,
-      badgeValue: '',
       oneToOne: [
         {label: '选择器', value: 'SELECT'},
         {label: '文本标签', value: 'TEXTAREA'},
@@ -124,6 +124,17 @@ export default {
       ],
       checkList: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT', 'TABLE'],
       checkListData: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT', 'TABLE']
+    }
+  },
+  computed: {
+    badgeValue () {
+      let z = 0
+      for (let i of this.listData) {
+        if (!i.isFinished) {
+          z++
+        }
+      }
+      return z
     }
   },
   methods: {
@@ -198,6 +209,7 @@ export default {
       for (let i of this.listData) {
         if (i.id === id) {
           this.$set(i, 'relation', data)
+          this.$emit('getRealationData', i)
         }
       }
       this.relationDialogVisible = false
@@ -255,32 +267,32 @@ $bottomH: 200px;
           justify-content: space-between;
           align-items: center;
           background: white;
-          .listItemLeft {
-            display: flex;
-            align-items: center;
-            font-size: 14px;
-            color: $commonTetxColor;
-            .listItemLeftText {
-              white-space: nowrap;
-              text-overflow: ellipsis;
-              overflow: hidden;
-              width: 110px;
+            .listItemLeft {
+              display: flex;
+              align-items: center;
+              font-size: 14px;
+              color: $commonTetxColor;
+              .listItemLeftText {
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                width: 110px;
+              }
             }
-          }
-          .listItemRight {
-            .listItemRightText {
-              white-space: nowrap;
-              text-overflow: ellipsis;
-              overflow: hidden;
-              width: 80px;
+            .listItemRight {
+              .listItemRightText {
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                width: 70px;
+              }
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              flex-grow: 1;
+              font-size: 14px;
+              color: $minorTextColor;
             }
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-grow: 1;
-            font-size: 14px;
-            color: $minorTextColor;
-          }
           }
           .checkedClass {
             background: $linearGradient;
