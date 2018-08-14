@@ -109,6 +109,8 @@ export default {
               console.log('不是数组')
             }
           }
+          this.$emit('input', this.layerTreeData)
+          // console.log(this.layerTreeData)
         } else {
           console.log('error submit!!')
           return false
@@ -123,6 +125,7 @@ export default {
       const children = parent.data.children || parent.data
       const index = children.findIndex(d => d.value === data.value)
       children.splice(index, 1)
+      this.$emit('input', this.layerTreeData)
     },
     showTreeData () {
       console.log(this.layerTreeData)

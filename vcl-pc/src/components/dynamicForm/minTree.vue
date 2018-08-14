@@ -115,7 +115,7 @@ export default {
         {label: '日期时间选择器', value: 'DATETIME'},
         {label: '计算', value: 'CREATECALCULATE'},
         {label: '单选框', value: 'RADIO'},
-        {label: '创建表格', value: 'CREATETABLE'},
+        {label: '表格', value: 'TABLE'},
         {label: '日期选择器', value: 'DATE'},
         {label: '整数类型输入框', value: 'INT'},
         {label: '多选框', value: 'CHECKBOX'},
@@ -123,8 +123,8 @@ export default {
         {label: '级联选择器', value: 'CASCADER'},
         {label: '浮点类型输入框', value: 'DOUBLE'}
       ],
-      checkList: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT'],
-      checkListData: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT']
+      checkList: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT', 'TABLE'],
+      checkListData: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT', 'TABLE']
     }
   },
   watch: {

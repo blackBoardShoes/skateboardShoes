@@ -104,6 +104,7 @@ export default {
           console.log('error submit!!')
           return false
         }
+        this.$emit('input', this.treeData)
       })
     },
     remove (node, data) {
@@ -111,6 +112,7 @@ export default {
       const children = parent.data.children || parent.data
       const index = children.findIndex(d => d.value === data.value)
       children.splice(index, 1)
+      this.$emit('input', this.treeData)
     },
     showTreeData () {
       console.log(this.treeData)
