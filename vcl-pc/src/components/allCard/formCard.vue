@@ -7,8 +7,8 @@
         <el-button
           class="topRihgt"
           :type="
-            cardObj.state === '术中' ? 'primary' : cardObj.state === '术后' ? 'success' :'info'
-            ">{{cardObj.state}}</el-button>
+            cardObj.phase === '术中' ? 'primary' : cardObj.phase === '术后' ? 'success' :'info'
+            ">{{cardObj.phase}}</el-button>
       </div>
       <div class="centerContent">
         <i :class="cardObj.icon" class="centerIcon"></i>
@@ -16,10 +16,10 @@
           {{cardObj.name}}
         </div>
         <div class="centerTitleAddTime">
-          {{cardObj.addTime ? cardObj.addTime : '新增日期: 2018-06-08'}}
+          {{cardObj.createTime ? cardObj.createTime : '新增日期: 2018-06-08'}}
         </div>
         <div class="centerTitleEditTime">
-          {{cardObj.editTime ? cardObj.editTime : '修改日期: 2018-06-08'}}
+          {{cardObj.updateTime ? cardObj.updateTime : '修改日期: 2018-06-08'}}
         </div>
       </div>
       <div class="bottomContent">

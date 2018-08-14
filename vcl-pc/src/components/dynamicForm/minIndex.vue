@@ -596,9 +596,43 @@ export default {
       this.evaluateDialogVisible = false
     },
     // form element operation (计算)
+    checkUpData () {
+      let pattern = /[a-zA-Z][a-zA-Z0-9]*/g
+      for (let i in this.formModel) {
+        for (let j of this.mozhu.fields) {
+          if (j.id === i & j.type === 'CALCULATE') {
+            let patternAfter = j.calculate.match(pattern) ? j.calculate.match(pattern) : []
+            let notHaveLabelArr = []
+            let notHaveArr = []
+            let b = false
+            for (let g of patternAfter) {
+              b = false
+              for (let z in this.formModel) {
+                if (z === g) {
+                  b = true
+                  break
+                }
+              }
+              if (!b) notHaveArr.push(g)
+            }
+            if (notHaveArr.length) {
+              this.$message({
+                showClose: true,
+                message: '计算中有字段模板中未添加' + notHaveArr.toString(),
+                type: 'warning'
+              })
+              return false
+            } else return true
+          }
+        }
+      }
+      return true
+    },
     onEval (ev) {
-      console.log(this.formModel, ev.values)
-      this.$set(this.formModel, ev.id, this.calculate(this.formModel, ev.values))
+      console.log(this.formModel, ev.calculate, this.checkUpData())
+      if (this.checkUpData()) {
+        this.$set(this.formModel, ev.id, this.calculate(this.formModel, ev.calculate))
+      }
       // this.formModel[ev.id] = this.calculate(this.formModel, ev.values)
       // this.formModel[ev.id] = this.calculate(this.formModel, this.compute[ev.id])  
     },

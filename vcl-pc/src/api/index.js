@@ -69,6 +69,11 @@ axios.interceptors.response.use(
           console.log('这个错 --->', err.response.status, '!!!!!!!!!!', err.response.status, '!!!!!!!!!!')
           break
       }
+      Message({
+        showClose: true,
+        message: '服务器没开？',
+        type: 'error'
+      })
     }
     return false
   }

@@ -188,7 +188,7 @@ import sxCoordinateFactory from '../../components/dynamicForm/coordinateFactory'
 import sxMinTree from '@/components/dynamicForm/minTree'
 // import data from '@/components/dynamicForm/data.js'
 import { fieldAllFields } from '../../api/form/zdk.js'
-import { fieldAllForms } from '../../api/form/bdk.js'
+import { fieldAllForms, addFormPost, editFormPut, formDelete } from '../../api/form/bdk.js'
 export default {
   components: {
     sxFormCard,
@@ -271,7 +271,7 @@ export default {
           ]
         },
         {
-          id: 'state',
+          id: 'phase',
           value: [
             {
               value: '术前',
@@ -303,7 +303,7 @@ export default {
           ]
         },
         {
-          id: 'introduction',
+          id: 'description',
           label: '表单简介',
           placeholder: '表单的简要说明',
           type: 'INPUT',
@@ -332,15 +332,16 @@ export default {
   methods: {
     async show () {
       let data = {
-        fieldsData: await fieldAllFields(),
         formsData: await fieldAllForms()
       }
-      console.log(data.fieldsData, 'data.fieldsData')
-      console.log(data.formsData, 'data.formsData')
-      this.mozhu = data.fieldsData ? data.fieldsData.data.entity : {}
       this.cardArr = data.formsData ? data.formsData.data.entity : []
+      console.log(this.cardArr, 'this.cardArr')
     },
-    firstShow () {
+    async firstShow () {
+      let data = {
+        fieldsData: await fieldAllFields()
+      }
+      this.mozhu = data.fieldsData ? data.fieldsData.data.entity : {}
       // transferData
       // this.transferData = [
       //   {
@@ -374,6 +375,7 @@ export default {
       console.log(this.formModel, '-----')
       if (this.formModel.fields) {
         this.rightData = [...this.formModel.fields]
+        this.leftData = [...this.mozhu]
         for (let i in this.leftData) {
           for (let j in this.rightData) {
             if (this.leftData[i].id === this.rightData[j].id) {
@@ -383,15 +385,17 @@ export default {
         }
       } else {
         this.rightData = []
-        this.leftData = [...this.mozhu.fields]
+        this.leftData = [...this.mozhu]
       }
       this.cardIndex = index
       this.editOrAdd = true
       this.fewStepsTF = false
     },
-    templateDelete (value, index) {
-      this.cardArr.splice(index, 1)
-      this.cardComplementShow()
+    async templateDelete (value, index) {
+      await formDelete()
+      this.show()
+      // this.cardArr.splice(index, 1)
+      // this.cardComplementShow()
     },
     // two
     iconJudgeChoose (type) {
@@ -447,7 +451,7 @@ export default {
       return Object.values(item).toString().includes(this.lookupData)
     },
     filterItem (item) {
-      return this.stagelookupData.includes(item.state)
+      return this.stagelookupData.includes(item.phase)
     },
     handleCheckChange (getCheckedNodes, getCheckedKeys, mark) {
       if (mark === 'leftChecked') {
@@ -493,7 +497,7 @@ export default {
       this.formModel['fields'] = this.formModel['fields'] ? this.formModel['fields'] : []
       this.formModel['relation'] = this.formModel['relation'] ? this.formModel['relation'] : {}
       for (let i of this.formModel['fields']) {
-        for (let j of this.mozhu['fields']) {
+        for (let j of this.mozhu) {
           if (j.id === i.id) {
             newFields.push(j)
           }
@@ -538,17 +542,20 @@ export default {
       this.fewStepsTF = true
     },
     editAddForm () {
-      this.$refs['formModel'].validate(valid => {
+      this.$refs['formModel'].validate(async valid => {
         if (valid) {
           this.$set(this.formModel, 'fields', [...this.rightData])
           if (this.checkUpData()) {
             console.log(this.formModel, '1------')
             console.log(this.rightData, '2------')
             if (this.editOrAdd) {
-              this.cardArr[this.cardIndex] = this.formModel
+              await editFormPut(this.formModel)
+              // this.cardArr[this.cardIndex] = this.formModel
             } else {
-              this.cardArr.push(this.formModel)
+              await addFormPost(this.formModel)
+              // this.cardArr.push(this.formModel)
             }
+            this.show()
             this.fewStepsTF = true
             console.log(this.formModel, 'this.formModel')
           }
@@ -560,9 +567,9 @@ export default {
     checkUpData () {
       let pattern = /[a-zA-Z][a-zA-Z0-9]*/g
       for (let i of this.formModel.fields) {
-        for (let j of this.mozhu.fields) {
+        for (let j of this.mozhu) {
           if (j.id === i.id & j.type === 'CALCULATE') {
-            let patternAfter = j.values.match(pattern) ? j.values.match(pattern) : []
+            let patternAfter = j.calculate.match(pattern) ? j.calculate.match(pattern) : []
             let notHaveLabelArr = []
             let notHaveArr = []
             let b = false
@@ -576,7 +583,7 @@ export default {
               }
               if (!b) notHaveArr.push(g)
             }
-            for (let s of this.mozhu['fields']) {
+            for (let s of this.mozhu) {
               for (let o of notHaveArr) {
                 if (s.id === o) {
                   notHaveLabelArr.push(s.label)
@@ -586,7 +593,7 @@ export default {
             if (notHaveArr.length) {
               this.$message({
                 showClose: true,
-                message: '计算中有字段模板中未添加' + notHaveLabelArr.toString(),
+                message: '计算中有字段模板中未添加 ' + notHaveLabelArr.toString(),
                 type: 'warning'
               })
               return false
