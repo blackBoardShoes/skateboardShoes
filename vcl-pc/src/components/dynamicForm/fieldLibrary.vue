@@ -40,7 +40,7 @@
           <div
             @click="editFish(item, index)"
             v-if="lookupChange(item) & filterItem(item)"
-            :class="{listItem: true, checkedClass: checkedClass === index}"
+            :class="{listItem: true, checkedClass: checkedClass === index, listItemBg: !item.isFinished}"
             v-for="(item, index) in listData" :key="index">
             <div class="listItemLeft">
               <!-- el-icon-ercp-xxxx -->
@@ -114,7 +114,7 @@ export default {
         {label: '日期时间选择器', value: 'DATETIME'},
         {label: '计算', value: 'CREATECALCULATE'},
         {label: '单选框', value: 'RADIO'},
-        {label: '创建表格', value: 'CREATETABLE'},
+        {label: '表格', value: 'TABLE'},
         {label: '日期选择器', value: 'DATE'},
         {label: '整数类型输入框', value: 'INT'},
         {label: '多选框', value: 'CHECKBOX'},
@@ -122,8 +122,8 @@ export default {
         {label: '级联选择器', value: 'CASCADER'},
         {label: '浮点类型输入框', value: 'DOUBLE'}
       ],
-      checkList: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT'],
-      checkListData: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT']
+      checkList: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT', 'TABLE'],
+      checkListData: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT', 'TABLE']
     }
   },
   methods: {
@@ -240,11 +240,14 @@ $bottomH: 200px;
     .listContentBottom {
       overflow: auto;
       width: $full;
-      // height: $full;
+      height: $full;
       .listContent {
         margin-bottom: $bottomH;
         width: $full;
         background: white;
+        .listItemBg {
+          background: $mainBackgroundColor !important;
+        }
         .listItem {
           padding: 10px;
           border-bottom: 0.5px dashed $lightBorderColor;
@@ -255,9 +258,10 @@ $bottomH: 200px;
           .listItemLeft {
             display: flex;
             align-items: center;
-            font-size: 16px;
+            font-size: 14px;
             color: $commonTetxColor;
             .listItemLeftText {
+              white-space: nowrap;
               text-overflow: ellipsis;
               overflow: hidden;
               width: 110px;
@@ -265,15 +269,16 @@ $bottomH: 200px;
           }
           .listItemRight {
             .listItemRightText {
+              white-space: nowrap;
               text-overflow: ellipsis;
               overflow: hidden;
-              width: 120px;
+              width: 80px;
             }
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-grow: 1;
-            font-size: 16px;
+            font-size: 14px;
             color: $minorTextColor;
           }
           }

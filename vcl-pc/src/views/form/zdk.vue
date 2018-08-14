@@ -134,7 +134,7 @@ export default {
             value: '',
             type: 'INPUT',
             validations: [
-              // { required: true, message: '请输入组件ID', trigger: 'change' },
+              { required: true, message: '请输入组件ID', trigger: 'change' },
               { pattern: '^[a-zA-Z][a-zA-Z0-9]+$', message: '只能输入以英文字母开头的英文或数字(两位以上)', trigger: 'change' }
             ]
           },

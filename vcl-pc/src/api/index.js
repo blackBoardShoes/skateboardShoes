@@ -2,6 +2,7 @@ import axios from 'axios'
 // import Qs from 'qs'
 // import {apiUrl} from '../dev'
 // axios.defaults.baseURL = '/api'
+import { Message } from 'element-ui'
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.defaults.timeout = 3000
 
@@ -19,11 +20,28 @@ axios.interceptors.request.use(
 )
 axios.interceptors.response.use(
   response => {
-    if ('mitiStatus' in response.data) {
-      if (response.data.mitiStatus === 'SERVER_ERROR') {
-        return false
-      } else {
-        return response
+    if (response.data) {
+      console.log(response)
+      if ('mitiStatus' in response.data) {
+        if (response.data.mitiStatus === 'SERVER_ERROR') {
+          Message({
+            showClose: true,
+            message: 'SERVER_ERROR',
+            type: 'info'
+          })
+          return false
+        } else if (response.data.mitiStatus === 'SUCCESS') {
+          if (response.data.message) {
+            Message({
+              showClose: true,
+              message: response.data.message,
+              type: 'success'
+            })
+          }
+          return response
+        } else {
+          return response
+        }
       }
     }
   },
