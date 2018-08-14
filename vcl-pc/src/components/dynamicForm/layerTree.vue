@@ -70,14 +70,14 @@ export default {
       }
     }
   },
-  // watch: {
-  //   value () {
-  //     this.layerTreeData = [...this.value]
-  //   }
-  // },
+  watch: {
+    value () {
+      this.layerTreeData = [...this.value]
+    }
+  },
   created () {
-    this.treeId = this.treeId + this.layerTreeData.length
     console.log(this.layerTreeData, '拿到的数据')
+    this.treeId = this.treeId + this.layerTreeData.length
   },
   methods: {
     // tree

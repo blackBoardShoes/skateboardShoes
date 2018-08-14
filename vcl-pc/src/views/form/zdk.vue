@@ -9,11 +9,12 @@
             </div>
             <div slot="append" class="centerCenter">
               <!-- <el-button type="danger" @click="deleteFish" style="padding:0;margin:0;font-size: 16px;">删除</el-button> -->
-              <el-button type="text" @click="saveFish" style="padding:0;margin:0;font-size: 17px;">暂存</el-button>
+              <!-- <el-button type="text" @click="saveFish" style="padding:0;margin:0;font-size: 17px;">暂存</el-button> -->
             </div>
           </sx-segmenting-line>
           <div style="padding: 20px;">
             <sx-min-form
+              submitTF
               v-model="fishData"
               ref="thatForm"
               :mozhu="allFish" :momo="listData" @consoleData="createFish"></sx-min-form>
@@ -42,8 +43,9 @@
   </div>
 </template>
 <script>
+import { fieldAllFields, fieldTemporary, fieldEdit, fieldFinish, fieldDelete } from '@/api/form/zdk.js'
 import sxSegmentingLine from '@/components/segmentingLine'
-import sxFieldLibrary from '../../components/dynamicForm/fieldLibrary'
+import sxFieldLibrary from '@/components/dynamicForm/fieldLibrary'
 
 export default {
   components: {
@@ -221,8 +223,17 @@ export default {
       thatFishData: {}
     }
   },
+  created () {
+    this.show()
+  },
   methods: {
-    firstShow () {},
+    async show () {
+      let faf = await fieldAllFields()
+      console.log(faf.data)
+      if (faf) {
+        this.listData = faf.data.entity
+      }
+    },
     newCreateFish () {
       this.fishNeedEditData = {}
       this.thatFish = {}
@@ -256,13 +267,27 @@ export default {
         case 'RADIO':
         case 'CHECKBOX':
           formModel['createTable'] = []
-          formModel['values'] = formModel['layerTree']
+          if (formModel['layerTree']) {
+            formModel['values'] = formModel['layerTree']
+          } else if (formModel['values']) {
+            formModel['layerTree'] = formModel['values']
+          } else {
+            formModel['layerTree'] = []
+          }
+          // formModel['values'] = formModel['layerTree'] ? formModel['layerTree'] : formModel['values']
           formModel['tree'] = []
           formModel['createCalculate'] = ''
           break
         case 'CASCADER':
           formModel['createTable'] = []
-          formModel['children'] = formModel['tree']
+          if (formModel['tree']) {
+            formModel['values'] = formModel['tree']
+          } else if (formModel['values']) {
+            formModel['tree'] = formModel['values']
+          } else {
+            formModel['tree'] = []
+          }
+          // formModel['children'] = formModel['tree'] ? formModel['tree'] : formModel['children']
           formModel['layerTree'] = []
           formModel['createCalculate'] = ''
           break
@@ -318,11 +343,13 @@ export default {
       return what
     },
     async createFish (mozhuId, formModel, relation, newFields, idGroup) {
-      // console.log(mozhuId, formModel, relation, newFields, idGroup)
+      console.log(mozhuId, formModel)
       // formModel['values'] = [...formModel['layerTree']].length ? [...formModel['layerTree']] : []
       let what = this.conversion(this.auxiliaryType(Object.assign({}, formModel)))
       if (this.fishNeedEditData['row']) {
-        this.listData.splice(this.fishNeedEditData['index'], 1, what)
+        let fe = await fieldEdit(what)
+        console.log(fe)
+        // this.listData.splice(this.fishNeedEditData['index'], 1, what)
       } else {
         for (let i of this.listData) {
           if (formModel['id'] === i.id) {
@@ -334,8 +361,11 @@ export default {
             return
           }
         }
-        this.listData.push(what)
+        let ft = await fieldTemporary(what)
+        console.log(ft)
+        // this.listData.push(what)
       }
+      this.show()
       this.$refs['thatFieldLibrary'].resetData()
       this.$refs['thatForm'].resetData()
       this.fishNeedEditData = {}
@@ -343,6 +373,7 @@ export default {
       this.$refs['thatFormPreview'].againData()
     },
     async editFish (row, index) {
+      console.log(row, index, 'editfish')
       this.thatFishData = {}
       this.fishNeedEditData = { index: index, row: row }
       this.fishData = this.auxiliaryType(Object.assign({}, row))
@@ -357,17 +388,21 @@ export default {
       // this.thatFishTF = true
     },
     async deleteFish (row, index) {
+      let fd = await fieldDelete(row.id)
+      console.log(fd)
       this.fishNeedEditData = {}
       this.thatFish = {}
       this.$refs['thatForm'].resetData()
       this.$refs['thatFieldLibrary'].resetData()
     },
-    saveFish () {
-      // ----> createFish
-      this.$refs['thatForm'].consoleData()
-      // this.saveAllFish()
-    },
-    saveAllFish () {
+    // saveFish () {
+    //   // ----> createFish
+    //   this.$refs['thatForm'].consoleData()
+    //   // this.saveAllFish()
+    // },
+    async saveAllFish () {
+      let ff = await fieldFinish(this.listData)
+      console.log(ff)
       console.log(this.listData)
     }
   }

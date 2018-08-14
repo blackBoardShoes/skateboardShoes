@@ -38,6 +38,7 @@
     <!-- <el-button style="margin-top:15px;" size="small" @click="getData">getData</el-button> -->
     <el-dialog
       append-to-body
+      modal-append-to-body
       title="提示"
       :visible.sync="dialogVisible">
       <!-- :mozhu="mozhu" -->

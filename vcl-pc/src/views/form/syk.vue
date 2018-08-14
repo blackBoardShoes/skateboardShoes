@@ -76,7 +76,7 @@
           </el-form-item>
           <el-form-item label="示例图像" style="width: 100%">
             <div class="exampleImg">
-              <img src="https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=116399c62434349b6b066885f9eb1521/91ef76c6a7efce1ba958b016a351f3deb58f65fe.jpg" alt="">
+              <img :src="imgSrc" alt="">
               <div class="exampleImgBtn">
                 <sx-file @onRead="onRead">
                   <i class="el-icon-edit"></i>
@@ -113,7 +113,8 @@ export default {
           { required: true, message: '请输入活动名称', trigger: 'blur' },
           { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
         ]
-      }
+      },
+      imgSrc: 'https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=116399c62434349b6b066885f9eb1521/91ef76c6a7efce1ba958b016a351f3deb58f65fe.jpg'
     }
   },
   methods: {
@@ -143,6 +144,7 @@ export default {
     onRead (data) {
       if (data) {
         console.log(data)
+        this.imgSrc = data.result
       } else {
         console.log(data)
       }

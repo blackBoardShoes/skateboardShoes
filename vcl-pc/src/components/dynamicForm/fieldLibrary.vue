@@ -2,16 +2,32 @@
   <div class="fieldAll">
     <div class="fieldContent">
       <div style="margin-bottom:5px;">
-        <div style="width:100%; text-align: right">
+        <div style="width:100%; text-align: right;display:flex;align-items:flex-end;height:46px;justify-content: space-between">
           <el-button
-            style="border:0px;border-radius:0px;height:46px;"
+            size="small"
             @click="newCreateFish"
             type="primary">新增字段</el-button>
-          <el-button
-            style="border:0px;border-radius:0px;height:46px;"
-            @click="saveAllFish"
-            icon="el-icon-tickets"
-            type="info">保存</el-button>
+          <div style="margin-right:18px">
+            <el-popover
+              placement="bottom-start"
+              width="300"
+              trigger="click">
+              <el-button
+                size="small"
+                slot="reference"
+                >筛选</el-button>
+              <el-checkbox-group v-model="checkList">
+                <el-checkbox style="width:100px;margin-left: 20px;margin-right: 20px;"
+                  :label="x" v-for="(x, i) in checkListData" :key="i">{{oneToOneText(x)}}</el-checkbox>
+              </el-checkbox-group>
+            </el-popover>
+            <el-badge :value="badgeValue" class="item">
+              <el-button
+                size="small"
+                @click="saveAllFish"
+                type="info">保存</el-button>
+            </el-badge>
+          </div>
         </div>
         <el-input
           v-model="lookupData"
@@ -23,7 +39,7 @@
         <div class="listContent">
           <div
             @click="editFish(item, index)"
-            v-if="lookupChange(item)"
+            v-if="lookupChange(item) & filterItem(item)"
             :class="{listItem: true, checkedClass: checkedClass === index}"
             v-for="(item, index) in listData" :key="index">
             <div class="listItemLeft">
@@ -34,8 +50,8 @@
               <div class="listItemLeftText">&nbsp;{{item.label}}</div>
             </div>
             <div class="listItemRight">
-              <el-tooltip class="item" effect="dark" :content="item.type" placement="left">
-                <div class="listItemRightText">{{item.type}}</div>
+              <el-tooltip class="item" effect="dark" :content="oneToOneText(item.type)" placement="left">
+                <div class="listItemRightText">{{oneToOneText(item.type)}}</div>
               </el-tooltip>
               <el-button @click.stop="openRelation(item)" v-if="item.type === 'TABLE'"
                 circle type="primary" size="mini" icon="el-icon-setting"></el-button>
@@ -49,6 +65,8 @@
     </div>
     <el-dialog
       title="关联关系"
+      append-to-body
+      modal-append-to-body
       v-if="relationDialogVisible"
       :visible.sync="relationDialogVisible">
       <div style="width:100%;">
@@ -76,18 +94,49 @@ export default {
       }
     }
   },
+  watch: {
+    value () {
+      this.listData = this.value
+    }
+  },
   data () {
     return {
       checkedClass: null,
       lookupData: '',
       listData: this.value,
       needCreatedRelation: {},
-      relationDialogVisible: false
+      relationDialogVisible: false,
+      badgeValue: '',
+      oneToOne: [
+        {label: '选择器', value: 'SELECT'},
+        {label: '文本标签', value: 'TEXTAREA'},
+        {label: '多选选择器', value: 'SELECTMUTIPLE'},
+        {label: '日期时间选择器', value: 'DATETIME'},
+        {label: '计算', value: 'CREATECALCULATE'},
+        {label: '单选框', value: 'RADIO'},
+        {label: '创建表格', value: 'CREATETABLE'},
+        {label: '日期选择器', value: 'DATE'},
+        {label: '整数类型输入框', value: 'INT'},
+        {label: '多选框', value: 'CHECKBOX'},
+        {label: '输入框', value: 'INPUT'},
+        {label: '级联选择器', value: 'CASCADER'},
+        {label: '浮点类型输入框', value: 'DOUBLE'}
+      ],
+      checkList: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT'],
+      checkListData: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT']
     }
   },
   methods: {
     lookupChange (item) {
       return Object.values(item).toString().includes(this.lookupData)
+    },
+    filterItem (item) {
+      return this.checkList.includes(item.type)
+    },
+    oneToOneText (type) {
+      for (let i of this.oneToOne) {
+        if (type === i.value) return i.label
+      }
     },
     iconJudgeChoose (type) {
       let icon = ''
@@ -211,19 +260,19 @@ $bottomH: 200px;
             .listItemLeftText {
               text-overflow: ellipsis;
               overflow: hidden;
-              width: 130px;
+              width: 110px;
             }
           }
           .listItemRight {
             .listItemRightText {
               text-overflow: ellipsis;
               overflow: hidden;
-              width: 90px;
+              width: 120px;
             }
             display: flex;
             align-items: center;
             justify-content: space-between;
-            width: 110px;
+            flex-grow: 1;
             font-size: 16px;
             color: $minorTextColor;
           }

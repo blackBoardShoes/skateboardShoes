@@ -191,7 +191,8 @@ export const appRouter = [
         path: 'index',
         name: 'form_index',
         meta: {
-          title: '表单管理',
+          requireAuth: true,
+          title: '表单详情',
           navigator: true,
           role: [1]
         },

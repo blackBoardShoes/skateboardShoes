@@ -10,7 +10,6 @@ axios.interceptors.request.use(
     // if (config.method === 'post') {
     //   config.data = Qs.stringify(config.data)
     // }
-    console.log(config.data)
     return config
   },
   err => {
@@ -20,7 +19,13 @@ axios.interceptors.request.use(
 )
 axios.interceptors.response.use(
   response => {
-    return response
+    if ('mitiStatus' in response.data) {
+      if (response.data.mitiStatus === 'SERVER_ERROR') {
+        return false
+      } else {
+        return response
+      }
+    }
   },
   err => {
     if (err.response) {
@@ -38,7 +43,7 @@ axios.interceptors.response.use(
           break
       }
     }
-    // return Promise.reject(err)
+    return false
   }
 )
 export default axios
