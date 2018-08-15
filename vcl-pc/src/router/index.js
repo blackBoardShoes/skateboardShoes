@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import store from '../../src/store'
 import { routers } from './router'
 import { Loading } from 'element-ui'
 import sessionStorage from '../../src/assets/js/storage/sessionStorage'
@@ -22,26 +21,41 @@ const router = new VueRouter(routerConfig)
 
 let loading
 router.beforeEach((to, form, next) => {
-  let token = store.state.token
-  let codeTpye = sessionStorage.getItem('user') === null ? null : sessionStorage.getItem('user').userType
+  let user = sessionStorage.getItem('user') === null ? null : sessionStorage.getItem('user')
+  let token = sessionStorage.getItem('token') === null ? null : sessionStorage.getItem('token')
+  let codeType = null
+  if (user === null) {
+    codeType = null
+  } else {
+    codeType = user.codetype
+  }
+  console.log(to)
+  console.log(user)
+  console.log(token)
+  console.log(codeType)
   loading = Loading.service({
     fullscreen: true,
     target: '.content-wrapper',
     text: '跳转中...'
   })
+  // 没有该页面
   if (!to.matched.length) {
     next({
       path: '/error/404',
       replace: true
     })
-  } else if (to.name === 'home' && (token === '' || !token) && sessionStorage.getItem('token') === '') {
-    console.log('to login')
+  // 登录页面直接跳转
+  } else if (to.name === 'login') {
+    next()
+  // token、user失效
+  } else if (user === null || token === '') {
+    console.log('null user')
     next({
       path: '/login',
       replace: true
     })
-    // 判断用户是否有权限进入该页面
-  } else if (codeTpye !== null && (to.meta.role).indexOf(codeTpye) === -1) {
+  //  没有权限
+  } else if (codeType !== null && (to.meta.role).indexOf(codeType) === -1) {
     next({
       path: '/error/403',
       replace: true

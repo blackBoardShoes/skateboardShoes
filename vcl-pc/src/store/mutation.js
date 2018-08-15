@@ -7,11 +7,11 @@ const mutations = {
   // 用户登录
   SET_USER (state, user) {
     sessionStorage.setItem('user', user)
-    // state.user = user
+    state.user = user
   },
   SET_TOKEN (state, token) {
     sessionStorage.setItem('token', token)
-    // state.token = token
+    state.token = token
   },
   GET_USER (state) {
     state.user = sessionStorage.getItem('user')

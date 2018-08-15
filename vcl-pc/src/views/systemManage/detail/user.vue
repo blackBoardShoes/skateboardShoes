@@ -76,11 +76,11 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-dialog title="新增用户" :visible.sync="dialogTableVisible" :modal="true" append-to-body  width="700px">
-      <el-form ref="newUserForm" :rules="rules" :model="newUser" label-position="left" label-width="100px" style="height:206px;">
-        <el-col :span="11">
+    <el-dialog title="新增用户" :visible.sync="dialogTableVisible" :modal="true" append-to-body  width="500px" center>
+      <el-form ref="newUserForm" :rules="rules" :model="newUser" label-position="left" label-width="100px">
+        <el-col :span="24">
           <el-form-item label="用户类型:" prop="userType">
-            <el-select v-model="newUser.userType">
+            <el-select v-model="newUser.userType"  style="width:100%;">
               <el-option
                 label="用户类型一"
                 value="用户类型一">
@@ -92,9 +92,9 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="12" :offset="1">
+        <el-col :span="24">
           <el-form-item label="用户机构:" prop="organization">
-            <el-select v-model="newUser.organization">
+            <el-select v-model="newUser.organization"  style="width:100%;">
               <el-option
                 label="机构一"
                 value="机构一">
@@ -106,22 +106,14 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="11">
+        <el-col :span="24">
           <el-form-item label="用户姓名:" prop="name">
             <el-input v-model="newUser.name"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="12" :offset="1">
-          <el-form-item label="用户性别:" prop="gender">
-            <el-radio-group v-model="newUser.gender">
-              <el-radio label="男" value="0"></el-radio>
-              <el-radio label="女" value="1"></el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
+        <el-col :span="24">
           <el-form-item label="用户科室:" prop="department">
-            <el-select v-model="newUser.department">
+            <el-select v-model="newUser.department"  style="width:100%;">
               <el-option
                 label="科室一"
                 value="科室一">
@@ -131,6 +123,14 @@
                 value="科室二">
               </el-option>
             </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item label="用户性别:" prop="gender">
+            <el-radio-group v-model="newUser.gender">
+              <el-radio label="男" value="0"></el-radio>
+              <el-radio label="女" value="1"></el-radio>
+            </el-radio-group>
           </el-form-item>
         </el-col>
       </el-form>

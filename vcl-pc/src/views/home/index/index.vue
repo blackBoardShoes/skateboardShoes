@@ -47,9 +47,9 @@
           <div>1</div>
         </div>
       </div>
-      <div class="operation-buttons" v-if="user.userType=== 5">
-        <el-button type="primary" size="medium" @click="refresh" v-if="user.userType=== 5 || user.userType=== 6">更新患者</el-button>
-        <el-button type="primary" size="medium" @click="add" v-if="user.userType=== 5">添加患者</el-button>
+      <div class="operation-buttons" v-if="user.codetype && user.codetype=== 5">
+        <el-button type="primary" size="medium" @click="refresh" v-if="user.codetype=== 5 || user.codetype=== 6">更新患者</el-button>
+        <el-button type="primary" size="medium" @click="add" v-if="user.codetype=== 5">添加患者</el-button>
       </div>
       <div class="daily-work">
         <div class="yet case" v-for="item in ['a', 'b' , 'c', 'd']" :key="item">
@@ -64,8 +64,8 @@
             <div>
               <span>林广福<span class="info-text">未手术</span></span>
               <!-- 操作按钮 -->
-              <span class="ercp-icon-medicine-operation float-right" v-if="user.userType=== 5"></span>
-              <span class="ercp-icon-general-fail float-right" v-if="user.userType=== 5"></span>
+              <span class="ercp-icon-medicine-operation float-right" v-if="user.codetype && user.codetype=== 5"></span>
+              <span class="ercp-icon-general-fail float-right" v-if="user.codetype && user.codetype=== 5"></span>
             </div>
             <div>
               <span>手术报告<span class="info-text"></span></span>
@@ -248,7 +248,9 @@ export default {
   },
   mounted () {
     this.user = this.$store.state.user
-    this.initView(this.user.userType)
+    if (this.user.codetype !== null) {
+      this.initView(this.user.codetype)
+    }
     this.optionA = charts[4]
     this.optionB = charts[0]
     this.optionC = charts[0]
@@ -256,7 +258,6 @@ export default {
   },
   methods: {
     initView (type) {
-      console.log(type)
       switch (type) {
         // 管理员
         case 1:

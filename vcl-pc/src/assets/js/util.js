@@ -8,6 +8,7 @@ let util = {
   }
 }
 
+// 设置导航菜单
 export function setMenu (routers, code) {
   /*
   *  @routers  redux管理的 appRouter和otherRouter 的路由表
@@ -15,25 +16,24 @@ export function setMenu (routers, code) {
   *
   * */
   let menu = []
-  routers.forEach(router => {
-    const INDEX = router
-    if (INDEX.meta.role.indexOf(code) > -1 && INDEX.meta.navigator === true) {
-      // 确定子路由
+  routers.forEach((item) => {
+    if (item.meta.role.indexOf(code) > -1 && item.meta.navigator === true) {
       let children = []
-      router.children.forEach((child) => {
-        if (child.meta.role.indexOf(code) > -1 && child.meta.navigator === true) {
-          children.push(child)
-        }
-      })
+      if (item.children) {
+        item.children.forEach((child) => {
+          if (child.meta.role.indexOf(code) > -1 && child.meta.navigator === true) {
+            children.push(child)
+          }
+        })
+      }
       let obj = {
-        title: INDEX.meta.title,
-        path: INDEX.meta.title === '系统首页' ? '/home' : INDEX.path,
-        icon: `ercp-icon-${INDEX.meta.icon}`,
+        title: item.meta.title,
+        path: item.meta.title === '系统首页' ? '/home' : item.path,
+        icon: `ercp-icon-${item.meta.icon}`,
         children: children
       }
       menu.push(obj)
     }
-    // console.log(menu)
   })
   return menu
 }

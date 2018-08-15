@@ -63,11 +63,8 @@ export default {
 <style lang="scss" scoped>
 @import '../../../assets/css/variable';
   #System-manage{
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: row;
     .left-nav{
@@ -112,6 +109,7 @@ export default {
     }
     .right-content{
       flex:1;
+      height: 100%;
     }
   }
 </style>

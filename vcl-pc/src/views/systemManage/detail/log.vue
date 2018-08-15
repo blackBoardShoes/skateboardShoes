@@ -7,7 +7,16 @@
         </el-input> -->
       <!-- </el-col> -->
       <div class="filter-conditions float-left">
-        筛选条件
+        <span class="light-text">日期范围：</span>
+        <el-date-picker
+          size="small"
+          v-model="dataRange"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          @change="timeFilter">
+        </el-date-picker>
       </div>
       <div class="buttons">
         <el-button type="primary" @click="exportLog">导出日志</el-button>
@@ -18,6 +27,7 @@
       <el-table
         :data="tableData"
         style="width: 100%"
+        height="100%"
         size="medium"
         fit>
         <el-table-column
@@ -51,6 +61,18 @@
           label="详情">
         </el-table-column>
       </el-table>
+    </div>
+    <div class="pagination align-right">
+      <el-pagination
+        layout="total, sizes, prev, pager, next, jumper"
+        :page-sizes="[10, 15, 20]"
+        :total="total"
+        :current-page="currentpage"
+        :page-size="pagesize"
+        @size-change= "pageSize"
+        @current-change = "changePage"
+      >
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -99,8 +121,93 @@ export default {
           operate: '删除',
           operated: '32132333',
           detail: '/patient/deleted?id=32132333'
+        },
+        {
+          operateTime: '2018-10-12',
+          ip: '192.168.10.241',
+          operateAccount: '10029',
+          operate: '删除',
+          operated: '32132333',
+          detail: '/patient/deleted?id=32132333'
+        },
+        {
+          operateTime: '2018-10-12',
+          ip: '192.168.10.241',
+          operateAccount: '10029',
+          operate: '删除',
+          operated: '32132333',
+          detail: '/patient/deleted?id=32132333'
+        },
+        {
+          operateTime: '2018-10-12',
+          ip: '192.168.10.241',
+          operateAccount: '10029',
+          operate: '删除',
+          operated: '32132333',
+          detail: '/patient/deleted?id=32132333'
+        },
+        {
+          operateTime: '2018-10-12',
+          ip: '192.168.10.241',
+          operateAccount: '10029',
+          operate: '删除',
+          operated: '32132333',
+          detail: '/patient/deleted?id=32132333'
+        },
+        {
+          operateTime: '2018-10-12',
+          ip: '192.168.10.241',
+          operateAccount: '10029',
+          operate: '删除',
+          operated: '32132333',
+          detail: '/patient/deleted?id=32132333'
+        },
+        {
+          operateTime: '2018-10-12',
+          ip: '192.168.10.241',
+          operateAccount: '10029',
+          operate: '删除',
+          operated: '32132333',
+          detail: '/patient/deleted?id=32132333'
+        },
+        {
+          operateTime: '2018-10-12',
+          ip: '192.168.10.241',
+          operateAccount: '10029',
+          operate: '删除',
+          operated: '32132333',
+          detail: '/patient/deleted?id=32132333'
+        },
+        {
+          operateTime: '2018-10-12',
+          ip: '192.168.10.241',
+          operateAccount: '10029',
+          operate: '删除',
+          operated: '32132333',
+          detail: '/patient/deleted?id=32132333'
+        },
+        {
+          operateTime: '2018-10-12',
+          ip: '192.168.10.241',
+          operateAccount: '10029',
+          operate: '删除',
+          operated: '32132333',
+          detail: '/patient/deleted?id=32132333'
+        },
+        {
+          operateTime: '2018-10-12',
+          ip: '192.168.10.241',
+          operateAccount: '10029',
+          operate: '删除',
+          operated: '32132333',
+          detail: '/patient/deleted?id=32132333'
         }
-      ]
+      ],
+      dataRange: [],
+      // 分页
+      pagesize: 10,
+      currentpage: 1,
+      total: 100
     }
   },
   methods: {
@@ -109,6 +216,15 @@ export default {
     },
     clearLog () {
       this.$message.warning('清空日志')
+    },
+    timeFilter () {
+      console.log(this.dataRange)
+    },
+    pageSize (size) {
+      console.log(size)
+    },
+    changePage (page) {
+      console.log(page)
     }
   },
   mounted () {
@@ -127,11 +243,20 @@ export default {
     .operate-buttons{
       // height: 40px;
       min-height: 40px;
+      width: 100%;
       line-height: 40px;
       padding:10px 0;
     }
     .system-log{
       flex: 1;
+      width: 100%;
+      height: 100px;
+      overflow: auto;
+    }
+    .pagination{
+      margin-top: 10px;
+      min-height: 30px;
+      line-height: 30px;
     }
   }
 </style>

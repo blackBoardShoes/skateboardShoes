@@ -5,7 +5,9 @@ export const loginRouter = {
   path: '/login',
   name: 'login',
   meta: {
-    title: 'Login - 登录'
+    navigator: false,
+    title: 'Login - 登录',
+    role: [1, 2, 3, 4, 5, 6]
   },
   component: () => import('../views/login/login')
 }
@@ -15,7 +17,9 @@ export const errorRouter = {
   path: '/error/:code',
   name: 'error',
   meta: {
-    title: 'error-错误'
+    navigator: false,
+    title: 'error-错误',
+    role: [1, 2, 3, 4, 5, 6]
   },
   component: () =>
     import('../views/error/index')
@@ -25,30 +29,40 @@ export const errorRouter = {
 export const otherRouter = {
   path: '',
   name: 'otherRouter',
-  redirect: '/home',
+  redirect: '/login',
   meta: {
-    navigator: true,
-    title: '系统首页',
-    role: [1, 2, 3, 4, 5, 6],
-    icon: 'module-home'
-  },
-  component: Layout,
-  children: [
-    {
-      path: '/home',
-      name: 'home',
-      meta: {
-        title: '系统首页',
-        navigator: true,
-        role: [1, 2, 3, 4, 5, 6]
-      },
-      component: () => import('../../src/views/home/index/index.vue')
-    }
-  ]
+    navigator: false,
+    title: 'login',
+    role: [1, 2, 3, 4, 5, 6]
+  }
 }
 
 // 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
 export const appRouter = [
+  {
+    path: '/home',
+    name: 'home',
+    redirect: '/home/index',
+    meta: {
+      navigator: true,
+      title: '系统首页',
+      role: [1, 2, 3, 4, 5, 6],
+      icon: 'module-home'
+    },
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'home_index',
+        meta: {
+          title: '系统首页',
+          navigator: true,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../../src/views/home/index/index.vue')
+      }
+    ]
+  },
   {
     path: '/patient',
     name: 'patient',

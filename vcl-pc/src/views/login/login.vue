@@ -78,8 +78,8 @@ export default {
       passwordType: 'password',
       checkCode: '',
       form: {
-        username: '',
-        password: '',
+        username: '95277',
+        password: '1234567890',
         yanzhengma: ''
       },
       rules: {
@@ -99,6 +99,7 @@ export default {
     // 更换验证码
     _setCheckCode (value) {
       this.checkCode = value
+      this.form.yanzhengma = value
     },
     // 密码是否可见
     _togglePasswordType () {
@@ -120,16 +121,24 @@ export default {
         if (valid) {
           let token = 'a94756da-2962-40ae-bdea-787fd02c9d92'
           let user = {
-            userAccount: 10000,
-            userName: this.form.username,
-            userType: 1,
-            gender: '女',
-            department: '科研管理员',
-            status: 0
+            username: 95270,
+            name: '王二虎',
+            type: '管理员',
+            codetype: 1,
+            gender: '男',
+            insititution: '兰州大学第一医院',
+            department: '外科一',
+            status: '正常',
+            activationData: '2018-08-14'
           }
           this.$store.commit('SET_TOKEN', token)
           this.$store.commit('SET_USER', user)
-          this.$router.replace('home')
+          console.log(this.$store.state.user)
+          if (this.$store.state.user !== '') {
+            this.$router.replace('home')
+          } else {
+            return false
+          }
         } else {
           return false
         }
