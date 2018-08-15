@@ -128,7 +128,8 @@ export default {
       } else {
         if (!formulaEnd) {
           if (numPattern.test(item) | pattern.test(item) | rightAllBracketPattern.test(item)) {
-            this.formula = '(' + this.formula + item
+            this.formula = this.formula + item
+            // this.formula = '(' + this.formula + item
           } else if (leftBracketPattern.test(item)) {
             this.formula = this.formula + item
           } else if (symbolPattern.test(item)) {

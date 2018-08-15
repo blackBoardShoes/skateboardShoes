@@ -84,7 +84,7 @@
                   </div>
                 </div>
                 <div v-if="items.type === 'TABLE'" style="width:100%">
-                  <sx-table ref="sxtable" :tableData="items" @getData="getData"></sx-table>
+                  <sx-table :key="Math.random()" ref="sxtable" :tableData="items" @getData="getData"  style="width:100%"></sx-table>
                 </div>
                 <!-- 辅助创建 新增 编辑 -->
                 <div v-if="items.type === 'CREATECALCULATE'" >
@@ -98,10 +98,14 @@
                 </div>
                 <!-- 辅助创建 新增 编辑  CREATETABLE -> TABLE  table -> CREATETABLE-->
                 <div v-if="items.type === 'CREATETABLE'">
-                  <el-checkbox-group v-model="formModel['createTable']">
+                  <!-- {{formModel['createTable']}} -->
+                  <el-select v-model="formModel['createTable']" multiple clearable filterable style="width: 100%">
+                    <el-option v-for="(it, ii) in repositoryData" :key="ii" :label="it.label + ' - ' + it.type" :value="it.id" ></el-option>
+                  </el-select>
+                  <!-- <el-checkbox-group v-model="formModel['createTable']">
                     <el-checkbox-button v-if="row.type !== 'TABLE' &  row.type !== 'CALCULATE'"
                       v-for="(row, i) in repositoryData" :label="row.id" :key="i">{{row.label + ' - ' + row.type}}</el-checkbox-button>
-                  </el-checkbox-group>
+                  </el-checkbox-group> -->
                 </div>
                 <div v-if="items.type === 'EXAMPLE'">
                   <span style="font-size: 12px">
@@ -168,7 +172,7 @@ export default {
     labelWidth: {
       type: String,
       default () {
-        return '120px'
+        return '110px'
       }
     },
     labelPosition: {
@@ -303,7 +307,7 @@ export default {
           if (this.repositoryData[i].type === 'TABLE') {
             this.repositoryData[i]['createTable'] = []
             for (let j of this.repositoryData[i].subFields) {
-              this.repositoryData[i]['createTable'].push(j.label)
+              this.repositoryData[i]['createTable'].push(j.id)
             }
           }
           if (accordWithCalculateData.includes(this.repositoryData[i].type)) {
@@ -592,9 +596,43 @@ export default {
       this.evaluateDialogVisible = false
     },
     // form element operation (计算)
+    checkUpData () {
+      let pattern = /[a-zA-Z][a-zA-Z0-9]*/g
+      for (let i in this.formModel) {
+        for (let j of this.mozhu.fields) {
+          if (j.id === i & j.type === 'CALCULATE') {
+            let patternAfter = j.calculate.match(pattern) ? j.calculate.match(pattern) : []
+            let notHaveLabelArr = []
+            let notHaveArr = []
+            let b = false
+            for (let g of patternAfter) {
+              b = false
+              for (let z in this.formModel) {
+                if (z === g) {
+                  b = true
+                  break
+                }
+              }
+              if (!b) notHaveArr.push(g)
+            }
+            if (notHaveArr.length) {
+              this.$message({
+                showClose: true,
+                message: '计算中有字段模板中未添加' + notHaveArr.toString(),
+                type: 'warning'
+              })
+              return false
+            } else return true
+          }
+        }
+      }
+      return true
+    },
     onEval (ev) {
-      console.log(this.formModel, ev.values)
-      this.$set(this.formModel, ev.id, this.calculate(this.formModel, ev.values))
+      console.log(this.formModel, ev.calculate, this.checkUpData())
+      if (this.checkUpData()) {
+        this.$set(this.formModel, ev.id, this.calculate(this.formModel, ev.calculate))
+      }
       // this.formModel[ev.id] = this.calculate(this.formModel, ev.values)
       // this.formModel[ev.id] = this.calculate(this.formModel, this.compute[ev.id])  
     },
@@ -670,7 +708,7 @@ $full: 100%;
       // min-width: 140px;
       margin: 5px;
       // margin-left: 15px;
-      margin-right: 25px;
+      margin-right: 10px;
     }
   }
   /deep/ .el-form-item__label {

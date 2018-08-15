@@ -33,9 +33,9 @@
             v-model="listData"
             ref="thatFieldLibrary"
             @newCreateFish="newCreateFish"
+            @getRealationData="getRealationData"
             @editFish="editFish"
             @deleteFish="deleteFish"
-            @saveAllFish="saveAllFish"
             ></sx-field-library>
         </div>
       </div>
@@ -43,7 +43,7 @@
   </div>
 </template>
 <script>
-import { fieldAllFields, fieldTemporary, fieldEdit, fieldFinish, fieldDelete } from '@/api/form/zdk.js'
+import { fieldAllFields, fieldUpdate, fieldFinish, fieldDelete } from '@/api/form/zdk.js'
 import sxSegmentingLine from '@/components/segmentingLine'
 import sxFieldLibrary from '@/components/dynamicForm/fieldLibrary'
 
@@ -228,14 +228,15 @@ export default {
   },
   methods: {
     async show () {
-      let faf = await fieldAllFields()
-      console.log(faf.data)
-      if (faf) {
-        this.listData = faf.data.entity
+      let fieldsData = await fieldAllFields()
+      console.log(fieldsData.data)
+      if (fieldsData) {
+        this.listData = fieldsData.data.entity
       }
     },
     newCreateFish () {
       this.fishNeedEditData = {}
+      this.fishData = {}
       this.thatFish = {}
       this.$refs['thatForm'].resetData()
       this.$refs['thatFieldLibrary'].resetData()
@@ -296,7 +297,13 @@ export default {
           formModel['layerTree'] = []
           formModel['tree'] = []
           formModel['type'] = 'CALCULATE'
-          formModel['values'] = formModel['createCalculate']
+          if (formModel['createCalculate']) {
+            formModel['calculate'] = formModel['createCalculate']
+          } else if (formModel['calculate']) {
+            formModel['createCalculate'] = formModel['calculate']
+          } else {
+            formModel['calculate'] = ''
+          }
           break
         case 'CALCULATE':
           formModel['type'] = 'CREATECALCULATE'
@@ -347,21 +354,21 @@ export default {
       // formModel['values'] = [...formModel['layerTree']].length ? [...formModel['layerTree']] : []
       let what = this.conversion(this.auxiliaryType(Object.assign({}, formModel)))
       if (this.fishNeedEditData['row']) {
-        let fe = await fieldEdit(what)
-        console.log(fe)
+        let fe = await fieldUpdate(what)
+        console.log(fe, 'fieldUpdatefieldUpdatefieldUpdate')
         // this.listData.splice(this.fishNeedEditData['index'], 1, what)
       } else {
         for (let i of this.listData) {
           if (formModel['id'] === i.id) {
             this.$message({
               showClose: true,
-              message: '暂存失败, ID已存在',
+              message: '保存失败, ID已存在',
               type: 'warning'
             })
             return
           }
         }
-        let ft = await fieldTemporary(what)
+        let ft = await fieldFinish(what)
         console.log(ft)
         // this.listData.push(what)
       }
@@ -395,16 +402,14 @@ export default {
       this.$refs['thatForm'].resetData()
       this.$refs['thatFieldLibrary'].resetData()
     },
-    // saveFish () {
-    //   // ----> createFish
-    //   this.$refs['thatForm'].consoleData()
-    //   // this.saveAllFish()
-    // },
-    async saveAllFish () {
-      let ff = await fieldFinish(this.listData)
-      console.log(ff)
-      console.log(this.listData)
+    async getRealationData (data) {
+      await fieldUpdate(data)
     }
+    // async saveAllFish () {
+    //   let ff = await fieldFinish(this.listData)
+    //   console.log(ff)
+    //   console.log(this.listData)
+    // }
   }
 }
 </script>
@@ -426,11 +431,10 @@ $full: 100%;
       height: $full;
       display: flex;
       .zdkContentBottomLeft {
-        width: 72%;
-        flex-grow: 1;
+        width: 750px;
       }
       .zdkContentBottomRight {
-        width: 290px;
+        flex-grow: 1;
         // flex-grow: 1;
       }
     }

@@ -6,7 +6,7 @@
 let host = 'http://192.168.10.196:8089'
 // Is your service nginx  和 npm run dev 都是代理方式
 let nginx = false
-nginx = true
+// nginx = true
 // 是APP是 gzip 选用 false
 let gzip = true
 // gzip = false
