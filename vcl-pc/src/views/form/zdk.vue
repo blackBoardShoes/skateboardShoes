@@ -58,47 +58,47 @@ export default {
         relation: {
           pattern: {
             target: 'type',
-            rule_type: 'EQUAL',
+            ruleType: 'EQUAL',
             value: ['INPUT', 'INT', 'DOUBLE', 'TEXTAREA']
           },
           message: {
             target: 'type',
-            rule_type: 'EQUAL',
+            ruleType: 'EQUAL',
             value: ['INPUT', 'INT', 'DOUBLE', 'TEXTAREA']
           },
           example: {
             target: 'type',
-            rule_type: 'EQUAL',
+            ruleType: 'EQUAL',
             value: ['INPUT', 'INT', 'DOUBLE', 'TEXTAREA']
           },
           required: {
             target: 'type',
-            rule_type: 'EQUAL',
+            ruleType: 'EQUAL',
             value: ['INPUT', 'INT', 'DOUBLE', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'RADIO', 'TEXTAREA', 'CHECKBOX', 'CASCADER']
           },
           tree: {
             target: 'type',
-            rule_type: 'EQUAL',
+            ruleType: 'EQUAL',
             value: 'CASCADER'
           },
           layerTree: {
             target: 'type',
-            rule_type: 'EQUAL',
+            ruleType: 'EQUAL',
             value: ['SELECT', 'SELECTMUTIPLE', 'RADIO', 'CHECKBOX']
           },
           radioAgain: {
             target: 'type',
-            rule_type: 'EQUAL',
+            ruleType: 'EQUAL',
             value: 'RADIO'
           },
           createCalculate: {
             target: 'type',
-            rule_type: 'EQUAL',
+            ruleType: 'EQUAL',
             value: 'CREATECALCULATE'
           },
           createTable: {
             target: 'type',
-            rule_type: 'EQUAL',
+            ruleType: 'EQUAL',
             value: 'CREATETABLE'
           }
         },
@@ -162,7 +162,7 @@ export default {
             type: 'INPUT',
             rules: {
               id: 'type',
-              rule_type: 'EQUAL',
+              ruleType: 'EQUAL',
               value: 'INPUT'
             }
           },
@@ -306,6 +306,13 @@ export default {
           }
           break
         case 'CALCULATE':
+          if (formModel['createCalculate']) {
+            formModel['calculate'] = formModel['createCalculate']
+          } else if (formModel['calculate']) {
+            formModel['createCalculate'] = formModel['calculate']
+          } else {
+            formModel['calculate'] = ''
+          }
           formModel['type'] = 'CREATECALCULATE'
           break
         default:
@@ -387,20 +394,31 @@ export default {
       let rowData = this.auxiliaryType(Object.assign({}, row))
       if (rowData['type'] === 'CREATETABLE') rowData['type'] = 'TABLE'
       if (rowData['type'] === 'CREATECALCULATE') rowData['type'] = 'CALCULATE'
+      console.log(rowData, 'rowDatarowDatarowData')
       this.$set(this.thatFish, 'fields', [])
       this.thatFish['fields'].push(rowData)
       // this.thatFish['fields'].splice(0, 1, rowData)
       this.$refs['thatFormPreview'].resetData()
       this.$refs['thatFormPreview'].againData()
-      // this.thatFishTF = true
     },
     async deleteFish (row, index) {
-      let fd = await fieldDelete(row.id)
-      console.log(fd)
-      this.fishNeedEditData = {}
-      this.thatFish = {}
-      this.$refs['thatForm'].resetData()
-      this.$refs['thatFieldLibrary'].resetData()
+      this.$confirm('此操作将删除字段', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async _ => {
+        let fd = await fieldDelete(row.id)
+        console.log(fd)
+        this.fishNeedEditData = {}
+        this.thatFish = {}
+        this.$refs['thatForm'].resetData()
+        this.$refs['thatFieldLibrary'].resetData()
+      }).catch(_ => {
+        // this.$message({
+        //   type: 'info',
+        //   message: '已取消删除'
+        // })
+      })
     },
     async getRealationData (data) {
       await fieldUpdate(data)
@@ -431,11 +449,10 @@ $full: 100%;
       height: $full;
       display: flex;
       .zdkContentBottomLeft {
-        width: 750px;
+        width: 1000px;
       }
       .zdkContentBottomRight {
         flex-grow: 1;
-        // flex-grow: 1;
       }
     }
     .centerCenter {

@@ -42,7 +42,7 @@
                   <el-checkbox v-for="(it, ii) in items.values" :key="ii" :label="it.value" >{{it.label}}</el-checkbox>
                 </el-checkbox-group>
                 <el-switch :disabled="items.disabled" :active-text="items.activeText" :inactive-text="items.inactiveText" v-if="items.type === 'SWITCH'" v-model="formModel[items.id]" ></el-switch>
-                <el-select :disabled="items.disabled" :placeholder="items.placeholder" clearable filterable v-if="items.type === 'SELECT'" v-model="formModel[items.id]" style="width:100%;">
+                <el-select :key="Math.random()" :disabled="items.disabled" :placeholder="items.placeholder" clearable filterable v-if="items.type === 'SELECT'" v-model="formModel[items.id]" style="width:100%;">
                   <el-option v-for="(it, ii) in items.values" :key="ii" :label="it.label" :value="it.value" ></el-option>
                 </el-select>
                 <el-select :key="Math.random()" :disabled="items.disabled" :placeholder="items.placeholder" multiple clearable filterable v-if="items.type === 'SELECTMUTIPLE'" v-model="formModel[items.id]" style="width:100%;">
@@ -100,7 +100,9 @@
                 <div v-if="items.type === 'CREATETABLE'">
                   <!-- {{formModel['createTable']}} -->
                   <el-select v-model="formModel['createTable']" multiple clearable filterable style="width: 100%">
-                    <el-option v-for="(it, ii) in repositoryData" :key="ii" :label="it.label + ' - ' + it.type" :value="it.id" ></el-option>
+                    <el-option
+                      v-if="it.type !== 'TABLE'"
+                      v-for="(it, ii) in repositoryData" :key="ii" :label="it.label + ' - ' + it.type" :value="it.id" ></el-option>
                   </el-select>
                   <!-- <el-checkbox-group v-model="formModel['createTable']">
                     <el-checkbox-button v-if="row.type !== 'TABLE' &  row.type !== 'CALCULATE'"
@@ -287,7 +289,9 @@ export default {
       this.errors = 'errors' in this.mozhu ? Object.assign({}, this.mozhu['errors']) : {}
       this.comments = 'comments' in this.mozhu ? Object.assign({}, this.mozhu['comments']) : {}
       this.mozhuId = 'id' in this.mozhu ? this.mozhu['id'] : ''
-      // this.init()
+      this.formModel = {}
+      this.init()
+      this.resetData()
     },
     momo () {
       this.repositoryData = this.momo.length ? [...this.momo] : []
@@ -382,7 +386,7 @@ export default {
     tf (items) {
       let a = true
       if (this.relation[items.id]) {
-        switch (this.relation[items.id].rule_type) {
+        switch (this.relation[items.id].ruleType) {
           case 'EQUAL':
             // a = this.formModel[this.relation[items.id].target] === this.relation[items.id].value
             if (typeof this.relation[items.id].value === 'object') {

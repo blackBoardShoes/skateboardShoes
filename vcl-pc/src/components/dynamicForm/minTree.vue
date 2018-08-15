@@ -113,7 +113,7 @@ export default {
         {label: '文本标签', value: 'TEXTAREA'},
         {label: '多选选择器', value: 'SELECTMUTIPLE'},
         {label: '日期时间选择器', value: 'DATETIME'},
-        {label: '计算', value: 'CREATECALCULATE'},
+        {label: '计算', value: 'CALCULATE'},
         {label: '单选框', value: 'RADIO'},
         {label: '表格', value: 'TABLE'},
         {label: '日期选择器', value: 'DATE'},
@@ -123,8 +123,8 @@ export default {
         {label: '级联选择器', value: 'CASCADER'},
         {label: '浮点类型输入框', value: 'DOUBLE'}
       ],
-      checkList: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT', 'TABLE'],
-      checkListData: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT', 'TABLE']
+      checkList: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT', 'TABLE', 'CALCULATE'],
+      checkListData: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT', 'TABLE', 'CALCULATE']
     }
   },
   watch: {
@@ -167,7 +167,7 @@ export default {
     },
     filterNode (value, data) {
       if (!value) return true
-      return data.label.toLowerCase().indexOf(value.toLowerCase()) !== -1
+      return Object.values(data).toString().toLowerCase().indexOf(value.toLowerCase()) !== -1
     },
     iconJudgeChoose (type) {
       let icon = ''
@@ -212,7 +212,7 @@ export default {
           icon = 'el-icon-menu'
           break
         case 'TABLE':
-          icon = 'el-icon-edit'
+          icon = 'ercp-icon-general-table'
           break
       }
       return icon
