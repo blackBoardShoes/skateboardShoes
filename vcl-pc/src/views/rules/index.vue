@@ -186,8 +186,8 @@ export default {
       // 角色 button 分配   this.user用户数据
       let topArr = []
       for (let i of this.rulesContainTop) {
-        if (i['userType']) {
-          if (i['userType'].includes(this.user.userType)) {
+        if (i['codeType']) {
+          if (i['codeType'].includes(this.user.codeType)) {
             topArr.push(i)
           }
         } else {

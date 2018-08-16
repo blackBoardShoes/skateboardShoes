@@ -36,7 +36,7 @@
             </div>
           </div>
           <div class="rightContent">
-            <div class="rightContentDynamic" v-if="!(navArr[activeIndex] ? navArr[activeIndex].static : false)">
+            <div class="rightContentDynamic" v-if="!(navArr[activeIndex] ? navArr[activeIndex].isStatic : false)">
               <sx-min-form
                 v-model="fishData"
                 ref="thatForm"
@@ -45,7 +45,7 @@
                 @consoleData="consoleData"></sx-min-form>
             </div>
             <div class="rightContentStatic">
-              <sx-operation-report v-model="aaa" v-if="navArr[activeIndex] ? navArr[activeIndex].static === 'ssbg' : false"></sx-operation-report>
+              <sx-operation-report v-model="ssbgModel" ref="ssbgModel" v-if="navArr[activeIndex] ? navArr[activeIndex].isStatic === 'ssbg' : false"></sx-operation-report>
             </div>
           </div>
         </div>
@@ -74,7 +74,7 @@ export default {
             {
               icon: 'ercp-icon-medicine-report',
               name: '手术报告',
-              static: 'ssbg'
+              isStatic: 'ssbg'
             },
             {
               icon: 'ercp-icon-medicine-guidewire',
@@ -254,7 +254,7 @@ export default {
                 {
                   icon: 'ercp-icon-medicine-report',
                   name: '手术报告',
-                  static: 'ssbg'
+                  isStatic: 'ssbg'
                 },
                 {
                   icon: 'ercp-icon-medicine-guidewire',
@@ -415,7 +415,7 @@ export default {
                 {
                   icon: 'ercp-icon-medicine-guidewire',
                   name: '手术报告',
-                  static: 'ssbg'
+                  isStatic: 'ssbg'
                 }
               ]
             }
@@ -443,7 +443,7 @@ export default {
             {
               icon: 'ercp-icon-medicine-report',
               name: '手术报告',
-              static: 'ssbg'
+              isStatic: 'ssbg'
             },
             {
               icon: 'ercp-icon-medicine-guidewire',
@@ -633,7 +633,14 @@ export default {
       activeIndexNav: 'sq',
       activeIndex: 0,
       patientInfo: {},
-      aaa: {}
+      ssbgModel: {
+        operationCheckBox: [],
+        operationSelect: [],
+        operationSelectMz: [],
+        operationSelectJc: [],
+        operationSelectHj: [],
+        operationDateTime: ''
+      }
     }
   },
   created () {
@@ -670,6 +677,11 @@ export default {
       console.log(key, keyPath)
       this.activeIndexNav = key
       this.navArrAssignment()
+      if (this.$refs['ssbgModel']) {
+        this.$nextTick(_ => {
+          this.$refs['ssbgModel'].resetForm()
+        })
+      }
       // this.navArr = this.allArr[key].subFields
     },
     generalSubmit () {

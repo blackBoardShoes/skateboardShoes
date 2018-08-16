@@ -89,6 +89,12 @@ export default {
   props: {
     disabled: {
       type: Boolean
+    },
+    value: {
+      type: Object,
+      default () {
+        return {}
+      }
     }
   },
   data () {
@@ -102,14 +108,7 @@ export default {
           information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
         }
       ],
-      formModel: {
-        operationCheckBox: [],
-        operationSelect: [],
-        operationSelectMz: [],
-        operationSelectJc: [],
-        operationSelectHj: [],
-        operationDateTime: ''
-      },
+      formModel: this.value,
       formData: {
         operationCheckBox: [
           { value: 'ERCP', label: 'ERCP' },
@@ -149,6 +148,9 @@ export default {
     }
   },
   methods: {
+    resetForm () {
+      this.$refs['formModel'].resetFields()
+    },
     handleChange (val) {
       // console.log(val)
     }

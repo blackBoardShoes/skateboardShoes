@@ -449,7 +449,6 @@ $full: 100%;
       height: $full;
       display: flex;
       .zdkContentBottomLeft {
-        width: 1000px;
       }
       .zdkContentBottomRight {
         flex-grow: 1;

@@ -68,10 +68,9 @@
                 class="iconPopover"
                 v-if="item.type === 'ICON'"
                 placement="bottom-start"
-                title="表单图标"
-                width="490"
+                width="500"
                 trigger="hover">
-                  <el-radio-group v-model="formModel[item.id]">
+                  <el-radio-group v-model="formModel[item.id]" style="margin: 8px;">
                     <el-radio :label="item.value" v-for="(item, index) in iconArr" :key="index" style="width: 100px;margin: 10px;">
                       <i :class="item.value" style="font-size: 18px"></i> {{item.label}}
                     </el-radio>
@@ -481,14 +480,24 @@ export default {
     templateEdit (value, index) {
       this.formModel = Object.assign({}, value)
       console.log(this.formModel, '-----')
+      console.log(this.mozhu, '---11111111--')
       if (this.formModel.fields) {
         this.rightData = [...this.formModel.fields]
-        this.leftData = [...this.mozhu]
-        for (let i in this.leftData) {
-          for (let j in this.rightData) {
-            if (this.leftData[i].id === this.rightData[j].id) {
-              this.$delete(this.leftData, i)
+        // this.leftData = [...this.mozhu]
+        this.leftData = []
+        let leftDataFilter = [...this.mozhu]
+        for (let i in leftDataFilter) {
+          for (let j of this.rightData) {
+            if (leftDataFilter[i].id === j.id) {
+              // this.leftData.push(j)
+              leftDataFilter[i] = false
+              // this.$delete(this.leftData, i)
             }
+          }
+        }
+        for (let z of leftDataFilter) {
+          if (z) {
+            this.leftData.push(z)
           }
         }
       } else {
@@ -567,7 +576,11 @@ export default {
     },
     lookupChange (item) {
       console.log(item)
-      return Object.values(item).toString().includes(this.lookupData)
+      if (item['isStatic']) {
+        return false
+      } else {
+        return Object.values(item).toString().includes(this.lookupData)
+      }
     },
     filterItem (item) {
       return this.stagelookupData.includes(item.phase)
