@@ -451,7 +451,7 @@ $full: 100%;
       display: flex;
       .zdkContentBottomLeft {
         // max-width: 0px;
-        width: 900px;
+        width: 700px;
         flex-grow: 1;
       }
       .zdkContentBottomRight {
