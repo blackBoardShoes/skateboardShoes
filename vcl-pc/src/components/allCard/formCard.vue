@@ -16,10 +16,10 @@
           {{cardObj.name}}
         </div>
         <div class="centerTitleAddTime">
-          {{cardObj.createTime ? cardObj.createTime : '新增日期: 2018-06-08'}}
+          {{cardObj.createTime ? cardObj.createTime : '新增日期: 我也不知道'}}
         </div>
         <div class="centerTitleEditTime">
-          {{cardObj.updateTime ? cardObj.updateTime : '修改日期: 2018-06-08'}}
+          {{cardObj.updateTime ? cardObj.updateTime : '修改日期: 我也不知道'}}
         </div>
       </div>
       <div class="bottomContent">

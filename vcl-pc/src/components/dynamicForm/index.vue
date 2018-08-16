@@ -276,47 +276,47 @@ export default {
         relation: {
           pattern: {
             target: 'type',
-            rule_type: 'EQUAL',
+            ruleType: 'EQUAL',
             value: ['INPUT', 'INT', 'DOUBLE', 'TEXTAREA']
           },
           message: {
             target: 'type',
-            rule_type: 'EQUAL',
+            ruleType: 'EQUAL',
             value: ['INPUT', 'INT', 'DOUBLE', 'TEXTAREA']
           },
           example: {
             target: 'type',
-            rule_type: 'EQUAL',
+            ruleType: 'EQUAL',
             value: ['INPUT', 'INT', 'DOUBLE', 'TEXTAREA']
           },
           required: {
             target: 'type',
-            rule_type: 'EQUAL',
+            ruleType: 'EQUAL',
             value: ['INPUT', 'INT', 'DOUBLE', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'RADIO', 'TEXTAREA', 'CHECKBOX', 'CASCADER']
           },
           tree: {
             target: 'type',
-            rule_type: 'EQUAL',
+            ruleType: 'EQUAL',
             value: 'CASCADER'
           },
           layerTree: {
             target: 'type',
-            rule_type: 'EQUAL',
+            ruleType: 'EQUAL',
             value: ['SELECT', 'SELECTMUTIPLE', 'RADIO', 'CHECKBOX']
           },
           radioAgain: {
             target: 'type',
-            rule_type: 'EQUAL',
+            ruleType: 'EQUAL',
             value: 'RADIO'
           },
           createCalculate: {
             target: 'type',
-            rule_type: 'EQUAL',
+            ruleType: 'EQUAL',
             value: 'CREATECALCULATE'
           },
           createTable: {
             target: 'type',
-            rule_type: 'EQUAL',
+            ruleType: 'EQUAL',
             value: 'CREATETABLE'
           }
         },
@@ -380,7 +380,7 @@ export default {
             type: 'INPUT',
             rules: {
               id: 'type',
-              rule_type: 'EQUAL',
+              ruleType: 'EQUAL',
               value: 'INPUT'
             }
           },
@@ -584,7 +584,7 @@ export default {
     tf (items) {
       let a = true
       if (this.relation[items.id]) {
-        switch (this.relation[items.id].rule_type) {
+        switch (this.relation[items.id].ruleType) {
           case 'EQUAL':
             // a = this.formModel[this.relation[items.id].target] === this.relation[items.id].value
             if (typeof this.relation[items.id].value === 'object') {

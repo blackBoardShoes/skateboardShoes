@@ -92,20 +92,22 @@ export default {
           }
         }
       }
+      console.log(this.options, 'this.optionsthis.optionsthis.optionsthis.optionsthis.options')
       for (let w of this.subFields) {
         if (w.type === 'RADIO' | w.type === 'SELECT') {
-          for (let r of this.options) {
-            for (let u of r.children) {
-              u.children.push({value: w.id, label: w.label, children: [...w.values]})
+          if (w['values']) {
+            for (let r of this.options) {
+              for (let u of r.children) {
+                u.children.push({value: w.id, label: w.label, children: [...w.values]})
+              }
             }
           }
         }
       }
-      console.log(this.options)
       // relationGroup init
       for (let e in this.relation) {
         this.formatBefore.push(
-          [e, this.relation[e]['rule_type'], this.relation[e]['target'], this.relation[e]['value']]
+          [e, this.relation[e]['ruleType'], this.relation[e]['target'], this.relation[e]['value']]
         )
       }
     },
@@ -120,7 +122,7 @@ export default {
       this.formatAfter = {}
       for (let i of this.formatBefore) {
         this.formatAfter[i[0]] = {
-          rule_type: i[1],
+          ruleType: i[1],
           target: i[2],
           value: i[3]
         }

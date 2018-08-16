@@ -68,12 +68,11 @@
                 class="iconPopover"
                 v-if="item.type === 'ICON'"
                 placement="bottom-start"
-                title="表单图标"
-                width="260"
+                width="500"
                 trigger="hover">
-                  <el-radio-group v-model="formModel[item.id]">
-                    <el-radio :label="item.value" v-for="(item, index) in iconArr" :key="index" style="margin: 10px;">
-                      <i :class="item.value" style="font-size: 20px"></i>
+                  <el-radio-group v-model="formModel[item.id]" style="margin: 8px;">
+                    <el-radio :label="item.value" v-for="(item, index) in iconArr" :key="index" style="width: 100px;margin: 10px;">
+                      <i :class="item.value" style="font-size: 18px"></i> {{item.label}}
                     </el-radio>
                   </el-radio-group>
                 <el-button slot="reference" :icon="formModel[item.id] ? formModel[item.id] : 'el-icon-plus'" circle></el-button>
@@ -175,7 +174,7 @@
       v-if="previewDialogVisible"
       :visible.sync="previewDialogVisible">
       <div style="width:100%;">
-        <sx-min-form ref="thatFormPreview" v-model="previewFishData" :mozhu="formModel"></sx-min-form>
+        <sx-min-form ref="thatFormPreview" v-model="previewFishData" :mozhu="previewFormModel"></sx-min-form>
       </div>
     </el-dialog>
   </div>
@@ -229,24 +228,144 @@ export default {
       editOrAdd: false,
       iconArr: [
         {
-          label: 'cao',
-          value: 'el-icon-edit'
+          label: '麻醉',
+          value: 'ercp-icon-medicine-anaesthesia'
         },
         {
-          label: 'cao',
-          value: 'el-icon-edit'
+          label: '腹部',
+          value: 'ercp-icon-medicine-belly'
         },
         {
-          label: 'cao1',
-          value: 'el-icon-share'
+          label: '取消预约',
+          value: 'ercp-icon-medicine-cancel'
         },
         {
-          label: 'cao2',
-          value: 'el-icon-delete'
+          label: '插管',
+          value: 'ercp-icon-medicine-cannula'
         },
         {
-          label: 'cao3',
-          value: 'el-icon-success'
+          label: '并发症',
+          value: 'ercp-icon-medicine-complication'
+        },
+        {
+          label: '切开',
+          value: 'ercp-icon-medicine-cut'
+        },
+        {
+          label: '诊断',
+          value: 'ercp-icon-medicine-diagnosis'
+        },
+        {
+          label: '饮食',
+          value: 'ercp-icon-medicine-diet'
+        },
+        {
+          label: '出院评估',
+          value: 'ercp-icon-medicine-discharge'
+        },
+        {
+          label: '憩室',
+          value: 'ercp-icon-medicine-diverticulum'
+        },
+        {
+          label: '引流',
+          value: 'ercp-icon-medicine-drainage'
+        },
+        {
+          label: '饮酒',
+          value: 'ercp-icon-medicine-drinking'
+        },
+        {
+          label: '药品',
+          value: 'ercp-icon-medicine-drug'
+        },
+        {
+          label: '手术评估',
+          value: 'ercp-icon-medicine-estimate'
+        },
+        {
+          label: '扩张',
+          value: 'ercp-icon-medicine-expand'
+        },
+        {
+          label: '随访',
+          value: 'ercp-icon-medicine-followup'
+        },
+        {
+          label: '胆管',
+          value: 'ercp-icon-medicine-gallbladder'
+        },
+        {
+          label: '导丝',
+          value: 'ercp-icon-medicine-guidewire'
+        },
+        {
+          label: '医院',
+          value: 'ercp-icon-medicine-hospital'
+        },
+        {
+          label: '炎症',
+          value: 'ercp-icon-medicine-inflammation'
+        },
+        {
+          label: '输液',
+          value: 'ercp-icon-medicine-infusion'
+        },
+        {
+          label: '实验检查',
+          value: 'ercp-icon-medicine-laboratory'
+        },
+        {
+          label: '取石',
+          value: 'ercp-icon-medicine-lithotomy'
+        },
+        {
+          label: '手术',
+          value: 'ercp-icon-medicine-operation'
+        },
+        {
+          label: '肠胰',
+          value: 'ercp-icon-medicine-pancreas'
+        },
+        {
+          label: '既往史',
+          value: 'ercp-icon-medicine-passhistory'
+        },
+        {
+          label: '五联症',
+          value: 'ercp-icon-medicine-pentalogy'
+        },
+        {
+          label: '影像学',
+          value: 'ercp-icon-medicine-photograph'
+        },
+        {
+          label: '体格',
+          value: 'ercp-icon-medicine-physique'
+        },
+        {
+          label: '造影',
+          value: 'ercp-icon-medicine-radiography'
+        },
+        {
+          label: '手术报告',
+          value: 'ercp-icon-medicine-report'
+        },
+        {
+          label: '预约',
+          value: 'ercp-icon-medicine-reservation'
+        },
+        {
+          label: '床位',
+          value: 'ercp-icon-medicine-sickbed'
+        },
+        {
+          label: '一般情况',
+          value: 'ercp-icon-medicine-situation'
+        },
+        {
+          label: '胃脏',
+          value: 'ercp-icon-medicine-stomach'
         }
       ],
       createTopForm: [
@@ -316,6 +435,7 @@ export default {
       // transferModel: [],
       // transferData: [],
       formModel: {},
+      previewFormModel: {},
       leftChecked: [],
       rightChecked: [],
       leftData: [],
@@ -342,19 +462,6 @@ export default {
         fieldsData: await fieldAllFields()
       }
       this.mozhu = data.fieldsData ? data.fieldsData.data.entity : {}
-      // transferData
-      // this.transferData = [
-      //   {
-      //     label: '字段库',
-      //     id: 'zdk',
-      //     childrens: [...this.mozhu.fields]
-      //   }
-      // ]
-      // this.transferData = [...this.mozhu.fields]
-      // for (let i in this.mozhu.fields) {
-      // this.transferData[i]['key'] = this.mozhu.fields[i].id
-      // this.$set(this.transferData[i], 'key', this.mozhu.fields[i].id)
-      // }
     },
     init () {
       this.$set(this.formModel, 'relation', {})
@@ -373,14 +480,24 @@ export default {
     templateEdit (value, index) {
       this.formModel = Object.assign({}, value)
       console.log(this.formModel, '-----')
+      console.log(this.mozhu, '---11111111--')
       if (this.formModel.fields) {
         this.rightData = [...this.formModel.fields]
-        this.leftData = [...this.mozhu]
-        for (let i in this.leftData) {
-          for (let j in this.rightData) {
-            if (this.leftData[i].id === this.rightData[j].id) {
-              this.$delete(this.leftData, i)
+        // this.leftData = [...this.mozhu]
+        this.leftData = []
+        let leftDataFilter = [...this.mozhu]
+        for (let i in leftDataFilter) {
+          for (let j of this.rightData) {
+            if (leftDataFilter[i].id === j.id) {
+              // this.leftData.push(j)
+              leftDataFilter[i] = false
+              // this.$delete(this.leftData, i)
             }
+          }
+        }
+        for (let z of leftDataFilter) {
+          if (z) {
+            this.leftData.push(z)
           }
         }
       } else {
@@ -392,8 +509,19 @@ export default {
       this.fewStepsTF = false
     },
     async templateDelete (value, index) {
-      await formDelete()
-      this.show()
+      this.$confirm('此操作将删除表单', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async _ => {
+        await formDelete(value.id)
+        this.show()
+      }).catch(_ => {
+        // this.$message({
+        //   type: 'info',
+        //   message: '已取消删除'
+        // })
+      })
       // this.cardArr.splice(index, 1)
       // this.cardComplementShow()
     },
@@ -448,7 +576,11 @@ export default {
     },
     lookupChange (item) {
       console.log(item)
-      return Object.values(item).toString().includes(this.lookupData)
+      if (item['isStatic']) {
+        return false
+      } else {
+        return Object.values(item).toString().includes(this.lookupData)
+      }
     },
     filterItem (item) {
       return this.stagelookupData.includes(item.phase)
@@ -492,21 +624,21 @@ export default {
       console.log(value)
     },
     openRelation () {
-      let newFields = []
+      // let newFields = []
       this.$set(this.formModel, 'fields', [...this.rightData])
-      this.formModel['fields'] = this.formModel['fields'] ? this.formModel['fields'] : []
+      // this.formModel['fields'] = this.formModel['fields'] ? this.formModel['fields'] : []
       this.formModel['relation'] = this.formModel['relation'] ? this.formModel['relation'] : {}
-      for (let i of this.formModel['fields']) {
-        for (let j of this.mozhu) {
-          if (j.id === i.id) {
-            newFields.push(j)
-          }
-        }
-      }
+      // for (let i of this.formModel['fields']) {
+      //   for (let j of this.mozhu) {
+      //     if (j.id === i.id) {
+      //       newFields.push(j)
+      //     }
+      //   }
+      // }
       this.needCreatedRelation = {
-        id: this.mozhu.id,
+        id: this.formModel['id'],
         relation: this.formModel['relation'],
-        subFields: newFields
+        subFields: this.formModel['fields']
       }
       this.relationDialogVisible = true
     },
@@ -528,7 +660,9 @@ export default {
       this.coordinateDialogVisible = false
     },
     openPreview () {
-      this.$set(this.formModel, 'fields', [...this.rightData])
+      console.log(this.rightData)
+      this.previewFormModel = Object.assign({}, this.formModel)
+      this.$set(this.previewFormModel, 'fields', [...this.rightData])
       this.previewDialogVisible = true
     },
     addForm () {
@@ -544,7 +678,11 @@ export default {
     editAddForm () {
       this.$refs['formModel'].validate(async valid => {
         if (valid) {
-          this.$set(this.formModel, 'fields', [...this.rightData])
+          let idArr = []
+          for (let i of this.rightData) {
+            idArr.push({id: i.id})
+          }
+          this.$set(this.formModel, 'fields', idArr)
           if (this.checkUpData()) {
             console.log(this.formModel, '1------')
             console.log(this.rightData, '2------')

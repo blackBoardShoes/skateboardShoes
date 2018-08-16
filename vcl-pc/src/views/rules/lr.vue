@@ -36,16 +36,16 @@
             </div>
           </div>
           <div class="rightContent">
-            <div class="rightContentDynamic" v-if="!(navArr[activeIndex] ? navArr[activeIndex].static : false)">
+            <div class="rightContentDynamic" v-if="!(navArr[activeIndex] ? navArr[activeIndex].isStatic : false)">
               <sx-min-form
                 v-model="fishData"
                 ref="thatForm"
-                :mozhu="allFish"
+                :mozhu="navArr[activeIndex].template"
                 @notVerifying="notVerifying"
                 @consoleData="consoleData"></sx-min-form>
             </div>
             <div class="rightContentStatic">
-              <sx-operation-report v-model="aaa" v-if="navArr[activeIndex] ? navArr[activeIndex].static === 'ssbg' : false"></sx-operation-report>
+              <sx-operation-report v-model="ssbgModel" ref="ssbgModel" v-if="navArr[activeIndex] ? navArr[activeIndex].isStatic === 'ssbg' : false"></sx-operation-report>
             </div>
           </div>
         </div>
@@ -74,12 +74,172 @@ export default {
             {
               icon: 'ercp-icon-medicine-report',
               name: '手术报告',
-              static: 'ssbg'
+              isStatic: 'ssbg'
             },
             {
               icon: 'ercp-icon-medicine-guidewire',
               name: '导丝',
-              disabled: true
+              template: {
+                relation: {
+                  pattern: {
+                    target: 'type',
+                    rule_type: 'EQUAL',
+                    value: ['INPUT', 'INT', 'DOUBLE', 'TEXTAREA']
+                  },
+                  message: {
+                    target: 'type',
+                    rule_type: 'EQUAL',
+                    value: ['INPUT', 'INT', 'DOUBLE', 'TEXTAREA']
+                  },
+                  example: {
+                    target: 'type',
+                    rule_type: 'EQUAL',
+                    value: ['INPUT', 'INT', 'DOUBLE', 'TEXTAREA']
+                  },
+                  required: {
+                    target: 'type',
+                    rule_type: 'EQUAL',
+                    value: ['INPUT', 'INT', 'DOUBLE', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'RADIO', 'TEXTAREA', 'CHECKBOX', 'CASCADER']
+                  },
+                  tree: {
+                    target: 'type',
+                    rule_type: 'EQUAL',
+                    value: 'CASCADER'
+                  },
+                  layerTree: {
+                    target: 'type',
+                    rule_type: 'EQUAL',
+                    value: ['SELECT', 'SELECTMUTIPLE', 'RADIO', 'CHECKBOX']
+                  },
+                  radioAgain: {
+                    target: 'type',
+                    rule_type: 'EQUAL',
+                    value: 'RADIO'
+                  },
+                  createCalculate: {
+                    target: 'type',
+                    rule_type: 'EQUAL',
+                    value: 'CREATECALCULATE'
+                  },
+                  createTable: {
+                    target: 'type',
+                    rule_type: 'EQUAL',
+                    value: 'CREATETABLE'
+                  }
+                },
+                fields: [
+                  {
+                    id: 'type',
+                    label: '请选择类型',
+                    value: '',
+                    type: 'RADIO',
+                    values: [
+                      {label: '输入框', value: 'INPUT'},
+                      {label: '整数类型输入框', value: 'INT'},
+                      {label: '浮点数类型输入框', value: 'DOUBLE'},
+                      {label: '文本标签', value: 'TEXTAREA'},
+                      {label: '选择器', value: 'SELECT'},
+                      {label: '多选选择器', value: 'SELECTMUTIPLE'},
+                      {label: '日期选择器', value: 'DATE'},
+                      {label: '日期时间选择器', value: 'DATETIME'},
+                      {label: '单选框', value: 'RADIO'},
+                      {label: '多选框', value: 'CHECKBOX'},
+                      {label: '级联选择器', value: 'CASCADER'},
+                      {label: '创建表格', value: 'CREATETABLE'},
+                      {label: '计算', value: 'CREATECALCULATE'}
+                    ],
+                    validations: [
+                      { required: true, message: '请选择类型', trigger: 'change' }
+                    ]
+                  },
+                  // input
+                  {
+                    id: 'id',
+                    label: 'ID',
+                    value: '',
+                    type: 'INPUT',
+                    validations: [
+                      { required: true, message: '请输入组件ID', trigger: 'change' },
+                      { pattern: '^[a-zA-Z][a-zA-Z0-9]+$', message: '只能输入以英文字母开头的英文或数字(两位以上)', trigger: 'change' }
+                    ]
+                  },
+                  // label
+                  {
+                    id: 'label',
+                    label: '标签名字',
+                    value: '',
+                    type: 'INPUT',
+                    validations: [
+                      { required: true, message: '请输入组件标签名', trigger: 'change' },
+                      { pattern: '^[^\\s~！@#￥%……&*（）——+~!@#$%^&*()_+]*$', message: '不能输入空格或特殊字符', trigger: 'change' }
+                    ]
+                  },
+                  // patten
+                  {
+                    id: 'pattern',
+                    label: '正则',
+                    type: 'INPUT'
+                  },
+                  // patten message
+                  {
+                    id: 'message',
+                    label: '正则提示信息',
+                    type: 'INPUT',
+                    rules: {
+                      id: 'type',
+                      rule_type: 'EQUAL',
+                      value: 'INPUT'
+                    }
+                  },
+                  // patten
+                  {
+                    id: 'example',
+                    label: '正则例子',
+                    type: 'EXAMPLE'
+                  },
+                  // tree
+                  {
+                    id: 'tree',
+                    label: '创建级联',
+                    type: 'TREE',
+                    values: []
+                  },
+                  // layertree
+                  {
+                    id: 'layerTree',
+                    label: '创建选项',
+                    type: 'LAYERTREE',
+                    values: []
+                  },
+                  // required
+                  {
+                    id: 'required',
+                    label: '是否必填',
+                    value: '',
+                    type: 'RADIO',
+                    values: [
+                      {label: '是', value: 1},
+                      {label: '否', value: 0}
+                    ]
+                  },
+                  {
+                    id: 'createCalculate',
+                    label: 'ID公式',
+                    value: '',
+                    type: 'CREATECALCULATE',
+                    validations: [
+                      { required: true, message: '请输入需要计算的 ID 公式,如 (id1+id2)', trigger: 'blur' }
+                    ]
+                  },
+                  // createtable
+                  {
+                    id: 'createTable',
+                    label: '创建表格',
+                    type: 'CREATETABLE',
+                    values: []
+                  }
+                ]
+              }
             }
           ]
         },
@@ -93,11 +253,126 @@ export default {
               subFields: [
                 {
                   icon: 'ercp-icon-medicine-report',
-                  name: '手术报告'
+                  name: '手术报告',
+                  isStatic: 'ssbg'
                 },
                 {
                   icon: 'ercp-icon-medicine-guidewire',
-                  name: '导丝'
+                  name: '导丝',
+                  template: {
+                    fields: [
+                      {
+                        id: 'type',
+                        label: '请选择类型',
+                        value: '',
+                        type: 'RADIO',
+                        values: [
+                          {label: '输入框', value: 'INPUT'},
+                          {label: '整数类型输入框', value: 'INT'},
+                          {label: '浮点数类型输入框', value: 'DOUBLE'},
+                          {label: '文本标签', value: 'TEXTAREA'},
+                          {label: '选择器', value: 'SELECT'},
+                          {label: '多选选择器', value: 'SELECTMUTIPLE'},
+                          {label: '日期选择器', value: 'DATE'},
+                          {label: '日期时间选择器', value: 'DATETIME'},
+                          {label: '单选框', value: 'RADIO'},
+                          {label: '多选框', value: 'CHECKBOX'},
+                          {label: '级联选择器', value: 'CASCADER'},
+                          {label: '创建表格', value: 'CREATETABLE'},
+                          {label: '计算', value: 'CREATECALCULATE'}
+                        ],
+                        validations: [
+                          { required: true, message: '请选择类型', trigger: 'change' }
+                        ]
+                      },
+                      // input
+                      {
+                        id: 'id',
+                        label: 'ID',
+                        value: '',
+                        type: 'INPUT',
+                        validations: [
+                          { required: true, message: '请输入组件ID', trigger: 'change' },
+                          { pattern: '^[a-zA-Z][a-zA-Z0-9]+$', message: '只能输入以英文字母开头的英文或数字(两位以上)', trigger: 'change' }
+                        ]
+                      },
+                      // label
+                      {
+                        id: 'label',
+                        label: '标签名字',
+                        value: '',
+                        type: 'INPUT',
+                        validations: [
+                          { required: true, message: '请输入组件标签名', trigger: 'change' },
+                          { pattern: '^[^\\s~！@#￥%……&*（）——+~!@#$%^&*()_+]*$', message: '不能输入空格或特殊字符', trigger: 'change' }
+                        ]
+                      },
+                      // patten
+                      {
+                        id: 'pattern',
+                        label: '正则',
+                        type: 'INPUT'
+                      },
+                      // patten message
+                      {
+                        id: 'message',
+                        label: '正则提示信息',
+                        type: 'INPUT',
+                        rules: {
+                          id: 'type',
+                          rule_type: 'EQUAL',
+                          value: 'INPUT'
+                        }
+                      },
+                      // patten
+                      {
+                        id: 'example',
+                        label: '正则例子',
+                        type: 'EXAMPLE'
+                      },
+                      // tree
+                      {
+                        id: 'tree',
+                        label: '创建级联',
+                        type: 'TREE',
+                        values: []
+                      },
+                      // layertree
+                      {
+                        id: 'layerTree',
+                        label: '创建选项',
+                        type: 'LAYERTREE',
+                        values: []
+                      },
+                      // required
+                      {
+                        id: 'required',
+                        label: '是否必填',
+                        value: '',
+                        type: 'RADIO',
+                        values: [
+                          {label: '是', value: 1},
+                          {label: '否', value: 0}
+                        ]
+                      },
+                      {
+                        id: 'createCalculate',
+                        label: 'ID公式',
+                        value: '',
+                        type: 'CREATECALCULATE',
+                        validations: [
+                          { required: true, message: '请输入需要计算的 ID 公式,如 (id1+id2)', trigger: 'blur' }
+                        ]
+                      },
+                      // createtable
+                      {
+                        id: 'createTable',
+                        label: '创建表格',
+                        type: 'CREATETABLE',
+                        values: []
+                      }
+                    ]
+                  }
                 },
                 {
                   icon: 'ercp-icon-medicine-guidewire',
@@ -140,7 +415,7 @@ export default {
                 {
                   icon: 'ercp-icon-medicine-guidewire',
                   name: '手术报告',
-                  static: 'ssbg'
+                  isStatic: 'ssbg'
                 }
               ]
             }
@@ -168,7 +443,7 @@ export default {
             {
               icon: 'ercp-icon-medicine-report',
               name: '手术报告',
-              static: 'ssbg'
+              isStatic: 'ssbg'
             },
             {
               icon: 'ercp-icon-medicine-guidewire',
@@ -358,7 +633,14 @@ export default {
       activeIndexNav: 'sq',
       activeIndex: 0,
       patientInfo: {},
-      aaa: {}
+      ssbgModel: {
+        operationCheckBox: [],
+        operationSelect: [],
+        operationSelectMz: [],
+        operationSelectJc: [],
+        operationSelectHj: [],
+        operationDateTime: ''
+      }
     }
   },
   created () {
@@ -395,6 +677,11 @@ export default {
       console.log(key, keyPath)
       this.activeIndexNav = key
       this.navArrAssignment()
+      if (this.$refs['ssbgModel']) {
+        this.$nextTick(_ => {
+          this.$refs['ssbgModel'].resetForm()
+        })
+      }
       // this.navArr = this.allArr[key].subFields
     },
     generalSubmit () {
