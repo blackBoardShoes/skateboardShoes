@@ -6,7 +6,7 @@
           <i class="ercp-icon-general-search el-input__icon" slot="suffix" @click="search"></i>
         </el-input>
       </el-col>
-      <el-button size="medium" type="primary" @click="addUser">新增用户</el-button>
+      <el-button size="medium" type="primary" @click="add">新增用户</el-button>
     </div>
     <div class="system-user">
       <el-table
@@ -20,12 +20,12 @@
         header-row-class-name="er-header">
         <el-table-column
           fixed
-          prop="account"
+          prop="username"
           align="center"
           label="账号">
         </el-table-column>
         <el-table-column
-          prop="roleType"
+          prop="type"
           align="center"
           label="用户类型">
         </el-table-column>
@@ -45,12 +45,12 @@
           label="科室">
         </el-table-column>
         <el-table-column
-          prop="organization"
+          prop="institution"
           align="center"
           label="机构">
         </el-table-column>
         <el-table-column
-          prop="createTime"
+          prop="createDate"
           align="center"
           sortable
           label="创建日期">
@@ -142,51 +142,12 @@
   </div>
 </template>
 <script>
+import { getAllUser, addUser } from '../../../api/user/user.js'
 export default {
   name: 'system_detail_user',
   data () {
     return {
       tableData: [
-        {
-          account: '10000',
-          name: '王小虎',
-          gender: '男',
-          department: '科室一',
-          organization: '天和高科',
-          roleType: '科研护士',
-          createTime: '2018-10-01',
-          status: '禁用'
-        },
-        {
-          account: '10220',
-          name: '王大虎',
-          gender: '男',
-          department: '科室一',
-          organization: '天和高科',
-          roleType: '科研护士',
-          createTime: '2018-10-03',
-          status: '正常'
-        },
-        {
-          account: '10030',
-          name: '胖大海',
-          gender: '男',
-          department: '科室一',
-          organization: '天和高科',
-          roleType: '科研护士',
-          createTime: '2018-10-03',
-          status: '正常'
-        },
-        {
-          account: '12010',
-          name: '胖小海',
-          gender: '男',
-          department: '科室一',
-          organization: '天和高科',
-          roleType: '科研护士',
-          createTime: '2018-12-09',
-          status: '正常'
-        }
       ],
       // 存储原始人员data
       memoryTable: [],
@@ -230,6 +191,19 @@ export default {
     }
   },
   methods: {
+    async getAllUser () {
+      let info = {
+        currentPage: 1,
+        pageSize: 10
+      }
+      let response = await getAllUser(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        this.tableData = response.data.entity.data
+        this.memoryTable = this.tableData
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
     banUser (value) {
       this.$message.warning('禁用' + value.name)
     },
@@ -252,9 +226,6 @@ export default {
         this.tableData = arr
       }
     },
-    addUser () {
-      this.dialogTableVisible = true
-    },
     add () {
       this.dialogTableVisible = true
     },
@@ -264,13 +235,24 @@ export default {
       this.$refs.newUserForm.resetFields()
     },
     // 确认添加成员
-    confirmAdd () {
-      this.$refs.newUserForm.validate(valid => {
+    async confirmAdd () {
+      this.$refs.newUserForm.validate(async valid => {
         if (valid) {
-          console.log(this.newUser)
-          this.dialogTableVisible = false
-          // if success
-          // this.$refs.newUserForm.resetFields()
+          let info = {
+            type: '科研管理员',
+	          name: '王小虎',
+	          institution: '兰州大学第一医院',
+	          department: '外科一',
+	          institution_name: '兰州大学第一医院',
+	          gender: '男'
+          }
+          let response = await addUser(info)
+          if (response.data.mitiStatus === 'SUCCESS') {
+            this.getAllUser()
+            this.dialogTableVisible = false
+          } else {
+            this.$message.error('ERROR: ' + response.data.message)
+          }
         } else {
           return false
         }
@@ -278,7 +260,7 @@ export default {
     }
   },
   mounted () {
-    this.memoryTable = this.tableData
+    this.getAllUser()
   }
 }
 </script>

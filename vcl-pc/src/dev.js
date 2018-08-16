@@ -13,10 +13,10 @@ let host3 = 'http://192.168.10.216:8085'
 let host4 = 'http://192.168.10.144:8089'
 // Is your service nginx  和 npm run dev 都是代理方式
 let nginx = false
-// nginx = true
+nginx = true
 // 是APP是 gzip 选用 false
 let gzip = true
-gzip = false
+// gzip = false
 // ----------------------------------------------------
 let proxyTable = {
   '/api': {
