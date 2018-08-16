@@ -447,11 +447,15 @@ $full: 100%;
     .zdkContentBottom {
       width: $full;
       height: $full;
+      // overflow: auto;
       display: flex;
       .zdkContentBottomLeft {
+        // max-width: 0px;
+        width: 900px;
+        flex-grow: 1;
       }
       .zdkContentBottomRight {
-        flex-grow: 1;
+        width: 300px;
       }
     }
     .centerCenter {

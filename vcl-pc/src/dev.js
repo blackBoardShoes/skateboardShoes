@@ -72,7 +72,7 @@ for (let i in proxyTable) {
   proxyTableApi[i.replace(/\//, '')] = i
 }
 // build 后 无代理 放到指定服务目录下 无代理 所以不能用 /hot...
-if (process.env.NODE_ENV !== 'development') {
+if (process.env.NODE_ENV === 'production') {
   if (gzip) {
     if (!nginx) {
       for (let i in proxyTable) {
@@ -85,7 +85,7 @@ if (process.env.NODE_ENV !== 'development') {
     }
   }
 }
-console.log(proxyTableApi)
+console.log(proxyTableApi, process.env.NODE_ENV)
 module.exports = {
   proxyTable,
   proxyTableApi,
