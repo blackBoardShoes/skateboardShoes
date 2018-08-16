@@ -1,13 +1,21 @@
 import axios from 'axios'
+import router from '../router/index'
 // import Qs from 'qs'
 // import {apiUrl} from '../dev'
 // axios.defaults.baseURL = '/api'
+import store from '../store/index'
 import { Message } from 'element-ui'
+
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.defaults.timeout = 3000
 
 axios.interceptors.request.use(
   config => {
+    if (store.user !== null) {
+      config.headers.token = store.state.token
+    } else {
+      config.headers.token = null
+    }
     // if (config.method === 'post') {
     //   config.data = Qs.stringify(config.data)
     // }
@@ -21,11 +29,12 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   response => {
     if (response.data) {
-      // console.log(response)
       if ('mitiStatus' in response.data) {
-        if (response.data.mitiStatus === 'SERVER_ERROR') {
-          // console.log(response.data)
+        if (response.data.mitiStatus.indexOf('ERROR') > -1) {
           if (response.data.message) {
+            if (response.data.message === 'token无效' || response.data.message === '身份认证Token已失效') {
+              router.push('/login')
+            }
             Message({
               showClose: true,
               message: response.data.message,
@@ -38,7 +47,6 @@ axios.interceptors.response.use(
               type: 'error'
             })
           }
-          return false
         } else if (response.data.mitiStatus === 'SUCCESS') {
           if (response.data.message) {
             Message({
@@ -47,23 +55,24 @@ axios.interceptors.response.use(
               type: 'success'
             })
           }
-          return response
-        } else {
-          return response
         }
+        return response
       }
     }
   },
   err => {
     if (err.response) {
       switch (err.response.status) {
+        case 401:
+          router.push('/login')
+          break
         case 500:
           console.log('oh shit md fuck 又 500 了')
-          this.$router.push('/error/500')
+          router.push('/error:500')
           break
         case 404:
           console.log('啥玩意又找不到了')
-          this.$router.push('/error/404')
+          router.push('/error:404')
           break
         default:
           console.log('这个错 --->', err.response.status, '!!!!!!!!!!', err.response.status, '!!!!!!!!!!')

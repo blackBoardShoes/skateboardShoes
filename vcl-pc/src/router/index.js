@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import { routers } from './router'
-import { Loading } from 'element-ui'
+import { Loading, Message } from 'element-ui'
+// import { Message } from 'element-ui'
 import sessionStorage from '../../src/assets/js/storage/sessionStorage'
 Vue.use(VueRouter)
 const routerConfig = {
@@ -20,7 +21,7 @@ const routerConfig = {
 const router = new VueRouter(routerConfig)
 
 let loading
-router.beforeEach((to, form, next) => {
+router.beforeEach((to, from, next) => {
   let user = sessionStorage.getItem('user') === null ? null : sessionStorage.getItem('user')
   let token = sessionStorage.getItem('token') === null ? null : sessionStorage.getItem('token')
   let codeType = null
@@ -29,10 +30,6 @@ router.beforeEach((to, form, next) => {
   } else {
     codeType = user.codetype
   }
-  console.log(to)
-  console.log(user)
-  console.log(token)
-  console.log(codeType)
   loading = Loading.service({
     fullscreen: true,
     target: '.content-wrapper',
@@ -40,6 +37,9 @@ router.beforeEach((to, form, next) => {
   })
   // 没有该页面
   if (!to.matched.length) {
+    Message.warning({
+      message: '该页面不存在'
+    })
     next({
       path: '/error/404',
       replace: true
@@ -49,13 +49,18 @@ router.beforeEach((to, form, next) => {
     next()
   // token、user失效
   } else if (user === null || token === '') {
-    console.log('null user')
+    Message.warning({
+      message: '请登录'
+    })
     next({
       path: '/login',
       replace: true
     })
   //  没有权限
   } else if (codeType !== null && (to.meta.role).indexOf(codeType) === -1) {
+    Message.warning({
+      message: '抱歉，您无权访问该页面'
+    })
     next({
       path: '/error/403',
       replace: true

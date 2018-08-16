@@ -1,4 +1,4 @@
-import {appRouter, otherRouter, loginRouter, errorRouter} from '../router/router'
+import {appRouter, otherRouter} from '../router/router'
 const state = {
   // 用户信息
   user: null,
@@ -6,7 +6,7 @@ const state = {
   // 其它信息
   count: [],
   // 路由信息
-  routers: [otherRouter, loginRouter, errorRouter, ...appRouter]
+  routers: [otherRouter, ...appRouter]
 }
 
 export default state

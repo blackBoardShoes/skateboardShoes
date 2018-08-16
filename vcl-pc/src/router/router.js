@@ -5,7 +5,6 @@ export const loginRouter = {
   path: '/login',
   name: 'login',
   meta: {
-    navigator: false,
     title: 'Login - 登录',
     role: [1, 2, 3, 4, 5, 6]
   },
@@ -17,7 +16,6 @@ export const errorRouter = {
   path: '/error/:code',
   name: 'error',
   meta: {
-    navigator: false,
     title: 'error-错误',
     role: [1, 2, 3, 4, 5, 6]
   },
@@ -25,13 +23,12 @@ export const errorRouter = {
     import('../views/error/index')
 }
 
-// 子页面子组件
+// 初始页面  ==> login
 export const otherRouter = {
   path: '',
   name: 'otherRouter',
   redirect: '/login',
   meta: {
-    navigator: false,
     title: 'login',
     role: [1, 2, 3, 4, 5, 6]
   }

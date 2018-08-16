@@ -3,13 +3,20 @@
 //  gzip 是 因为cordova app 不支持gzip
 // ------------
 // 服务主要地址
+// 启敏
 let host = 'http://192.168.10.196:8089'
+// 大力
+let host2 = 'http://192.168.10.13:8080'
+// yt
+let host3 = 'http://192.168.10.216:8085'
+// 杜宣
+let host4 = 'http://192.168.10.144:8089'
 // Is your service nginx  和 npm run dev 都是代理方式
 let nginx = false
 // nginx = true
 // 是APP是 gzip 选用 false
 let gzip = true
-// gzip = false
+gzip = false
 // ----------------------------------------------------
 let proxyTable = {
   '/api': {
@@ -17,6 +24,27 @@ let proxyTable = {
     changeOrigin: true,
     pathRewrite: {
       '^/api': '/'
+    }
+  },
+  '/dali': {
+    target: host2,
+    changeOrigin: true,
+    pathRewrite: {
+      '^/dali': '/'
+    }
+  },
+  '/yt': {
+    target: host3,
+    changeOrigin: true,
+    pathRewrite: {
+      '^/yt': '/'
+    }
+  },
+  '/dx': {
+    target: host4,
+    changeOrigin: true,
+    pathRewrite: {
+      '^/dx': '/'
     }
   },
   // 没有代理服务器环境 不可用, 用上nginx代理 可用

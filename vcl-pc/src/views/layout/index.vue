@@ -116,8 +116,8 @@
             <el-dropdown-item style="cursor:default;">{{user.insititution}}</el-dropdown-item>
             <el-dropdown-item style="cursor:default;">{{user.department}}</el-dropdown-item>
             <!-- <el-dropdown-item style="cursor:default;">{{'性别：' + user.gender}}</el-dropdown-item> -->
-            <el-dropdown-item command="exit" divided>退出登陆</el-dropdown-item>
             <el-dropdown-item command="changePs" divided>修改密码</el-dropdown-item>
+            <el-dropdown-item command="exit" divided>退出登陆</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -154,6 +154,7 @@
 <script>
 // 设置导航菜单以及面包屑导航
 import { setMenu, getCurrentPath } from '../../../src/assets/js/util'
+import { changePassword, exit } from '../../api/user/user.js'
 export default {
   name: 'layout',
   data () {
@@ -285,33 +286,43 @@ export default {
     changePs () {
       this.dialogVisible = true
     },
-    changPassword (formName) {
-      this.$refs.pswForm.validate((valid) => {
+    async changPassword (formName) {
+      this.$refs[formName].validate(async valid => {
         if (valid) {
-          let newPassword = this.psw.newPassword
-          let oldPassword = this.psw.oldPassword
-          this.$message.success(oldPassword)
-          this.$message.success(newPassword)
+          let response = await changePassword(this.psw)
+          if (response.data.mitiStatus === 'SUCCESS') {
+            console.log(response.data)
+            this.$store.commit('SET_TOKEN', '')
+            this.$store.commit('SET_USER', null)
+            this.$router.replace({ path: '/login' })
+            this.$refs[formName].resetFields()
+          } else {
+            this.$message.error('ERROR: ' + response.data.message)
+          }
         } else {
-          this.$message.warning('error submit!!')
           return false
         }
       })
     },
-    exit () {
+    async exit () {
       this.$confirm('即将退出系统登陆，是否继续？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
+      }).then(async () => {
+        let response = await exit()
+        if (response.data.mitiStatus === 'SUCCESS') {
+          console.log(this.$store.state)
+        } else {
+          console.log(response.data)
+        }
+        this.$store.commit('SET_TOKEN', '')
+        this.$store.commit('SET_USER', null)
+        this.$router.replace({ path: '/login' })
+        console.log(exit)
+      }).catch(() => {
+        return false
       })
-        .then(() => {
-          this.$store.commit('SET_TOKEN', '')
-          this.$store.commit('SET_USER', null)
-          this.$router.replace({ path: '/login' })
-        })
-        .catch(() => {
-          return false
-        })
     },
     toMessage () {
       this.$router.push('/message/index')

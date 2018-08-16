@@ -58,8 +58,13 @@
 </template>
 <script>
 import validateCode from '../../components/ValidateCode/index'
+import { login } from '../../api/user/user.js'
+import { sessionStorage } from '../../assets/js/storage'
 export default {
   created () {
+    // 每次在登录页面都要重新清除用户信息
+    this.$store.commit('SET_TOKEN', '')
+    this.$store.commit('SET_USER', null)
     console.log(this.$store.state)
   },
   data () {
@@ -78,8 +83,8 @@ export default {
       passwordType: 'password',
       checkCode: '',
       form: {
-        username: '95277',
-        password: '1234567890',
+        username: '123456',
+        password: '12345',
         yanzhengma: ''
       },
       rules: {
@@ -109,35 +114,39 @@ export default {
     _updateCheckCode () {
       this.$refs['validate-code'].draw()
     },
-    login (formName) {
-      /*
-       *  在这边可以进行登陆请求
-       *  将请求返回的Token对象存到store中
-       *  @Token  token对象
-      */
-      this.$refs[formName].validate(valid => {
+    // 登录请求
+    async login (formName) {
+      this.$refs[formName].validate(async valid => {
         this.form.yanzhengma = ''
         this._updateCheckCode()
         if (valid) {
-          let token = 'a94756da-2962-40ae-bdea-787fd02c9d92'
-          let user = {
-            username: 95270,
-            name: '王二虎',
-            type: '管理员',
-            codetype: 1,
-            gender: '男',
-            insititution: '兰州大学第一医院',
-            department: '外科一',
-            status: '正常',
-            activationData: '2018-08-14'
+          let info = {
+            username: this.form.username,
+            password: this.form.password
           }
-          this.$store.commit('SET_TOKEN', token)
-          this.$store.commit('SET_USER', user)
-          console.log(this.$store.state.user)
-          if (this.$store.state.user !== '') {
+          let response = await login(info)
+          if (response.data.mitiStatus === 'SUCCESS') {
+            let user = response.data.entity.User
+            let token = response.data.entity.Token.token
+            // let token = 'a94756da-2962-40ae-bdea-787fd02c9d92'
+            // let user = {
+            //   username: 95270,
+            //   name: '王二虎',
+            //   type: '管理员',
+            //   codetype: 1,
+            //   gender: '男',
+            //   insititution: '兰州大学第一医院',
+            //   department: '外科一',
+            //   status: '正常',
+            //   activationData: '2018-08-14'
+            // }
+            this.$store.commit('SET_TOKEN', token)
+            this.$store.commit('SET_USER', user)
+            console.log(sessionStorage.getItem('token'))
+            console.log(this.$store.state.token)
             this.$router.replace('home')
           } else {
-            return false
+            this.$message.error('ERROR: ' + response.data.message)
           }
         } else {
           return false
