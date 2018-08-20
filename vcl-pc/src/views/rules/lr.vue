@@ -4,11 +4,11 @@
       <div class="formTopContent">
         <el-menu :default-active="activeIndexNav" class="formTopLeft" mode="horizontal" @select="handleSelect">
           <template v-for="(item, index) in allArr">
-            <el-submenu :index="item.value" :key="index" v-if="item.submenu" :show-timeout="100">
+            <el-submenu :index="item.label" :key="index" v-if="item.submenu" :show-timeout="100">
               <template slot="title">{{item.label}}</template>
-              <el-menu-item v-for="(x, i) in item.submenu" :index="x.value" :key="i">{{x.label}}</el-menu-item>
+              <el-menu-item v-for="(x, i) in item.submenu" :index="x.label" :key="i">{{x.label}}</el-menu-item>
             </el-submenu>
-            <el-menu-item :key="index" :index="item.value" v-else>{{item.label}}</el-menu-item>
+            <el-menu-item :key="index" :index="item.label" v-else>{{item.label}}</el-menu-item>
           </template>
         </el-menu>
         <div class="formTopRight">
@@ -40,7 +40,7 @@
               <sx-min-form
                 v-model="fishData"
                 ref="thatForm"
-                :mozhu="navArr[activeIndex].template"
+                :mozhu="navArr[activeIndex]"
                 @notVerifying="notVerifying"
                 @consoleData="consoleData"></sx-min-form>
             </div>
@@ -56,6 +56,8 @@
 <script>
 import sxNoRouteControl from '../../components/submenu/noRouteControl'
 import sxOperationReport from '../../components/staticForm/operationReport'
+import { fieldAllForms } from '../../api/form/bdk.js'
+
 export default {
   name: 'rules_index',
   components: {
@@ -66,6 +68,7 @@ export default {
     return {
       // 中间数组
       navArr: [],
+      showData: [],
       allArr: {
         zyjb: {
           label: '住院基本情况',
@@ -248,7 +251,7 @@ export default {
           value: 'ssjl',
           submenu: {
             sq: {
-              label: '术前记录',
+              label: '术前',
               value: 'sq',
               subFields: [
                 {
@@ -382,7 +385,7 @@ export default {
               ]
             },
             sz: {
-              label: '术中记录',
+              label: '术中',
               value: 'sz',
               subFields: [
                 {
@@ -401,7 +404,7 @@ export default {
               ]
             },
             sh: {
-              label: '术后记录',
+              label: '术后',
               value: 'sh',
               subFields: [
                 {
@@ -614,7 +617,7 @@ export default {
           }
         ]
       },
-      activeIndexNav: 'sq',
+      activeIndexNav: '住院基本情况',
       activeIndex: 0,
       patientInfo: {},
       ssbgModel: {
@@ -627,14 +630,30 @@ export default {
       }
     }
   },
-  created () {
+  async created () {
     if (this.$route.params.data) {
       this.patientInfo = JSON.parse(this.$route.params.data)
     }
-    this.navArrAssignment()
+    await this.init()
+    this.show()
+    // this.navArrAssignment()
   },
   methods: {
-    init () {},
+    async show () {
+      this.navArr = []
+      for (let i of this.showData) {
+        console.log(i, 'iii')
+        if (i.phase === this.activeIndexNav) {
+          this.navArr.push(i)
+        }
+      }
+    },
+    async init () {
+      let faf = await fieldAllForms()
+      if (faf) {
+        this.showData = faf.data.entity
+      }
+    },
     navArrAssignment () {
       let a = (_) => {
         for (let i in _) {
@@ -660,12 +679,13 @@ export default {
     handleSelect (key, keyPath) {
       console.log(key, keyPath)
       this.activeIndexNav = key
-      this.navArrAssignment()
-      if (this.$refs['ssbgModel']) {
-        this.$nextTick(_ => {
-          this.$refs['ssbgModel'].resetForm()
-        })
-      }
+      this.show()
+      // this.navArrAssignment()
+      // if (this.$refs['ssbgModel']) {
+      //   this.$nextTick(_ => {
+      //     this.$refs['ssbgModel'].resetForm()
+      //   })
+      // }
       // this.navArr = this.allArr[key].subFields
     },
     generalSubmit () {

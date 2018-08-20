@@ -1,42 +1,44 @@
 <template>
-  <el-table
-    :data="tableData"
-    :height="height"
-    highlight-current-row
-    @current-change="handleCurrentChange"
-    style="width: 100%">
-    <el-table-column
-      v-if="hasIndex"
-      type="index"
-      width="50">
-    </el-table-column>
-    <el-table-column
-      show-overflow-tooltip
-      align="center"
-      v-for="(item, index) in mozhu"
-      :key="index + Math.random()"
-      :prop="item.prop"
-      :label="item.label"
-      :sortable="item.sortable"
-      :filters="item.filters"
-      :filter-method="filterHandler"
-      filter-placement="bottom-end"
-      :width="item.width">
-      <template slot-scope="scope">
-        <el-button
-          v-if="item.option"
-          v-for="(x, key) in item.contain"
-          :key="key"
-          :type="x.type ? x.type : 'text'"
-          :size="x.size ? x.size : 'mini'"
-          :style="x.style"
-          @click="operateClick(scope.row, scope.$index, x)">{{x.label}}</el-button>
-          <div v-if="!item.option">
-            {{scope.row[item.prop]}}
-          </div>
-      </template>
-    </el-table-column>
-  </el-table>
+  <div style="position: relative;width: 100%">
+    <el-table
+      :data="tableData"
+      :height="height"
+      highlight-current-row
+      @current-change="handleCurrentChange"
+      style="width: 100%">
+      <el-table-column
+        v-if="hasIndex"
+        type="index"
+        width="50">
+      </el-table-column>
+      <el-table-column
+        show-overflow-tooltip
+        align="center"
+        v-for="(item, index) in mozhu"
+        :key="index + Math.random()"
+        :prop="item.prop"
+        :label="item.label"
+        :sortable="item.sortable"
+        :filters="item.filters"
+        :filter-method="filterHandler"
+        filter-placement="bottom-end"
+        :width="item.width">
+        <template slot-scope="scope">
+          <el-button
+            v-if="item.option"
+            v-for="(x, key) in item.contain"
+            :key="key"
+            :type="x.type ? x.type : 'text'"
+            :size="x.size ? x.size : 'mini'"
+            :style="x.style"
+            @click="operateClick(scope.row, scope.$index, x)">{{x.label}}</el-button>
+            <div v-if="!item.option">
+              {{scope.row[item.prop]}}
+            </div>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
 </template>
 
 <script>
