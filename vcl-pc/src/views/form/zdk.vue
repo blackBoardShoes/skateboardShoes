@@ -66,6 +66,11 @@ export default {
             ruleType: 'EQUAL',
             value: ['INPUT', 'INT', 'DOUBLE', 'TEXTAREA']
           },
+          unit: {
+            target: 'type',
+            ruleType: 'EQUAL',
+            value: ['INPUT', 'INT', 'DOUBLE']
+          },
           example: {
             target: 'type',
             ruleType: 'EQUAL',
@@ -159,12 +164,13 @@ export default {
           {
             id: 'message',
             label: '正则提示信息',
-            type: 'INPUT',
-            rules: {
-              id: 'type',
-              ruleType: 'EQUAL',
-              value: 'INPUT'
-            }
+            type: 'INPUT'
+          },
+          // patten message
+          {
+            id: 'unit',
+            label: '单位',
+            type: 'INPUT'
           },
           // patten
           {
@@ -229,14 +235,14 @@ export default {
   methods: {
     async show () {
       let fieldsData = await fieldAllFields()
-      console.log(fieldsData.data)
+      console.log(fieldsData)
       if (fieldsData) {
         this.listData = fieldsData.data.entity
       }
     },
     newCreateFish () {
       this.fishNeedEditData = {}
-      this.fishData = {}
+      // this.fishData = {}
       this.thatFish = {}
       this.$refs['thatForm'].resetData()
       this.$refs['thatFieldLibrary'].resetData()
@@ -282,9 +288,9 @@ export default {
         case 'CASCADER':
           formModel['createTable'] = []
           if (formModel['tree']) {
-            formModel['values'] = formModel['tree']
-          } else if (formModel['values']) {
-            formModel['tree'] = formModel['values']
+            formModel['children'] = formModel['tree']
+          } else if (formModel['children']) {
+            formModel['tree'] = formModel['children']
           } else {
             formModel['tree'] = []
           }
@@ -413,6 +419,7 @@ export default {
         this.thatFish = {}
         this.$refs['thatForm'].resetData()
         this.$refs['thatFieldLibrary'].resetData()
+        this.show()
       }).catch(_ => {
         // this.$message({
         //   type: 'info',
@@ -421,7 +428,15 @@ export default {
       })
     },
     async getRealationData (data) {
+      console.log(data)
+      if (data.subFields) {
+        for (let i in data.subFields) {
+          data.subFields[i] = {id: data.subFields[i].id}
+        }
+      }
+      console.log(data)
       await fieldUpdate(data)
+      this.show()
     }
     // async saveAllFish () {
     //   let ff = await fieldFinish(this.listData)

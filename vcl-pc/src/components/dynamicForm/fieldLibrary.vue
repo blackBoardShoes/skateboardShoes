@@ -17,9 +17,12 @@
                 slot="reference"
                 >筛选</el-button>
               <el-checkbox-group v-model="checkList">
-                <el-checkbox style="width:100px;margin-left: 20px;margin-right: 20px;"
+                <el-checkbox style="width:100px;margin: 10px 20px;"
                   :label="x" v-for="(x, i) in checkListData" :key="i">{{oneToOneText(x)}}</el-checkbox>
               </el-checkbox-group>
+              <div style="width:100%;text-align:right">
+                <el-button @click="resetCheckList" type="primary" plain size="small" style="margin: 10px 20px;">重置</el-button>
+              </div>
             </el-popover>
             <!-- <el-badge :value="badgeValue" class="item">
               <el-button
@@ -122,6 +125,7 @@ export default {
         {label: '级联选择器', value: 'CASCADER'},
         {label: '浮点类型输入框', value: 'DOUBLE'}
       ],
+      defaultCheckList: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT', 'TABLE', 'CALCULATE'],
       checkList: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT', 'TABLE', 'CALCULATE'],
       checkListData: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT', 'TABLE', 'CALCULATE']
     }
@@ -138,6 +142,9 @@ export default {
     }
   },
   methods: {
+    resetCheckList () {
+      this.checkList = this.defaultCheckList
+    },
     lookupChange (item) {
       return Object.values(item).toString().includes(this.lookupData)
     },
@@ -199,7 +206,7 @@ export default {
     },
     deleteFish (item, index) {
       this.$emit('deleteFish', item, index)
-      this.$delete(this.listData, index)
+      // this.$delete(this.listData, index)
     },
     openRelation (item) {
       this.needCreatedRelation = item

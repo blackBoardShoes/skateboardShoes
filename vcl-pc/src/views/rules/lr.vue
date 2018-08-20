@@ -435,38 +435,22 @@ export default {
               disabled: true
             }
           ]
-        },
-        zyjb1: {
-          label: '住院基本情况',
-          value: 'zyjb1',
-          subFields: [
-            {
-              icon: 'ercp-icon-medicine-report',
-              name: '手术报告',
-              isStatic: 'ssbg'
-            },
-            {
-              icon: 'ercp-icon-medicine-guidewire',
-              name: '导丝',
-              disabled: true
-            }
-          ]
-        },
-        sf: {
-          label: '随访记录',
-          value: 'sf',
-          subFields: [
-            {
-              icon: 'ercp-icon-medicine-cannula',
-              name: '插管'
-            },
-            {
-              icon: 'ercp-icon-medicine-guidewire',
-              name: '导丝',
-              disabled: true
-            }
-          ]
         }
+        // sf: {
+        //   label: '随访记录',
+        //   value: 'sf',
+        //   subFields: [
+        //     {
+        //       icon: 'ercp-icon-medicine-cannula',
+        //       name: '插管'
+        //     },
+        //     {
+        //       icon: 'ercp-icon-medicine-guidewire',
+        //       name: '导丝',
+        //       disabled: true
+        //     }
+        //   ]
+        // }
       },
       fishData: {},
       allFish: {

@@ -80,9 +80,9 @@ export default {
   },
   created () {
     if (Array.isArray(this.treeData)) {
-      this.treeId = this.treeId + this.treeData.length
+      this.treeId = this.treeId + this.treeData.length + 1
     }
-    console.log(this.treeData, '拿到的数据')
+    console.log(this.treeData, '拿到的数据, =-=-=-=-=-')
   },
   methods: {
     // tree

@@ -68,8 +68,8 @@ export default {
         { title: '总表', key: 'AlltableColumn', icon: 'el-icon-delete', num: 55, userType: [1, 3, 4, 5, 6] },
         { title: '待录入', key: 'pendingEntryColumn', icon: 'el-icon-delete', num: 55, userType: [1, 5, 6] },
         { title: '待审核', key: 'toBeAuditedColumn', icon: 'el-icon-delete', num: 55, userType: [1, 3, 4] },
-        { title: '带修正', key: 'toBeAmendedColumn', icon: 'el-icon-delete', num: 55, userType: [1, 5, 6] },
-        { title: '带随访', key: 'followUpColumn', icon: 'el-icon-delete', num: 55, userType: [1, 6] }
+        { title: '待修正', key: 'toBeAmendedColumn', icon: 'el-icon-delete', num: 55, userType: [1, 5, 6] },
+        { title: '待随访', key: 'followUpColumn', icon: 'el-icon-delete', num: 55, userType: [1, 6] }
       ],
       activeIndex: 0,
       activeRow: {},
