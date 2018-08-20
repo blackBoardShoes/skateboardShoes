@@ -7,7 +7,7 @@
         <el-button
           class="topRihgt"
           :type="
-            cardObj.phase === '术中' ? 'primary' : cardObj.phase === '术后' ? 'success' :'info'
+            cardObj.phase === '术中1' ? 'primary' : cardObj.phase === '术后1' ? 'success' :'info'
             ">{{cardObj.phase}}</el-button>
       </div>
       <div class="centerContent">
@@ -83,7 +83,7 @@ export default {
     }
     .el-button {
       border-radius: 0;
-      width: 80px;
+      width: 120px;
       font-weight: bold;
       padding: 0;
       padding-top: 5px;

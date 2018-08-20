@@ -18,7 +18,7 @@
                 阶段筛选: &nbsp;&nbsp;&nbsp;&nbsp;
                 <el-checkbox-group
                   v-model="stagelookupData">
-                  <el-checkbox v-for="(item, index) in stageLookUpArr" :label="item" :key="index">{{item}}</el-checkbox>
+                  <el-checkbox v-for="(item, index) in stageLookUpArr" :label="item" :key="index" style="margin:0px 5px">{{item}}</el-checkbox>
                 </el-checkbox-group>
             </div>
           </div>
@@ -54,9 +54,10 @@
               :rules="item.validations"
               :label="item.label" v-for="(item, index) in createTopForm" :key="index">
               <el-input
+                style="width:100%"
                 v-model="formModel[item.id]" v-if="item.type === 'INPUT'"
                 :placeholder="item.placeholder"></el-input>
-              <el-select v-model="formModel[item.id]" v-if="item.type === 'SELECT'" :placeholder="item.placeholder">
+              <el-select style="width:100%" v-model="formModel[item.id]" v-if="item.type === 'SELECT'" :placeholder="item.placeholder">
                 <el-option
                   v-for="item in item.value"
                   :key="item.value"
@@ -390,8 +391,13 @@ export default {
           ]
         },
         {
+          width: '23%',
           id: 'phase',
           value: [
+            {
+              value: '住院基本情况',
+              label: '住院基本情况'
+            },
             {
               value: '术前',
               label: '术前'
@@ -403,6 +409,14 @@ export default {
             {
               value: '术后',
               label: '术后'
+            },
+            {
+              value: '出院综合评估',
+              label: '出院综合评估'
+            },
+            {
+              value: '随访',
+              label: '随访'
             }
           ],
           label: '所属阶段',
@@ -430,8 +444,8 @@ export default {
         }
       ],
       lookupData: '',
-      stagelookupData: ['术前', '术中', '术后', '随访'],
-      stageLookUpArr: ['术前', '术中', '术后', '随访'],
+      stagelookupData: ['住院基本情况', '术前', '术中', '术后', '出院综合评估', '随访'],
+      stageLookUpArr: ['住院基本情况', '术前', '术中', '术后', '出院综合评估', '随访'],
       // transferModel: [],
       // transferData: [],
       formModel: {},

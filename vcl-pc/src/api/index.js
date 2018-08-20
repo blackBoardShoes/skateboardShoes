@@ -30,6 +30,7 @@ axios.interceptors.response.use(
   response => {
     if (response.data) {
       if ('mitiStatus' in response.data) {
+        console.log(response.data)
         if (response.data.mitiStatus.indexOf('ERROR') > -1) {
           if (response.data.message) {
             if (response.data.message === 'token无效' || response.data.message === '身份认证Token已失效') {

@@ -3,6 +3,7 @@
     <div class="formContent">
       <div class="formContentLeft">
         <el-form
+          onkeydown="if(event.keyCode==13){return false}"
           :label-width="labelWidth"
           :label-position="labelPosition"
           :disabled="disabled"
@@ -31,10 +32,15 @@
                 :prop="items.id"
                 :label="items.label"
                 @dblclick.native="evaluate(items, index)">
-                <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'INPUT'" v-model.trim='formModel[items.id]'></el-input>
-                <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'INT'" v-model.number='formModel[items.id]'></el-input>
-                <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'DOUBLE'" v-model.number='formModel[items.id]'></el-input>
-                <el-input :disabled="items.disabled" :placeholder="items.placeholder" v-if="items.type === 'TEXTAREA'" type="textarea"  v-model='formModel[items.id]'></el-input>
+                <div style="display: flex">
+                  <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'INPUT'" v-model.trim='formModel[items.id]'></el-input>
+                  <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'INT'" v-model.trim='formModel[items.id]'></el-input>
+                  <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'DOUBLE'" v-model.trim='formModel[items.id]'></el-input>
+                  <el-input :disabled="items.disabled" :placeholder="items.placeholder" v-if="items.type === 'TEXTAREA'" type="textarea"  v-model='formModel[items.id]'></el-input>
+                  <div style="width: 50px;text-align:center" v-if="items.unit">
+                    {{items.unit}}
+                  </div>
+                </div>
                 <el-radio-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'RADIO'">
                   <el-radio v-for="(it, ii) in items.values" :key="ii" :label="it.value">{{it.label}}</el-radio>
                 </el-radio-group>
@@ -111,8 +117,18 @@
                 </div>
                 <div v-if="items.type === 'EXAMPLE'">
                   <span style="font-size: 12px">
-                    1到10： ^[1-9]$|^10$ &nbsp;&nbsp;&nbsp; 0到100： ^[0-9][0-9]$|^100$ <br>
-                    1-5字符长度区间： ^.{1,5}$ &nbsp;&nbsp;&nbsp; 5字符长度： ^.{5}$
+                    \d 等价 [0-9]
+                    <br>
+                    1到10: ^[1-9]$|^10$ &nbsp;&nbsp;&nbsp;
+                    1到50: ^[1-9]$|^[1-4][0-9]$|^50$ &nbsp;&nbsp;&nbsp;
+                    0到100: ^[0-9]$|^[0-9][0-9]$|^100$ &nbsp;&nbsp;&nbsp;
+                    0到120:  ^[0-9]$|^[0-9][0-9]$|^[1][012][0]$ &nbsp;&nbsp;&nbsp;
+                    1到300:  ^[1-9]$|^[0-9][0-9]$|^[12][0-9][0-9]$|^300$ &nbsp;&nbsp;&nbsp;
+                    1到1000:  ^[1-9]$|^[0-9][0-9]$|^[1-9][0-9][0-9]$|^1000$ &nbsp;&nbsp;&nbsp;
+                    <br><br>
+                    两位小数  ^.\d{2}$ &nbsp;&nbsp;&nbsp; 整数和1位或两位小数:  ^\d+$|^\d+\.\d{1,2}$
+                    <br><br>
+                    1-5字符长度区间: ^.{1,5}$ &nbsp;&nbsp;&nbsp; 固定5字符长度: ^.{5}$
                   </span>
                 </div>
                 <el-button-group v-if="edit" style="margin-top:3px">
@@ -289,9 +305,10 @@ export default {
       this.errors = 'errors' in this.mozhu ? Object.assign({}, this.mozhu['errors']) : {}
       this.comments = 'comments' in this.mozhu ? Object.assign({}, this.mozhu['comments']) : {}
       this.mozhuId = 'id' in this.mozhu ? this.mozhu['id'] : ''
-      this.formModel = {}
-      this.init()
+      // this.formModel = {}
+      // this.init()
       this.resetData()
+      console.log(this.formModel, 'initinitinitinitinitinitinit')
     },
     momo () {
       this.repositoryData = this.momo.length ? [...this.momo] : []
@@ -301,6 +318,7 @@ export default {
   created () {
     this.init()
     console.log(this.newFields)
+    console.log(this.formModel, 'this.formModel')
   },
   methods: {
     firstShow () {
@@ -379,7 +397,6 @@ export default {
           }
         }
       }
-      console.log(this.formModel, 'this.formModel')
       this.firstShow()
     },
     // form element relation (dynamic binding) -> relation
@@ -644,6 +661,8 @@ export default {
       this.$emit('cancelData', true)
     },
     resetData () {
+      this.formModel = {}
+      this.init()
       this.$refs['formModel'].resetFields()
       if ('createCalculate' in this.formModel) {
         this.$set(this.formModel, 'createCalculate', '')
