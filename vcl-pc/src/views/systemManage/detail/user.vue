@@ -15,7 +15,7 @@
         height="100%"
         size="medium"
         fit
-        stripe
+        :row-class-name="forbiddenClass"
         :default-sort = "{prop: 'createTime', order: 'descending'}"
         header-row-class-name="er-header">
         <el-table-column
@@ -27,7 +27,9 @@
         <el-table-column
           prop="type"
           align="center"
-          label="用户类型">
+          label="用户类型"
+          :filters="[{ text: '管理员', value: '管理员' }, { text: '科研管理员', value: '科研管理员' }, { text: '医生', value: '医生' }, { text: '诊疗中心', value: '诊疗中心' }, { text: '科研护士', value: '科研护士' }, { text: '临床质控员', value: '临床质控员' }]"
+          :filter-method="filterTag2">
         </el-table-column>
         <el-table-column
           prop="name"
@@ -42,7 +44,9 @@
         <el-table-column
           prop="department"
           align="center"
-          label="科室">
+          label="科室"
+          :filters="[{ text: '外科一', value: '外科一' }, { text: '外科二', value: '外科二' }, { text: '特需外科', value: '特需外科' }]"
+          :filter-method="filterTag3">
         </el-table-column>
         <el-table-column
           prop="institution"
@@ -69,7 +73,7 @@
           label="操作"
           fixed="right"
           width="180">
-          <template slot-scope="scope" class="header-operate"  v-if="scope.row.status === '正常'">
+          <template slot-scope="scope" class="header-operate"  v-if="showOperate(scope.row)">
             <el-button type="danger" size="small" plain @click="banUser(scope.row)">禁用</el-button>
             <el-button type="primary" size="small" plain @click="resetUser(scope.row)">重置密码</el-button>
           </template>
@@ -79,29 +83,23 @@
     <el-dialog title="新增用户" :visible.sync="dialogTableVisible" :modal="true" append-to-body  width="500px" center>
       <el-form ref="newUserForm" :rules="rules" :model="newUser" label-position="left" label-width="100px">
         <el-col :span="24">
-          <el-form-item label="用户类型:" prop="userType">
-            <el-select v-model="newUser.userType"  style="width:100%;">
+          <el-form-item label="用户类型:" prop="type">
+            <el-select v-model="newUser.type"  style="width:100%;">
               <el-option
-                label="用户类型一"
-                value="用户类型一">
-              </el-option>
-              <el-option
-                label="用户类型二"
-                value="用户类型二">
+                v-for="(item, index) in typeOptions"
+                :key="index"
+                :label="item"
+                :value="item">
               </el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="用户机构:" prop="organization">
-            <el-select v-model="newUser.organization"  style="width:100%;">
+          <el-form-item label="用户机构:" prop="institution">
+            <el-select v-model="newUser.institution"  style="width:100%;">
               <el-option
-                label="机构一"
-                value="机构一">
-              </el-option>
-              <el-option
-                label="机构二"
-                value="机构二">
+                label="兰州大学第一医院"
+                value="兰州大学第一医院">
               </el-option>
             </el-select>
           </el-form-item>
@@ -115,12 +113,16 @@
           <el-form-item label="用户科室:" prop="department">
             <el-select v-model="newUser.department"  style="width:100%;">
               <el-option
-                label="科室一"
-                value="科室一">
+                label="外科一"
+                value="外科一">
               </el-option>
               <el-option
-                label="科室二"
-                value="科室二">
+                label="外科二"
+                value="外科二">
+              </el-option>
+              <el-option
+                label="特需外科"
+                value="特需外科">
               </el-option>
             </el-select>
           </el-form-item>
@@ -128,8 +130,8 @@
         <el-col :span="24">
           <el-form-item label="用户性别:" prop="gender">
             <el-radio-group v-model="newUser.gender">
-              <el-radio label="男" value="0"></el-radio>
-              <el-radio label="女" value="1"></el-radio>
+              <el-radio label="男" value="男"></el-radio>
+              <el-radio label="女" value="女"></el-radio>
             </el-radio-group>
           </el-form-item>
         </el-col>
@@ -142,11 +144,22 @@
   </div>
 </template>
 <script>
-import { getAllUser, addUser } from '../../../api/user/user.js'
+import { getAllUser, addUser, forbiddenUser, resetUser } from '../../../api/user/user.js'
 export default {
   name: 'system_detail_user',
   data () {
+    var validateName = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入用户名'))
+      } else {
+        if (this.nameArr.indexOf(value) > -1) {
+          callback(new Error('该用户名已存在'))
+        }
+        callback()
+      }
+    }
     return {
+      nameArr: [],
       tableData: [
       ],
       // 存储原始人员data
@@ -158,14 +171,14 @@ export default {
         name: '',
         gender: '',
         department: '',
-        organization: '',
-        userType: ''
+        institution: '',
+        type: ''
       },
+      typeOptions: [],
       rules: {
         name: [{
-          required: true,
-          message: '必填项不能为空',
-          trigger: 'change'
+          validator: validateName,
+          trigger: 'blur'
         }],
         gender: [{
           required: false,
@@ -177,12 +190,12 @@ export default {
           message: '必填项不能为空',
           trigger: 'change'
         }],
-        organization: [{
+        institution: [{
           required: true,
           message: '必填项不能为空',
           trigger: 'change'
         }],
-        userType: [{
+        type: [{
           required: true,
           message: '必填项不能为空',
           trigger: 'change'
@@ -191,27 +204,91 @@ export default {
     }
   },
   methods: {
+    forbiddenClass (row, index) {
+      console.log(row.row)
+      if (row.row.status === '禁用') {
+        console.log(row.row.status)
+        return 'forbidden'
+      }
+    },
     async getAllUser () {
       let info = {
         currentPage: 1,
-        pageSize: 10
+        pageSize: 500
       }
       let response = await getAllUser(info)
       if (response.data.mitiStatus === 'SUCCESS') {
         this.tableData = response.data.entity.data
         this.memoryTable = this.tableData
+        this.nameArr = []
+        this.tableData.forEach((item) => {
+          this.nameArr.push(item.name)
+        })
+        console.log(this.nameArr)
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
     },
-    banUser (value) {
-      this.$message.warning('禁用' + value.name)
+    async banUser (value) {
+      this.$confirm('操作将禁用该用户，是否继续？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        let response = await forbiddenUser(value.id)
+        if (response.data.mitiStatus === 'SUCCESS') {
+          console.log(response)
+          this.getAllUser()
+        } else {
+          console.log(response.data)
+        }
+      }).catch(() => {
+        return false
+      })
+    },
+    showOperate (value) {
+      let status = value.status
+      let bantype = value.type
+      let user = this.$store.state.user.type
+      let tfboys = false
+      if (status === '禁用') {
+        tfboys = false
+      } else if (bantype === '管理员') {
+        tfboys = false
+      } else if (user === '管理员') {
+        tfboys = true
+      } else if (user === '科研管理员' && bantype !== '科研管理员') {
+        tfboys = true
+      } else {
+        tfboys = false
+      }
+      return tfboys
     },
     filterTag (value, row) {
       return row.status === value
     },
-    resetUser (value) {
-      this.$message.warning('重置成员密码' + value.name)
+    filterTag2 (value, row) {
+      return row.type === value
+    },
+    filterTag3 (value, row) {
+      return row.department === value
+    },
+    async resetUser (value) {
+      this.$confirm('操作将重置该用户密码，是否继续？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        let response = await resetUser(value.id)
+        if (response.data.mitiStatus === 'SUCCESS') {
+          console.log(response)
+          this.getAllUser()
+        } else {
+          console.log(response.data)
+        }
+      }).catch(() => {
+        return false
+      })
     },
     search () {
       this.tableData = this.memoryTable
@@ -219,7 +296,7 @@ export default {
         let search = this.searchUser
         let arr = []
         this.tableData.forEach((item, index) => {
-          if (item.account.indexOf(search) > -1 || item.name.indexOf(search) > -1) {
+          if (item.username.indexOf(search) > -1 || item.name.indexOf(search) > -1) {
             arr.push(item)
           }
         })
@@ -238,17 +315,12 @@ export default {
     async confirmAdd () {
       this.$refs.newUserForm.validate(async valid => {
         if (valid) {
-          let info = {
-            type: '科研管理员',
-	          name: '王小虎',
-	          institution: '兰州大学第一医院',
-	          department: '外科一',
-	          institution_name: '兰州大学第一医院',
-	          gender: '男'
-          }
+          let info = this.newUser
+          info.institution_name = info.institution
           let response = await addUser(info)
           if (response.data.mitiStatus === 'SUCCESS') {
             this.getAllUser()
+            this.$refs.newUserForm.resetFields()
             this.dialogTableVisible = false
           } else {
             this.$message.error('ERROR: ' + response.data.message)
@@ -260,7 +332,17 @@ export default {
     }
   },
   mounted () {
-    this.getAllUser()
+    if (this.$store.state.user !== null) {
+      if (this.$store.state.user.codetype === 1) {
+        this.typeOptions = ['科研管理员', '科研护士', '诊疗中心', '临床质控员', '医生']
+        this.getAllUser()
+      } else if (this.$store.state.user.codetype === 2) {
+        this.typeOptions = ['科研护士', '诊疗中心', '临床质控员', '医生']
+        this.getAllUser()
+      } else {
+        this.$router.push('/error:401')
+      }
+    }
   }
 }
 </script>
@@ -286,5 +368,8 @@ export default {
   }
   deep .er-header{
     background-color: red;
+  }
+  .el-table .forbidden {
+    background-color: red !important;
   }
 </style>

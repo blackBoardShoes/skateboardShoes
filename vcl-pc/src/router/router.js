@@ -250,7 +250,7 @@ export const appRouter = [
     meta: {
       title: '系统管理',
       navigator: true,
-      role: [1],
+      role: [1, 2],
       icon: 'module-system'
     },
     component: Layout,
@@ -262,7 +262,7 @@ export const appRouter = [
         meta: {
           title: '系统管理',
           navigator: false,
-          role: [1]
+          role: [1, 2]
         },
         component: () => import('../../src/views/systemManage/index/index.vue'),
         children: [
@@ -272,19 +272,9 @@ export const appRouter = [
             meta: {
               title: '用户管理',
               navigator: false,
-              role: [1]
+              role: [1, 2]
             },
             component: () => import('../../src/views/systemManage/detail/user.vue')
-          },
-          {
-            path: 'permission',
-            name: 'systemManage_permission',
-            meta: {
-              title: '权限管理',
-              navigator: false,
-              role: [1]
-            },
-            component: () => import('../../src/views/systemManage/detail/permission.vue')
           },
           {
             path: 'log',
@@ -292,7 +282,7 @@ export const appRouter = [
             meta: {
               title: '日志管理',
               navigator: false,
-              role: [1]
+              role: [1, 2]
             },
             component: () => import('../../src/views/systemManage/detail/log.vue')
           },
@@ -302,7 +292,7 @@ export const appRouter = [
             meta: {
               title: '系统设置',
               navigator: false,
-              role: [1]
+              role: [1, 2]
             },
             component: () => import('../../src/views/systemManage/detail/settings.vue')
           }

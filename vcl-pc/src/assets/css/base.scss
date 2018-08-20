@@ -62,6 +62,10 @@ ul {
   th{
     background-color: $groupColor !important;
   }
+  .forbidden{
+    // color: $minorTextColor !important;
+    background-color: rgba($color: #eee, $alpha: .9);
+  }
 }
 
 // input[type="text"],

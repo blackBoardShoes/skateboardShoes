@@ -31,11 +31,6 @@ export default {
           path: 'user'
         },
         {
-          icon: 'ercp-icon-module-authority',
-          title: '权限管理',
-          path: 'permission'
-        },
-        {
           icon: 'ercp-icon-module-log',
           title: '日志管理',
           path: 'log'

@@ -91,7 +91,7 @@
             </div>
             <div class="bottom">
               <!-- <span @click="readAll">全部标记为已读</span> -->
-              <span @click="toMessage">查看全部未读消息  <i class="el-icon-arrow-right"></i> </span>
+              <span @click="toMessage">查看全部消息  <i class="el-icon-arrow-right"></i> </span>
             </div>
           </div>
           <div slot="reference" @click="toMessage">
@@ -113,11 +113,12 @@
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item style="cursor:default;">{{'账号：' + user.username}}</el-dropdown-item>
+            <el-dropdown-item style="cursor:default;">{{user.type}}</el-dropdown-item>
             <el-dropdown-item style="cursor:default;">{{user.insititution}}</el-dropdown-item>
             <el-dropdown-item style="cursor:default;">{{user.department}}</el-dropdown-item>
             <!-- <el-dropdown-item style="cursor:default;">{{'性别：' + user.gender}}</el-dropdown-item> -->
             <el-dropdown-item command="changePs" divided>修改密码</el-dropdown-item>
-            <el-dropdown-item command="exit" divided>退出登陆</el-dropdown-item>
+            <el-dropdown-item command="exit" divided>退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -247,6 +248,10 @@ export default {
   mounted () {
     // fixed: 页面刷新清空缓存
     // fixed：刷新后面包屑重置
+    if (this.env === 'production') {
+      let ipc = this.$electron.ipcRenderer
+      ipc.send('mainResize')
+    }
     this.user = this.$store.state.user
     this.initMenu(this.menu)
     this.currentPath = getCurrentPath(this, this.$route)

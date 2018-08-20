@@ -21,3 +21,13 @@ export const getAllUser = data => {
 export const addUser = data => {
   return axios.post(yt + `/user`, data)
 }
+
+// 禁用用户
+export const forbiddenUser = data => {
+  return axios.post(yt + `/user/freeze?user_id=${data}`)
+}
+
+// 重置用户
+export const resetUser = data => {
+  return axios.post(yt + `/user/reset_password?user_id=${data}`)
+}

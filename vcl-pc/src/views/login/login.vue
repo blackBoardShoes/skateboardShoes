@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <div class="middle-wrapper">
-      <div class="login-form">
+      <div class="login-form" :class="{hidden: hidden === true, seen: hidden === false}">
         <div class="bgi">
           <div class="system-title">
             <span>信息录入管理系统</span>
@@ -10,14 +10,15 @@
         <el-form
           ref="loginForm"
           :model="form"
-          :rules="rules">
+          :rules="rules"
+          :class="{hidden: hidden === true, seen: hidden === false}">
           <el-form-item prop="username">
             <el-input v-model="form.username" placeholder="请输入账号">
               <i slot="prefix" class="el-input__icon ercp-icon-general-account" style="font-size: 18px;"></i>
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input :type="passwordType" v-model="form.password" placeholder="请输入密码">
+            <el-input :type="passwordType" v-model="form.password" placeholder="请输入密码" @keyup.enter.native="login('loginForm')">
               <i slot="prefix" class="el-input__icon ercp-icon-general-password" style="font-size: 18px;"></i>
               <i slot="suffix" class="el-input__icon ercp-icon-general-preview" style="cursor: pointer;"
                  @click="_togglePasswordType"></i>
@@ -51,9 +52,9 @@
         </el-form>
       </div>
     </div>
-    <div class="bottom-wrapper">
+    <!-- <div class="bottom-wrapper">
       <b>Copyright © 2018 MITI Genomics Inc, All Rights Reserved</b>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
@@ -62,6 +63,11 @@ import { login } from '../../api/user/user.js'
 import { sessionStorage } from '../../assets/js/storage'
 export default {
   created () {
+    if (process.env.NODE_ENV === 'production') {
+      let ipc = this.$electron.ipcRenderer
+      ipc.send('loginResize')
+      this.hidden = false
+    }
     // 每次在登录页面都要重新清除用户信息
     this.$store.commit('SET_TOKEN', '')
     this.$store.commit('SET_USER', null)
@@ -80,11 +86,12 @@ export default {
       }
     }
     return {
+      hidden: false,
       passwordType: 'password',
       checkCode: '',
       form: {
-        username: '123456',
-        password: '12345',
+        username: '',
+        password: '',
         yanzhengma: ''
       },
       rules: {
@@ -145,6 +152,7 @@ export default {
             console.log(sessionStorage.getItem('token'))
             console.log(this.$store.state.token)
             this.$router.replace('home')
+            this.hidden = true
           } else {
             this.$message.error('ERROR: ' + response.data.message)
           }
@@ -160,15 +168,24 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+  .hidden{
+    visibility: hidden;
+  }
+  .seen{
+    visibility: visible;
+  }
   .login {
+    -webkit-app-region: drag;
     position: fixed;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
-    background-image:url('../../assets/images/login-bg.png');
+    background: teal;
+    // background-image:url('../../assets/images/login-bg.png');
     background-size: cover;
     .middle-wrapper {
+      background: teal;
       position: fixed;
       width: 100%;
       margin: 0 auto;
@@ -190,7 +207,7 @@ export default {
           left: -10px;
           height: 490px;
           width: 500px;
-          background-image: url('../../assets/images/登录框.png');
+          // background-image: url('../../assets/images/登录框.png');
           background-repeat: no-repeat;
           .system-title{
             height: 40px;
@@ -204,6 +221,7 @@ export default {
           }
         }
         .el-form{
+          -webkit-app-region: no-drag;
           margin-top: 50px;
           padding:0 15px;
         }
