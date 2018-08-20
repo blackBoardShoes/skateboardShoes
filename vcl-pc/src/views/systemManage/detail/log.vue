@@ -29,7 +29,8 @@
         style="width: 100%"
         height="100%"
         size="medium"
-        fit>
+        fit
+        class="absolute-table">
         <el-table-column
           prop="operateTime"
           align="center"

@@ -38,7 +38,8 @@
           :data="selfBuild === true ? tableData : tableData2"
           style="width: 100%"
           size="medium"
-          fit>
+          fit
+          class="absolute-table">
           <el-table-column
             type="index"
             width="80">

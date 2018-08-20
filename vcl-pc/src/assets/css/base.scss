@@ -60,9 +60,10 @@ ul {
 .echarts{
   position: absolute !important;
 }
-
-.el-table{
+.absolute-table{
   position: absolute !important;
+}
+.el-table{
   th{
     background-color: rgba($color: $groupColor, $alpha: .9) !important;
   }

@@ -42,7 +42,8 @@
             style="width: 100%"
             size="small"
             fit
-            height="100%">
+            height="100%"
+            class="absolute-table">
             <el-table-column
               prop="hospitalId"
               align="center"

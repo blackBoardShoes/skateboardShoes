@@ -16,7 +16,8 @@
         size="medium"
         fit
         :row-class-name="forbiddenClass"
-        :default-sort = "{prop: 'createTime', order: 'descending'}">
+        :default-sort = "{prop: 'createTime', order: 'descending'}"
+        class="absolute-table">
         <el-table-column
           fixed
           prop="username"
