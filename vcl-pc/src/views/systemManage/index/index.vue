@@ -66,6 +66,7 @@ export default {
       height: 100%;
       min-width: 160px;
       width: 160px;
+      flex: 0 0 160px;
       background-color:#E8E9EA;
       .page-title{
         width: 160px;

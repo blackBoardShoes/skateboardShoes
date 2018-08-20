@@ -66,7 +66,7 @@ export default {
     if (process.env.NODE_ENV === 'production') {
       let ipc = this.$electron.ipcRenderer
       ipc.send('loginResize')
-      this.hidden = false
+      // this.hidden = false
     }
     // 每次在登录页面都要重新清除用户信息
     this.$store.commit('SET_TOKEN', '')
@@ -152,7 +152,7 @@ export default {
             console.log(sessionStorage.getItem('token'))
             console.log(this.$store.state.token)
             this.$router.replace('home')
-            this.hidden = true
+            // this.hidden = true
           } else {
             this.$message.error('ERROR: ' + response.data.message)
           }

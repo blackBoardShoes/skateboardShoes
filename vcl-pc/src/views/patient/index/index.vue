@@ -114,19 +114,19 @@
         </div>
       </div>
       <el-dialog title="新增患者" :visible.sync="dialogTableVisible" :modal="true" append-to-body>
-        <el-form ref="basicForm" :rules="rules" :model="basicInfo" label-position="right" label-width="100px">
+        <el-form ref="basicForm" :rules="rules" :model="basicInfo" label-position="left" label-width="80px">
           <el-col :span="24">
             <el-form-item label="住院号:" prop="hospitalId">
               <el-input v-model="basicInfo.hospitalId" size="small"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="患者姓名:" prop="name">
+            <el-form-item label="姓名:" prop="name">
               <el-input v-model="basicInfo.name" size="small"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="患者性别:" prop="gender">
+            <el-form-item label="性别:" prop="gender">
               <el-radio-group v-model="basicInfo.gender">
                 <el-radio label="1">男</el-radio>
                 <el-radio label="0">女</el-radio>
@@ -134,7 +134,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="患者民族:">
+            <el-form-item label="民族:">
               <el-input v-model="basicInfo.nation" size="small"></el-input>
             </el-form-item>
           </el-col>
@@ -375,6 +375,7 @@ export default {
           padding: 5px 10px;
           box-sizing: border-box;
           border-right:1px dotted #eee;
+          position: relative;
         }
         .area{
           width: 70%;
@@ -382,6 +383,7 @@ export default {
           float: left;
           padding: 5px 10px;
           box-sizing: border-box;
+          position: relative;
         }
       }
     }
@@ -411,6 +413,7 @@ export default {
         .table{
           flex:1;
           height:100px;
+          position: relative;
         }
         .pagination{
           margin-top: 10px;

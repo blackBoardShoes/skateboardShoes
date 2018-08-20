@@ -11,6 +11,10 @@
     visibility: hidden;
   }
 }
+
+.el-input__suffix{
+  right: 8px !important;
+}
 // 左浮动/右浮动
 .float-left{
   float: left;

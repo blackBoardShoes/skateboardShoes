@@ -523,6 +523,7 @@ export default {
           padding: 8px;
           margin-bottom: 8px;
           box-sizing: border-box;
+          position: relative;
         }
         .case-bottom{
           height: 60%;
@@ -532,10 +533,12 @@ export default {
           justify-content: space-between;
           .case-left, .case-right{
             flex: 1;
+            position: relative;
             box-sizing: border-box;
             padding: 8px;
           }
           .case-left{
+            position: relative;
             margin-right: 8px;
           }
         }

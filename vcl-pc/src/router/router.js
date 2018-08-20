@@ -514,16 +514,6 @@ export const appRouter = [
           role: [1, 2, 3, 4, 5, 6]
         },
         component: () => import('../components/cartogram/scalingChart.vue')
-      },
-      {
-        path: '/test/order',
-        name: 'order',
-        meta: {
-          title: 'order',
-          navigator: true,
-          role: [1, 2, 3, 4, 5, 6]
-        },
-        component: () => import('../components/order/order.vue')
       }
     ]
   }

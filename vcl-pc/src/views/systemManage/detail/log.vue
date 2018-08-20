@@ -252,6 +252,7 @@ export default {
       width: 100%;
       height: 100px;
       overflow: auto;
+      position: relative;
     }
     .pagination{
       margin-top: 10px;

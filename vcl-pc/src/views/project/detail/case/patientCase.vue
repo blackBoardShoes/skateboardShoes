@@ -133,6 +133,7 @@ export default {
     }
     .project-info{
       flex: 1;
+      position: relative;
     }
   }
 </style>

@@ -80,6 +80,7 @@ export default {
       justify-content: space-between;
       overflow: auto;
       .chart{
+        position: relative;
         float: left;
         border: 2px solid #AAA;
         box-sizing: border-box;

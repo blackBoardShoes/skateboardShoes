@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import { routers } from './router'
 import { Loading, Message } from 'element-ui'
-// import { Message } from 'element-ui'
 import sessionStorage from '../../src/assets/js/storage/sessionStorage'
 Vue.use(VueRouter)
 const routerConfig = {

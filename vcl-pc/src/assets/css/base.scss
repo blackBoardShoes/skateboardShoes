@@ -57,14 +57,20 @@ ul {
 //     }
 //   }
 // }
+.echarts{
+  position: absolute !important;
+}
 
 .el-table{
+  position: absolute !important;
   th{
-    background-color: $groupColor !important;
+    background-color: rgba($color: $groupColor, $alpha: .9) !important;
   }
   .forbidden{
-    // color: $minorTextColor !important;
-    background-color: rgba($color: #eee, $alpha: .9);
+    color: $minorTextColor;
+    // background:repeating-linear-gradient(-135deg,#dfdfdf 0%, #dfdfdf 2%, #fff 2%, #fff 4%);
+    cursor: not-allowed;
+    // background-color: rgba($color: #E8E9EA, $alpha: 0.7);
   }
 }
 

@@ -319,6 +319,7 @@ export default {
         }
       }
       .content{
+        position: relative;
         flex: 1;
         overflow-y: auto;
       }
