@@ -36,7 +36,7 @@
             </div>
           </div>
           <div class="formContentRight">
-            <div class="rightContent">
+            <div class="rightContent" v-if="navArr[activeIndex] === {}">
               <div class="rightContentDynamic" v-if="!(navArr[activeIndex] ? navArr[activeIndex].isStatic : false)">
                 <sx-min-form
                   v-model="fishData"

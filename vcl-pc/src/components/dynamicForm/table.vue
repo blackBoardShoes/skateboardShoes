@@ -234,6 +234,5 @@ export default {
 <style lang="scss" scoped>
 .tableAll {
   width: 100%;
-  position: relative;
 }
 </style>
