@@ -17,7 +17,7 @@
       </div>
       <div class="formContentContent">
         <sx-no-route-control :navArr="navArr" :activeIndex="activeIndex" @emitClick="emitClick"></sx-no-route-control>
-        <div class="formContentRight">
+        <div>
           <div class="rightContentControl">
             <div class="rightContentControlName">{{navArr[activeIndex] ? navArr[activeIndex].name : ''}}</div>
             <div class="rightContentControlBtn">
@@ -35,17 +35,19 @@
                 返回</div>
             </div>
           </div>
-          <div class="rightContent">
-            <div class="rightContentDynamic" v-if="!(navArr[activeIndex] ? navArr[activeIndex].isStatic : false)">
-              <sx-min-form
-                v-model="fishData"
-                ref="thatForm"
-                :mozhu="navArr[activeIndex]"
-                @notVerifying="notVerifying"
-                @consoleData="consoleData"></sx-min-form>
-            </div>
-            <div class="rightContentStatic">
-              <sx-operation-report v-model="ssbgModel" ref="ssbgModel" v-if="navArr[activeIndex] ? navArr[activeIndex].isStatic === 'ssbg' : false"></sx-operation-report>
+          <div class="formContentRight">
+            <div class="rightContent">
+              <div class="rightContentDynamic" v-if="!(navArr[activeIndex] ? navArr[activeIndex].isStatic : false)">
+                <sx-min-form
+                  v-model="fishData"
+                  ref="thatForm"
+                  :mozhu="navArr[activeIndex]"
+                  @notVerifying="notVerifying"
+                  @consoleData="consoleData"></sx-min-form>
+              </div>
+              <div class="rightContentStatic">
+                <sx-operation-report v-model="ssbgModel" ref="ssbgModel" v-if="navArr[activeIndex] ? navArr[activeIndex].isStatic === 'ssbg' : false"></sx-operation-report>
+              </div>
             </div>
           </div>
         </div>
@@ -756,57 +758,57 @@ $marginW: 15px;
         height: $full;
         width: $full;
         overflow: auto;
-        .rightContentControl {
-          height: $topControl;
-          width: $full;
-          background: white;
-          width: calc($full - 5px);
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          .rightContentControlName {
-            padding-left: 10px;
-            font-weight: bold;
-            margin-left: $marginW;
-            height: $marginW;
-            display: flex;
-            align-items: center;
-            border-left: 9px solid $minorTextColor;
-            width: 350px;
-          }
-          .rightContentControlBtn {
-            transition: all .5s;
-            flex-grow: 0.25;
-            height: $full;
-            display: flex;
-            justify-content: space-between;
-            font-weight: bold;
-            margin-right: $marginW;
-            div {
-              display: flex;
-              align-items: center;
-              padding-left: $marginW;
-              padding-right: $marginW;
-              height: $full;
-              color: #117FD1;
-              border: none;
-              background: transparent;
-              font-weight: bold;
-              font-size: 16px;
-              height: $full;
-              border-radius: 0;
-            }
-            div:hover {
-              background: $mainBackgroundColor;
-            }
-          }
-        }
         .rightContent {
           width: $full;
+          padding-bottom: 150px;
           .rightContentDynamic {
             padding: 25px;
           }
-          .rightContentStatic {
+          .rightContentStatic {}
+        }
+      }
+      .rightContentControl {
+        height: $topControl;
+        width: $full;
+        background: white;
+        // width: calc($full - 5px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .rightContentControlName {
+          padding-left: 10px;
+          font-weight: bold;
+          margin-left: $marginW;
+          height: $marginW;
+          display: flex;
+          align-items: center;
+          border-left: 9px solid $minorTextColor;
+          width: 350px;
+        }
+        .rightContentControlBtn {
+          transition: all .5s;
+          flex-grow: 0.25;
+          height: $full;
+          display: flex;
+          justify-content: space-between;
+          font-weight: bold;
+          margin-right: $marginW;
+          div {
+            display: flex;
+            align-items: center;
+            padding-left: $marginW;
+            padding-right: $marginW;
+            height: $full;
+            color: #117FD1;
+            border: none;
+            background: transparent;
+            font-weight: bold;
+            font-size: 16px;
+            height: $full;
+            border-radius: 0;
+          }
+          div:hover {
+            background: $mainBackgroundColor;
           }
         }
       }
