@@ -56,8 +56,9 @@ axios.interceptors.response.use(
               type: 'success'
             })
           }
+          return response
         }
-        return response
+        return false
       }
     }
   },

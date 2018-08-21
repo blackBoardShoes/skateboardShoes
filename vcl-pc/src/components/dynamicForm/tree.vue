@@ -3,7 +3,7 @@
     <div class="treeContent">
       <el-form ref="sizeForm" :model="sizeForm" label-width="0px" size="mini" style="flex-grow:1">
         <el-form-item style="width:100%" prop="treeName" :rules="[{ required: true, message: '请输入要创建的名字', trigger: 'change' }]">
-          <el-input style="width:100%" clearable v-model='sizeForm.treeName' placeholder="请输入要创建的名字"></el-input>
+          <el-input style="width:100%" clearable v-model.trim='sizeForm.treeName' placeholder="请输入要创建的名字"></el-input>
         </el-form-item>
       </el-form>
       <el-button

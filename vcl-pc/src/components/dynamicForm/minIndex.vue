@@ -42,7 +42,7 @@
                   </div>
                 </div>
                 <el-radio-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'RADIO'">
-                  <el-radio v-for="(it, ii) in items.values" :key="ii" :label="it.value">{{it.label}}</el-radio>
+                  <el-radio v-for="(it, ii) in items.values" :key="ii" :label="it.value">{{(it.label.split('**'))[0]}}</el-radio>
                 </el-radio-group>
                 <el-checkbox-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'CHECKBOX'">
                   <el-checkbox v-for="(it, ii) in items.values" :key="ii" :label="it.value" >{{it.label}}</el-checkbox>
@@ -190,7 +190,7 @@ export default {
     labelWidth: {
       type: String,
       default () {
-        return '110px'
+        return '200px'
       }
     },
     labelPosition: {
@@ -548,19 +548,21 @@ export default {
     calculate (data, pattern) {
       /* eslint-disable */
       //split用
-      var reg = /\(|\)|\d+\.\d+|\d+|[a-zA-Z]+|\+|\-|\*|\/|\^|\%/g
+      var reg = /\(|\)|[a-zA-Z]*[a-zA-Z0-9]+|\d+\.\d+|\d+|[a-zA-Z]+|\+|\-|\*|\/|\^|\%/g
       //判断条件
       var CONSTANT = /\d+\.\d+|\d+/
       var LEFT_BRACKET = /\(/
       var RIGHT_BRACKET = /\)/
       var OPERATOR = /\+|\-|\*|\/|\^|\%/
-      var ID = /[a-zA-Z][a-zA-Z0-9]+/
+      var ID = /^[a-zA-Z]*[0-9]*$|^[a-zA-Z]*$/
       var patternList = pattern.match(reg)
       //2个queue
       var values = []
       var operator = []
-
+      console.log(patternList)
       for (var i = 0; i < patternList.length; i++){
+        console.log(patternList[i])
+        console.log(ID.test(patternList[i]))
         if (LEFT_BRACKET.test(patternList[i])) {
           continue;
         } else if (RIGHT_BRACKET.test(patternList[i])) {
@@ -579,15 +581,14 @@ export default {
             default: throw "something wrong while calculating value 1";
           }
           values.push(cal_value);
+        } else if (ID.test(patternList[i])) {
+          if (!data[patternList[i]]) values.push(0)
+            // throw "the data is empty: " + patternList[i];
+          values.push(Number(data[patternList[i]]));
         } else if (CONSTANT.test(patternList[i])) {
           values.push(Number(patternList[i]));
         } else if (OPERATOR.test(patternList[i])) {
           operator.push(patternList[i])
-        } else if (ID.test(patternList[i])) {
-          if (data[patternList[i]] == null)
-            values.push(0)
-            // throw "the data is empty: " + patternList[i];
-          values.push(Number(data[patternList[i]]));
         } else {
           this.$message({
             showClose: true,

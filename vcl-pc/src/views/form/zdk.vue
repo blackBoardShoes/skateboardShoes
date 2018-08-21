@@ -151,7 +151,7 @@ export default {
             type: 'INPUT',
             validations: [
               { required: true, message: '请输入组件标签名', trigger: 'change' },
-              { pattern: '^[^\\s~！@#￥%……&*（）——+~!@#$%^&*()_+]*$', message: '不能输入空格或特殊字符', trigger: 'change' }
+              { pattern: '^[^\\s~！@#￥%……&*（）——+~!@#$%^&*_+]*$', message: '不能输入空格或特殊字符', trigger: 'change' }
             ]
           },
           // patten
@@ -366,8 +366,9 @@ export default {
       console.log(mozhuId, formModel)
       // formModel['values'] = [...formModel['layerTree']].length ? [...formModel['layerTree']] : []
       let what = this.conversion(this.auxiliaryType(Object.assign({}, formModel)))
+      let fe = ''
       if (this.fishNeedEditData['row']) {
-        let fe = await fieldUpdate(what)
+        fe = await fieldUpdate(what)
         console.log(fe, 'fieldUpdatefieldUpdatefieldUpdate')
         // this.listData.splice(this.fishNeedEditData['index'], 1, what)
       } else {
@@ -381,16 +382,18 @@ export default {
             return
           }
         }
-        let ft = await fieldFinish(what)
-        console.log(ft)
+        fe = await fieldFinish(what)
+        console.log(fe)
         // this.listData.push(what)
       }
-      this.show()
-      this.$refs['thatFieldLibrary'].resetData()
-      this.$refs['thatForm'].resetData()
-      this.fishNeedEditData = {}
-      this.$set(this.thatFish, 'fields', [])
-      this.$refs['thatFormPreview'].againData()
+      if (fe) {
+        await this.show()
+        this.$refs['thatFieldLibrary'].resetData()
+        this.$refs['thatForm'].resetData()
+        this.fishNeedEditData = {}
+        this.$set(this.thatFish, 'fields', [])
+        this.$refs['thatFormPreview'].againData()
+      }
     },
     async editFish (row, index) {
       console.log(row, index, 'editfish')

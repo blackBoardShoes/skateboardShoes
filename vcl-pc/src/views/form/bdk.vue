@@ -707,7 +707,7 @@ export default {
               await addFormPost(this.formModel)
               // this.cardArr.push(this.formModel)
             }
-            this.show()
+            await this.show()
             this.fewStepsTF = true
             console.log(this.formModel, 'this.formModel')
           }
