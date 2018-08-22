@@ -55,7 +55,7 @@
               :label="item.label" v-for="(item, index) in createTopForm" :key="index">
               <el-input
                 style="width:100%"
-                v-model="formModel[item.id]" v-if="item.type === 'INPUT'"
+                v-model.trim="formModel[item.id]" v-if="item.type === 'INPUT'"
                 :placeholder="item.placeholder"></el-input>
               <el-select style="width:100%" v-model="formModel[item.id]" v-if="item.type === 'SELECT'" :placeholder="item.placeholder">
                 <el-option
@@ -109,7 +109,7 @@
             ref="minTreeOne"
             :title="'字段库'"
             :mark="'leftChecked'"
-            v-model="leftData" showCheckbox style="min-width: 400px"
+            v-model="leftData" showCheckbox style="width: 400px"
             @handleCheckChange="handleCheckChange"></sx-min-tree>
           <div style="display: flex;flex-grow: 0.1;flex-direction: column;align-self: center;justify-content: center;padding: 35px">
             <div>
@@ -132,7 +132,7 @@
             :title="'当前表'"
             :mark="'rightChecked'"
             v-model="rightData" draggable
-            showCheckbox style="min-width: 400px" @handleCheckChange="handleCheckChange">
+            showCheckbox style="width: 400px" @handleCheckChange="handleCheckChange">
             <div slot="bottom" class="createContentBottom">
               <el-button @click="openRelation" size="mini">关联关系</el-button>
               <el-button @click="openCoordinate" size="mini">排版</el-button>
@@ -700,16 +700,19 @@ export default {
           if (this.checkUpData()) {
             console.log(this.formModel, '1------')
             console.log(this.rightData, '2------')
+            let e = ''
             if (this.editOrAdd) {
-              await editFormPut(this.formModel)
+               e = await editFormPut(this.formModel)
               // this.cardArr[this.cardIndex] = this.formModel
             } else {
-              await addFormPost(this.formModel)
+              e = await addFormPost(this.formModel)
               // this.cardArr.push(this.formModel)
             }
-            await this.show()
-            this.fewStepsTF = true
-            console.log(this.formModel, 'this.formModel')
+            if (e) {
+              await this.show()
+              this.fewStepsTF = true
+              console.log(this.formModel, 'this.formModel')
+            }
           }
         } else {
           return false

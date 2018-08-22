@@ -22,7 +22,7 @@
             <div class="rightContentControlName">
               {{navArr[activeIndex] ? navArr[activeIndex].name : ''}}
               &nbsp;
-              <span style="font-size:13px;font-weight:400;">({{navArr[activeIndex] ? navArr[activeIndex].description : ''}})</span>
+              <span style="font-size:13px;font-weight:400;">{{navArr[activeIndex] ? navArr[activeIndex].description : ''}}</span>
             </div>
             <div class="rightContentControlBtn">
               <div @click="generalSubmit">
@@ -769,7 +769,7 @@ $marginW: 15px;
           width: $full;
           padding-bottom: 150px;
           .rightContentDynamic {
-            padding: 25px;
+            padding: 50px;
           }
           .rightContentStatic {}
         }

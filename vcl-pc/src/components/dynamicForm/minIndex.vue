@@ -2,9 +2,9 @@
   <div class="formAll">
     <div class="formContent">
       <div class="formContentLeft">
+        <!-- :label-width="labelWidth" -->
         <el-form
           onkeydown="if(event.keyCode==13){return false}"
-          :label-width="labelWidth"
           :label-position="labelPosition"
           :disabled="disabled"
           :class="{controlFormClass: inline}"
@@ -734,11 +734,42 @@ $full: 100%;
       // margin-left: 15px;
       margin-right: 10px;
     }
+    /deep/ .el-form-item, /deep/ .el-form-item--mini {
+      display: flex !important;
+      flex-wrap: nowrap;
+      width: 100%;
+      .el-form-item__content {
+        flex-grow: 1;
+      }
+    }
+    /deep/ .el-form-item__label {
+      min-width: 150px;
+      max-width: 180px;
+      white-space:normal;
+      word-break:break-all;
+      word-wrap:break-word; 
+    }
   }
-  /deep/ .el-form-item__label {
-    white-space:normal;
-    word-break:break-all;
-    word-wrap:break-word; 
-  }
+
 }
+</style>
+<style lang="scss">
+// .formAll {
+//   .formContent {
+//     .el-form-item, .el-form-item--mini {
+//       display: flex !important;
+//       flex-wrap: nowrap;
+//       width: 100%;
+//       .el-form-item__content {
+//         flex-grow: 1;
+//       }
+//     }
+//     .el-form-item__label {
+//       min-width: 150px;
+//       white-space:normal;
+//       word-break:break-all;
+//       word-wrap:break-word; 
+//     }
+//   }
+// }
 </style>

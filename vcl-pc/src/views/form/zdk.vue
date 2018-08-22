@@ -24,7 +24,7 @@
               <i class="el-icon-setting centerCenterIcon"></i>&nbsp;字段浏览
             </div>
           </sx-segmenting-line>
-          <div style="padding: 20px;height:100px;">
+          <div style="padding: 20px;overflow: auto;max-height: 250px">
             <sx-min-form ref="thatFormPreview" v-model="thatFishData" :mozhu="thatFish"></sx-min-form>
           </div>
         </div>
@@ -468,6 +468,7 @@ $full: 100%;
       // overflow: auto;
       display: flex;
       .zdkContentBottomLeft {
+        overflow: auto;
         // max-width: 0px;
         width: 700px;
         flex-grow: 1;

@@ -206,7 +206,11 @@ export default {
     width:100%;
     .calcultatePresent {
       width: 100%;
-      word-wrap:break-word;
+      // max-width: 100px;
+      // word-wrap:break-word;
+      word-break: break-all;
+      word-wrap: break-word;
+      // white-space: pre-wrap;
       font-size: 30px;
       font-family: '微软雅黑';
     }
