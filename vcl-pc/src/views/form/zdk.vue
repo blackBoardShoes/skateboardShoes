@@ -76,6 +76,11 @@ export default {
             ruleType: 'EQUAL',
             value: ['INPUT', 'INT', 'DOUBLE', 'TEXTAREA']
           },
+          nullRadio: {
+            target: 'type',
+            ruleType: 'EQUAL',
+            value: ['RADIO']
+          },
           required: {
             target: 'type',
             ruleType: 'EQUAL',
@@ -114,12 +119,12 @@ export default {
             value: '',
             type: 'RADIO',
             values: [
-              {label: '选择器', value: 'SELECT'},
+              {label: '单选框', value: 'RADIO'},
               {label: '文本标签', value: 'TEXTAREA'},
               {label: '多选选择器', value: 'SELECTMUTIPLE'},
               {label: '日期时间选择器', value: 'DATETIME'},
               {label: '计算', value: 'CREATECALCULATE'},
-              {label: '单选框', value: 'RADIO'},
+              {label: '选择器', value: 'SELECT'},
               {label: '创建表格', value: 'CREATETABLE'},
               {label: '日期选择器', value: 'DATE'},
               {label: '整数类型输入框', value: 'INT'},
@@ -150,8 +155,8 @@ export default {
             value: '',
             type: 'INPUT',
             validations: [
-              { required: true, message: '请输入组件标签名', trigger: 'change' },
-              { pattern: '^[^\\s~！@#￥%……&*（）——+~!@#$%^&*_+]*$', message: '不能输入空格或特殊字符', trigger: 'change' }
+              { required: true, message: '请输入组件标签名', trigger: 'change' }
+              // { pattern: '^[^\\s~！@#￥%……&*（）——+~!@#$%^&*()_+]*$|^[\\w\\u4e00-\\u9fa5]+$|^[\\w\\u4e00-\\u9fa5]+\\sv{1,2}$', message: '不能输入空格或特殊字符', trigger: 'change' }
             ]
           },
           // patten
@@ -172,11 +177,17 @@ export default {
             label: '单位',
             type: 'INPUT'
           },
-          // patten
+          // patten example
           {
             id: 'example',
             label: '正则例子',
             type: 'EXAMPLE'
+          },
+          // nullRadio example
+          {
+            id: 'nullRadio',
+            label: '标题例子',
+            type: 'NULLRADIO'
           },
           // tree
           {

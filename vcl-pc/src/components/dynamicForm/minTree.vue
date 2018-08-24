@@ -17,7 +17,7 @@
       <el-input
         clearable
         placeholder="输入关键字进行过滤"
-        v-model="filterText">
+        v-model.trim="filterText">
       </el-input>
         <el-popover
         placement="bottom-start"
@@ -153,7 +153,7 @@ export default {
     // }
   },
   created () {
-    console.log(this.minTreeData, 'minTreeData,-=-=-=-=-=-=')
+    // console.log(this.minTreeData, 'minTreeData,-=-=-=-=-=-=')
   },
   methods: {
     oneToOneText (type) {
@@ -173,7 +173,7 @@ export default {
       this.isIndeterminate = false
     },
     filterNode (value, data) {
-      console.log(value, data)
+      // console.log(value, data)
       if (!value) return true
       return Object.values(data).toString().toLowerCase().indexOf(value.toLowerCase()) !== -1
     },

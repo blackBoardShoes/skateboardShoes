@@ -119,11 +119,11 @@ export default {
             }
             // console.log(this.layerTreeData)
           }
-          this.$emit('input', this.layerTreeData)
         } else {
           console.log('error submit!!')
           return false
         }
+        this.$emit('input', this.layerTreeData)
       })
     },
     allowDrop (draggingNode, dropNode, type) {

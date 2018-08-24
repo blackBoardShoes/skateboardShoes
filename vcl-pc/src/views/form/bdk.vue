@@ -189,6 +189,7 @@ import sxMinTree from '@/components/dynamicForm/minTree'
 // import data from '@/components/dynamicForm/data.js'
 import { fieldAllFields } from '../../api/form/zdk.js'
 import { fieldAllForms, addFormPost, editFormPut, formDelete } from '../../api/form/bdk.js'
+
 export default {
   components: {
     sxFormCard,
@@ -472,10 +473,12 @@ export default {
       console.log(this.cardArr, 'this.cardArr')
     },
     async firstShow () {
-      let data = {
-        fieldsData: await fieldAllFields()
+      let fieldsData = await fieldAllFields()
+      console.log(fieldsData)
+      if (fieldsData) {
+        this.mozhu = fieldsData.data.entity
       }
-      this.mozhu = data.fieldsData ? data.fieldsData.data.entity : {}
+      // this.mozhu = data.fieldsData ? data.fieldsData.data.entity : {}
     },
     init () {
       this.$set(this.formModel, 'relation', {})
@@ -483,6 +486,8 @@ export default {
       this.$set(this.formModel, 'fields', [])
       this.leftData = [...this.mozhu]
       this.rightData = []
+      this.leftChecked = []
+      this.rightChecked = []
       console.log(this.formModel)
       // this.$set(this.formModel, 'fields', this.formModel['fields'] ? this.formModel['fields'] : [])
       // this.$set(this.formModel, 'relation', this.formModel['relation'] ? this.formModel['relation'] : {})
@@ -675,6 +680,7 @@ export default {
     },
     openPreview () {
       console.log(this.rightData)
+      this.previewFishData = {}
       this.previewFormModel = Object.assign({}, this.formModel)
       this.$set(this.previewFormModel, 'fields', [...this.rightData])
       this.previewDialogVisible = true
@@ -702,7 +708,7 @@ export default {
             console.log(this.rightData, '2------')
             let e = ''
             if (this.editOrAdd) {
-               e = await editFormPut(this.formModel)
+              e = await editFormPut(this.formModel)
               // this.cardArr[this.cardIndex] = this.formModel
             } else {
               e = await addFormPost(this.formModel)

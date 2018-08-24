@@ -89,17 +89,21 @@ export default {
     append (data) {
       this.$refs['sizeForm'].validate(async (valid) => {
         if (valid) {
-          const newChild = { value: this.treeId++, label: this.sizeForm.treeName ? this.sizeForm.treeName : '空' }
-          if (data) {
-            if (!data.children) {
-              await this.$set(data, 'children', [])
-            }
-            data.children.push(newChild)
-          } else {
-            if (Array.isArray(this.treeData)) {
-              this.treeData.push(newChild)
+          let nimbleArr = []
+          nimbleArr = this.sizeForm.treeName.split('&&')
+          for (let z of nimbleArr) {
+            const newChild = { value: this.treeId++, label: z !== '' ? z : '空' }
+            if (data) {
+              if (!data.children) {
+                await this.$set(data, 'children', [])
+              }
+              data.children.push(newChild)
             } else {
-              console.log('不是数组')
+              if (Array.isArray(this.treeData)) {
+                this.treeData.push(newChild)
+              } else {
+                console.log('不是数组')
+              }
             }
           }
         } else {

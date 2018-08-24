@@ -121,14 +121,23 @@
                     <br>
                     1到10: ^[1-9]$|^10$ &nbsp;&nbsp;&nbsp;
                     1到50: ^[1-9]$|^[1-4][0-9]$|^50$ &nbsp;&nbsp;&nbsp;
-                    0到100: ^[0-9]$|^[0-9][0-9]$|^100$ &nbsp;&nbsp;&nbsp;
+                    0到100: ^[0-9]$|^[0-9][0-9]$|^100$  或者  ^\d{0,2}$|^100$ &nbsp;&nbsp;&nbsp;
                     0到120:  ^[0-9]$|^[0-9][0-9]$|^[1][012][0]$ &nbsp;&nbsp;&nbsp;
                     1到300:  ^[1-9]$|^[0-9][0-9]$|^[12][0-9][0-9]$|^300$ &nbsp;&nbsp;&nbsp;
                     1到1000:  ^[1-9]$|^[0-9][0-9]$|^[1-9][0-9][0-9]$|^1000$ &nbsp;&nbsp;&nbsp;
+                    0到1000: ^\d{0,3}$|^1000$ &nbsp;&nbsp;&nbsp;
+                    0到1000000: ^\d{0,6}$|^1000000$ &nbsp;&nbsp;&nbsp;
+                    0到120000: ^\d{0,5}$|^[1]{1}[01]{1}\d{4}$|^120000$
                     <br><br>
                     两位小数  ^.\d{2}$ &nbsp;&nbsp;&nbsp; 整数和1位或两位小数:  ^\d+$|^\d+\.\d{1,2}$
                     <br><br>
                     1-5字符长度区间: ^.{1,5}$ &nbsp;&nbsp;&nbsp; 固定5字符长度: ^.{5}$
+                  </span>
+                </div>
+                <div v-if="items.type === 'NULLRADIO'">
+                  <span style="font-size: 12px">
+                    未加入选项时可作为标题使用<br>
+                    例子: 腹部体征 v
                   </span>
                 </div>
                 <el-button-group v-if="edit" style="margin-top:3px">
@@ -390,7 +399,21 @@ export default {
         if (i['validations']) {
           for (let z in i['validations']) {
             if ('pattern' in i['validations'][z]) {
-              i['validations'][z]['pattern'] = new RegExp(i['validations'][z]['pattern'], 'g')
+              if (i['validations'][z]['pattern'].toString().includes('***')) {
+                let arr = i['validations'][z]['pattern'].split('***')
+                let a = { validator: (rule, value, callback) => {
+                  if ((parseInt(arr[0]) <= parseInt(value)) && (parseInt(arr[1]) >= parseInt(value))) {
+                    callback()
+                  } else {
+                    callback(new Error('范围为' + arr[0] + '-' + arr[1]))
+                  }
+                }}
+                console.log(arr[0], arr[1], 'aaaaaaaaaaaaaaaaaaaa')
+                i['validations'].push(a)
+                i['validations'][z] = {}
+              } else {
+                i['validations'][z]['pattern'] = new RegExp(i['validations'][z]['pattern'], 'g')
+              }
               console.log(i['validations'][z]['pattern'])
               // this.$set(this.fields[j]['validations'][z], 'pattern', new RegExp(this.fields[j]['validations'][z]['pattern']))
             }
