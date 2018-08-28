@@ -2,9 +2,9 @@
   <div class="formAll">
     <div class="formContent">
       <div class="formContentLeft">
+        <!-- :label-width="labelWidth" -->
         <el-form
           onkeydown="if(event.keyCode==13){return false}"
-          :label-width="labelWidth"
           :label-position="labelPosition"
           :disabled="disabled"
           :class="{controlFormClass: inline}"
@@ -42,7 +42,7 @@
                   </div>
                 </div>
                 <el-radio-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'RADIO'">
-                  <el-radio v-for="(it, ii) in items.values" :key="ii" :label="it.value">{{it.label}}</el-radio>
+                  <el-radio v-for="(it, ii) in items.values" :key="ii" :label="it.value">{{(it.label.split('**'))[0]}}</el-radio>
                 </el-radio-group>
                 <el-checkbox-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'CHECKBOX'">
                   <el-checkbox v-for="(it, ii) in items.values" :key="ii" :label="it.value" >{{it.label}}</el-checkbox>
@@ -121,14 +121,23 @@
                     <br>
                     1到10: ^[1-9]$|^10$ &nbsp;&nbsp;&nbsp;
                     1到50: ^[1-9]$|^[1-4][0-9]$|^50$ &nbsp;&nbsp;&nbsp;
-                    0到100: ^[0-9]$|^[0-9][0-9]$|^100$ &nbsp;&nbsp;&nbsp;
+                    0到100: ^[0-9]$|^[0-9][0-9]$|^100$  或者  ^\d{0,2}$|^100$ &nbsp;&nbsp;&nbsp;
                     0到120:  ^[0-9]$|^[0-9][0-9]$|^[1][012][0]$ &nbsp;&nbsp;&nbsp;
                     1到300:  ^[1-9]$|^[0-9][0-9]$|^[12][0-9][0-9]$|^300$ &nbsp;&nbsp;&nbsp;
                     1到1000:  ^[1-9]$|^[0-9][0-9]$|^[1-9][0-9][0-9]$|^1000$ &nbsp;&nbsp;&nbsp;
+                    0到1000: ^\d{0,3}$|^1000$ &nbsp;&nbsp;&nbsp;
+                    0到1000000: ^\d{0,6}$|^1000000$ &nbsp;&nbsp;&nbsp;
+                    0到120000: ^\d{0,5}$|^[1]{1}[01]{1}\d{4}$|^120000$
                     <br><br>
                     两位小数  ^.\d{2}$ &nbsp;&nbsp;&nbsp; 整数和1位或两位小数:  ^\d+$|^\d+\.\d{1,2}$
                     <br><br>
                     1-5字符长度区间: ^.{1,5}$ &nbsp;&nbsp;&nbsp; 固定5字符长度: ^.{5}$
+                  </span>
+                </div>
+                <div v-if="items.type === 'NULLRADIO'">
+                  <span style="font-size: 12px">
+                    未加入选项时可作为标题使用<br>
+                    例子: 腹部体征 v
                   </span>
                 </div>
                 <el-button-group v-if="edit" style="margin-top:3px">
@@ -190,7 +199,7 @@ export default {
     labelWidth: {
       type: String,
       default () {
-        return '110px'
+        return '200px'
       }
     },
     labelPosition: {
@@ -390,7 +399,21 @@ export default {
         if (i['validations']) {
           for (let z in i['validations']) {
             if ('pattern' in i['validations'][z]) {
-              i['validations'][z]['pattern'] = new RegExp(i['validations'][z]['pattern'], 'g')
+              if (i['validations'][z]['pattern'].toString().includes('***')) {
+                let arr = i['validations'][z]['pattern'].split('***')
+                let a = { validator: (rule, value, callback) => {
+                  if ((parseInt(arr[0]) <= parseInt(value)) && (parseInt(arr[1]) >= parseInt(value))) {
+                    callback()
+                  } else {
+                    callback(new Error('范围为' + arr[0] + '-' + arr[1]))
+                  }
+                }}
+                console.log(arr[0], arr[1], 'aaaaaaaaaaaaaaaaaaaa')
+                i['validations'].push(a)
+                i['validations'][z] = {}
+              } else {
+                i['validations'][z]['pattern'] = new RegExp(i['validations'][z]['pattern'], 'g')
+              }
               console.log(i['validations'][z]['pattern'])
               // this.$set(this.fields[j]['validations'][z], 'pattern', new RegExp(this.fields[j]['validations'][z]['pattern']))
             }
@@ -548,19 +571,21 @@ export default {
     calculate (data, pattern) {
       /* eslint-disable */
       //split用
-      var reg = /\(|\)|\d+\.\d+|\d+|[a-zA-Z]+|\+|\-|\*|\/|\^|\%/g
+      var reg = /\(|\)|[a-zA-Z]*[a-zA-Z0-9]+|\d+\.\d+|\d+|[a-zA-Z]+|\+|\-|\*|\/|\^|\%/g
       //判断条件
       var CONSTANT = /\d+\.\d+|\d+/
       var LEFT_BRACKET = /\(/
       var RIGHT_BRACKET = /\)/
       var OPERATOR = /\+|\-|\*|\/|\^|\%/
-      var ID = /[a-zA-Z][a-zA-Z0-9]+/
+      var ID = /^[a-zA-Z]*[0-9]*$|^[a-zA-Z]*$/
       var patternList = pattern.match(reg)
       //2个queue
       var values = []
       var operator = []
-
+      console.log(patternList)
       for (var i = 0; i < patternList.length; i++){
+        console.log(patternList[i])
+        console.log(ID.test(patternList[i]))
         if (LEFT_BRACKET.test(patternList[i])) {
           continue;
         } else if (RIGHT_BRACKET.test(patternList[i])) {
@@ -579,15 +604,14 @@ export default {
             default: throw "something wrong while calculating value 1";
           }
           values.push(cal_value);
+        } else if (ID.test(patternList[i])) {
+          if (!data[patternList[i]]) values.push(0)
+            // throw "the data is empty: " + patternList[i];
+          values.push(Number(data[patternList[i]]));
         } else if (CONSTANT.test(patternList[i])) {
           values.push(Number(patternList[i]));
         } else if (OPERATOR.test(patternList[i])) {
           operator.push(patternList[i])
-        } else if (ID.test(patternList[i])) {
-          if (data[patternList[i]] == null)
-            values.push(0)
-            // throw "the data is empty: " + patternList[i];
-          values.push(Number(data[patternList[i]]));
         } else {
           this.$message({
             showClose: true,
@@ -733,11 +757,42 @@ $full: 100%;
       // margin-left: 15px;
       margin-right: 10px;
     }
+    /deep/ .el-form-item, /deep/ .el-form-item--mini {
+      display: flex !important;
+      flex-wrap: nowrap;
+      width: 100%;
+      .el-form-item__content {
+        flex-grow: 1;
+      }
+    }
+    /deep/ .el-form-item__label {
+      min-width: 150px;
+      max-width: 180px;
+      white-space:normal;
+      word-break:break-all;
+      word-wrap:break-word; 
+    }
   }
-  /deep/ .el-form-item__label {
-    white-space:normal;
-    word-break:break-all;
-    word-wrap:break-word; 
-  }
+
 }
+</style>
+<style lang="scss">
+// .formAll {
+//   .formContent {
+//     .el-form-item, .el-form-item--mini {
+//       display: flex !important;
+//       flex-wrap: nowrap;
+//       width: 100%;
+//       .el-form-item__content {
+//         flex-grow: 1;
+//       }
+//     }
+//     .el-form-item__label {
+//       min-width: 150px;
+//       white-space:normal;
+//       word-break:break-all;
+//       word-wrap:break-word; 
+//     }
+//   }
+// }
 </style>

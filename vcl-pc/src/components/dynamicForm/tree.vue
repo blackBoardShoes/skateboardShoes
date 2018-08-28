@@ -3,7 +3,7 @@
     <div class="treeContent">
       <el-form ref="sizeForm" :model="sizeForm" label-width="0px" size="mini" style="flex-grow:1">
         <el-form-item style="width:100%" prop="treeName" :rules="[{ required: true, message: '请输入要创建的名字', trigger: 'change' }]">
-          <el-input style="width:100%" clearable v-model='sizeForm.treeName' placeholder="请输入要创建的名字"></el-input>
+          <el-input style="width:100%" clearable v-model.trim='sizeForm.treeName' placeholder="请输入要创建的名字"></el-input>
         </el-form-item>
       </el-form>
       <el-button
@@ -89,17 +89,21 @@ export default {
     append (data) {
       this.$refs['sizeForm'].validate(async (valid) => {
         if (valid) {
-          const newChild = { value: this.treeId++, label: this.sizeForm.treeName ? this.sizeForm.treeName : '空' }
-          if (data) {
-            if (!data.children) {
-              await this.$set(data, 'children', [])
-            }
-            data.children.push(newChild)
-          } else {
-            if (Array.isArray(this.treeData)) {
-              this.treeData.push(newChild)
+          let nimbleArr = []
+          nimbleArr = this.sizeForm.treeName.split('&&')
+          for (let z of nimbleArr) {
+            const newChild = { value: this.treeId++, label: z !== '' ? z : '空' }
+            if (data) {
+              if (!data.children) {
+                await this.$set(data, 'children', [])
+              }
+              data.children.push(newChild)
             } else {
-              console.log('不是数组')
+              if (Array.isArray(this.treeData)) {
+                this.treeData.push(newChild)
+              } else {
+                console.log('不是数组')
+              }
             }
           }
         } else {

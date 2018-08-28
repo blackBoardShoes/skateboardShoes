@@ -15,11 +15,15 @@
           患者: <span style="color: #117FD1;opacity: 0.9">{{patientInfo.name}}</span> ({{patientInfo.sex}}) 住院编号：{{patientInfo.bh}}
         </div>
       </div>
-      <div class="formContentContent">
+      <div class="formContentContent" v-if="Boolean(navArr[activeIndex])">
         <sx-no-route-control :navArr="navArr" :activeIndex="activeIndex" @emitClick="emitClick"></sx-no-route-control>
         <div>
           <div class="rightContentControl">
-            <div class="rightContentControlName">{{navArr[activeIndex] ? navArr[activeIndex].name : ''}}</div>
+            <div class="rightContentControlName">
+              {{navArr[activeIndex] ? navArr[activeIndex].name : ''}}
+              &nbsp;
+              <span style="font-size:13px;font-weight:400;">{{navArr[activeIndex] ? navArr[activeIndex].description : ''}}</span>
+            </div>
             <div class="rightContentControlBtn">
               <div @click="generalSubmit">
                 <i class="ercp-icon-general-submit"></i>&nbsp;
@@ -51,6 +55,9 @@
             </div>
           </div>
         </div>
+      </div>
+      <div  v-if="!Boolean(navArr[activeIndex])" style="text-align:center;padding: 150px;">
+        暂无数据
       </div>
     </div>
   </div>
@@ -176,7 +183,7 @@ export default {
                     type: 'INPUT',
                     validations: [
                       { required: true, message: '请输入组件标签名', trigger: 'change' },
-                      { pattern: '^[^\\s~！@#￥%……&*（）——+~!@#$%^&*()_+]*$', message: '不能输入空格或特殊字符', trigger: 'change' }
+                      { pattern: '^[^\\s~！@#￥%……&*（）——+~!@#$%^&*_+]*$', message: '不能输入空格或特殊字符', trigger: 'change' }
                     ]
                   },
                   // patten
@@ -762,7 +769,7 @@ $marginW: 15px;
           width: $full;
           padding-bottom: 150px;
           .rightContentDynamic {
-            padding: 25px;
+            padding: 50px;
           }
           .rightContentStatic {}
         }
@@ -783,7 +790,7 @@ $marginW: 15px;
           display: flex;
           align-items: center;
           border-left: 9px solid $minorTextColor;
-          width: 350px;
+          width: 600px;
         }
         .rightContentControlBtn {
           transition: all .5s;

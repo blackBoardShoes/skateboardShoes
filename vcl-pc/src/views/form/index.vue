@@ -9,7 +9,9 @@
           </div>
         </div>
       </sx-submenu-control>
+      <!-- <keep-alive> -->
       <router-view></router-view>
+      <!-- </keep-alive> -->
     </div>
   </div>
 </template>

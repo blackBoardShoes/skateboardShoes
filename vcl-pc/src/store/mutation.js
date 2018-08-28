@@ -4,6 +4,9 @@ const mutations = {
     // 变更状态
     state.count += payload.number
   },
+  setAllFields (state, payload) {
+    state.setAllFields = payload
+  },
   // 用户登录
   SET_USER (state, user) {
     sessionStorage.setItem('user', user)

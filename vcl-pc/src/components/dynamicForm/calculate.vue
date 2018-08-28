@@ -114,7 +114,7 @@ export default {
   methods: {
     createFormula (item, index) {
       let formulaEnd = this.formula.slice(this.formula.length - 1, this.formula.length)
-      let pattern = /^[a-zA-Z]+$/
+      let pattern = /^[a-zA-Z0-9]+$/
       let numPattern = /^[0-9.]+$/
       let symbolPattern = /^[%\-*+\\^/]$/
       // let bracketPattern = /^[()]$/
@@ -205,6 +205,12 @@ export default {
   .ContentCalculate {
     width:100%;
     .calcultatePresent {
+      width: 100%;
+      // max-width: 100px;
+      // word-wrap:break-word;
+      word-break: break-all;
+      word-wrap: break-word;
+      // white-space: pre-wrap;
       font-size: 30px;
       font-family: '微软雅黑';
     }

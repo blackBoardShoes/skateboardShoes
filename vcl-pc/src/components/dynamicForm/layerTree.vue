@@ -4,8 +4,9 @@
       <el-form ref="sizeForm" :model="sizeForm" label-width="0px" size="mini" style="flex-grow:1">
         <el-form-item style="width:100%" prop="treeName" :rules="[
           { required: true, message: '请输入要创建的名字', trigger: 'change' },
-          { pattern: /(^[^(\*)]+$)|(^[^(\*)]+(\*){2}\d+$)/, message: 'radio下**后作为实际值,并且是整数', trigger: 'change' }]">
-          <el-input style="width:100%" clearable v-model='sizeForm.treeName' placeholder="请输入要创建的名字"></el-input>
+          { pattern: /^[^\n]*\&[^\n]*$|^[^\*]+$|(^[^\*]+\*{2}\d+$)/, message: 'radio下**后作为实际值,并且是整数', trigger: 'change' }]">
+          <el-input style="width:100%" clearable v-model.trim='sizeForm.treeName' placeholder="请输入要创建的名字"></el-input>
+          <!-- /(^[^(\*)]+$)|(^[^(\*)]+(\*){2}\d+$)/     /^\*{2}\d+$|^[^\*]*$/-->
         </el-form-item>
       </el-form>
       <el-button
@@ -86,37 +87,43 @@ export default {
     append (data) {
       this.$refs['sizeForm'].validate(async (valid) => {
         if (valid) {
-          let arr = []
-          arr = this.sizeForm.treeName.split('**')
-          for (let i of this.layerTreeData) {
-            if (i.value === parseInt(arr[1])) {
-              this.$message({
-                showClose: true,
-                message: '不能有重复值',
-                type: 'warning'
-              })
-              return
+          // 没有/很少**0&&偶尔(1-2次/周)**1&&经常(1-2次/天)**4&&频繁(2次以上/天))**8
+          let nimbleArr = []
+          nimbleArr = this.sizeForm.treeName.split('&&')
+          for (let z of nimbleArr) {
+            console.log(z)
+            let arr = []
+            arr = z.split('**')
+            for (let i of this.layerTreeData) {
+              if (i.value === parseInt(arr[1])) {
+                this.$message({
+                  showClose: true,
+                  message: '不能有重复值',
+                  type: 'warning'
+                })
+                return
+              }
             }
-          }
-          const newChild = { value: arr.length === 1 ? this.treeId++ : parseInt(arr[1]), label: this.sizeForm.treeName ? this.sizeForm.treeName : '空' }
-          if (data) {
-            if (!data.children) {
-              await this.$set(data, 'children', [])
-            }
-            data.children.push(newChild)
-          } else {
-            if (Array.isArray(this.layerTreeData)) {
-              this.layerTreeData.push(newChild)
+            const newChild = { value: arr.length === 1 ? this.treeId++ : parseInt(arr[1]), label: z !== '' ? z : '空' }
+            if (data) {
+              if (!data.children) {
+                await this.$set(data, 'children', [])
+              }
+              data.children.push(newChild)
             } else {
-              console.log('不是数组')
+              if (Array.isArray(this.layerTreeData)) {
+                this.layerTreeData.push(newChild)
+              } else {
+                console.log('不是数组')
+              }
             }
+            // console.log(this.layerTreeData)
           }
-          this.$emit('input', this.layerTreeData)
-          // console.log(this.layerTreeData)
         } else {
           console.log('error submit!!')
           return false
         }
+        this.$emit('input', this.layerTreeData)
       })
     },
     allowDrop (draggingNode, dropNode, type) {

@@ -17,7 +17,7 @@
       <el-input
         clearable
         placeholder="输入关键字进行过滤"
-        v-model="filterText">
+        v-model.trim="filterText">
       </el-input>
         <el-popover
         placement="bottom-start"
@@ -153,7 +153,7 @@ export default {
     // }
   },
   created () {
-    console.log(this.minTreeData, 'minTreeData,-=-=-=-=-=-=')
+    // console.log(this.minTreeData, 'minTreeData,-=-=-=-=-=-=')
   },
   methods: {
     oneToOneText (type) {
@@ -162,10 +162,18 @@ export default {
       }
     },
     handleCheckAllChange (val) {
-      this.$refs.minTreeData.setCheckedNodes(val ? this.minTreeData : [])
+      let arr = []
+      for (let i of this.minTreeData) {
+        if (this.filterNode(this.filterText, i)) {
+          arr.push(i)
+        }
+      }
+      // console.log(arr)
+      this.$refs.minTreeData.setCheckedNodes(val ? arr : [])
       this.isIndeterminate = false
     },
     filterNode (value, data) {
+      // console.log(value, data)
       if (!value) return true
       return Object.values(data).toString().toLowerCase().indexOf(value.toLowerCase()) !== -1
     },
@@ -173,46 +181,46 @@ export default {
       let icon = ''
       switch (type) {
         case 'INPUT':
-          icon = 'el-icon-info'
+          icon = 'ercp-icon-component-input'
           break
         case 'INT':
-          icon = 'el-icon-error'
+          icon = 'ercp-icon-component-integer'
           break
         case 'DOUBLE':
-          icon = 'el-icon-success'
+          icon = 'ercp-icon-component-integer'
           break
         case 'TEXTAREA':
-          icon = 'el-icon-warning'
+          icon = 'ercp-icon-component-textarea'
           break
         case 'RADIO':
-          icon = 'el-icon-question'
+          icon = 'ercp-icon-component--radio'
           break
         case 'CHECKBOX':
-          icon = 'el-icon-back'
-          break
-        case 'SWITCH':
-          icon = 'el-icon-arrow-left'
+          icon = 'ercp-icon-component-check'
           break
         case 'SELECT':
-          icon = 'el-icon-arrow-down'
+          icon = 'ercp-icon-component-checklist'
           break
         case 'SELECTMUTIPLE':
-          icon = 'el-icon-remove'
+          icon = 'ercp-icon-component-checklist'
           break
         case 'DATE':
-          icon = 'el-icon-circle-plus'
+          icon = 'ercp-icon-component-date'
           break
         case 'DATETIME':
-          icon = 'el-icon-rank'
+          icon = 'ercp-icon-component-time'
           break
         case 'CASCADER':
-          icon = 'el-icon-location'
+          icon = 'ercp-icon-component-cascade'
           break
         case 'CALCULATE':
-          icon = 'el-icon-menu'
+          icon = 'ercp-icon-component-compute'
           break
         case 'TABLE':
-          icon = 'ercp-icon-general-table'
+          icon = 'ercp-icon-component-table'
+          break
+        default:
+          icon = 'el-icon-info'
           break
       }
       return icon

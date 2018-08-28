@@ -24,7 +24,7 @@
               <i class="el-icon-setting centerCenterIcon"></i>&nbsp;字段浏览
             </div>
           </sx-segmenting-line>
-          <div style="padding: 20px;height:100px;">
+          <div style="padding: 20px;overflow: auto;max-height: 250px">
             <sx-min-form ref="thatFormPreview" v-model="thatFishData" :mozhu="thatFish"></sx-min-form>
           </div>
         </div>
@@ -76,6 +76,11 @@ export default {
             ruleType: 'EQUAL',
             value: ['INPUT', 'INT', 'DOUBLE', 'TEXTAREA']
           },
+          nullRadio: {
+            target: 'type',
+            ruleType: 'EQUAL',
+            value: ['RADIO']
+          },
           required: {
             target: 'type',
             ruleType: 'EQUAL',
@@ -114,12 +119,12 @@ export default {
             value: '',
             type: 'RADIO',
             values: [
-              {label: '选择器', value: 'SELECT'},
+              {label: '单选框', value: 'RADIO'},
               {label: '文本标签', value: 'TEXTAREA'},
               {label: '多选选择器', value: 'SELECTMUTIPLE'},
               {label: '日期时间选择器', value: 'DATETIME'},
               {label: '计算', value: 'CREATECALCULATE'},
-              {label: '单选框', value: 'RADIO'},
+              {label: '选择器', value: 'SELECT'},
               {label: '创建表格', value: 'CREATETABLE'},
               {label: '日期选择器', value: 'DATE'},
               {label: '整数类型输入框', value: 'INT'},
@@ -150,8 +155,8 @@ export default {
             value: '',
             type: 'INPUT',
             validations: [
-              { required: true, message: '请输入组件标签名', trigger: 'change' },
-              { pattern: '^[^\\s~！@#￥%……&*（）——+~!@#$%^&*()_+]*$', message: '不能输入空格或特殊字符', trigger: 'change' }
+              { required: true, message: '请输入组件标签名', trigger: 'change' }
+              // { pattern: '^[^\\s~！@#￥%……&*（）——+~!@#$%^&*()_+]*$|^[\\w\\u4e00-\\u9fa5]+$|^[\\w\\u4e00-\\u9fa5]+\\sv{1,2}$', message: '不能输入空格或特殊字符', trigger: 'change' }
             ]
           },
           // patten
@@ -172,11 +177,17 @@ export default {
             label: '单位',
             type: 'INPUT'
           },
-          // patten
+          // patten example
           {
             id: 'example',
             label: '正则例子',
             type: 'EXAMPLE'
+          },
+          // nullRadio example
+          {
+            id: 'nullRadio',
+            label: '标题例子',
+            type: 'NULLRADIO'
           },
           // tree
           {
@@ -366,8 +377,9 @@ export default {
       console.log(mozhuId, formModel)
       // formModel['values'] = [...formModel['layerTree']].length ? [...formModel['layerTree']] : []
       let what = this.conversion(this.auxiliaryType(Object.assign({}, formModel)))
+      let fe = ''
       if (this.fishNeedEditData['row']) {
-        let fe = await fieldUpdate(what)
+        fe = await fieldUpdate(what)
         console.log(fe, 'fieldUpdatefieldUpdatefieldUpdate')
         // this.listData.splice(this.fishNeedEditData['index'], 1, what)
       } else {
@@ -381,16 +393,18 @@ export default {
             return
           }
         }
-        let ft = await fieldFinish(what)
-        console.log(ft)
+        fe = await fieldFinish(what)
+        console.log(fe)
         // this.listData.push(what)
       }
-      this.show()
-      this.$refs['thatFieldLibrary'].resetData()
-      this.$refs['thatForm'].resetData()
-      this.fishNeedEditData = {}
-      this.$set(this.thatFish, 'fields', [])
-      this.$refs['thatFormPreview'].againData()
+      if (fe) {
+        await this.show()
+        this.$refs['thatFieldLibrary'].resetData()
+        this.$refs['thatForm'].resetData()
+        this.fishNeedEditData = {}
+        this.$set(this.thatFish, 'fields', [])
+        this.$refs['thatFormPreview'].againData()
+      }
     },
     async editFish (row, index) {
       console.log(row, index, 'editfish')
@@ -465,6 +479,7 @@ $full: 100%;
       // overflow: auto;
       display: flex;
       .zdkContentBottomLeft {
+        overflow: auto;
         // max-width: 0px;
         width: 700px;
         flex-grow: 1;

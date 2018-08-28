@@ -6,7 +6,9 @@ const state = {
   // 其它信息
   count: [],
   // 路由信息
-  routers: [loginRouter, ...appRouter]
+  routers: [loginRouter, ...appRouter],
+  // 所有的动态字段,
+  fieldAllFieldsData: []
 }
 
 export default state
