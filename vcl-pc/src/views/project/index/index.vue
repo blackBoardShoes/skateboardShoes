@@ -5,33 +5,36 @@
         <h4>项目管理</h4>
         <h5 class="light-text">Project Management</h5>
       </div>
-      <div :class="{active: selfBuild === true}" class="nav-case" @click="selfBuild = true">
+      <div :class="{'nav-case': true, active: selfBuild === true}" @click="selfBuild = true">
         <div class="left-icon">
           <span class="ercp-icon-module-create"></span>
         </div>
         <div class="right-text nav-light-text">
           <div class="title">自建项目</div>
-          <div class="count">{{tableData.length}} 项</div>
+          <div class="count">{{selfProjectTotals}} 项</div>
         </div>
       </div>
-      <div :class="{active: selfBuild === false}" class="nav-case" @click="selfBuild = false">
+      <div :class="{'nav-case': true, active: selfBuild === false}" @click="selfBuild = false">
         <div class="left-icon">
           <span class="ercp-icon-module-join"></span>
         </div>
         <div class="right-text nav-light-text">
           <div class="title">参与项目</div>
-          <div class="count">2项</div>
+          <div class="count">{{joinProjectTotals}} 项</div>
         </div>
       </div>
     </div>
     <div class="right-content">
       <div class="content-operate">
         <div class="search float-left">
-          <el-input size="medium" v-model="searchText" placeholder="检索项目" @keyup.enter.native="search">
-            <i class="ercp-icon-general-search el-input__icon" slot="suffix" @click="search"></i>
+          <el-input size="medium" v-model="searchMyProject" placeholder="检索自建项目" clearable @keyup.enter.native="search" v-if="selfBuild === true">
+            <i class="ercp-icon-general-search el-input__icon" slot="prefix"  @click="search"></i>
+          </el-input>
+          <el-input size="medium" v-model="searchJoinProject" placeholder="检索参与项目" clearable @keyup.enter.native="search2" v-if="selfBuild === false">
+            <i class="ercp-icon-general-search el-input__icon" slot="prefix"  @click="search2"></i>
           </el-input>
         </div>
-        <el-button type="primary" @click="addProject" class="float-right" size="medium">添加项目</el-button>
+        <el-button type="primary" @click="dialogTableVisible = true" class="float-right" size="medium" v-if="selfBuild === true">新增项目</el-button>
       </div>
       <div class="content">
         <el-table
@@ -39,13 +42,11 @@
           style="width: 100%"
           size="medium"
           fit
+          height="100%"
           class="absolute-table">
           <el-table-column
-            type="index"
-            width="80">
-          </el-table-column>
-          <el-table-column
             prop="name"
+            show-overflow-tooltip
             align="center"
             label="项目名称">
           </el-table-column>
@@ -53,10 +54,10 @@
             prop="abbreviation"
             align="center"
             label="项目简称"
-            width="120">
+            width="160">
           </el-table-column>
           <el-table-column
-            prop="leader"
+            prop="creator.userId"
             align="center"
             label="项目负责人"
             width="100">
@@ -73,7 +74,7 @@
             label="项目状态"
             width="80">
             <template slot-scope="scope">
-              <span style="margin-left: 10px">{{ scope.row.status === 0 ? '未锁定' : '锁定' }}</span>
+              <span style="margin-left: 10px">{{ scope.row.status === '1' ? '正常' : '锁定' }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -83,7 +84,7 @@
             width="80">
           </el-table-column>
           <el-table-column
-            prop="createData"
+            prop="creatTime"
             align="center"
             label="创建日期"
             width="100">
@@ -92,28 +93,50 @@
             prop="operate"
             align="center"
             label="操作"
-            width="220"
+            width="120"
             fixed="right">
             <template slot-scope="scope">
               <el-button type="primary" size="small" plain @click="viewProject(scope.row)">查看</el-button>
-              <el-button type="danger" size="small" plain @click="deleteProject(scope.row)">删除</el-button>
-              <el-button type="primary" size="small" plain @click="lockProject(scope.row)" v-if="scope.row.status === 1">锁定</el-button>
-              <el-button type="primary" size="small" plain @click="relockProject(scope.row)" v-else>解锁</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
+      <!-- 列表分页 -->
+      <div class="pagination align-right" v-if="selfBuild === true">
+        <el-pagination
+          layout="total, sizes, prev, pager, next, jumper"
+          :page-sizes="[5, 10, 15, 20]"
+          :total="total"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          @size-change= "SizeChange"
+          @current-change = "changePage"
+        >
+        </el-pagination>
+      </div>
+      <div class="pagination align-right" v-if="selfBuild === false">
+        <el-pagination
+          layout="total, sizes, prev, pager, next, jumper"
+          :page-sizes="[10, 15, 20]"
+          :total="total2"
+          :current-page="currentPage2"
+          :page-size="pageSize2"
+          @size-change= "SizeChange2"
+          @current-change = "changePage2"
+        >
+        </el-pagination>
+      </div>
     </div>
-    <el-dialog title="添加项目" :visible.sync="dialogTableVisible" :modal="true" append-to-body>
-      <el-form ref="addProject" :rules="rules" :model="addedProject" label-position="right" label-width="100px">
+    <el-dialog title="添加项目" :visible.sync="dialogTableVisible" append-to-body :close-on-click-modal="false">
+      <el-form ref="newProject" :rules="rules" :model="addedProject" label-position="right" label-width="100px">
         <el-form-item label="项目名称:" prop="name">
           <el-input v-model="addedProject.name" size="small"></el-input>
         </el-form-item>
         <el-form-item label="项目简称:" prop="abbreviation">
           <el-input v-model="addedProject.abbreviation" size="small"></el-input>
         </el-form-item>
-        <el-form-item label="项目负责:" prop="leader">
-          <el-input v-model="addedProject.leader" size="small"></el-input>
+        <el-form-item label="项目简介:" prop="intro">
+          <el-input v-model="addedProject.intro" type="textarea" size="small"></el-input>
         </el-form-item>
       </el-form>
       <div class="operate align-center">
@@ -124,127 +147,147 @@
   </div>
 </template>
 <script>
+import { getAllProject, addMProject } from '../../../api/project/project'
 export default {
   name: 'projectManage',
   data () {
     return {
       selfBuild: true,
-      searchText: '',
+      searchMyProject: '',
+      searchJoinProject: '',
       tableData: [
-        {
-          name: 'ERCP患者用药对出院状态的影响',
-          abbreviation: '用药影响评估',
-          leader: '王小虎',
-          members: 8,
-          status: 0,
-          patients: 108,
-          createData: '2018-01-02',
-          id: '10101010'
-        },
-        {
-          name: 'ERCP患者用药对出院状态的影响',
-          abbreviation: '用药影响评估',
-          leader: '王小虎',
-          members: 8,
-          status: 1,
-          patients: 108,
-          createData: '2018-01-02',
-          id: '10101010'
-        },
-        {
-          name: 'ERCP患者用药对出院状态的影响',
-          abbreviation: '用药影响评估',
-          leader: '王小虎',
-          members: 8,
-          status: 0,
-          patients: 108,
-          createData: '2018-01-02',
-          id: '10101010'
-        }
       ],
       tableData2: [
-        {
-          name: 'ERCP患者用药对出院状态的影响',
-          abbreviation: '用药影响评估',
-          leader: '王小虎',
-          members: 8,
-          status: 0,
-          patients: 108,
-          createData: '2018-01-02',
-          id: '10101012'
-        },
-        {
-          name: 'ERCP患者用药对出院状态的影响',
-          abbreviation: '用药影响评估',
-          leader: '王小虎',
-          members: 8,
-          status: 0,
-          patients: 108,
-          createData: '2018-01-02',
-          id: '10101012'
-        }
       ],
-      addedProject: {},
       dialogTableVisible: false,
+      addedProject: {},
       rules: {
         name: [{
           required: true, message: '必填项不能为空'
         }],
         abbreviation: [{
           required: true, message: '必填项不能为空'
-        }],
-        leader: [{
-          required: true, message: '必填项不能为空'
         }]
-      }
+      },
+      // 分页信息
+      pageSize: 10,
+      currentPage: 1,
+      total: 30,
+      pageSize2: 10,
+      currentPage2: 1,
+      total2: 20,
+      gotMyTotal: false,
+      gotJoinTotal: false,
+      selfProjectTotals: 0,
+      joinProjectTotals: 0
     }
   },
   methods: {
     search () {
-      this.$message.success(this.searchText)
+      this.getMyProject(this.pageSize, 1, this.searchMyProject)
+    },
+    search2 () {
+      this.getJoinProject(this.pageSize2, 1, this.searchJoinProject)
     },
     viewProject (value) {
       this.$router.push(`/project/detail/${value.id}/basic`)
     },
-    deleteProject (value) {
-      this.$message.warning('删除操作')
-    },
-    lockProject (value) {
-      this.$message.warning('解锁操作')
-    },
-    relockProject (value) {
-      this.$message.warning('锁定操作')
-    },
-    addProject () {
-      this.dialogTableVisible = true
-    },
     // 取消添加
     cancel () {
       this.dialogTableVisible = false
-      this.$refs.addProject.resetFields()
+      this.$refs.newProject.resetFields()
     },
-    // 确认添加患者
-    confirmAdd () {
-      this.$refs.addProject.validate(valid => {
+    // 确认添加
+    async confirmAdd () {
+      this.$refs.newProject.validate(async valid => {
         if (valid) {
-          console.log(this.addedProject)
-          this.dialogTableVisible = false
+          let info = this.addedProject
+          info.creator = this.$store.state.user.id
+          let response = await addMProject(info)
+          if (response.data.mitiStatus === 'SUCCESS') {
+            this.getMyProject(10, 1, this.searchMyProject)
+            // this.tableData = response.data.entity.data
+            // this.total = response.data.entity.total
+            this.dialogTableVisible = false
+          } else {
+            this.$message.error('ERROR: ' + response.data.message)
+          }
         } else {
           return false
         }
       })
+    },
+    // 列表页码信息
+    SizeChange (size) {
+      this.pageSize = size
+      this.getMyProject(size, 1, this.searchMyProject)
+    },
+    changePage (page) {
+      this.currentPage = page
+      this.getMyProject(this.pageSize, page, this.searchMyProject)
+    },
+    // 列表页码信息
+    SizeChange2 (size) {
+      this.pageSize2 = size
+      this.getJoinProject(size, 1, this.searchJoinProject)
+    },
+    changePage2 (page) {
+      this.currentPage2 = page
+      this.getJoinProject(this.pageSize2, page, this.searchJoinProject)
+    },
+    async getMyProject (perPage, currentPage, searchMyProject) {
+      let info = {
+        // @change --- id
+        userId: this.$store.state.user.id,
+        projectType: 'create',
+        perPage: perPage,
+        currentPage: currentPage,
+        searchText: searchMyProject
+      }
+      let response = await getAllProject(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        this.tableData = response.data.entity.data
+        this.total = response.data.entity.total
+        if (!this.gotMyTotal) {
+          this.selfProjectTotals = response.data.entity.total
+          this.gotMyTotal = true
+        }
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    async getJoinProject (perPage, currentPage, searchJoinProject) {
+      let info = {
+        // @change --- id
+        userId: '001',
+        projectType: 'join',
+        perPage: perPage,
+        currentPage: currentPage,
+        searchText: searchJoinProject
+      }
+      let response = await getAllProject(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        this.tableData2 = response.data.entity.data
+        this.total2 = response.data.entity.total
+        if (!this.gotJoinTotal) {
+          this.joinProjectTotals = response.data.entity.total
+          this.gotJoinTotal = true
+        }
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
     }
+  },
+  mounted () {
+    // 初始化项目信息
+    this.getMyProject(10, 1, this.searchMyProject)
+    this.getJoinProject(10, 1, this.searchJoinProject)
   }
 }
 </script>
 <style lang="scss" scoped>
   @import '../../../assets/css/variable';
   #project-manage{
-    // position: absolute;
-    // left: 0;
-    // right: 0;
-    // bottom: 0;
-    // top: 0;
     width: 100%;
     height: 100%;
     display: flex;
@@ -310,6 +353,7 @@ export default {
       height: 100%;
       transition: all .25s linear;
       padding: 16px;
+      box-sizing: border-box;
       display: flex;
       flex-direction: column;
       .content-operate{
@@ -323,6 +367,12 @@ export default {
         position: relative;
         flex: 1;
         overflow-y: auto;
+      }
+
+      .pagination{
+        margin-top: 10px;
+        min-height: 30px;
+        line-height: 30px;
       }
     }
   }

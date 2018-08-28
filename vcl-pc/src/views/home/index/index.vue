@@ -47,7 +47,7 @@
           <div>1</div>
         </div>
       </div>
-      <div class="operation-buttons" v-if="user.codetype && user.codetype=== 5">
+      <div class="operation-buttons">
         <el-button type="primary" size="medium" @click="refresh" v-if="user.codetype=== 5 || user.codetype=== 6">更新患者</el-button>
         <el-button type="primary" size="medium" @click="add" v-if="user.codetype=== 5">添加患者</el-button>
       </div>

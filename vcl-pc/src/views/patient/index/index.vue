@@ -3,7 +3,7 @@
     <el-card class="patient-statistics" :body-style="{flex:1,'box-sizing': 'border-box','padding':'10px'}">
       <div class="card-title" slot="header" style="height:0px;">
         <i class="ercp-icon-general-summary"></i> <b>系统概览</b>
-        <span class="float-right light-text">患者总数：{{patientAccount}}人</span>
+        <span class="float-right light-text">患者总数：<span class="primary-text">{{patientAccount}}</span> 人</span>
       </div>
       <div class="card-content">
         <div class="gender">
@@ -26,7 +26,7 @@
               v-model="searchText"
               placeholder="姓名 / 身份证号 / 住院号"
               @keyup.enter.native="search"
-              style="width: auto;vertical-align: middle;width:300px;">
+              style="width:300px;">
               <i slot="prefix" class="el-input__icon el-icon-search" @click="search" style="cursor:pointer;"></i>
             </el-input>
           </div>
@@ -104,7 +104,7 @@
         <div class="pagination align-right">
           <el-pagination
             layout="total, sizes, prev, pager, next, jumper"
-            :page-sizes="[10, 15, 20]"
+            :page-sizes="[5, 10, 15, 20]"
             :total="total"
             :current-page="currentPage"
             :page-size="pageSize"
@@ -114,20 +114,20 @@
           </el-pagination>
         </div>
       </div>
-      <el-dialog title="新增患者" :visible.sync="dialogTableVisible" :modal="true" append-to-body>
-        <el-form ref="basicForm" :rules="rules" :model="basicInfo" label-position="left" label-width="80px">
+      <el-dialog title="新增患者" :visible.sync="dialogTableVisible" :modal="true" append-to-body width="700px">
+        <el-form ref="basicForm" :rules="rules" :model="basicInfo" label-position="right" label-width="80px">
           <el-col :span="24">
-            <el-form-item label="住院号:" prop="hospitalId">
-              <el-input v-model="basicInfo.hospitalId" size="small"></el-input>
+            <el-form-item label="住院号" prop="hospitalId">
+              <el-input v-model.number="basicInfo.hospitalId" size="small"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="姓名:" prop="name">
+            <el-form-item label="姓名" prop="name">
               <el-input v-model="basicInfo.name" size="small"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="性别:" prop="gender">
+            <el-form-item label="性别" prop="gender">
               <el-radio-group v-model="basicInfo.gender">
                 <el-radio label="1">男</el-radio>
                 <el-radio label="0">女</el-radio>
@@ -135,17 +135,17 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="民族:">
-              <el-input v-model="basicInfo.nation" size="small"></el-input>
+            <el-form-item label="民族">
+              <text-radio v-model="basicInfo.nation" :options="['汉族','回族','藏族']"></text-radio>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="身份证号:">
+            <el-form-item label="身份证号" prop="idCard">
               <el-input v-model="basicInfo.idCard" size="small"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="联系方式:">
+            <el-form-item label="联系方式" prop="phoneNum">
               <el-input v-model="basicInfo.phoneNum" size="small"></el-input>
             </el-form-item>
           </el-col>
@@ -174,46 +174,20 @@
   </div>
 </template>
 <script>
+import textRadio from '../../../components/textRadio/textRadio'
 import {addressData} from '../../../data/address/addressData'
 import {charts} from '../../../data/chartTemplates/chart'
 import { getAllPatient, addPatient, searchPatient } from '../../../api/patient/patient.js'
+// import { error } from 'util';
 export default {
   name: 'patient_index',
+  components: {
+    textRadio
+  },
   data () {
     return {
-      patientAccount: 3515,
+      patientAccount: 9527,
       tableData: [
-        {
-          // 全部地址
-          address: '哈哈苑',
-          age: 30,
-          // 城市
-          city: '杭州',
-          // 区县
-          district: '滨江区',
-          gender: 1,
-          // 患者编号（住院编号）
-          hospitalId: '001',
-          // 住院记录
-          hospitalRecord: null,
-          // 数据库id
-          id: '01',
-          // 身份证
-          idCard: '362321',
-          localCaseId: null,
-          name: '刘一',
-          nation: '汉',
-          note: null,
-          operationRecord: null,
-          participantId: null,
-          // 联系方式
-          phoneNum: null,
-          // 省
-          province: '浙江',
-          publicId: null,
-          // 详细地址
-          staAddress: null
-        }
       ],
       searchText: '',
       dialogTableVisible: false,
@@ -226,15 +200,15 @@ export default {
       basicInfo: {
         hospitalId: '',
         name: '',
-        gender: '1',
-        nation: '汉',
+        gender: '',
+        nation: '',
         idCard: '',
-        phoneNum: '13213323123',
-        province: '浙江省',
-        city: '杭州市',
-        district: '滨江区',
+        phoneNum: '13687654321',
+        province: '',
+        city: '',
+        district: '',
         staAddress: '',
-        address: ['浙江省', '杭州市', '滨江区']
+        address: []
       },
       rules: {
         name: [{
@@ -247,11 +221,45 @@ export default {
           message: '必填项不能为空',
           trigger: 'change'
         }],
-        hospitalId: [{
-          required: true,
-          message: '必填项不能为空',
-          trigger: 'change'
-        }]
+        hospitalId: [
+          {
+            required: true,
+            message: '必填项不能为空',
+            trigger: 'change'
+          }
+        ],
+        phoneNum: [
+          { validator (rule, value, callback) {
+            setTimeout(() => {
+              if (value !== '') {
+                let pattern = /^\d[\d-]{5,12}$/
+                if (!pattern.test(value)) {
+                  callback(new Error('请输入正确的联系方式'))
+                } else {
+                  callback()
+                }
+              } else {
+                callback()
+              }
+            }, 1500)
+          }}
+        ],
+        idCard: [
+          { validator (rule, value, callback) {
+            setTimeout(() => {
+              if (value !== '') {
+                let pattern = /^\d{17}[\dxX]$/
+                if (!pattern.test(value)) {
+                  callback(new Error('请输入正确的身份证号'))
+                } else {
+                  callback()
+                }
+              } else {
+                callback()
+              }
+            }, 1500)
+          }}
+        ]
       },
       addressOption: []
     }
@@ -266,18 +274,16 @@ export default {
     async search () {
       let info = this.searchText
       let response = await searchPatient(info)
-      console.log(response)
       if (response.data.mitiStatus === 'SUCCESS') {
-        this.tableData = response.data.entity
+        this.tableData = response.data.entity.data
+        this.total = response.data.entity.total
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
-      this.$message.success(this.searchText)
     },
     // 查看具体患者
     viewPatient (value) {
-      console.log(value)
-      this.$router.push(`/patient/detail/${value.hospitalId}`)
+      this.$router.push(`/patient/detail/${value.id}`)
     },
     // 更新患者列表
     refresh () {
@@ -285,9 +291,19 @@ export default {
     },
     // 地区
     handleChange (data) {
-      this.basicInfo.province = data[0]
-      this.basicInfo.city = data[1]
-      this.basicInfo.district = data[2]
+      if (data.length === 2) {
+        this.basicInfo.province = data[0]
+        this.basicInfo.city = data[0]
+        this.basicInfo.district = data[1]
+      } else if (data.length === 3) {
+        this.basicInfo.province = data[0]
+        this.basicInfo.city = data[1]
+        this.basicInfo.district = data[2]
+      } else {
+        this.basicInfo.province = ''
+        this.basicInfo.city = ''
+        this.basicInfo.district = ''
+      }
     },
     // 弹出添加患者的对话框
     add () {
@@ -306,7 +322,7 @@ export default {
           delete info.address
           let response = await addPatient(info)
           if (response.data.mitiStatus === 'SUCCESS') {
-            this.getPatient(10, 1)
+            this.getPatient(this.pageSize, 1)
             this.$refs.basicForm.resetFields()
             this.dialogTableVisible = false
           } else {
@@ -319,11 +335,11 @@ export default {
     },
     // 列表页码信息
     SizeChange (size) {
-      console.log(size)
+      this.pageSize = size
       this.getPatient(size, this.currentPage)
     },
     changePage (page) {
-      console.log(page)
+      this.currentPage = page
       this.getPatient(this.pageSize, page)
     },
     async getPatient (pageSize, currentPage) {
@@ -333,8 +349,8 @@ export default {
       }
       let response = await getAllPatient(info)
       if (response.data.mitiStatus === 'SUCCESS') {
-        console.log(response.data)
-        this.tableData = response.data.entity
+        this.tableData = response.data.entity.data
+        this.total = response.data.entity.total
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
@@ -405,11 +421,10 @@ export default {
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
-        // overflow: auto;
         .operate{
           min-height: 60px;
           box-sizing: border-box;
-          padding: 10px 0;
+          padding: 5px 0;
         }
         .table{
           flex:1;

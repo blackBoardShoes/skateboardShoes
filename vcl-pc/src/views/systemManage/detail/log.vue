@@ -1,24 +1,25 @@
 <template>
   <div id="system-log">
     <div class="operate-buttons align-right">
-      <!-- <el-col :span="6"> -->
-        <!-- <el-input size="medium" v-model="searchlog" placeholder="搜索成员" @keyup.enter.native="search">
-          <i class="ercp-icon-general-search el-input__icon" slot="suffix" @click="search"></i>
-        </el-input> -->
-      <!-- </el-col> -->
       <div class="filter-conditions float-left">
-        <span class="light-text">日期范围：</span>
+        <span class="light-text">请选择日期范围：</span>
         <el-date-picker
-          size="small"
+          size="medium"
           v-model="dataRange"
           type="daterange"
+          format="yyyy 年 MM 月 dd 日"
+          value-format="yyyy-MM-dd"
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
+          :picker-options="pickerOptions"
           @change="timeFilter">
         </el-date-picker>
+          <el-input size="medium" v-model="searchObj" placeholder="搜索对象ID" clearable style="width:30%;" @keyup.enter.native="search">
+            <i slot="prefix" class="el-input__icon el-icon-search" @click="search" style="cursor:pointer;"></i>
+          </el-input>
       </div>
-      <div class="buttons">
+      <div class="buttons float-right">
         <el-button type="primary" @click="exportLog">导出日志</el-button>
         <el-button type="primary" @click="clearLog">清空日志</el-button>
       </div>
@@ -26,10 +27,9 @@
     <div class="system-log">
       <el-table
         :data="tableData"
-        style="width: 100%"
-        height="100%"
         size="medium"
         fit
+        height="100%"
         class="absolute-table">
         <el-table-column
           prop="operateTime"
@@ -59,7 +59,8 @@
         <el-table-column
           prop="detail"
           align="center"
-          label="详情">
+          label="详情"
+          show-overflow-tooltip>
         </el-table-column>
       </el-table>
     </div>
@@ -68,9 +69,9 @@
         layout="total, sizes, prev, pager, next, jumper"
         :page-sizes="[10, 15, 20]"
         :total="total"
-        :current-page="currentpage"
-        :page-size="pagesize"
-        @size-change= "pageSize"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        @size-change= "pageSizeChange"
         @current-change = "changePage"
       >
       </el-pagination>
@@ -78,6 +79,7 @@
   </div>
 </template>
 <script>
+// import { dateFilter, search, exportLog, clearLog, getAllLog } from '../../../api/log/log.js'
 export default {
   name: 'system_detail_log',
   data () {
@@ -205,13 +207,108 @@ export default {
         }
       ],
       dataRange: [],
+      searchObj: '',
       // 分页
-      pagesize: 10,
-      currentpage: 1,
-      total: 100
+      pageSize: 10,
+      currentPage: 1,
+      total: 100,
+      pickerOptions: {
+        disabledDate: (time) => {
+          return time.getTime() > Date.now()
+        },
+        shortcuts: [{
+          text: '最近一周',
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      }
     }
   },
   methods: {
+    // async getAllLog () {
+    //   let info = {
+    //     currentPage: this.currentpage,
+    //     pageSize: this.pageSize
+    //   }
+    //   let response = await getAllLog(info)
+    //   if (response.data.mitiStatus === 'SUCCESS') {
+    //     this.tableData = response.data.entity.data
+    //   } else {
+    //     this.$message.error('ERROR: ' + response.data.message)
+    //   }
+    // },
+    // async dateFilter () {
+    //   let info = {
+    //     currentPage: this.currentpage,
+    //     pageSize: this.pageSize
+    //   }
+    //   let response = await dateFilter(info)
+    //   if (response.data.mitiStatus === 'SUCCESS') {
+    //     this.tableData = response.data.entity.data
+    //   } else {
+    //     this.$message.error('ERROR: ' + response.data.message)
+    //   }
+    // },
+    // async exportLog () {
+    //   let info = {
+    //     currentPage: this.currentpage,
+    //     pageSize: this.pageSize
+    //   }
+    //   let response = await getAllLog(info)
+    //   if (response.data.mitiStatus === 'SUCCESS') {
+    //     this.tableData = response.data.entity.data
+    //   } else {
+    //     this.$message.error('ERROR: ' + response.data.message)
+    //   }
+    // },
+    // async search () {
+    //   let info = {
+    //     currentPage: this.currentpage,
+    //     pageSize: this.pageSize
+    //   }
+    //   let response = await getAllLog(info)
+    //   if (response.data.mitiStatus === 'SUCCESS') {
+    //     this.tableData = response.data.entity.data
+    //   } else {
+    //     this.$message.error('ERROR: ' + response.data.message)
+    //   }
+    // },
+    // async clearLog () {
+    //   let info = {
+    //     currentPage: this.currentpage,
+    //     pageSize: this.pageSize
+    //   }
+    //   let response = await getAllLog(info)
+    //   if (response.data.mitiStatus === 'SUCCESS') {
+    //     this.tableData = response.data.entity.data
+    //   } else {
+    //     this.$message.error('ERROR: ' + response.data.message)
+    //   }
+    // },
+    beforeToday (today) {
+      console.log(today)
+      return false
+    },
     exportLog () {
       this.$message.success('导出日志')
     },
@@ -221,14 +318,18 @@ export default {
     timeFilter () {
       console.log(this.dataRange)
     },
-    pageSize (size) {
+    pageSizeChange (size) {
       console.log(size)
     },
     changePage (page) {
       console.log(page)
+    },
+    search () {
+      console.log(this.searchObj)
     }
   },
   mounted () {
+    // this.getAllLog()
   }
 }
 </script>
@@ -242,7 +343,7 @@ export default {
     display: flex;
     flex-direction: column;
     .operate-buttons{
-      // height: 40px;
+      height: 40px;
       min-height: 40px;
       width: 100%;
       line-height: 40px;
@@ -251,13 +352,12 @@ export default {
     .system-log{
       flex: 1;
       width: 100%;
-      height: 100px;
       overflow: auto;
       position: relative;
     }
     .pagination{
       margin-top: 10px;
-      min-height: 30px;
+      height: 30px;
       line-height: 30px;
     }
   }

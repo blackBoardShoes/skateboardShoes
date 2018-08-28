@@ -10,6 +10,9 @@
             <i class="ercp-icon-general-search el-input__icon" slot="suffix" @click="search"></i>
           </el-input>
         </div>
+        <div class="feedback float-left">
+          <el-button type="primary" size="medium" @click="feedback"><i class="ercp-icon-general-opinion"></i> 意见反馈</el-button>
+        </div>
         <div class="our-connection">
           <span class="light-text">0571-886554555 SUPPORT@MITIGENOMICS.COM</span>
         </div>
@@ -54,6 +57,50 @@
            </div>
         </div>
     </div>
+    <el-dialog
+      :modal="true"
+      append-to-body
+      title="意见反馈"
+      :visible.sync="centerDialogVisible"
+      width="520px"
+      center>
+      <div class="feed">
+        <el-form :rules="rule" :model="message" ref="feedback" label-position="top">
+          <el-form-item prop="opinion" label="问题描述(最多输入500字)：">
+            <el-input
+              type="textarea"
+              maxlength=500
+              :autosize="{ minRows: 3}"
+              placeholder="有什么想说的可以及时告知我们,我们将认真对待您的问题,如遇到紧要情况,可致电0571-87067176"
+              v-model="message.opinion">
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="connection" label="联系方式:">
+            <el-input style="width:100%" v-model="message.connection" placeholder="请填写邮箱或电话号码" clearable></el-input>
+          </el-form-item>
+        </el-form>
+        <div class="upload">
+          <span class="label-text">上传附件(添加本地图片文件，五张以内，格式为PNG/JPG):</span>
+          <el-upload
+            class="upload-form"
+            :before-upload="beforeUpload"
+            ref="upload"
+            action="123"
+            :http-request="customRequest"
+            list-type="picture-card"
+            :show-file-list="true"
+            :file-list="fileLists"
+            :auto-upload="false"
+            :on-remove="clearAll"
+            :on-change="checkFileType">
+            <i class="el-icon-plus"></i>
+          </el-upload>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" style="width:100%;" @click="submitUpload">提交</el-button>
+      </span>
+    </el-dialog>
    </div>
 </template>
 <script>
@@ -63,6 +110,47 @@ export default {
       searchText: '',
       // treeQuestions - trunkQuestions - leafQuestions - main - tips - img - ask - answer
       treeQuestions: [
+        {
+          trunkTitle: '关于系统',
+          trunkQuestions: [
+            {
+              type: 'step',
+              leafTitle: '步骤类',
+              leafQuestions: [
+                {
+                  step: '步骤1'
+                },
+                {
+                  step: '步骤2'
+                },
+                {
+                  step: '步骤3'
+                },
+                {
+                  step: '步骤4'
+                }
+              ]
+            },
+            {
+              type: 'faqs',
+              leafTitle: '常见问题',
+              leafQuestions: [
+                {
+                  ask: '问题1',
+                  answer: '回答1'
+                },
+                {
+                  ask: '问题2',
+                  answer: '回答2'
+                },
+                {
+                  ask: '问题3',
+                  answer: '回答3'
+                }
+              ]
+            }
+          ]
+        },
         {
           trunkTitle: '模块1',
           trunkQuestions: [
@@ -190,7 +278,25 @@ export default {
       activeNames: 0,
       activeIndex1: 0,
       activeIndex2: 0,
-      currentQus: ''
+      currentQus: '',
+      centerDialogVisible: true,
+      message: {
+        opinion: '',
+        connection: ''
+      },
+      rule: {
+        opinion: [
+          {required: true, message: '请填写内容'}
+        ],
+        connection: [
+          {required: true, message: '请填写内容'}
+        ]
+      },
+      // 文件列表
+      fileLists: [],
+      //  当前正确文件
+      file: [],
+      fileNames: []
     }
   },
   // 初始化当前问题
@@ -200,6 +306,9 @@ export default {
   mounted () {
   },
   methods: {
+    feedback () {
+      this.centerDialogVisible = true
+    },
     search () {
       this.$message.success(this.searchText)
     },
@@ -210,6 +319,53 @@ export default {
       this.activeIndex2 = index2
       this.currentQus = this.treeQuestions[index1].trunkQuestions[index2]
       this.filterText = ''
+    },
+    // 上传附件部分
+    // 选择文件时:判断格式
+    checkFileType (file, fileList) {
+      let arr = file.name.split('.')
+      let fileExt = arr[arr.length - 1]
+      if (fileExt !== 'png' && fileExt !== 'jpg') {
+        fileList.splice(-1, 1)
+        this.$message.warning('请选择正确的文件格式：JPG/PNG')
+      } else if (this.fileNames.indexOf(file.name) > -1) {
+        fileList.splice(-1, 1)
+        this.$message.warning('请勿上传相同文件')
+      } else if (fileList.length > 5) {
+        fileList.splice(-1, 1)
+        this.$message.warning('最多上传5张图片')
+      } else {
+        this.fileNames.push(file.name)
+      }
+      // console.log(fileList)
+      console.log(this.file)
+    },
+    // 提交上传事件
+    submitUpload () {
+      this.$refs.feedback.validate(valid => {
+        if (valid) {
+          this.$refs.upload.submit()
+          console.log(this.file)
+          console.log(this.message)
+        } else {
+          return false
+        }
+      })
+    },
+    beforeUpload (file) {
+      this.file.push(file)
+    },
+    //  自定义发送请求
+    customRequest () {
+      console.log(this.file)
+    },
+    reduce (fileList) {
+    },
+    // 清空上传文件
+    clearAll (file, fileList) {
+      let index = this.fileNames.indexOf(file.name)
+      this.fileNames.splice(index, 1)
+      console.log(this.file)
     }
   }
 }
@@ -260,6 +416,10 @@ export default {
         margin-top: 22px;
         width: 300px;
         float: left;
+      }
+      .feedback{
+        margin-top: 22px;
+        margin-left: 10px;
       }
       .our-connection{
         height: 30px;
@@ -360,6 +520,22 @@ export default {
         }
       }
 
+    }
+  }
+  .feed{
+    .upload{
+      // max-height: 340px;
+      overflow: hidden;
+    }
+    .text{
+    }
+    .con-method{
+      height: 70px;
+    }
+    .label-text{
+      display: block;
+      line-height: 30px;
+      height: 30px;
     }
   }
 

@@ -2,8 +2,8 @@
   <div id="system-user">
     <div class="operate-buttons align-right">
       <el-col :span="6">
-        <el-input size="medium" v-model="searchUser" placeholder="搜索成员">
-          <i class="ercp-icon-general-search el-input__icon" slot="suffix" @click="search"></i>
+        <el-input size="medium" v-model="searchUser" placeholder="搜索成员" clearable>
+          <i class="ercp-icon-general-search el-input__icon" slot="prefix" @click="search"></i>
         </el-input>
       </el-col>
       <el-button size="medium" type="primary" @click="dialogTableVisible = true">新增用户</el-button>
@@ -16,7 +16,7 @@
         size="medium"
         fit
         :row-class-name="forbiddenClass"
-        :default-sort = "{prop: 'createTime', order: 'descending'}"
+        :default-sort = "{prop: 'status', order: 'encoding'}"
         class="absolute-table">
         <el-table-column
           fixed
@@ -98,7 +98,7 @@
               width="800"
               trigger="hover">
               <el-table :data="permissionData" border stripe>
-                <el-table-column align="center"  property="page" label="页面/角色"></el-table-column>
+                <el-table-column align="center"  property="page" label="页面/用户"></el-table-column>
                 <el-table-column align="center"  property="administrator" label="管理员"></el-table-column>
                 <el-table-column align="center"  property="doctor" label="医生"></el-table-column>
                 <el-table-column align="center"  property="scientificManager" label="科研管理员"></el-table-column>

@@ -7,7 +7,7 @@ import store from '../store/index'
 import { Message } from 'element-ui'
 
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
-axios.defaults.timeout = 3000
+axios.defaults.timeout = 5000
 
 axios.interceptors.request.use(
   config => {
@@ -59,6 +59,8 @@ axios.interceptors.response.use(
         }
         return response
       }
+    } else {
+      router.push('/error:504')
     }
   },
   err => {

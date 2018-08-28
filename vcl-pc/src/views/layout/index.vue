@@ -68,35 +68,37 @@
       <!-- 消息提醒 -->
       <div class="message float-right" @click="$router.push('/message/index')">
         <el-popover
-          placement="bottom"
-          width="500"
+          placement="bottom-start"
+          width="410"
           trigger="hover">
           <div class="message-box">
             <div class="title">
-              <span>未读消息</span>
-              <span>全部标记为已读</span>
+              <div :class="{'nav-case': true, 'active': presentMessageType === 2 } " @click="presentMessageType = 2">系统通知</div>
+              <div :class="{'nav-case': true, 'active': presentMessageType === 1 } " @click="presentMessageType = 1">私信通知</div>
             </div>
             <div class="message">
               <div class="no-message" v-if="message.length === 0">
                 <span>暂无未读消息</span>
               </div>
-              <div class="message-case" v-for="(item, index) in message" :key="index" :class="{unread: item.status === 0}">
+              <div class="message-case unread" v-for="(item, index) in currentMessage" :key="index">
                 <div class="from">
-                  {{item.from}}
+                  <div class="sender float-left text-overflow-ellipsis">{{item.sender}}</div>
+                  <div class="send-time float-right">{{item.sendTime}}</div>
+                  <div class="single-mark" @click="singleMarkRead(item)">标为已读</div>
                 </div>
-                <div class="content">
-                  {{item.content}}
+                <div class="content text-overflow-ellipsis">
+                  {{item.message}}
                 </div>
               </div>
             </div>
             <div class="bottom">
-              <!-- <span @click="readAll">全部标记为已读</span> -->
+              <span @click="allMarkRead">全部标记为已读</span>
               <span @click="toMessage">查看全部消息  <i class="el-icon-arrow-right"></i> </span>
             </div>
           </div>
           <div slot="reference" @click="toMessage">
             <i class="ercp-icon-module-message"></i>
-            <span class="radial-text-primary">{{message.length}}</span>
+            <span class="radial-text-primary" v-if="message.length > 0">{{message.length}}</span>
           </div>
         </el-popover>
       </div>
@@ -104,8 +106,6 @@
       <div class="user-operate float-right">
         <el-dropdown
           placement="bottom"
-          :show-timeout="10"
-          :hide-timeout="10"
           @command="handleCommand">
           <span class="el-dropdown-link">
             <i class="ercp-icon-module-user"></i>
@@ -116,11 +116,15 @@
             <el-dropdown-item style="cursor:default;">{{user.type}}</el-dropdown-item>
             <el-dropdown-item style="cursor:default;">{{user.insititution}}</el-dropdown-item>
             <el-dropdown-item style="cursor:default;">{{user.department}}</el-dropdown-item>
-            <!-- <el-dropdown-item style="cursor:default;">{{'性别：' + user.gender}}</el-dropdown-item> -->
             <el-dropdown-item command="changePs" divided>修改密码</el-dropdown-item>
             <el-dropdown-item command="exit" divided>退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
+      </div>
+      <div class="system-operate float-right">
+        <span class="el-icon-arrow-left" @click="locationOperate('back')"></span>
+        <span class="el-icon-refresh"  @click="locationOperate('refresh')"></span>
+        <button class="el-icon-arrow-right" @click="locationOperate('forward')" :disabled="ableForward <= 0"></button>
       </div>
     </div>
     <div id="content-wrapper">
@@ -156,15 +160,10 @@
 // 设置导航菜单以及面包屑导航
 import { setMenu, getCurrentPath } from '../../../src/assets/js/util'
 import { changePassword, exit } from '../../api/user/user.js'
+import { unreadMessage, allRead, singleRead } from '../../api/message/message.js'
 export default {
   name: 'layout',
   data () {
-    let validateOldPassword = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error('请输入当前密码'))
-      }
-      callback()
-    }
     let validateNewPassword = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入新的密码'))
@@ -198,65 +197,38 @@ export default {
       },
       rules: {
         oldPassword: [
-          { validator: validateOldPassword, trigger: 'blur' }
+          { required: true, trigger: 'blur' }
         ],
         newPassword: [
+          { required: true },
           { validator: validateNewPassword, trigger: 'blur' }
         ],
         checkPassword: [
+          { required: true, trigger: 'blur' },
           { validator: validateCheckPassword, trigger: 'blur' }
         ]
       },
       message: [
-        {
-          from: '王小虎',
-          content: '科室1需要两万盒阿莫西林',
-          status: 0
-        },
-        {
-          from: '王小虎',
-          content: '科室1需要两万盒阿莫西林',
-          status: 0
-        },
-        {
-          from: '王小虎',
-          content: '科室1需要两万盒阿莫西林',
-          status: 1
-        },
-        {
-          from: '王小虎',
-          content: '科室1需要两万盒阿莫西林',
-          status: 1
-        },
-        {
-          from: '王小虎',
-          content: '科室1需要两万盒阿莫西林',
-          status: 1
-        },
-        {
-          from: '王小虎',
-          content: '科室1需要两万盒阿莫西林',
-          status: 1
-        }
-      ]
+      ],
+      presentMessageType: 2,
+      ableForward: 0
     }
   },
   created () {
     this.checkAuth()
     this.env = process.env.NODE_ENV
-    console.log('created')
   },
   mounted () {
     if (this.env === 'production') {
       let ipc = this.$electron.ipcRenderer
       ipc.send('mainResize')
     }
-    console.log('mounted')
     // fixed: 页面刷新清空缓存
     // fixed：刷新后面包屑重置
     this.user = this.$store.state.user
     this.initMenu(this.menu)
     this.currentPath = getCurrentPath(this, this.$route)
+    this.getMessage()
   },
   methods: {
     initMenu (menu) {
@@ -331,11 +303,53 @@ export default {
         return false
       })
     },
+    async getMessage () {
+      // console.log(this.$store.state.user)
+      // let response = await unreadMessage(this.$store.state.user.id)
+      let response = await unreadMessage('002')
+      if (response.data.mitiStatus === 'SUCCESS') {
+        // this.message = response.entity.data
+        // console.log(response.data.entity)
+        this.message = response.data.entity.data
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    async allMarkRead () {
+      // console.log(this.$store.state.user)
+      let type
+      if (this.message.findIndex((n) => n.type === 1) > -1 && this.message.findIndex((n) => n.type === 2) > -1) {
+        type = 3
+      } else if (this.message.findIndex((n) => n.type === 1) === -1 && this.message.findIndex((n) => n.type === 2) > -1) {
+        type = 2
+      } else {
+        type = 1
+      }
+      console.log(type)
+      let obj = {
+        userId: '002',
+        type: type
+      }
+      let response = await allRead(obj)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response.data.entity)
+        this.getMessage()
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    async singleMarkRead (item) {
+      console.log(item)
+      let response = await singleRead(item.id)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response.data.entity)
+        this.getMessage()
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
     toMessage () {
       this.$router.push('/message/index')
-    },
-    readAll () {
-      this.$message.success('全部标记为已读')
     },
     linkTo (menu) {
       this.$router.push(menu.path)
@@ -357,6 +371,27 @@ export default {
       console.log(operate)
       // console.log(ipc)
     },
+    locationOperate (operate) {
+      // 按钮操控主进程窗口
+      switch (operate) {
+        case 'back':
+          this.$router.go(-1)
+          this.ableForward += 1
+          break
+        case 'refresh':
+          this.$router.go(0)
+          break
+        case 'forward':
+          if (this.ableForward) {
+            this.$router.go(1)
+            this.ableForward -= 1
+            break
+          } else {
+            break
+          }
+      }
+      console.log(this.ableForward)
+    },
     ban () {
       console.log('阻止默认的右键出现菜单事件')
     }
@@ -366,12 +401,22 @@ export default {
       if (this.user) {
         return setMenu(this.$store.state.routers, this.user.codetype)
       }
+    },
+    currentMessage () {
+      if (this.message.length >= 1) {
+        let arr = []
+        this.message.forEach((item) => {
+          if (item.type === this.presentMessageType) {
+            arr.push(item)
+          }
+        })
+        return arr
+      }
     }
   },
   watch: {
     '$route' (to) {
       this.currentPath = getCurrentPath(this, to)
-      console.log(this.currentPath)
     }
   }
 }
@@ -595,10 +640,11 @@ export default {
         -webkit-app-region: no-drag;
         cursor: pointer;
         width: 100px;
+        height: 48px;
+        line-height: 48px;
         display: flex;
         justify-content: space-around;
         align-items: center;
-
         span:hover{
           color: $themeColor;
         }
@@ -621,6 +667,8 @@ export default {
       padding: 0;
       margin: 0;
       border-radius: 0;
+      top: 36px !important;
+      opacity: 0.9;
       .message-box{
         height:400px;
         width: 100%;
@@ -644,46 +692,85 @@ export default {
             margin: 0;
             height: 80px;
             line-height: 40px;
+            color: $minorTextColor;
             box-sizing: border-box;
             border-bottom: 1px solid $lightBorderColor;
             position: relative;
-          }
 
-          .unread{
-            color: $minorTextColor;
+            .from, .content{
+              height: 40px;
+            }
+
+            .sender{
+              width: 60%;
+            }
+            .send-time{
+              transition: all .5s linear;
+              width: 40%;
+            }
+            .single-mark{
+              transition: all .5s linear;
+              position: absolute;
+              width: 40%;
+              right: 0;
+              top: 0;
+              display: none;
+            }
           }
 
           .message-case:hover{
-            color: $themeColor;
-          }
-
-          .message-case:nth-last-of-type(1){
-            border-bottom: none;
+            .content{
+              color: $themeColor;
+            }
+            .single-mark{
+              transition: all .5s linear;
+              display: block;
+            }
+            .send-time{
+              transition: all .5s linear;
+              display: none;
+            }
           }
         }
 
         .title{
           height:50px;
-          padding: 0 10px;
+          // padding: 0 10px;
           line-height:50px;
           display: flex;
           flex-direction: row;
-          justify-content: space-between;
+          justify-content: space-around;
           border-bottom: 1px solid $deepBorderColor;
 
-          span:nth-of-type(1){
-            font-size: 18px;
+          .nav-case{
+            flex:1;
+            text-align: center;
+          }
+          .active{
+            transition: all .25s linear;
+            background: rgba($color: $themeColor, $alpha: 0.05);
+          }
+          .nav-case:hover, .active{
+            color: $themeColor;
+          }
+          .nav-case:nth-of-type(1){
+            border-right: 1px solid $deepBorderColor;
           }
         }
 
         .bottom{
           height:50px;
-          text-align: center;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-around;
           line-height:50px;
           border-top: 1px solid $deepBorderColor;
+          span{
+            text-decoration: underline;
+          }
         }
 
-        .bottom span:nth-last-of-type(1):hover, .title span:nth-last-of-type(1):hover{
+        span:hover{
           color: $themeColor;
         }
       }

@@ -1,32 +1,34 @@
 <template>
-  <div id="project-detail">
-    <div class="left-nav">
-      <div class="page-title">
-        <h4>项目详情</h4>
-        <h5 class="light-text">Project Detail</h5>
+  <keep-alive>
+    <div id="project-detail">
+      <div class="left-nav">
+        <div class="page-title">
+          <h4>项目详情</h4>
+          <h5 class="light-text">Project Detail</h5>
+        </div>
+        <div :class="{'project-name': true, 'text-overflow-ellipsis': true, 'self-build': selfBuild}">
+          {{projectInfo.name}}
+        </div>
+        <div v-for="(item, index) in navOptions" :key="index" :class="{active: $route.path.split('/')[4] === item.path}" class="nav-case" @click="changeIndex(item, index)">
+          <span class="left-icon nav-light-text" :class="item.icon">
+          </span>
+          <span class="right-text nav-light-text">
+            {{item.title}}
+          </span>
+        </div>
       </div>
-      <div class="project-name text-overflow-ellipsis">
-        用药影响综合评估
-      </div>
-      <div v-for="(item, index) in navOptions" :key="index" :class="{active: $route.path.split('/')[4] === item.path}" class="nav-case" @click="changeIndex(item, index)">
-        <span class="left-icon nav-light-text" :class="item.icon">
-        </span>
-        <span class="right-text nav-light-text">
-          {{item.title}}
-        </span>
+      <div class="right-content">
+        <router-view :selfBuild="selfBuild" :projectInfo="projectInfo" :projectId="projectId" v-on:refreshInfo="getInfo"></router-view>
       </div>
     </div>
-    <div class="right-content">
-      <router-view></router-view>
-    </div>
-  </div>
+  </keep-alive>
 </template>
 <script>
+import { getProjectInfo } from '../../../api/project/project'
 export default {
   name: 'Project_detail',
   data () {
     return {
-      // activeIndex: 0,
       navOptions: [
         {
           icon: 'ercp-icon-module-create',
@@ -53,18 +55,43 @@ export default {
           title: '数据导出',
           path: 'projectExport'
         }
-      ]
+      ],
+      creator: '',
+      projectInfo: {}
     }
   },
   methods: {
     changeIndex (item, index) {
-      console.log(index)
-      console.log(item)
       this.$router.push(item.path)
-      // this.activeIndex = index
+    },
+    async getProject (projectId) {
+      let info = projectId
+      let response = await getProjectInfo(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        this.projectInfo = response.data.entity
+        this.navOptions[0].icon = this.selfBuild ? 'ercp-icon-module-create' : 'ercp-icon-module-join'
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    getInfo () {
+      this.getProject(this.projectId)
     }
   },
   mounted () {
+    console.log(this.projectInfo)
+  },
+  computed: {
+    projectId () {
+      return this.$route.path.split('/')[3]
+    },
+    selfBuild () {
+      if (this.projectInfo.creator && this.projectInfo.creator === this.creator) {
+        return true
+      } else {
+        return false
+      }
+    }
   }
 }
 </script>
@@ -101,6 +128,8 @@ export default {
         line-height: 48px;
         text-align: center;
         font-weight:600;
+      }
+      .self-build{
         color: $themeColor;
       }
       .nav-case{

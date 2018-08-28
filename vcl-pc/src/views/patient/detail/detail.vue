@@ -6,59 +6,59 @@
         <span>患者id: {{patientId}}</span>
       </div>
       <div class="basic-information" >
-        <el-form ref="basicForm" :rules="rules" :model="basicInfo" label-position="left" label-width="100px">
+        <el-form ref="basicForm" :rules="rules" :model="basicInfo" label-position="left" label-width="100px" :disabled="editable">
           <el-col :span="8">
-            <el-form-item label="住院号:" prop="hospitalNumber">
-              <el-input v-model="basicInfo.hospitalNumber" :disabled="editable" size="small"></el-input>
+            <el-form-item label="住院号:" prop="hospitalId">
+              <el-input v-model="basicInfo.hospitalId" style="width:217px;" size="small"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="患者姓名:" prop="name">
-              <el-input v-model="basicInfo.name" :disabled="editable" size="small"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="患者民族:" prop="nation">
-              <el-input v-model="basicInfo.nation" :disabled="editable" size="small"></el-input>
+              <el-input v-model="basicInfo.name" style="width:217px;" size="small"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="患者性别:" prop="gender">
-              <el-radio-group v-model="basicInfo.gender" :disabled="editable">
-                <el-radio label="男" value="0"></el-radio>
-                <el-radio label="女" value="1"></el-radio>
+              <el-radio-group v-model="basicInfo.gender">
+                <el-radio label="1">男</el-radio>
+                <el-radio label="0">女</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="身份证号:" prop="identity">
-              <el-input v-model="basicInfo.identity" :disabled="editable" size="small"></el-input>
+          <el-col :span="16">
+            <el-form-item label="患者民族:" prop="nation">
+              <text-radio v-model="basicInfo.nation" :options="['汉族','回族','藏族']"></text-radio>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="联系方式:" prop="concatNumber">
-              <el-input v-model="basicInfo.concatNumber" :disabled="editable" size="small"></el-input>
+            <el-form-item label="身份证号:" prop="idCard">
+              <el-input v-model="basicInfo.idCard" style="width:217px;" size="small"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="常居住地" prop="province">
+            <el-form-item label="联系方式:" prop="phoneNum">
+              <el-input v-model="basicInfo.phoneNum" style="width:217px;" size="small"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="常居住地" prop="address">
               <el-cascader
                 :options="addressOption"
-                v-model="basicInfo.province" :disabled="editable"
+                v-model="basicInfo.address"
+                style="width:217px;"
                 @change="handleChange">
               </el-cascader>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item prop="permanentAddress" label="街道地址">
-              <el-input v-model="basicInfo.permanentAddress" :disabled="editable"></el-input>
+            <el-form-item prop="staAddress" label="街道地址">
+              <el-input v-model="basicInfo.staAddress" style="width:217px;"></el-input>
             </el-form-item>
           </el-col>
         </el-form>
         <div class="operate">
-          <!-- <span class="light-text">提示:所有项目为必填项,请认真填写</span> -->
           <div class="float-right">
-            <el-button type="danger" size="small">删除</el-button>
+            <el-button type="danger" size="small" @click="deletePat">删除</el-button>
             <el-button type="primary" size="small" v-if="editable" @click="edit">编辑</el-button>
             <el-button type="primary" size="small" v-if="!editable" @click="changePatientInfo">保存</el-button>
           </div>
@@ -238,21 +238,26 @@
   </div>
 </template>
 <script>
+import textRadio from '../../../components/textRadio/textRadio'
 import {addressData} from '../../../data/address/addressData'
+import {getPatientBasic, deletePatient, editPatientBasic, getPatientRecords} from '../../../api/patient/patient.js'
 export default {
   name: 'patient_detail',
+  components: {
+    textRadio
+  },
   data () {
     return {
       patientId: '',
       basicInfo: {
-        name: '刘能',
-        gender: '男',
-        nation: '汉族',
-        hospitalNumber: '123456789',
-        identity: '345213198763542671',
-        concatNumber: '13688888888',
-        province: ['210000', '211200', '211221'],
-        permanentAddress: '象牙山'
+        name: '',
+        gender: '',
+        nation: '',
+        hospitalId: '',
+        idCard: '',
+        phoneNum: '',
+        address: [],
+        staAddress: ''
       },
       rules: {
         name: [{
@@ -268,29 +273,45 @@ export default {
         nation: [{
           required: true,
           message: '必填项不能为空',
-          trigger: 'change'
+          trigger: 'focus'
         }],
-        hospitalNumber: [{
+        hospitalId: [{
           required: true,
           message: '必填项不能为空',
           trigger: 'change'
         }],
-        identity: [{
+        idCard: [
+          {
+            required: true,
+            message: '必填项不能为空',
+            trigger: 'change'
+          },
+          { validator (rule, value, callback) {
+            setTimeout(() => {
+              if (value !== '') {
+                let pattern = /^\d{17}[\dxX]$/
+                if (!pattern.test(value)) {
+                  callback(new Error('请输入正确的身份证号'))
+                } else {
+                  callback()
+                }
+              } else {
+                callback()
+              }
+            }, 1500)
+          }}
+        ],
+        phoneNum: [{
           required: true,
           message: '必填项不能为空',
           trigger: 'change'
         }],
-        concatNumber: [{
+        address: [{
           required: true,
           message: '必填项不能为空',
           trigger: 'change'
         }],
-        province: [{
-          required: true,
-          message: '必填项不能为空',
-          trigger: 'change'
-        }],
-        permanentAddress: [{
+        staAddress: [{
           required: true,
           message: '必填项不能为空',
           trigger: 'change'
@@ -302,20 +323,123 @@ export default {
   },
   mounted () {
     this.addressOption = addressData
+    this.getPatient()
   },
   created () {
     this.patientId = this.$route.params.id
   },
   methods: {
+    // 根据患者id 获取患者的基本信息
+    async getPatient () {
+      let info = this.patientId
+      let response = await getPatientBasic(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        let info = response.data.entity
+        info.address = []
+        if (info.province !== '' && info.province !== info.city) {
+          info.address[0] = info.province
+          info.address[1] = info.city
+          info.address[2] = info.district
+        } else if (info.province !== '' && info.province === info.city) {
+          info.address[0] = info.city
+          info.address[1] = info.district
+        } else {
+          info.address = []
+        }
+        this.basicInfo = info
+        console.log(this.basicInfo)
+        console.log(typeof (this.basicInfo.gender))
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    // 删除患者
+    async deletePatient () {
+      let info = this.patientId
+      let response = await deletePatient(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response)
+        this.$router.push('/patient')
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    // 获取患者的住院记录等
+    async getPatientRec () {
+      let info = this.patientId
+      let response = await getPatientRecords(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response)
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    // 修改患者的基本信息
+    async changePatientInfo () {
+      this.$refs.basicForm.validate(async valid => {
+        if (valid) {
+          console.log(this.basicInfo)
+          let info = this.basicInfo
+          if (this.basicInfo.address.length === 2) {
+            info.province = this.basicInfo.address[0]
+            info.city = this.basicInfo.address[0]
+            info.district = this.basicInfo.address[1]
+          } else if (this.basicInfo.address.length === 3) {
+            info.province = this.basicInfo.address[0]
+            info.city = this.basicInfo.address[1]
+            info.district = this.basicInfo.address[2]
+          } else {
+            info.province = ''
+            info.city = ''
+            info.district = ''
+          }
+          delete info.address
+          info.id = this.patientId
+          let response = await editPatientBasic(info)
+          if (response.data.mitiStatus === 'SUCCESS') {
+            this.$refs.basicForm.resetFields()
+            this.dialogTableVisible = false
+            this.editable = true
+            this.getPatient()
+          } else {
+            this.$message.error('ERROR: ' + response.data.message)
+          }
+        } else {
+          return false
+        }
+      })
+    },
     handleChange (data) {
-      console.log(data)
+      // if (data.length === 2) {
+      //   this.basicInfo.address = data[0]
+      //   this.basicInfo.city = data[0]
+      //   this.basicInfo.district = data[1]
+      // } else if (data.length === 3) {
+      //   this.basicInfo.address = data[0]
+      //   this.basicInfo.city = data[1]
+      //   this.basicInfo.district = data[2]
+      // } else {
+      //   this.basicInfo.address = ''
+      //   this.basicInfo.city = ''
+      //   this.basicInfo.district = ''
+      // }
     },
     edit () {
       this.editable = false
     },
-    changePatientInfo () {
-      console.log(this.basicInfo)
-      this.editable = true
+    deletePat () {
+      this.$confirm('此操作将删除该患者, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.deletePatient()
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
     prev (case1) {
       let dom = this.$refs[case1][0] === undefined ? this.$refs[case1] : this.$refs[case1][0]
@@ -344,12 +468,8 @@ export default {
 <style lang="scss" scoped>
   @import '../../../assets/css/variable';
   #patient{
-    // position: absolute;
-    // left: 16px;
-    // right: 16px;
-    // top: 16px;
     width: 100%;
-    min-height: 100%;
+    height: 100%;
     padding: 16px;
     overflow: auto;
     box-sizing: border-box;
@@ -379,6 +499,8 @@ export default {
       // min-height: 280px;
       flex:1;
       box-sizing: border-box;
+      overflow-x: hidden;
+      overflow-y: auto;
       .record-title{
         float: left;
         font-size: 15px;

@@ -11,10 +11,10 @@ export default {
       errorCode: this.$route.params.code,
       errorMap: {
         403: {
-          message: '抱歉，您无权访问该页面'
+          message: '抱歉，您无权访问该页面，请自重'
         },
         404: {
-          message: '抱歉，您访问的页面不存在'
+          message: '抱歉，您访问的页面不存在，建议返回上一页'
         },
         500: {
           message: '抱歉，服务器出错了'
@@ -32,9 +32,14 @@ export default {
 </script>
 <style lang="scss" scoped>
   #error{
+    height: 100%;
+    line-height: 600px;
+    color: teal;
+    width: 100%;
     font-weight:900;
     font-size: 50px;
     text-align: center;
-    padding:200px 0;
+    // margin:200px 0;
+    // background:repeating-linear-gradient(135deg, #fff 0%, #fff 2%, #000 2%, #000 4%);
   }
 </style>

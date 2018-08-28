@@ -1,59 +1,86 @@
 <template>
   <div id="project-basic">
-    <div class="operate-buttons align-right">
-      <el-button size="medium" type="primary" @click="saveChange">保存修改</el-button>
-      <el-button size="medium" type="danger"  @click="deletePro">删除</el-button>
-    </div>
     <div class="project-info">
-      <el-form ref="infomation" :rules = "rules" lebel-position="left" :model="projectInfo" label-width="80px">
-        <el-col :span="24">
-          <el-form-item label="项目名称" prop="name">
-            <el-input v-model="projectInfo.name"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="9">
+      <!-- <el-form ref="infomation" :rules = "rules" lebel-position="left" :model="basciInfo" label-width="100px" :disabled="!selfBuild"> -->
+      <el-form ref="infomation" :rules = "rules" lebel-position="left" :model="basciInfo" label-width="100px">
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="项目名称" prop="name">
+              <el-input v-model="basciInfo.name"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-col :span="12">
           <el-form-item label="项目简称" prop="abbreviation">
-            <el-input v-model="projectInfo.abbreviation"></el-input>
+            <el-input v-model="basciInfo.abbreviation"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="9">
-          <el-form-item label="项目负责" prop="leader">
-            <el-input v-model="projectInfo.leader"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
-          <el-form-item label="项目状态" prop="status">
-            <el-switch
-              v-model="projectInfo.status"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              active-value="1"
-              inactive-value="0"
-              active-text="锁定"
-              inactive-text="未锁定">
-            </el-switch>
+        <el-col :span="12">
+          <el-form-item label="项目负责人" prop="creator">
+            <!-- <el-input v-model="basciInfo.creator.name" disabled></el-input> -->
+            <el-input v-model="basciInfo.creator" disabled></el-input>
           </el-form-item>
         </el-col>
          <el-col :span="24">
-          <el-form-item label="项目简介" prop="introduction">
-            <el-input v-model="projectInfo.introduction"></el-input>
+          <el-form-item label="项目简介" prop="intro">
+            <el-input v-model="basciInfo.intro" type="textarea"></el-input>
           </el-form-item>
         </el-col>
       </el-form>
     </div>
+    <!-- <div class="operate-buttons" v-if="selfBuild"> -->
+    <div class="operate-buttons">
+      <ul class="operation-list">
+        <li class="operation-item clearfix">
+          <ul class="tips-list float-left">
+            <li class="tips-item">保存当前修改</li>
+          </ul>
+          <div class="btn-wrapper float-right">
+            <el-button size="medium" type="primary" @click="saveChange" :disabled="!ableModify">保存修改</el-button>
+          </div>
+        </li>
+        <li class="operation-item clearfix">
+          <ul class="tips-list float-left">
+            <li class="tips-item">锁定当前项目，将无法对当前项目进行其他操作，锁定后将跳转到项目列表页面</li>
+          </ul>
+          <div class="btn-wrapper float-right">
+            <el-button size="medium" type="primary" @click="lock" :disabled="projectInfo.status === '1'">锁定项目</el-button>
+          </div>
+        </li>
+        <li class="operation-item clearfix">
+          <ul class="tips-list float-left">
+            <li class="tips-item">删除当前项目，操作不可逆，删除该项目后将跳转到项目列表页面</li>
+          </ul>
+          <div class="btn-wrapper float-right">
+            <el-button size="medium" type="danger"  @click="deletePro">删除项目</el-button>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 <script>
+import { modifyProject, lockProject, deleteProject } from '../../../../api/project/project'
 export default {
   name: 'Project_detail_basic',
+  props: {
+    selfBuild: {
+      type: Boolean,
+      required: true
+    },
+    projectInfo: {
+      type: Object,
+      required: true
+    }
+  },
   data () {
     return {
-      projectInfo: {
-        name: 'ERCP患者用药对出院状态的影响',
-        abbreviation: '用药影响评估',
-        leader: '上官玛利亚',
-        status: 0,
-        introduction: '患者手术后,跟踪患者的各阶段状态,进行评估'
+      ableModify: false,
+      basciInfo: {
+        name: '',
+        abbreviation: '',
+        creator: '',
+        intro: ''
       },
       rules: {
         name: [
@@ -61,39 +88,83 @@ export default {
         ],
         abbreviation: [
           {required: true, message: '必填项不能为空'}
-        ],
-        leader: [
-          {required: true, message: '必填项不能为空'}
-        ],
-        status: [
-          {required: true, message: '必填项不能为空'}
-        ],
-        introduction: [
-          {required: true, message: '必填项不能为空'}
         ]
       }
     }
   },
   methods: {
-    saveChange () {
-      this.$refs.infomation.validate((valid) => {
+    byValue () {
+      this.$emit('refreshInfo')
+    },
+    async saveChange () {
+      this.$refs.infomation.validate(async (valid) => {
         if (valid) {
-          this.$message.warning('修改成功')
+          let newInfo = this.basciInfo
+          // 部分可修改的信息 ? creator ?
+          let info = {
+            name: newInfo.name,
+            abbreviation: newInfo.abbreviation,
+            // creator: newInfo,
+            // status: 0,
+            intro: newInfo.intro
+          }
+          let response = await modifyProject(info)
+          if (response.data.mitiStatus === 'SUCCESS') {
+            console.log(response)
+          } else {
+            this.$message.error('ERROR: ' + response.data.message)
+          }
+          // this.$message.warning('锁定该项目')
         } else {
           return false
         }
       })
     },
-    deletePro () {
-      this.$message.warning('确定删除了哦')
+    async lock () {
+      let info = this.projectId
+      let response = await lockProject(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response)
+        this.$router.push('/project/index')
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    async deletePro () {
+      let info = this.projectId
+      let response = await deleteProject(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response)
+        this.$router.push('/project/index')
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
     }
   },
   mounted () {
+    this.byValue()
   },
   watch: {
     'projectInfo': {
-      handler: function (newVal) {
-        console.log(newVal)
+      handler: function (newVal, oldValue) {
+        if (newVal.name) {
+          this.basciInfo = {
+            name: newVal.name,
+            abbreviation: newVal.abbreviation,
+            creator: newVal.creator.userId,
+            intro: newVal.intro
+          }
+        }
+      },
+      deep: true
+    },
+    'basciInfo': {
+      handler: function (newVal, oldValue) {
+        if (newVal.name === this.projectInfo.name && newVal.abbreviation === this.projectInfo.abbreviation && newVal.intro === this.projectInfo.intro) {
+          this.ableModify = false
+        } else {
+          this.ableModify = true
+        }
       },
       deep: true
     }
@@ -107,16 +178,33 @@ export default {
     height: 100%;
     box-sizing: border-box;
     padding:16px;
-    display: flex;
-    flex-direction: column;
     .operate-buttons{
-      // height: 40px;
-      min-height: 40px;
-      line-height: 40px;
-      padding:10px 0;
+      padding: 0 10px 0 40px;
+      .operation-list {
+        margin-top: 32px;
+        .operation-item {
+          padding: 16px 0;
+          border-top: 1px solid $lightBorderColor;
+
+          .tips-list {
+          list-style: square inside;
+          font-size: 14px;
+          color: $minorTextColor;
+
+            .tips-item {
+              margin-bottom: 8px;
+
+              &:last-child {
+                margin-bottom: 0;
+              }
+            }
+          }
+        }
+      }
     }
     .project-info{
-      flex: 1;
+      margin-top: 10px;
+      min-height: 160px;
     }
   }
 </style>

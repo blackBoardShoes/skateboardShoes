@@ -1,6 +1,15 @@
 import Layout from '../views/layout/index'
+export const otherRouter = {
+  path: '',
+  name: 'initial',
+  redirect: '/login',
+  meta: {
+    title: 'Login - 登录',
+    role: [1, 2, 3, 4, 5, 6]
+  }
+}
 
-// 登录页面
+// 初始页面  ==> login
 export const loginRouter = {
   path: '/login',
   name: 'login',
@@ -9,29 +18,6 @@ export const loginRouter = {
     role: [1, 2, 3, 4, 5, 6]
   },
   component: () => import('../views/login/login')
-}
-
-// 错误页面:传入错误码
-export const errorRouter = {
-  path: '/error/:code',
-  name: 'error',
-  meta: {
-    title: 'error-错误',
-    role: [1, 2, 3, 4, 5, 6]
-  },
-  component: () =>
-    import('../views/error/index')
-}
-
-// 初始页面  ==> login
-export const otherRouter = {
-  path: '',
-  name: 'otherRouter',
-  redirect: '/login',
-  meta: {
-    title: 'login',
-    role: [1, 2, 3, 4, 5, 6]
-  }
 }
 
 // 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
@@ -323,7 +309,7 @@ export const appRouter = [
         component: () => import('../../src/views/project/index/index.vue')
       },
       {
-        path: 'detail/:id',
+        path: 'detail/:projectId',
         name: 'project_detail',
         meta: {
           title: '项目详情',
@@ -401,12 +387,45 @@ export const appRouter = [
       {
         path: 'index',
         name: 'message_index',
+        redirect: '/message/index/receive',
         meta: {
           title: '消息中心',
           navigator: false,
           role: [1, 2, 3, 4, 5, 6]
         },
-        component: () => import('../../src/views/message/index/index.vue')
+        component: () => import('../../src/views/message/index/index.vue'),
+        children: [
+          {
+            path: 'receive',
+            name: 'message_receive',
+            meta: {
+              title: '收件箱',
+              navigator: false,
+              role: [1, 2, 3, 4, 5, 6]
+            },
+            component: () => import('../../src/views/message/case/receive.vue')
+          },
+          {
+            path: 'send',
+            name: 'message_send',
+            meta: {
+              title: '发件箱',
+              navigator: false,
+              role: [1, 2, 3, 4, 5, 6]
+            },
+            component: () => import('../../src/views/message/case/send.vue')
+          },
+          {
+            path: 'write',
+            name: 'message_write',
+            meta: {
+              title: '写消息',
+              navigator: false,
+              role: [1, 2, 3, 4, 5, 6]
+            },
+            component: () => import('../../src/views/message/case/write.vue')
+          }
+        ]
       }
     ]
   },
@@ -516,12 +535,36 @@ export const appRouter = [
         component: () => import('../components/cartogram/scalingChart.vue')
       }
     ]
+  },
+  {
+    path: '/error/:code',
+    name: 'error',
+    navigator: false,
+    meta: {
+      title: '错误页面',
+      role: [1, 2, 3, 4, 5, 6]
+    },
+    component: Layout,
+    redirect: '/error/:code/index',
+    children: [
+      {
+        path: 'index',
+        name: 'error_index',
+        navigator: false,
+        meta: {
+          title: '错误页面',
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../views/error/index')
+      }
+    ]
+    // component: () =>
+    //   import('../views/error/index')
   }
 ]
 
 export const routers = [
   loginRouter,
-  errorRouter,
   otherRouter,
   ...appRouter
 ]

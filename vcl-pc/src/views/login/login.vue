@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <div class="middle-wrapper">
-      <div class="login-form" :class="{hidden: hidden === true, seen: hidden === false}">
+      <div class="login-form">
         <div class="bgi">
           <div class="system-title">
             <span>信息录入管理系统</span>
@@ -11,7 +11,7 @@
           ref="loginForm"
           :model="form"
           :rules="rules"
-          :class="{hidden: hidden === true, seen: hidden === false}">
+          @keyup.enter.native="login('loginForm')">
           <el-form-item prop="username">
             <el-input v-model="form.username" placeholder="请输入账号">
               <i slot="prefix" class="el-input__icon ercp-icon-general-account" style="font-size: 18px;"></i>
@@ -37,7 +37,7 @@
             </div>
           </el-form-item>
           <el-form-item style="margin-bottom: 0;margin-top:40px;">
-            <el-col :span="10" :offset="7">
+            <el-col :span="24">
               <el-form-item>
                 <el-button
                   type="primary"
@@ -60,13 +60,11 @@
 <script>
 import validateCode from '../../components/ValidateCode/index'
 import { login } from '../../api/user/user.js'
-import { sessionStorage } from '../../assets/js/storage'
 export default {
   created () {
     if (process.env.NODE_ENV === 'production') {
       let ipc = this.$electron.ipcRenderer
       ipc.send('loginResize')
-      // this.hidden = false
     }
     // 每次在登录页面都要重新清除用户信息
     this.$store.commit('SET_TOKEN', '')
@@ -86,7 +84,6 @@ export default {
       }
     }
     return {
-      hidden: false,
       passwordType: 'password',
       checkCode: '',
       form: {
@@ -124,8 +121,8 @@ export default {
     // 登录请求
     async login (formName) {
       this.$refs[formName].validate(async valid => {
-        this.form.yanzhengma = ''
         this._updateCheckCode()
+        this.form.yanzhengma = ''
         if (valid) {
           let info = {
             username: this.form.username,
@@ -135,24 +132,9 @@ export default {
           if (response.data.mitiStatus === 'SUCCESS') {
             let user = response.data.entity.User
             let token = response.data.entity.Token.token
-            // let token = 'a94756da-2962-40ae-bdea-787fd02c9d92'
-            // let user = {
-            //   username: 95270,
-            //   name: '王二虎',
-            //   type: '管理员',
-            //   codetype: 1,
-            //   gender: '男',
-            //   insititution: '兰州大学第一医院',
-            //   department: '外科一',
-            //   status: '正常',
-            //   activationData: '2018-08-14'
-            // }
             this.$store.commit('SET_TOKEN', token)
             this.$store.commit('SET_USER', user)
-            console.log(sessionStorage.getItem('token'))
-            console.log(this.$store.state.token)
             this.$router.replace('home')
-            // this.hidden = true
           } else {
             this.$message.error('ERROR: ' + response.data.message)
           }
@@ -168,12 +150,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .hidden{
-    visibility: hidden;
-  }
-  .seen{
-    visibility: visible;
-  }
   .login {
     -webkit-app-region: drag;
     position: fixed;
@@ -181,11 +157,9 @@ export default {
     right: 0;
     top: 0;
     bottom: 0;
-    background: teal;
-    // background-image:url('../../assets/images/login-bg.png');
+    background-image:url('../../assets/images/login-bg.png');
     background-size: cover;
     .middle-wrapper {
-      background: teal;
       position: fixed;
       width: 100%;
       margin: 0 auto;
@@ -205,10 +179,13 @@ export default {
           position: absolute;
           top: -120px;
           left: -10px;
+          right: 0;
+          bottom: 0;
           height: 490px;
           width: 500px;
-          // background-image: url('../../assets/images/登录框.png');
+          background-image: url('../../assets/images/登录框.png');
           background-repeat: no-repeat;
+          // display: none;
           .system-title{
             height: 40px;
             line-height: 40px;
@@ -221,6 +198,10 @@ export default {
           }
         }
         .el-form{
+          background-image: url('../../assets/images/ldyy.png');
+          background-repeat: no-repeat,no-repeat;
+          background-position: -50px -50px, 330px 0px;
+          background-size: 160px 160px, 80px 80px;
           -webkit-app-region: no-drag;
           margin-top: 50px;
           padding:0 15px;
@@ -232,9 +213,6 @@ export default {
             margin-bottom: 0;
           }
 
-          .login-btn {
-            width: 100%;
-          }
         }
 
         .check-code-wrapper {

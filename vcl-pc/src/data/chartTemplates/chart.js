@@ -45,14 +45,16 @@ export const charts = [
         avoidLabelOverlap: false,
         // 显示的文字标签
         label: {
-          // 环内则设置inside
+          // 环内则设置center
           normal: {
             show: true,
-            position: 'outside'
+            position: 'outside',
+            formatter: '{b}:{c}'
           }
           // 强调
           // emphasis: {
           //   show: true,
+          //   position: 'center',
           //   textStyle: {
           //     fontSize: '30',
           //     fontWeight: 'bold'
@@ -68,12 +70,14 @@ export const charts = [
         // 数据
         data: [
           // 需要传入的具体数据，包含值和名称，对象形式
-          {value: 120, name: '具类1'},
+          {value: 110, name: '具类1'},
           {value: 120, name: '具类2'},
-          {value: 120, name: '具类3'},
-          {value: 120, name: '具类4'},
-          {value: 120, name: '具类5'},
-          {value: 120, name: '具类6'}
+          {value: 130, name: '具类3'},
+          {value: 140, name: '具类4'},
+          {value: 130, name: '具类5'},
+          {value: 120, name: '具类6'},
+          {value: 110, name: '具类7'},
+          {value: 100, name: '具类8'}
         ]
       }
     ]
@@ -349,11 +353,25 @@ export const charts = [
     },
     // 区域缩放设置
     dataZoom: [
-      // {type: 'inside'},
       {
         type: 'slider',
         start: 30,
-        end: 80
+        end: 80,
+        dataBackground: {
+          areaStyle: {
+            color: 'rgba(203, 204, 205, 1)'
+          },
+          lineStyle: {
+            color: 'rgba(203, 204, 205, 1)'
+          }
+        },
+        fillerColor: 'rgba(217, 239, 249, 0.4)',
+        handleStyle: {
+          color: 'rgba(63, 177, 227, 0.75)'
+        },
+        left: '4%',
+        right: '10px',
+        bottom: '10px'
       }
     ],
     toolbox: {

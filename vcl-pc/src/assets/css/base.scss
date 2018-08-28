@@ -46,18 +46,9 @@ ul {
   background-color: rgba(125, 125, 125, 0.7);
 }
 
-// .el-table__header-wrapper{
-//   tr{
-//     background-color: $groupColor !important;
-//     th{
-//       background-color: $groupColor !important;
-//       .cell{
-//         background-color: $groupColor !important;
-//       }
-//     }
-//   }
-// }
 .echarts{
+  width:95% !important;
+  height: 95% !important;
   position: absolute !important;
 }
 .absolute-table{
@@ -65,13 +56,14 @@ ul {
 }
 .el-table{
   th{
-    background-color: rgba($color: $groupColor, $alpha: .9) !important;
+    background-color: rgba($color: $groupColor, $alpha: .95) !important;
   }
   .forbidden{
     color: $minorTextColor;
-    // background:repeating-linear-gradient(-135deg,#dfdfdf 0%, #dfdfdf 2%, #fff 2%, #fff 4%);
+    // background:repeating-linear-gradient(90deg,#dfdfdf 0%, #dfdfdf 2%, #fff 2%, #fff 4%);
+    // background: rgba($color: #878A8D, $alpha: .5);
     cursor: not-allowed;
-    // background-color: rgba($color: #E8E9EA, $alpha: 0.7);
+    // background-color: rgba($color: #E8E9EA, $alpha: 0.9);
   }
 }
 

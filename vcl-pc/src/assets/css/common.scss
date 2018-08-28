@@ -15,6 +15,9 @@
 .el-input__suffix{
   right: 8px !important;
 }
+.el-input__prefix{
+  left: 8px !important;
+}
 // 左浮动/右浮动
 .float-left{
   float: left;
@@ -96,7 +99,7 @@
   color:$lightTextColor;
   font-size:12px;
   margin:0 5px;
-  background-color: rgba($color: $themeColor, $alpha: .85);
+  background-color: rgba($color: $themeColor, $alpha: .95);
 }
 .right-corner-primary{
   position: absolute;

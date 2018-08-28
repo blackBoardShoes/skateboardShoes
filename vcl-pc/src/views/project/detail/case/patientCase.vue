@@ -6,13 +6,12 @@
     </div>
     <div class="project-info">
       <el-table
+        class="absolute-table"
         :data="tableData"
+        height="100%"
         style="width: 100%"
         size="medium"
         fit>
-        <el-table-column
-          type="index">
-        </el-table-column>
         <el-table-column
           prop="hospNum"
           align="center"
@@ -55,6 +54,18 @@
         </el-table-column>
       </el-table>
     </div>
+    <div class="pagination align-right">
+      <el-pagination
+        layout="total, sizes, prev, pager, next, jumper"
+        :page-sizes="[10, 15, 20]"
+        :total="total"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        @size-change= "SizeChange"
+        @current-change = "changePage"
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 <script>
@@ -95,7 +106,11 @@ export default {
           dischargeStatus: '健康',
           joinTime: '2018-09-10'
         }
-      ]
+      ],
+      // 分页信息
+      pageSize: 10,
+      currentPage: 1,
+      total: 40
     }
   },
   methods: {
@@ -110,6 +125,15 @@ export default {
     },
     clear () {
       this.$message.warning('清空案例')
+    },
+    // 列表页码信息
+    SizeChange (size) {
+      console.log(size)
+      // this.getProject(size, this.currentPage)
+    },
+    changePage (page) {
+      console.log(page)
+      // this.getProject(this.pageSize, page)
     }
   },
   mounted () {
@@ -134,6 +158,11 @@ export default {
     .project-info{
       flex: 1;
       position: relative;
+    }
+    .pagination{
+      margin-top: 10px;
+      min-height: 30px;
+      line-height: 30px;
     }
   }
 </style>

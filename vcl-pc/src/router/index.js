@@ -32,7 +32,7 @@ router.beforeEach((to, from, next) => {
   loading = Loading.service({
     fullscreen: true,
     target: '.content-wrapper',
-    text: '跳转中...'
+    text: '页面跳转中...'
   })
   // 没有该页面
   if (!to.matched.length) {
