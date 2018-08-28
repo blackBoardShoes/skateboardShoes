@@ -1,7 +1,7 @@
 <template>
   <div class="fieldAll">
     <div class="fieldContent">
-      <div style="margin-bottom:5px;">
+      <div style="margin-bottom:5px;height: 90px;">
         <div style="width:100%; text-align: right;display:flex;align-items:flex-end;height:46px;justify-content: space-between">
           <el-button
             size="small"
@@ -259,7 +259,7 @@ $bottomH: 200px;
     .listContentBottom {
       overflow: auto;
       width: $full;
-      height: $full;
+      height: calc(100% - 100px);
       .listContent {
         margin-bottom: $bottomH;
         width: $full;
@@ -274,36 +274,36 @@ $bottomH: 200px;
           justify-content: space-between;
           align-items: center;
           background: white;
-            .listItemLeft {
-              display: flex;
-              align-items: center;
-              font-size: 14px;
-              color: $commonTetxColor;
-              .listItemLeftText {
-                white-space: nowrap;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                width: 110px;
-              }
-            }
-            .listItemRight {
-              .listItemRightText {
-                white-space: nowrap;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                width: 70px;
-              }
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              flex-grow: 1;
-              font-size: 14px;
-              color: $minorTextColor;
+          .listItemLeft {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: $commonTetxColor;
+            .listItemLeftText {
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              width: 110px;
             }
           }
-          .checkedClass {
-            background: $linearGradient;
+          .listItemRight {
+            .listItemRightText {
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              width: 70px;
+            }
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-grow: 1;
+            font-size: 14px;
+            color: $minorTextColor;
           }
+        }
+        .checkedClass {
+          background: $linearGradient;
+        }
       }
     }
   }

@@ -17,7 +17,7 @@
       </div>
       <div class="formContentContent" v-if="Boolean(navArr[activeIndex])">
         <sx-no-route-control :navArr="navArr" :activeIndex="activeIndex" @emitClick="emitClick"></sx-no-route-control>
-        <div>
+        <div style="width: 100%;">
           <div class="rightContentControl">
             <div class="rightContentControlName">
               {{navArr[activeIndex] ? navArr[activeIndex].name : ''}}
@@ -43,6 +43,7 @@
             <div class="rightContent">
               <div class="rightContentDynamic" v-if="!(navArr[activeIndex] ? navArr[activeIndex].isStatic : false)">
                 <sx-min-form
+                  v-if="smf"
                   v-model="fishData"
                   ref="thatForm"
                   :mozhu="navArr[activeIndex]"
@@ -636,7 +637,8 @@ export default {
         operationSelectJc: [],
         operationSelectHj: [],
         operationDateTime: ''
-      }
+      },
+      smf: false
     }
   },
   async created () {
@@ -650,12 +652,16 @@ export default {
   methods: {
     async show () {
       this.navArr = []
+      let z = []
       for (let i of this.showData) {
         console.log(i, 'iii')
         if (i.phase === this.activeIndexNav) {
-          this.navArr.push(i)
+          await z.push(i)
         }
       }
+      this.navArr = [...z]
+      this.fishData = {}
+      this.smf = true
     },
     async init () {
       let faf = await fieldAllForms()
@@ -681,14 +687,22 @@ export default {
       console.log(b, 'bbbbbbbbbbbbbbbbbbbbbbbb')
       this.navArr = b ? b.subFields : []
     },
-    emitClick (data = {}) {
+    async emitClick (data = {}) {
+      this.smf = false
       this.activeIndex = data['index']
-      console.log(data)
+      setTimeout(_ => {
+        console.log('setTimeout1')
+        this.smf = true
+      }, 1)
     },
-    handleSelect (key, keyPath) {
+    async handleSelect (key, keyPath) {
       console.log(key, keyPath)
+      this.smf = false
       this.activeIndexNav = key
-      this.show()
+      setTimeout(_ => {
+        console.log('setTimeout')
+        this.show()
+      }, 1)
       // this.navArrAssignment()
       // if (this.$refs['ssbgModel']) {
       //   this.$nextTick(_ => {

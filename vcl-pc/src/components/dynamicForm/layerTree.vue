@@ -4,7 +4,7 @@
       <el-form ref="sizeForm" :model="sizeForm" label-width="0px" size="mini" style="flex-grow:1">
         <el-form-item style="width:100%" prop="treeName" :rules="[
           { required: true, message: '请输入要创建的名字', trigger: 'change' },
-          { pattern: /^[^\n]*\&[^\n]*$|^[^\*]+$|(^[^\*]+\*{2}\d+$)/, message: 'radio下**后作为实际值,并且是整数', trigger: 'change' }]">
+          { pattern: /^[^\n]*\&\&[^\n]*$|^[^\*\&]+$|(^[^\*]+\*\*\d+$)/, message: 'radio下**后作为实际值,并且是整数', trigger: 'change' }]">
           <el-input style="width:100%" clearable v-model.trim='sizeForm.treeName' placeholder="请输入要创建的名字"></el-input>
           <!-- /(^[^(\*)]+$)|(^[^(\*)]+(\*){2}\d+$)/     /^\*{2}\d+$|^[^\*]*$/-->
         </el-form-item>
@@ -77,17 +77,14 @@ export default {
     }
   },
   created () {
-    console.log(this.layerTreeData, '拿到的数据')
-    if (Array.isArray(this.layerTreeData)) {
-      this.treeId = this.treeId + this.layerTreeData.length + 1
-    }
+    this.valueCalculation()
   },
   methods: {
     // tree
     append (data) {
       this.$refs['sizeForm'].validate(async (valid) => {
         if (valid) {
-          // 没有/很少**0&&偶尔(1-2次/周)**1&&经常(1-2次/天)**4&&频繁(2次以上/天))**8
+          // 没有/很少**0&&偶尔(1-2次/周)**1&&经常(1-2次/天)**4&&频繁(2次以上/天)**8
           let nimbleArr = []
           nimbleArr = this.sizeForm.treeName.split('&&')
           for (let z of nimbleArr) {
@@ -105,6 +102,7 @@ export default {
               }
             }
             const newChild = { value: arr.length === 1 ? this.treeId++ : parseInt(arr[1]), label: z !== '' ? z : '空' }
+            console.log(newChild)
             if (data) {
               if (!data.children) {
                 await this.$set(data, 'children', [])
@@ -135,6 +133,28 @@ export default {
       const index = children.findIndex(d => d.value === data.value)
       children.splice(index, 1)
       this.$emit('input', this.layerTreeData)
+    },
+    valueCalculation () {
+      let z = []
+      let a = _ => {
+        if ('children' in _) {
+          a(_.children)
+        }
+        for (let i of _) {
+          z.push(i.value)
+        }
+      }
+      a(this.layerTreeData)
+      let mz = ''
+      if (z.length) {
+        mz = Math.max(...z)
+      } else {
+        mz = 99
+      }
+      console.log(mz)
+      if (Array.isArray(this.layerTreeData)) {
+        this.treeId = mz + 1
+      }
     },
     showTreeData () {
       console.log(this.layerTreeData)

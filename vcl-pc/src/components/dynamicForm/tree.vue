@@ -79,9 +79,7 @@ export default {
     }
   },
   created () {
-    if (Array.isArray(this.treeData)) {
-      this.treeId = this.treeId + this.treeData.length + 1
-    }
+    this.valueCalculation()
     console.log(this.treeData, '拿到的数据, =-=-=-=-=-')
   },
   methods: {
@@ -93,6 +91,7 @@ export default {
           nimbleArr = this.sizeForm.treeName.split('&&')
           for (let z of nimbleArr) {
             const newChild = { value: this.treeId++, label: z !== '' ? z : '空' }
+            console.log(newChild)
             if (data) {
               if (!data.children) {
                 await this.$set(data, 'children', [])
@@ -118,7 +117,30 @@ export default {
       const children = parent.data.children || parent.data
       const index = children.findIndex(d => d.value === data.value)
       children.splice(index, 1)
+      this.valueCalculation()
       this.$emit('input', this.treeData)
+    },
+    valueCalculation () {
+      let z = []
+      let a = _ => {
+        if ('children' in _) {
+          a(_.children)
+        }
+        for (let i of _) {
+          z.push(i.value)
+        }
+      }
+      a(this.treeData)
+      let mz = ''
+      if (z.length) {
+        mz = Math.max(...z)
+      } else {
+        mz = 99
+      }
+      console.log(mz)
+      if (Array.isArray(this.treeData)) {
+        this.treeId = mz + 1
+      }
     },
     showTreeData () {
       console.log(this.treeData)

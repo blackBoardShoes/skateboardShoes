@@ -27,15 +27,19 @@
                 <i class="el-icon-error"  v-if="iconTf(items)"></i>
               </div>
               <el-form-item
+                v-if="tf(items)"
                 :style="{width: '100%'}"
                 :rules="items.validations"
                 :prop="items.id"
                 :label="items.label"
                 @dblclick.native="evaluate(items, index)">
                 <div style="display: flex">
-                  <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'INPUT'" v-model.trim='formModel[items.id]'></el-input>
-                  <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'INT'" v-model.trim='formModel[items.id]'></el-input>
-                  <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'DOUBLE'" v-model.trim='formModel[items.id]'></el-input>
+                  <!-- @change.native="changeRules" -->
+                  <el-input
+                    :disabled="items.disabled" :placeholder="items.placeholder" clearable
+                    v-if="items.type === 'INPUT' | items.type === 'INT' | items.type === 'DOUBLE'" v-model.trim='formModel[items.id]'></el-input>
+                  <!-- <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'INT'" v-model.trim='formModel[items.id]'></el-input> -->
+                  <!-- <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'DOUBLE'" v-model.trim='formModel[items.id]'></el-input> -->
                   <el-input :disabled="items.disabled" :placeholder="items.placeholder" v-if="items.type === 'TEXTAREA'" type="textarea"  v-model='formModel[items.id]'></el-input>
                   <div style="width: 50px;text-align:center" v-if="items.unit">
                     {{items.unit}}
@@ -80,7 +84,7 @@
                   clearable filterable
                   style="width:100%;"
                   v-if="items.type === 'CASCADER'"
-                  :options="items.children"
+                  :options="items.children ? items.children : []"
                   v-model="formModel[items.id]">
                 </el-cascader>
                 <div v-if="items.type === 'CALCULATE'" >
@@ -89,8 +93,8 @@
                     <el-button @click="onEval(items)">计算</el-button>
                   </div>
                 </div>
-                <div v-if="items.type === 'TABLE'" style="width:100%">
-                  <sx-table :key="Math.random()" ref="sxtable" :tableData="items" @getData="getData"  style="width:100%"></sx-table>
+                <div v-if="items.type === 'TABLE'" style="width: 100%;">
+                  <sx-table ref="sxtable" :tableData="items ? items : {}" @getData="getData" style="width: 100%;"></sx-table>
                 </div>
                 <!-- 辅助创建 新增 编辑 -->
                 <div v-if="items.type === 'CREATECALCULATE'" >
@@ -107,7 +111,7 @@
                   <!-- {{formModel['createTable']}} -->
                   <el-select v-model="formModel['createTable']" multiple clearable filterable style="width: 100%">
                     <el-option
-                      v-if="it.type !== 'TABLE'"
+                      v-if="it.type !== 'TABLE' & it.type !== 'CALCULATE'"
                       v-for="(it, ii) in repositoryData" :key="ii" :label="it.label + ' - ' + it.type" :value="it.id" ></el-option>
                   </el-select>
                   <!-- <el-checkbox-group v-model="formModel['createTable']">
@@ -117,21 +121,33 @@
                 </div>
                 <div v-if="items.type === 'EXAMPLE'">
                   <span style="font-size: 12px">
-                    \d 等价 [0-9]
+                    数&nbsp;值&nbsp;限&nbsp;制: 3***100.66 (即3 &#8804; x &#8804; 100.66)
                     <br>
-                    1到10: ^[1-9]$|^10$ &nbsp;&nbsp;&nbsp;
-                    1到50: ^[1-9]$|^[1-4][0-9]$|^50$ &nbsp;&nbsp;&nbsp;
-                    0到100: ^[0-9]$|^[0-9][0-9]$|^100$  或者  ^\d{0,2}$|^100$ &nbsp;&nbsp;&nbsp;
-                    0到120:  ^[0-9]$|^[0-9][0-9]$|^[1][012][0]$ &nbsp;&nbsp;&nbsp;
-                    1到300:  ^[1-9]$|^[0-9][0-9]$|^[12][0-9][0-9]$|^300$ &nbsp;&nbsp;&nbsp;
-                    1到1000:  ^[1-9]$|^[0-9][0-9]$|^[1-9][0-9][0-9]$|^1000$ &nbsp;&nbsp;&nbsp;
-                    0到1000: ^\d{0,3}$|^1000$ &nbsp;&nbsp;&nbsp;
-                    0到1000000: ^\d{0,6}$|^1000000$ &nbsp;&nbsp;&nbsp;
-                    0到120000: ^\d{0,5}$|^[1]{1}[01]{1}\d{4}$|^120000$
-                    <br><br>
+                    <!-- \d 等价 [0-9] -->
+                    <!-- <br> -->
+                    <div style="display: flex;">
+                      字符数限制:
+                      <div>
+                        1-5字符长度区间: ^.{1,5}$ (即1 &#8804; x &#8804; 5) &nbsp;&nbsp;&nbsp;<br>
+                        固定5字符长度: ^.{5}$
+                      </div>
+                    </div>
+                    注: 数值和字符数限制根据实际情况任选其一即可。
+                    <!-- 1到10: ^[1-9]$|^10$ &nbsp;&nbsp;&nbsp; -->
+                    <!-- 1到50: ^[1-9]$|^[1-4][0-9]$|^50$ &nbsp;&nbsp;&nbsp; -->
+                    <!-- 0到100: ^[0-9]$|^[0-9][0-9]$|^100$  或者  ^\d{0,2}$|^100$ &nbsp;&nbsp;&nbsp; -->
+                    <!-- 0到100: ^\d{0,2}$|^100$ &nbsp;&nbsp;&nbsp; -->
+                    <!-- 0到120:  ^[0-9]$|^[0-9][0-9]$|^[1][012][0]$ &nbsp;&nbsp;&nbsp; -->
+                    <!-- 1到300:  ^[1-9]$|^[0-9][0-9]$|^[12][0-9][0-9]$|^300$ &nbsp;&nbsp;&nbsp; -->
+                    <!-- 1到1000:  ^[1-9]$|^[0-9][0-9]$|^[1-9][0-9][0-9]$|^1000$ &nbsp;&nbsp;&nbsp; -->
+                    <!-- 0到1000: ^\d{0,3}$|^1000$ &nbsp;&nbsp;&nbsp; -->
+                    <!-- 0到1000000: ^\d{0,6}$|^1000000$ &nbsp;&nbsp;&nbsp; -->
+                    <!-- 0到120000: ^\d{0,5}$|^[1]{1}[01]{1}\d{4}$|^120000$ -->
+                    <!-- <br>
                     两位小数  ^.\d{2}$ &nbsp;&nbsp;&nbsp; 整数和1位或两位小数:  ^\d+$|^\d+\.\d{1,2}$
-                    <br><br>
+                    <br>
                     1-5字符长度区间: ^.{1,5}$ &nbsp;&nbsp;&nbsp; 固定5字符长度: ^.{5}$
+                    <br> -->
                   </span>
                 </div>
                 <div v-if="items.type === 'NULLRADIO'">
@@ -307,17 +323,20 @@ export default {
     value () {
       this.formModel = Object.assign({}, this.value)
     },
-    mozhu () {
-      this.newFields = 'fields' in this.mozhu ? [...this.mozhu['fields']] : []
-      this.relation = 'relation' in this.mozhu ? Object.assign({}, this.mozhu['relation']) : {}
-      this.coordinate = 'coordinate' in this.mozhu ? Object.assign({}, this.mozhu['coordinate']) : {}
-      this.errors = 'errors' in this.mozhu ? Object.assign({}, this.mozhu['errors']) : {}
-      this.comments = 'comments' in this.mozhu ? Object.assign({}, this.mozhu['comments']) : {}
-      this.mozhuId = 'id' in this.mozhu ? this.mozhu['id'] : ''
-      // this.formModel = {}
-      // this.init()
-      this.resetData()
-      console.log(this.formModel, 'initinitinitinitinitinitinit')
+    mozhu: {
+      deep: true,
+      handler () {
+        this.newFields = 'fields' in this.mozhu ? [...this.mozhu['fields']] : []
+        this.relation = 'relation' in this.mozhu ? Object.assign({}, this.mozhu['relation']) : {}
+        this.coordinate = 'coordinate' in this.mozhu ? Object.assign({}, this.mozhu['coordinate']) : {}
+        this.errors = 'errors' in this.mozhu ? Object.assign({}, this.mozhu['errors']) : {}
+        this.comments = 'comments' in this.mozhu ? Object.assign({}, this.mozhu['comments']) : {}
+        this.mozhuId = 'id' in this.mozhu ? this.mozhu['id'] : ''
+        // this.formModel = {}
+        // this.init()
+        this.resetData()
+        console.log(this.formModel, 'initinitinitinitinitinitinit')
+      }
     },
     momo () {
       this.repositoryData = this.momo.length ? [...this.momo] : []
@@ -348,7 +367,7 @@ export default {
       }
     },
     // create and assign (init) -> fromModel
-    init () {
+    async init () {
       for (let i of this.newFields) {
         // this.$set(this.rules, i.id, i.validations)
         switch (i.type) {
@@ -399,20 +418,22 @@ export default {
         if (i['validations']) {
           for (let z in i['validations']) {
             if ('pattern' in i['validations'][z]) {
+              console.log(i['validations'][z]['pattern'].toString().includes('***'), "i['validations'][z]['pattern'].toString().includes('***')")
               if (i['validations'][z]['pattern'].toString().includes('***')) {
                 let arr = i['validations'][z]['pattern'].split('***')
                 let a = { validator: (rule, value, callback) => {
-                  if ((parseInt(arr[0]) <= parseInt(value)) && (parseInt(arr[1]) >= parseInt(value))) {
+                  if ((Number(arr[0]) <= Number(value)) && (Number(arr[1]) >= Number(value))) {
                     callback()
                   } else {
                     callback(new Error('范围为' + arr[0] + '-' + arr[1]))
                   }
                 }}
                 console.log(arr[0], arr[1], 'aaaaaaaaaaaaaaaaaaaa')
-                i['validations'].push(a)
-                i['validations'][z] = {}
+                // await i['validations'].push(a)
+                i['validations'][z] = a
+                // this.$delete(i['validations'], z)
               } else {
-                i['validations'][z]['pattern'] = new RegExp(i['validations'][z]['pattern'], 'g')
+                // i['validations'][z]['pattern'] = new RegExp(i['validations'][z]['pattern'], 'g')
               }
               console.log(i['validations'][z]['pattern'])
               // this.$set(this.fields[j]['validations'][z], 'pattern', new RegExp(this.fields[j]['validations'][z]['pattern']))
@@ -542,6 +563,11 @@ export default {
     notVerifying () {
       let idGroup = this.formatData()
       this.$emit('notVerifying', this.mozhuId, this.formModel, this.relation, this.newFields, idGroup, this.errors, this.comments, this.coordinate)
+    },
+    changeRules () {
+      this.$refs['formModel'].validate(valid => {
+        console.log('error submit!!')
+      })
     },
     consoleData () {
       this.$nextTick(() => {
@@ -766,8 +792,8 @@ $full: 100%;
       }
     }
     /deep/ .el-form-item__label {
-      min-width: 150px;
-      max-width: 180px;
+      min-width: 135px;
+      max-width: 190px;
       white-space:normal;
       word-break:break-all;
       word-wrap:break-word; 
