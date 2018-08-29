@@ -1,7 +1,7 @@
 <template>
   <div class="tableAll">
     <el-table
-      style="width: 100%;border: 1px solid red"
+      style="width: 100%;"
       show-overflow-tooltip
       :data="tableValues">
       <!-- <el-table-column

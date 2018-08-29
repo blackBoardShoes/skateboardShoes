@@ -603,39 +603,38 @@ export default {
       var LEFT_BRACKET = /\(/
       var RIGHT_BRACKET = /\)/
       var OPERATOR = /\+|\-|\*|\/|\^|\%/
-      var ID = /^[a-zA-Z]*[0-9]*$|^[a-zA-Z]*$/
+      var ID = /^[a-zA-Z]+[0-9]*$|^[a-zA-Z]*$/
       var patternList = pattern.match(reg)
       //2个queue
       var values = []
       var operator = []
       console.log(patternList)
-      for (var i = 0; i < patternList.length; i++){
-        console.log(patternList[i])
-        console.log(ID.test(patternList[i]))
+      for (var i = 0; i < patternList.length; i++) {
         if (LEFT_BRACKET.test(patternList[i])) {
-          continue;
+          continue
         } else if (RIGHT_BRACKET.test(patternList[i])) {
           if (operator.length === 0) return values[0]
-          var v1 = values.pop();
-          var v2 = values.pop();
-          var op = operator.pop();
-          var cal_value = null;
+          var v1 = values.pop()
+          var v2 = values.pop()
+          var op = operator.pop()
+          var cal_value = null
           switch (op) {
-            case "+": { cal_value = v1 + v2; } break;
-            case "-": { cal_value = v2 - v1; } break;
-            case "*": { cal_value = v1 * v2; } break;
-            case "/": { cal_value = v2 / v1; } break;
-            case "%": { cal_value = v2 % v1; } break;
-            case "^": { cal_value = Math.pow(v2, v1); } break;
-            default: throw "something wrong while calculating value 1";
+            case '+': cal_value = v1 + v2; break
+            case '-': cal_value = v2 - v1; break
+            case '*': cal_value = v1 * v2; break
+            case '/': cal_value = v2 / v1; break
+            case '%': cal_value = v2 % v1; break
+            case '^': cal_value = Math.pow(v2, v1); break
+            default: throw "something wrong while calculating value 1"
           }
           values.push(cal_value);
         } else if (ID.test(patternList[i])) {
-          if (!data[patternList[i]]) values.push(0)
-            // throw "the data is empty: " + patternList[i];
-          values.push(Number(data[patternList[i]]));
+          if (!data[patternList[i]]) {
+            values.push(0)
+          }
+          values.push(Number(data[patternList[i]]))
         } else if (CONSTANT.test(patternList[i])) {
-          values.push(Number(patternList[i]));
+          values.push(Number(patternList[i]))
         } else if (OPERATOR.test(patternList[i])) {
           operator.push(patternList[i])
         } else {
@@ -645,9 +644,8 @@ export default {
             type: 'warning'
           })
         }
-          // throw 'something wrong while calculating value 2'
       }
-      return values[0].toString()
+      return values[0].toFixed(2).toString()
       /* eslint-disable */
     },
     evaluate (row, index) {
@@ -786,20 +784,23 @@ $full: 100%;
     /deep/ .el-form-item, /deep/ .el-form-item--mini {
       display: flex !important;
       flex-wrap: nowrap;
+      justify-content: space-between;
       width: 100%;
       .el-form-item__content {
-        flex-grow: 1;
+        // flex-grow: 1;
+        width: calc(100% - 125px)
       }
     }
     /deep/ .el-form-item__label {
-      min-width: 135px;
+      min-width: 125px;
       max-width: 190px;
+      // border:1px solid red;
+      // width: 10%;
       white-space:normal;
       word-break:break-all;
       word-wrap:break-word; 
     }
   }
-
 }
 </style>
 <style lang="scss">

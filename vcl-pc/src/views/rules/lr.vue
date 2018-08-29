@@ -22,7 +22,12 @@
             <div class="rightContentControlName">
               {{navArr[activeIndex] ? navArr[activeIndex].name : ''}}
               &nbsp;
-              <span style="font-size:13px;font-weight:400;">{{navArr[activeIndex] ? navArr[activeIndex].description : ''}}</span>
+              <el-tooltip class="item" effect="dark" placement="bottom"
+                :content="navArr[activeIndex] ? navArr[activeIndex].description : ''">
+                <div style="font-size:13px;font-weight:400;width: 200px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                  {{navArr[activeIndex] ? navArr[activeIndex].description : ''}}
+                </div>
+              </el-tooltip>
             </div>
             <div class="rightContentControlBtn">
               <div @click="generalSubmit">
@@ -55,6 +60,7 @@
               </div>
             </div>
           </div>
+
         </div>
       </div>
       <div  v-if="!Boolean(navArr[activeIndex])" style="text-align:center;padding: 150px;">
@@ -777,12 +783,16 @@ $marginW: 15px;
       height: $full;
       .formContentRight {
         height: $full;
-        width: $full;
+        // width: $full;
         overflow: auto;
         .rightContent {
           width: $full;
+          // overflow: auto;
           padding-bottom: 150px;
+          display: flex;
           .rightContentDynamic {
+            width: 800px;
+            flex-grow: 1;
             padding: 50px;
           }
           .rightContentStatic {}
@@ -804,11 +814,12 @@ $marginW: 15px;
           display: flex;
           align-items: center;
           border-left: 9px solid $minorTextColor;
-          width: 600px;
+          width: 400px;
         }
         .rightContentControlBtn {
           transition: all .5s;
-          flex-grow: 0.25;
+          // flex-grow: 1;
+          width: 500px;
           height: $full;
           display: flex;
           justify-content: space-between;
