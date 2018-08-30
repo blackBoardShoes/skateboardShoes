@@ -1,14 +1,14 @@
 <template>
   <div class="tableAll">
     <el-table
-      show-overflow-tooltip
       style="width: 100%;"
+      show-overflow-tooltip
       :data="tableValues">
-      <el-table-column
+      <!-- <el-table-column
         align="center"
         type="index"
         min-width="50">
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column
         min-width="110"
         show-overflow-tooltip
@@ -39,7 +39,6 @@
     <el-dialog
       append-to-body
       modal-append-to-body
-      title="提示"
       :visible.sync="dialogVisible">
       <!-- :mozhu="mozhu" -->
       <sx-min-form submitTF v-if="dialogVisible" :mozhu="mozhu"  v-model="formModel" @consoleData="consoleData"></sx-min-form>
@@ -115,23 +114,25 @@ export default {
     formatter (row, column, cellValue, index) {
       // console.log(row, column, cellValue, index)
       if (!row[column.property]) {
-        return ''
+        return '/'
       } else {
         let z = ''
         if (this.formLabel[column.property]) {
           switch (this.formLabel[column.property]['type']) {
             case 'CHECKBOX':
-              for (let i of this.formLabel[column.property]['values']) {
-                // console.log(i.value, row[column.property], '-----------------------checkBox')
-                for (let j in row[column.property]) {
-                  if (row[column.property][j] === i.value) {
-                    z = z + i.label + '、'
+              if (Array.isArray(this.formLabel[column.property]['values'])) {
+                for (let i of this.formLabel[column.property]['values']) {
+                  // console.log(i.value, row[column.property], '-----------------------checkBox')
+                  for (let j in row[column.property]) {
+                    if (row[column.property][j] === i.value) {
+                      z = z + i.label + '、'
+                    }
                   }
                 }
               }
               break
             case 'CASCADER':
-              var forFn = (arr) => {
+              var forFn = arr => {
                 // console.log(arr, 'ararararararar')
                 for (let i of row[column.property]) {
                   for (let j in arr) {
@@ -148,9 +149,11 @@ export default {
               break
             case 'RADIO':
             case 'SELECT':
-              for (let i of this.formLabel[column.property]['values']) {
-                if (row[column.property] === i.value) {
-                  z = i.label
+              if (Array.isArray(this.formLabel[column.property]['values'])) {
+                for (let i of this.formLabel[column.property]['values']) {
+                  if (row[column.property] === i.value) {
+                    z = i.label
+                  }
                 }
               }
               break

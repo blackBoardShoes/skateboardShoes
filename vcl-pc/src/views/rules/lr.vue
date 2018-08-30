@@ -17,12 +17,16 @@
       </div>
       <div class="formContentContent" v-if="Boolean(navArr[activeIndex])">
         <sx-no-route-control :navArr="navArr" :activeIndex="activeIndex" @emitClick="emitClick"></sx-no-route-control>
-        <div>
+        <div style="width: 100%;">
           <div class="rightContentControl">
             <div class="rightContentControlName">
               {{navArr[activeIndex] ? navArr[activeIndex].name : ''}}
               &nbsp;
-              <span style="font-size:13px;font-weight:400;">{{navArr[activeIndex] ? navArr[activeIndex].description : ''}}</span>
+              <el-tooltip class="item" effect="dark" placement="top" :content="navArr[activeIndex] ? navArr[activeIndex].description : ''">
+                <div style="font-size:13px;font-weight:400;width: 200px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                  {{navArr[activeIndex] ? navArr[activeIndex].description : ''}}
+                </div>
+              </el-tooltip>
             </div>
             <div class="rightContentControlBtn">
               <div @click="generalSubmit">
@@ -43,6 +47,7 @@
             <div class="rightContent">
               <div class="rightContentDynamic" v-if="!(navArr[activeIndex] ? navArr[activeIndex].isStatic : false)">
                 <sx-min-form
+                  v-if="smf"
                   v-model="fishData"
                   ref="thatForm"
                   :mozhu="navArr[activeIndex]"
@@ -54,6 +59,7 @@
               </div>
             </div>
           </div>
+
         </div>
       </div>
       <div  v-if="!Boolean(navArr[activeIndex])" style="text-align:center;padding: 150px;">
@@ -636,7 +642,8 @@ export default {
         operationSelectJc: [],
         operationSelectHj: [],
         operationDateTime: ''
-      }
+      },
+      smf: false
     }
   },
   async created () {
@@ -650,12 +657,16 @@ export default {
   methods: {
     async show () {
       this.navArr = []
+      let z = []
       for (let i of this.showData) {
         console.log(i, 'iii')
         if (i.phase === this.activeIndexNav) {
-          this.navArr.push(i)
+          await z.push(i)
         }
       }
+      this.navArr = [...z]
+      this.fishData = {}
+      this.smf = true
     },
     async init () {
       let faf = await fieldAllForms()
@@ -681,14 +692,22 @@ export default {
       console.log(b, 'bbbbbbbbbbbbbbbbbbbbbbbb')
       this.navArr = b ? b.subFields : []
     },
-    emitClick (data = {}) {
+    async emitClick (data = {}) {
+      this.smf = false
       this.activeIndex = data['index']
-      console.log(data)
+      setTimeout(_ => {
+        console.log('setTimeout1')
+        this.smf = true
+      }, 1)
     },
-    handleSelect (key, keyPath) {
+    async handleSelect (key, keyPath) {
       console.log(key, keyPath)
+      this.smf = false
       this.activeIndexNav = key
-      this.show()
+      setTimeout(_ => {
+        console.log('setTimeout')
+        this.show()
+      }, 1)
       // this.navArrAssignment()
       // if (this.$refs['ssbgModel']) {
       //   this.$nextTick(_ => {
@@ -763,12 +782,16 @@ $marginW: 15px;
       height: $full;
       .formContentRight {
         height: $full;
-        width: $full;
+        // width: $full;
         overflow: auto;
         .rightContent {
           width: $full;
+          // overflow: auto;
           padding-bottom: 150px;
+          display: flex;
           .rightContentDynamic {
+            width: 800px;
+            flex-grow: 1;
             padding: 50px;
           }
           .rightContentStatic {}
@@ -790,11 +813,12 @@ $marginW: 15px;
           display: flex;
           align-items: center;
           border-left: 9px solid $minorTextColor;
-          width: 600px;
+          width: 400px;
         }
         .rightContentControlBtn {
           transition: all .5s;
-          flex-grow: 0.25;
+          // flex-grow: 1;
+          width: 500px;
           height: $full;
           display: flex;
           justify-content: space-between;

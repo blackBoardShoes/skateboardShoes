@@ -57,6 +57,12 @@ axios.interceptors.response.use(
             })
           }
           return response
+        } else {
+          Message({
+            showClose: true,
+            message: '服务器有点忙。',
+            type: 'info'
+          })
         }
         return false
       }

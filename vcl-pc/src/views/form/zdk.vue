@@ -24,8 +24,8 @@
               <i class="el-icon-setting centerCenterIcon"></i>&nbsp;字段浏览
             </div>
           </sx-segmenting-line>
-          <div style="padding: 20px;overflow: auto;max-height: 250px">
-            <sx-min-form ref="thatFormPreview" v-model="thatFishData" :mozhu="thatFish"></sx-min-form>
+          <div style="padding: 20px;max-height: 250px;" >
+            <sx-min-form ref="thatFormPreview" v-model="thatFishData" :mozhu="thatFish" v-if="thatFishDataTF"></sx-min-form>
           </div>
         </div>
         <div class="zdkContentBottomRight">
@@ -162,13 +162,19 @@ export default {
           // patten
           {
             id: 'pattern',
-            label: '正则',
+            label: '取值范围',
             type: 'INPUT'
+          },
+          // patten example
+          {
+            id: 'example',
+            label: '取值范围示例',
+            type: 'EXAMPLE'
           },
           // patten message
           {
             id: 'message',
-            label: '正则提示信息',
+            label: '提示信息',
             type: 'INPUT'
           },
           // patten message
@@ -177,16 +183,10 @@ export default {
             label: '单位',
             type: 'INPUT'
           },
-          // patten example
-          {
-            id: 'example',
-            label: '正则例子',
-            type: 'EXAMPLE'
-          },
           // nullRadio example
           {
             id: 'nullRadio',
-            label: '标题例子',
+            label: '标题示例',
             type: 'NULLRADIO'
           },
           // tree
@@ -237,7 +237,8 @@ export default {
       fishNeedEditData: {},
       // 展示
       thatFish: {},
-      thatFishData: {}
+      thatFishData: {},
+      thatFishDataTF: false
     }
   },
   created () {
@@ -403,10 +404,11 @@ export default {
         this.$refs['thatForm'].resetData()
         this.fishNeedEditData = {}
         this.$set(this.thatFish, 'fields', [])
-        this.$refs['thatFormPreview'].againData()
+        // this.$refs['thatFormPreview'].againData()
       }
     },
     async editFish (row, index) {
+      this.thatFishDataTF = false
       console.log(row, index, 'editfish')
       this.thatFishData = {}
       this.fishNeedEditData = { index: index, row: row }
@@ -416,10 +418,15 @@ export default {
       if (rowData['type'] === 'CREATECALCULATE') rowData['type'] = 'CALCULATE'
       console.log(rowData, 'rowDatarowDatarowData')
       this.$set(this.thatFish, 'fields', [])
-      this.thatFish['fields'].push(rowData)
+      await this.thatFish['fields'].push(rowData)
       // this.thatFish['fields'].splice(0, 1, rowData)
-      this.$refs['thatFormPreview'].resetData()
-      this.$refs['thatFormPreview'].againData()
+      setTimeout(_ => {
+        this.thatFishDataTF = true
+        this.$nextTick(_ => {
+          this.$refs['thatFormPreview'].resetData()
+          // this.$refs['thatFormPreview'].againData()
+        })
+      }, 1)
     },
     async deleteFish (row, index) {
       this.$confirm('此操作将删除字段', '提示', {
@@ -479,7 +486,7 @@ $full: 100%;
       // overflow: auto;
       display: flex;
       .zdkContentBottomLeft {
-        overflow: auto;
+        overflow-y: auto;
         // max-width: 0px;
         width: 700px;
         flex-grow: 1;
