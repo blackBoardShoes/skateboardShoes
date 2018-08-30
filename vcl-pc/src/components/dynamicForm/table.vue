@@ -39,7 +39,6 @@
     <el-dialog
       append-to-body
       modal-append-to-body
-      title="提示"
       :visible.sync="dialogVisible">
       <!-- :mozhu="mozhu" -->
       <sx-min-form submitTF v-if="dialogVisible" :mozhu="mozhu"  v-model="formModel" @consoleData="consoleData"></sx-min-form>
@@ -115,7 +114,7 @@ export default {
     formatter (row, column, cellValue, index) {
       // console.log(row, column, cellValue, index)
       if (!row[column.property]) {
-        return ''
+        return '/'
       } else {
         let z = ''
         if (this.formLabel[column.property]) {

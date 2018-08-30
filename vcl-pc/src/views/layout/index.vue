@@ -421,7 +421,7 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   @import '../../assets/css/variable';
 
     // 左侧导航栏

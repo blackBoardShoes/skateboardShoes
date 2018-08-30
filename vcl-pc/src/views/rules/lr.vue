@@ -22,8 +22,7 @@
             <div class="rightContentControlName">
               {{navArr[activeIndex] ? navArr[activeIndex].name : ''}}
               &nbsp;
-              <el-tooltip class="item" effect="dark" placement="bottom"
-                :content="navArr[activeIndex] ? navArr[activeIndex].description : ''">
+              <el-tooltip class="item" effect="dark" placement="top" :content="navArr[activeIndex] ? navArr[activeIndex].description : ''">
                 <div style="font-size:13px;font-weight:400;width: 200px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
                   {{navArr[activeIndex] ? navArr[activeIndex].description : ''}}
                 </div>

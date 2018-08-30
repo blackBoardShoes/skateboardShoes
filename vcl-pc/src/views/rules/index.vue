@@ -4,6 +4,10 @@
       <div class="rulesTop">
         tubiao
       </div>
+      <div class="controlContent">
+        <el-button plain size="small" @click="openCreateFish">新增</el-button>
+        <el-button type="primary" plain size="small"  @click="updateFish">更新</el-button>
+      </div>
       <div class="rulesContain">
         <div class="rulesContainTop">
           <div
@@ -43,27 +47,111 @@
               layout="total, sizes, prev, pager, next, jumper"
               :total="total"
               :page-sizes="[5, 10, 15]"
-              :current-page="currentpage"
-              :page-size="pagesize"
-              @size-change= "pageSize"
+              :current-page="currentPage"
+              :page-size="perPage"
+              @size-change="pageSize"
               @current-change="changePage"></el-pagination>
           </div>
         </div>
       </div>
       <!-- <router-link :to="{ name: 'sh', params: { data: JSON.stringify({a: 1}) }}">sh</router-link> -->
     </div>
+    <el-dialog
+      append-to-body
+      modal-append-to-body
+      v-if="dialogVisible"
+      :visible.sync="dialogVisible">
+      <el-form :model="ruleForm" ref="ruleForm" label-width="125px" size="mini" label-position="left">
+        <el-form-item label="住院号" prop="patientId" :rules="[
+          { required: true, message: '请输入病人住院号', trigger: 'change'},
+          { pattern: '^[0-9]{11}$', message: '11位', trigger: 'change' }]">
+          <el-input v-model="ruleForm.patientId" @blur="patientIdCheckUp"></el-input>
+        </el-form-item>
+      </el-form>
+      <sx-min-form
+        submitTF
+        ref="thatFormPreview" v-model="thatFishData" :mozhu="thatFish"
+        @consoleData="createFish" ></sx-min-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import sxMinTable from '../../components/dynamicForm/minTable'
+import { record, formdataUndoneFilledForm } from '../../api/rules/index.js'
 export default {
   components: {
     sxMinTable
   },
   data () {
     return {
+      thatFishData: {},
+      thatFish: {
+        fields: [
+          // {
+          //   id: 'patientId',
+          //   label: '住院号',
+          //   type: 'INPUT',
+          //   validations: [
+          //     { required: true, message: '请输入病人住院号', trigger: 'change' },
+          //     { pattern: '^[0-9]{11}$', message: '11位', trigger: 'change' }
+          //   ]
+          // },
+          {
+            id: 'dept',
+            label: '科室',
+            type: 'SELECT',
+            values: [
+              {value: 0, label: '外科一'},
+              {value: 1, label: '外科二'},
+              {value: 2, label: '特需外科'}
+            ],
+            validations: [
+              { required: true, message: '请选择科室', trigger: 'change' }
+            ]
+          },
+          {
+            id: 'bedNum',
+            label: '床号',
+            type: 'INPUT',
+            validations: [
+              { required: true, message: '请输入床号', trigger: 'change' }
+            ]
+          },
+          {
+            id: 'name',
+            label: '姓名',
+            type: 'INPUT',
+            validations: [
+              { required: true, message: '请输入组件标签名', trigger: 'change' }
+            ]
+          },
+          {
+            id: 'gender',
+            label: '性别',
+            type: 'RADIO',
+            values: [
+              {value: 1, label: '男'},
+              {value: 0, label: '女'}
+            ],
+            validations: [
+              { required: true, message: '请选择性别', trigger: 'change' }
+            ]
+          },
+          {
+            id: 'inHospitalDate',
+            label: '入院日期',
+            type: 'DATE',
+            validations: [
+              { required: true, message: '请选择时间', trigger: 'change' }
+            ]
+          }
+        ]
+      },
+      ruleForm: {
+        patientId: ''
+      },
       rulesContainTop: [
         { title: '总表', key: 'AlltableColumn', icon: 'el-icon-delete', num: 55, userType: [1, 3, 4, 5, 6] },
         { title: '待录入', key: 'pendingEntryColumn', icon: 'el-icon-delete', num: 55, userType: [1, 5, 6] },
@@ -75,8 +163,8 @@ export default {
       activeRow: {},
       lookupFormInputData: '',
       tableData: [{zyh: 15555, bh: 6666, name: 'siri', sex: '无'}, {name: 1, namec: 'woo', ccc: 'aaa'}, {name: 12}, {name: 1}, {name: 1}],
-      currentpage: 1,
-      pagesize: 5,
+      currentPage: 1,
+      perPage: 5,
       total: 100,
       mozhu: [],
       whatObj: {
@@ -141,7 +229,8 @@ export default {
           { prop: 'name', label: '状态 (待问询、已失联、待复查)', sortable: true, width: 250 },
           { option: true, label: '操作', contain: [{label: '编辑'}] }
         ]
-      }
+      },
+      dialogVisible: false
     }
   },
   computed: mapState({
@@ -180,8 +269,24 @@ export default {
     console.log(a)
     console.log(this.user)
     this.init()
+    this.show()
   },
   methods: {
+    async patientIdCheckUp () {
+      console.log(111)
+      this.thatFishData = Object.assign(this.thatFishData, {})
+      return false
+    },
+    async show () {
+      this.pendingEntryColumnShowData()
+    },
+    async pendingEntryColumnShowData () {
+      let z = await formdataUndoneFilledForm({currentPage: this.currentPage, perPage: this.perPage})
+      console.log('show', z)
+      if (z) {
+        // this.tableData = z.data.entity.header.concat(z.data.)
+      }
+    },
     init () {
       // 角色 button 分配   this.user用户数据
       let topArr = []
@@ -217,10 +322,10 @@ export default {
       return row[property] === value
     },
     pageSize (val) {
-      this.pagesize = val
+      this.perPage = val
     },
     changePage (val) {
-      console.log(val, this.pagesize)
+      console.log(val, this.perPage)
     },
     async operateClick (row, index, x) {
       console.log(this.activeRow)
@@ -264,7 +369,26 @@ export default {
         }
       }
       console.log(row, index, x, '----------')
-    }
+    },
+    openCreateFish () {
+      this.thatFishData = {}
+      this.dialogVisible = true
+    },
+    async createFish (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
+      console.log(mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate)
+      this.$refs['ruleForm'].validate(async valid => {
+        if (valid) {
+          if (this.patientIdCheckUp) {
+            let r = await record(formModel)
+            console.log(r)
+            this.dialogVisible = false
+          }
+        } else {
+          console.log('error submit!!')
+        }
+      })
+    },
+    async updateFish () {}
   }
 }
 </script>
@@ -328,6 +452,10 @@ $contentW: 95%;
         display: flex;
         flex-direction: column;
       }
+    }
+    .controlContent {
+      text-align: right;
+      padding: 15px 0 ;
     }
   }
 }

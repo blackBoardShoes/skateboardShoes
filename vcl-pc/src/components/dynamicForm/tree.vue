@@ -159,6 +159,9 @@ export default {
   .custom-tree-node {
     width:  90%;
   }
+  /deep/ .el-form-item__content {
+    width: 100% !important;
+  }
 }
 
 </style>

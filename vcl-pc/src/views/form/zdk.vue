@@ -404,7 +404,7 @@ export default {
         this.$refs['thatForm'].resetData()
         this.fishNeedEditData = {}
         this.$set(this.thatFish, 'fields', [])
-        this.$refs['thatFormPreview'].againData()
+        // this.$refs['thatFormPreview'].againData()
       }
     },
     async editFish (row, index) {
@@ -424,7 +424,7 @@ export default {
         this.thatFishDataTF = true
         this.$nextTick(_ => {
           this.$refs['thatFormPreview'].resetData()
-          this.$refs['thatFormPreview'].againData()
+          // this.$refs['thatFormPreview'].againData()
         })
       }, 1)
     },

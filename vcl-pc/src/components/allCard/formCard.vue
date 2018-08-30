@@ -16,10 +16,10 @@
           {{cardObj.name}}
         </div>
         <div class="centerTitleAddTime">
-          {{cardObj.createTime ? cardObj.createTime : '新增日期: 我也不知道'}}
+          新增日期: {{cardObj.createTime ? cardObj.createTime : '新增日期: 我也不知道'}}
         </div>
         <div class="centerTitleEditTime">
-          {{cardObj.updateTime ? cardObj.updateTime : '修改日期: 我也不知道'}}
+          修改日期: {{cardObj.updateTime ? cardObj.updateTime : '修改日期: 我也不知道'}}
         </div>
       </div>
       <div class="bottomContent">
@@ -97,16 +97,16 @@ export default {
     align-items: center;
     padding-top: 20px;
     padding-bottom: 20px;
-    height: 150px;
+    height: 100px;
     .centerIcon {
-      font-size: 55px;
+      font-size: 35px;
     }
     .centerTitle {
       font-size: 18px;
       font-weight: bold;
     }
     .centerTitleAddTime, .centerTitleEditTime {
-      font-size: 14px;
+      font-size: 12px;
       color: $minorTextColor;
     }
     .centerTitleAddTime {
