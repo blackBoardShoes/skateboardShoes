@@ -121,8 +121,6 @@ export default {
     // 登录请求
     async login (formName) {
       this.$refs[formName].validate(async valid => {
-        this._updateCheckCode()
-        this.form.yanzhengma = ''
         if (valid) {
           let info = {
             username: this.form.username,
@@ -130,6 +128,8 @@ export default {
           }
           let response = await login(info)
           if (response.data.mitiStatus === 'SUCCESS') {
+            this._updateCheckCode()
+            this.form.yanzhengma = ''
             let user = response.data.entity.User
             let token = response.data.entity.Token.token
             this.$store.commit('SET_TOKEN', token)

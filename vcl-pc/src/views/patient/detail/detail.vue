@@ -3,10 +3,10 @@
     <div class="basic er-card">
       <div class="title">
         <span><i class="ercp-icon-module-patient"></i> <b>基本信息</b></span>
-        <span>患者id: {{patientId}}</span>
+        <span>患者id: {{patientId}}</span>======{{typeof (basicInfo.gender)}}====={{basicInfo.nation}}
       </div>
       <div class="basic-information" >
-        <el-form ref="basicForm" :rules="rules" :model="basicInfo" label-position="left" label-width="100px" :disabled="editable">
+        <el-form ref="basicForm" :rules="rules" :model="basicInfo" label-position="left" label-width="100px">
           <el-col :span="8">
             <el-form-item label="住院号:" prop="hospitalId">
               <el-input v-model="basicInfo.hospitalId" style="width:217px;" size="small"></el-input>
@@ -347,8 +347,8 @@ export default {
           info.address = []
         }
         this.basicInfo = info
+        this.basicInfo.gender.toString()
         console.log(this.basicInfo)
-        console.log(typeof (this.basicInfo.gender))
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }

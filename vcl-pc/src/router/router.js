@@ -309,7 +309,7 @@ export const appRouter = [
         component: () => import('../../src/views/project/index/index.vue')
       },
       {
-        path: 'detail/:projectId',
+        path: 'detail/:id',
         name: 'project_detail',
         meta: {
           title: '项目详情',

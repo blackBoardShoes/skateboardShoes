@@ -79,6 +79,9 @@ export default {
     }
   },
   mounted () {
+    this.creator = this.$store.state.user.id
+    this.getProject(this.projectId)
+    console.log(this.creator)
     console.log(this.projectInfo)
   },
   computed: {
@@ -105,7 +108,7 @@ export default {
     .left-nav{
       height: 100%;
       // min-width: 160px;
-      // width: 160px;
+      width: 160px;
       flex: 0 0 160px;
       background-color:#E8E9EA;
       .page-title{
@@ -123,6 +126,8 @@ export default {
         }
       }
       .project-name{
+        // border-top: 2px solid #fff;
+        border-bottom: 2px solid #fff;
         padding: 0 10px;
         height: 48px;
         line-height: 48px;
