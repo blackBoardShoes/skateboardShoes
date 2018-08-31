@@ -3,6 +3,7 @@
     <div class="formContent">
       <div class="formContentLeft">
         <!-- :label-width="labelWidth" -->
+        <!-- :label-width="labelWidth" -->
         <el-form
           onkeydown="if(event.keyCode==13){return false}"
           :label-position="labelPosition"
@@ -21,9 +22,11 @@
             <div
               v-if="tf(items)"
               v-for="(items, index) in newFields"
+              :class="{normal: labelWidth, abnormal: !labelWidth}"
               :style="{display: 'flex', alignItems: 'flexStart', width: coordinate[items.id] ? coordinate[items.id] + '%' : '100%'}"
               :key="index">
-              <div class="iconErrorClass" @click="deleteError(items)" v-if="disabled">
+              <!--  v-if="disabled" -->
+              <div class="iconErrorClass" @click="deleteError(items)">
                 <i class="el-icon-error"  v-if="iconTf(items)"></i>
               </div>
               <el-form-item
@@ -52,10 +55,10 @@
                   <el-checkbox v-for="(it, ii) in items.values" :key="ii" :label="it.value" >{{it.label}}</el-checkbox>
                 </el-checkbox-group>
                 <el-switch :disabled="items.disabled" :active-text="items.activeText" :inactive-text="items.inactiveText" v-if="items.type === 'SWITCH'" v-model="formModel[items.id]" ></el-switch>
-                <el-select :key="Math.random()" :disabled="items.disabled" :placeholder="items.placeholder" clearable filterable v-if="items.type === 'SELECT'" v-model="formModel[items.id]" style="width:100%;">
+                <el-select :disabled="items.disabled" :placeholder="items.placeholder" clearable filterable v-if="items.type === 'SELECT'" v-model="formModel[items.id]" style="width:100%;">
                   <el-option v-for="(it, ii) in items.values" :key="ii" :label="it.label" :value="it.value" ></el-option>
                 </el-select>
-                <el-select :key="Math.random()" :disabled="items.disabled" :placeholder="items.placeholder" multiple clearable filterable v-if="items.type === 'SELECTMUTIPLE'" v-model="formModel[items.id]" style="width:100%;">
+                <el-select :disabled="items.disabled" :placeholder="items.placeholder" multiple clearable filterable v-if="items.type === 'SELECTMUTIPLE'" v-model="formModel[items.id]" style="width:100%;">
                   <el-option v-for="(it, ii) in items.values" :key="ii" :label="it.label" :value="it.value" ></el-option>
                 </el-select>
                 <el-date-picker
@@ -182,7 +185,7 @@
       </div>
       <sx-min-form
         :labelPosition="'top'"
-        :labelWidth="'0px'"
+        :labelWidth="false"
         cancel submitTF
         @cancelData="evaluateDialogVisible = false"
         v-if="evaluateDialogVisible" :mozhu="allEvaluate"
@@ -213,9 +216,9 @@ export default {
       }
     },
     labelWidth: {
-      type: String,
+      type: Boolean,
       default () {
-        return '200px'
+        return true
       }
     },
     labelPosition: {
@@ -376,8 +379,8 @@ export default {
           case 'TREE':
           case 'LAYERTREE':
           case 'CREATETABLE':
-          case 'SELECT':
           case 'SELECTMUTIPLE':
+          // case 'SELECT':
             if (!this.formModel[i.id]) {
               if ('value' in i) {
                 this.$set(this.formModel, i.id, [...i.value])
@@ -582,8 +585,11 @@ export default {
           let idGroup = this.formatData()
           this.$emit('consoleData', this.mozhuId, this.formModel, this.relation, this.newFields, idGroup, this.errors, this.comments, this.coordinate)
         } else {
-          console.log('error submit!!')
-          return false
+          // this.$message({
+          //   showClose: true,
+          //   message: '验证不通过,请检查',
+          //   type: 'info'
+          // })
         }
       })
     },
@@ -750,8 +756,8 @@ $full: 100%;
   .iconErrorClass {
     height: 20px;
     margin-top: 3px;
-    width: 35px;
-    font-size: 20px;
+    width: 25px;
+    font-size: 14px;
     color: #F56C6C
   }
   .formContent {
@@ -791,14 +797,25 @@ $full: 100%;
         width: calc(100% - 125px)
       }
     }
-    /deep/ .el-form-item__label {
-      min-width: 125px;
-      max-width: 190px;
-      // border:1px solid red;
-      // width: 10%;
-      white-space:normal;
-      word-break:break-all;
-      word-wrap:break-word; 
+    .normal {
+      /deep/ .el-form-item__label {
+        min-width: 125px;
+        max-width: 190px;
+        // border:1px solid red;
+        // width: 10%;
+        white-space:normal;
+        word-break:break-all;
+        word-wrap:break-word; 
+      }
+    }
+    .abnormal {
+      /deep/ .el-form-item__label {
+        min-width: 0px;
+      }
+      /deep/ .el-form-item__content {
+        // flex-grow: 1;
+        width: 100%
+      }
     }
   }
 }

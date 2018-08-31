@@ -5,14 +5,14 @@
         tubiao
       </div>
       <div class="controlContent">
-        <el-button plain size="small" @click="openCreateFish">新增</el-button>
-        <el-button type="primary" plain size="small"  @click="updateFish">更新</el-button>
+        <el-button type="primary" @click="openCreateFish">新增</el-button>
+        <el-button type="primary" @click="updateFish">更新</el-button>
       </div>
       <div class="rulesContain">
         <div class="rulesContainTop">
           <div
             :class="{rulesContainTopItem: true, activeIndex: activeIndex === index}"
-            @click="rulesContainTopControl(item, index)"
+            @click="containTopControl(item, index)"
             v-for="(item, index) in rulesContainTop"
             :key="index">
             <div style="font-weight: bold;">
@@ -20,7 +20,7 @@
               {{item.title}}
             </div>
             <div>
-              <font style="font-weight: bold">{{item.num}}</font> 人次
+              <font style="font-weight: bold">{{rulesContainTopModel[item.key]}}</font> 人次
             </div>
           </div>
         </div>
@@ -61,17 +61,29 @@
       modal-append-to-body
       v-if="dialogVisible"
       :visible.sync="dialogVisible">
-      <el-form :model="ruleForm" ref="ruleForm" label-width="125px" size="mini" label-position="left">
-        <el-form-item label="住院号" prop="patientId" :rules="[
-          { required: true, message: '请输入病人住院号', trigger: 'change'},
-          { pattern: '^[0-9]{11}$', message: '11位', trigger: 'change' }]">
-          <el-input v-model="ruleForm.patientId" @blur="patientIdCheckUp"></el-input>
-        </el-form-item>
+      <el-form :model="ruleForm" ref="ruleForm" label-width="125px" size="mini" label-position="left" class="ruleForm">
+        <div style="padding-left: 25px;">
+          <el-form-item label="住院号" prop="patientId" :rules="[
+            { required: true, message: '请输入病人住院号', trigger: 'change'},
+            { pattern: '^[0-9]{11}$', message: '11位', trigger: 'change' }]">
+            <el-input v-model="ruleForm.patientId" @blur="patientIdCheckUp"></el-input>
+          </el-form-item>
+        </div>
       </el-form>
       <sx-min-form
         submitTF
         ref="thatFormPreview" v-model="thatFishData" :mozhu="thatFish"
         @consoleData="createFish" ></sx-min-form>
+    </el-dialog>
+    <el-dialog
+      append-to-body
+      modal-append-to-body
+      v-if="patientDialogVisible"
+      :visible.sync="patientDialogVisible">
+      <sx-min-form
+        submitTF
+        ref="thatFormPreview" v-model="patientData" :mozhu="patientFish"
+        @consoleData="createPatientFish" ></sx-min-form>
     </el-dialog>
   </div>
 </template>
@@ -79,7 +91,8 @@
 <script>
 import { mapState } from 'vuex'
 import sxMinTable from '../../components/dynamicForm/minTable'
-import { record, formdataUndoneFilledForm } from '../../api/rules/index.js'
+import { record, recordAllRecord, formdataUndoneFilledForm, patientGetPatientCount, patientAddPatient } from '../../api/rules/index.js'
+import { addressData } from '../../data/address/addressData.js'
 export default {
   components: {
     sxMinTable
@@ -103,9 +116,9 @@ export default {
             label: '科室',
             type: 'SELECT',
             values: [
-              {value: 0, label: '外科一'},
-              {value: 1, label: '外科二'},
-              {value: 2, label: '特需外科'}
+              {value: '外科一', label: '外科一'},
+              {value: '外科二', label: '外科二'},
+              {value: '特需外科', label: '特需外科'}
             ],
             validations: [
               { required: true, message: '请选择科室', trigger: 'change' }
@@ -120,7 +133,7 @@ export default {
             ]
           },
           {
-            id: 'name',
+            id: 'patientName',
             label: '姓名',
             type: 'INPUT',
             validations: [
@@ -153,19 +166,25 @@ export default {
         patientId: ''
       },
       rulesContainTop: [
-        { title: '总表', key: 'AlltableColumn', icon: 'el-icon-delete', num: 55, userType: [1, 3, 4, 5, 6] },
-        { title: '待录入', key: 'pendingEntryColumn', icon: 'el-icon-delete', num: 55, userType: [1, 5, 6] },
-        { title: '待审核', key: 'toBeAuditedColumn', icon: 'el-icon-delete', num: 55, userType: [1, 3, 4] },
-        { title: '待修正', key: 'toBeAmendedColumn', icon: 'el-icon-delete', num: 55, userType: [1, 5, 6] },
-        { title: '待随访', key: 'followUpColumn', icon: 'el-icon-delete', num: 55, userType: [1, 6] }
+        { title: '总表', key: 'AlltableColumn', icon: 'el-icon-delete', userType: [1, 3, 4, 5, 6] },
+        { title: '待录入', key: 'pendingEntryColumn', icon: 'el-icon-delete', userType: [1, 5, 6] },
+        { title: '待审核', key: 'toBeAuditedColumn', icon: 'el-icon-delete', userType: [1, 3, 4] },
+        { title: '待修正', key: 'toBeAmendedColumn', icon: 'el-icon-delete', userType: [1, 5, 6] },
+        { title: '待随访', key: 'followUpColumn', icon: 'el-icon-delete', userType: [1, 6] }
       ],
-      activeIndex: 0,
+      rulesContainTopModel: {
+        AlltableColumn: 0,
+        pendingEntryColumn: 0,
+        toBeAuditedColumn: 0,
+        toBeAmendedColumn: 0,
+        followUpColumn: 0
+      },
+      activeIndex: 1,
       activeRow: {},
       lookupFormInputData: '',
-      tableData: [{zyh: 15555, bh: 6666, name: 'siri', sex: '无'}, {name: 1, namec: 'woo', ccc: 'aaa'}, {name: 12}, {name: 1}, {name: 1}],
       currentPage: 1,
       perPage: 5,
-      total: 100,
+      total: 0,
       mozhu: [],
       whatObj: {
         // 总表 ---> 住院号 编号 姓名 性别 入院日期 术前记录 术中记录 术后记录 是否纳入随访记录
@@ -174,7 +193,7 @@ export default {
           { prop: 'name', label: '编号' },
           { prop: 'namec', label: '姓名' },
           { prop: 'name', label: '性别', sortable: true },
-          { prop: 'name', label: '入院日期' },
+          { prop: 'inHospitalDate', label: '入院日期' },
           { prop: 'name', label: '术前记录', width: '130', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] },
           { prop: 'name', label: '术中记录', width: '130', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] },
           { prop: 'name', label: '术后记录', width: '130', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] },
@@ -182,13 +201,13 @@ export default {
         ],
         // 待录入 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (编辑、删除)
         pendingEntryColumn: [
-          { prop: 'zyh', label: '住院号' },
+          { prop: 'patientId', label: '住院号' },
           { prop: 'bh', label: '编号' },
-          { prop: 'name', label: '科室' },
-          { prop: 'name', label: '床号' },
-          { prop: 'name', label: '姓名' },
-          { prop: 'sex', label: '性别', sortable: true },
-          { prop: 'name', label: '数据阶段' },
+          { prop: 'dept', label: '科室' },
+          { prop: 'bedNum', label: '床号' },
+          { prop: 'patientName', label: '姓名' },
+          { prop: 'gender', label: '性别', sortable: true },
+          { prop: 'phase', label: '数据阶段' },
           { prop: 'name', label: '记录者', width: '130', sortable: true },
           { option: true, label: '操作', contain: [{label: '编辑'}, {label: '删除', style: 'color: #FF455B'}] }
         ],
@@ -230,7 +249,89 @@ export default {
           { option: true, label: '操作', contain: [{label: '编辑'}] }
         ]
       },
-      dialogVisible: false
+      dialogVisible: false,
+      patientDialogVisible: false,
+      patientData: {},
+      patientFish: {
+        fields: [
+          {
+            id: 'hospitalId',
+            label: '住院号',
+            type: 'INPUT',
+            validations: [
+              { required: true, message: '请输入住院号', trigger: 'change' },
+              { pattern: '^[0-9]{11}$', message: '11位', trigger: 'change' }
+            ]
+          },
+          {
+            id: 'name',
+            label: '姓名',
+            type: 'INPUT',
+            validations: [
+              { required: true, message: '请输入姓名', trigger: 'change' }
+            ]
+          },
+          {
+            id: 'gender',
+            label: '性别',
+            type: 'RADIO',
+            values: [
+              {value: 1, label: '男'},
+              {value: 0, label: '女'}
+            ],
+            validations: [
+              { required: true, message: '请选择性别', trigger: 'change' }
+            ]
+          },
+          {
+            id: 'nation',
+            label: '民族',
+            type: 'RADIO',
+            values: [
+              {value: '汉族', label: '汉族'},
+              {value: '回族', label: '回族'},
+              {value: '藏族', label: '藏族'},
+              {value: '其他', label: '其他'}
+            ],
+            validations: [
+              { required: true, message: '请选择民族', trigger: 'change' }
+            ]
+          },
+          {
+            id: 'idCard',
+            label: '身份证号',
+            type: 'INPUT',
+            validations: [
+              { required: true, message: '请输入身份证号', trigger: 'change' },
+              { pattern: /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/, message: '你输入的身份证不正确', trigger: 'change' }
+            ]
+          },
+          {
+            id: 'provinceCityDistrict',
+            label: '常居住地',
+            type: 'CASCADER',
+            children: addressData,
+            validations: [
+              { required: true, message: '请选择常居住地', trigger: 'change' }
+            ]
+          },
+          {
+            id: 'staAddress',
+            label: '街道',
+            type: 'INPUT',
+            validations: [
+              { required: true, message: '请输入街道', trigger: 'change' }
+            ]
+          }
+        ],
+        coordinate: {
+          provinceCityDistrict: 45,
+          staAddress: 50
+        }
+      },
+      tableData: [],
+      recordAllRecordTableData: [],
+      pendingEntryColumnTableData: []
     }
   },
   computed: mapState({
@@ -269,24 +370,10 @@ export default {
     console.log(a)
     console.log(this.user)
     this.init()
+    this.firstShow()
     this.show()
   },
   methods: {
-    async patientIdCheckUp () {
-      console.log(111)
-      this.thatFishData = Object.assign(this.thatFishData, {})
-      return false
-    },
-    async show () {
-      this.pendingEntryColumnShowData()
-    },
-    async pendingEntryColumnShowData () {
-      let z = await formdataUndoneFilledForm({currentPage: this.currentPage, perPage: this.perPage})
-      console.log('show', z)
-      if (z) {
-        // this.tableData = z.data.entity.header.concat(z.data.)
-      }
-    },
     init () {
       // 角色 button 分配   this.user用户数据
       let topArr = []
@@ -302,15 +389,74 @@ export default {
       console.log(topArr)
       this.rulesContainTop = [...topArr]
       // 中间数组 mozhu 默认值
-      this.mozhu = [...this.whatObj['AlltableColumn']]
+      this.mozhu = [...this.whatObj['pendingEntryColumn']]
       this.activeRow = this.rulesContainTop[this.activeIndex]
     },
-    async rulesContainTopControl (row, index) {
+    containTopControl (row, index) {
       this.activeIndex = index
       this.activeRow = row
       this.mozhu = [...this.whatObj[row.key]]
+      this.show()
       // this.tableData = []
       // this.$router.push({name: 'sh', params: { data: JSON.stringify({a: 1}) }})
+    },
+    pageSize (val) {
+      this.perPage = val
+      this.show()
+    },
+    changePage (val) {
+      this.currentPage = val
+      this.show()
+      console.log(val, this.perPage)
+    },
+    async firstShow () {
+      // table
+      let a = {
+        AlltableColumn: await this.recordAllRecordShowData(),
+        pendingEntryColumn: await this.pendingEntryColumnShowData()
+      }
+      console.log(a)
+    },
+    async show () {
+      // this.pendingEntryColumnShowData()
+      // this.tableData = this.pendingEntryColumnTableData
+      // table
+      switch (this.activeRow.key) {
+        case 'AlltableColumn':
+          this.tableData = this.recordAllRecordTableData
+          break
+        case 'pendingEntryColumn':
+          this.tableData = this.pendingEntryColumnTableData
+          break
+        case 'toBeAuditedColumn':
+          console.log('toBeAuditedColumn')
+          break
+        case 'toBeAmendedColumn':
+          console.log('toBeAmendedColumn')
+          break
+        case 'followUpColumn':
+          console.log('followUpColumn')
+          break
+      }
+    },
+    // 总表
+    async recordAllRecordShowData () {
+      let z = await recordAllRecord({currentPage: this.currentPage, perPage: this.perPage})
+      this.recordAllRecordTableData = z.data.entity.data
+      this.total = z.data.entity.total
+      this.$set(this.rulesContainTopModel, 'AlltableColumn', this.total)
+    },
+    // 待录入
+    async pendingEntryColumnShowData () {
+      let z = await formdataUndoneFilledForm(Object.assign({currentPage: this.currentPage, perPage: this.perPage}, this.user))
+      if (z) {
+        this.pendingEntryColumnTableData = []
+        for (let i of z.data.entity.data) {
+          this.pendingEntryColumnTableData.push(Object.assign(i, i.header))
+        }
+        this.total = z.data.entity.total
+        this.$set(this.rulesContainTopModel, 'pendingEntryColumn', this.total)
+      }
     },
     lookupFormInput () {
       console.log(this.lookupFormInputData)
@@ -321,12 +467,65 @@ export default {
       const property = column['property']
       return row[property] === value
     },
-    pageSize (val) {
-      this.perPage = val
+    openCreateFish () {
+      this.thatFishData = {}
+      this.$set(this.ruleForm, 'patientId', '')
+      if (this.$refs['ruleForm']) {
+        this.$refs['ruleForm'].resetFields()
+      }
+      this.dialogVisible = true
     },
-    changePage (val) {
-      console.log(val, this.perPage)
+    async patientIdCheckUp () {
+      let pgp = await patientGetPatientCount(this.ruleForm)
+      console.log(pgp, 'pgp')
+      if (pgp) {
+        this.thatFishData = Object.assign(this.thatFishData, this.ruleForm)
+        for (let i in pgp.data.entity) {
+          this.$set(this.thatFishData, i, pgp.data.entity[i])
+        }
+        return true
+      } else {
+        this.$confirm('是否新增患者', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'info'
+        }).then(() => {
+          this.patientDialogVisible = true
+        }).catch(() => {})
+      }
+      return false
     },
+    async createPatientFish (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
+      if (formModel['provinceCityDistrict'].length === 2) {
+        formModel['province'] = formModel['provinceCityDistrict'][0]
+        formModel['city'] = formModel['provinceCityDistrict'][0]
+        formModel['district'] = formModel['provinceCityDistrict'][1]
+      } else {
+        formModel['province'] = formModel['provinceCityDistrict'][0]
+        formModel['city'] = formModel['provinceCityDistrict'][1]
+        formModel['district'] = formModel['provinceCityDistrict'][2]
+      }
+      let pap = await patientAddPatient(formModel)
+      console.log(pap, 'pap')
+      if (pap) {
+        this.patientDialogVisible = false
+      }
+    },
+    async createFish (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
+      this.$refs['ruleForm'].validate(async valid => {
+        if (valid) {
+          if (this.patientIdCheckUp()) {
+            let r = await record(Object.assign(formModel, this.ruleForm))
+            console.log(r)
+            this.show()
+            this.dialogVisible = false
+          }
+        } else {
+          console.log('error submit!!')
+        }
+      })
+    },
+    async updateFish () {},
     async operateClick (row, index, x) {
       console.log(this.activeRow)
       let deleteBtn = true
@@ -369,26 +568,7 @@ export default {
         }
       }
       console.log(row, index, x, '----------')
-    },
-    openCreateFish () {
-      this.thatFishData = {}
-      this.dialogVisible = true
-    },
-    async createFish (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
-      console.log(mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate)
-      this.$refs['ruleForm'].validate(async valid => {
-        if (valid) {
-          if (this.patientIdCheckUp) {
-            let r = await record(formModel)
-            console.log(r)
-            this.dialogVisible = false
-          }
-        } else {
-          console.log('error submit!!')
-        }
-      })
-    },
-    async updateFish () {}
+    }
   }
 }
 </script>

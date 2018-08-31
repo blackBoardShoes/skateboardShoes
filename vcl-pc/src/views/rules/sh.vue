@@ -4,22 +4,30 @@
       <div class="formTopContent">
         <el-menu :default-active="activeIndexNav" class="formTopLeft" mode="horizontal" @select="handleSelect">
           <template v-for="(item, index) in allArr">
-            <el-submenu :index="item.value" :key="index" v-if="item.submenu" :show-timeout="100">
+            <el-submenu :index="item.label" :key="index" v-if="item.submenu" :show-timeout="100">
               <template slot="title">{{item.label}}</template>
-              <el-menu-item v-for="(x, i) in item.submenu" :index="x.value" :key="i">{{x.label}}</el-menu-item>
+              <el-menu-item v-for="(x, i) in item.submenu" :index="x.label" :key="i">{{x.label}}</el-menu-item>
             </el-submenu>
-            <el-menu-item :key="index" :index="item.value" v-else>{{item.label}}</el-menu-item>
+            <el-menu-item :key="index" :index="item.label" v-else>{{item.label}}</el-menu-item>
           </template>
         </el-menu>
         <div class="formTopRight">
           患者: <span style="color: #117FD1;opacity: 0.9">{{patientInfo.name}}</span> ({{patientInfo.sex}}) 住院编号：{{patientInfo.bh}}
         </div>
       </div>
-      <div class="formContentContent">
+      <div class="formContentContent" v-if="Boolean(navArr[activeIndex])">
         <sx-no-route-control :navArr="navArr" :activeIndex="activeIndex" @emitClick="emitClick"></sx-no-route-control>
-        <div class="formContentRight">
+        <div style="width: 100%;">
           <div class="rightContentControl">
-            <div class="rightContentControlName">{{navArr[activeIndex] ? navArr[activeIndex].name : ''}}</div>
+            <div class="rightContentControlName">
+              {{navArr[activeIndex] ? navArr[activeIndex].name : ''}}
+              &nbsp;
+              <el-tooltip class="item" effect="dark" placement="top" :content="navArr[activeIndex] ? navArr[activeIndex].description : ''">
+                <div style="font-size:13px;font-weight:400;width: 200px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                  {{navArr[activeIndex] ? navArr[activeIndex].description : ''}}
+                </div>
+              </el-tooltip>
+            </div>
             <div class="rightContentControlBtn">
               <div @click="generalSubmit">
                 <i class="ercp-icon-general-submit"></i>&nbsp;
@@ -35,20 +43,28 @@
                 返回</div>
             </div>
           </div>
-          <div class="rightContent">
-            <div class="rightContentDynamic" v-if="!(navArr[activeIndex] ? navArr[activeIndex].isStatic : false)">
-              <sx-min-form
-                v-model="fishData"
-                ref="thatForm"
-                :mozhu="navArr[activeIndex].template"
-                @notVerifying="notVerifying"
-                @consoleData="consoleData"></sx-min-form>
-            </div>
-            <div class="rightContentStatic">
-              <sx-operation-report v-model="ssbgModel" ref="ssbgModel" v-if="navArr[activeIndex] ? navArr[activeIndex].isStatic === 'ssbg' : false"></sx-operation-report>
+          <div class="formContentRight">
+            <div class="rightContent">
+              <div class="rightContentDynamic" v-if="!(navArr[activeIndex] ? navArr[activeIndex].isStatic : false)">
+                <sx-min-form
+                  v-if="smf"
+                  disabled
+                  v-model="fishData"
+                  ref="thatForm"
+                  :mozhu="navArr[activeIndex]"
+                  @notVerifying="notVerifying"
+                  @consoleData="consoleData"></sx-min-form>
+              </div>
+              <div class="rightContentStatic">
+                <sx-operation-report v-model="ssbgModel" ref="ssbgModel" v-if="navArr[activeIndex] ? navArr[activeIndex].isStatic === 'ssbg' : false"></sx-operation-report>
+              </div>
             </div>
           </div>
+
         </div>
+      </div>
+      <div  v-if="!Boolean(navArr[activeIndex])" style="text-align:center;padding: 150px;">
+        暂无数据
       </div>
     </div>
   </div>
@@ -56,6 +72,8 @@
 <script>
 import sxNoRouteControl from '../../components/submenu/noRouteControl'
 import sxOperationReport from '../../components/staticForm/operationReport'
+import { fieldAllForms } from '../../api/form/bdk.js'
+
 export default {
   name: 'rules_index',
   components: {
@@ -66,6 +84,7 @@ export default {
     return {
       // 中间数组
       navArr: [],
+      showData: [],
       allArr: {
         zyjb: {
           label: '住院基本情况',
@@ -171,7 +190,7 @@ export default {
                     type: 'INPUT',
                     validations: [
                       { required: true, message: '请输入组件标签名', trigger: 'change' },
-                      { pattern: '^[^\\s~！@#￥%……&*（）——+~!@#$%^&*()_+]*$', message: '不能输入空格或特殊字符', trigger: 'change' }
+                      { pattern: '^[^\\s~！@#￥%……&*（）——+~!@#$%^&*_+]*$', message: '不能输入空格或特殊字符', trigger: 'change' }
                     ]
                   },
                   // patten
@@ -248,7 +267,7 @@ export default {
           value: 'ssjl',
           submenu: {
             sq: {
-              label: '术前记录',
+              label: '术前',
               value: 'sq',
               subFields: [
                 {
@@ -382,7 +401,7 @@ export default {
               ]
             },
             sz: {
-              label: '术中记录',
+              label: '术中',
               value: 'sz',
               subFields: [
                 {
@@ -401,7 +420,7 @@ export default {
               ]
             },
             sh: {
-              label: '术后记录',
+              label: '术后',
               value: 'sh',
               subFields: [
                 {
@@ -436,6 +455,21 @@ export default {
             }
           ]
         }
+        // sf: {
+        //   label: '随访记录',
+        //   value: 'sf',
+        //   subFields: [
+        //     {
+        //       icon: 'ercp-icon-medicine-cannula',
+        //       name: '插管'
+        //     },
+        //     {
+        //       icon: 'ercp-icon-medicine-guidewire',
+        //       name: '导丝',
+        //       disabled: true
+        //     }
+        //   ]
+        // }
       },
       fishData: {},
       allFish: {
@@ -599,7 +633,7 @@ export default {
           }
         ]
       },
-      activeIndexNav: 'sq',
+      activeIndexNav: '住院基本情况',
       activeIndex: 0,
       patientInfo: {},
       ssbgModel: {
@@ -609,17 +643,38 @@ export default {
         operationSelectJc: [],
         operationSelectHj: [],
         operationDateTime: ''
-      }
+      },
+      smf: false
     }
   },
-  created () {
+  async created () {
     if (this.$route.params.data) {
       this.patientInfo = JSON.parse(this.$route.params.data)
     }
-    this.navArrAssignment()
+    await this.init()
+    this.show()
+    // this.navArrAssignment()
   },
   methods: {
-    init () {},
+    async show () {
+      this.navArr = []
+      let z = []
+      for (let i of this.showData) {
+        console.log(i, 'iii')
+        if (i.phase === this.activeIndexNav) {
+          await z.push(i)
+        }
+      }
+      this.navArr = [...z]
+      this.fishData = {}
+      this.smf = true
+    },
+    async init () {
+      let faf = await fieldAllForms()
+      if (faf) {
+        this.showData = faf.data.entity
+      }
+    },
     navArrAssignment () {
       let a = (_) => {
         for (let i in _) {
@@ -638,19 +693,28 @@ export default {
       console.log(b, 'bbbbbbbbbbbbbbbbbbbbbbbb')
       this.navArr = b ? b.subFields : []
     },
-    emitClick (data = {}) {
+    async emitClick (data = {}) {
+      this.smf = false
       this.activeIndex = data['index']
-      console.log(data)
+      setTimeout(_ => {
+        console.log('setTimeout1')
+        this.smf = true
+      }, 1)
     },
-    handleSelect (key, keyPath) {
+    async handleSelect (key, keyPath) {
       console.log(key, keyPath)
+      this.smf = false
       this.activeIndexNav = key
-      this.navArrAssignment()
-      if (this.$refs['ssbgModel']) {
-        this.$nextTick(_ => {
-          this.$refs['ssbgModel'].resetForm()
-        })
-      }
+      setTimeout(_ => {
+        console.log('setTimeout')
+        this.show()
+      }, 1)
+      // this.navArrAssignment()
+      // if (this.$refs['ssbgModel']) {
+      //   this.$nextTick(_ => {
+      //     this.$refs['ssbgModel'].resetForm()
+      //   })
+      // }
       // this.navArr = this.allArr[key].subFields
     },
     generalSubmit () {
@@ -719,59 +783,64 @@ $marginW: 15px;
       height: $full;
       .formContentRight {
         height: $full;
-        width: $full;
+        // width: $full;
         overflow: auto;
-        .rightContentControl {
-          height: $topControl;
-          width: $full;
-          background: white;
-          width: calc($full - 5px);
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          .rightContentControlName {
-            padding-left: 10px;
-            font-weight: bold;
-            margin-left: $marginW;
-            height: $marginW;
-            display: flex;
-            align-items: center;
-            border-left: 9px solid $minorTextColor;
-            width: 350px;
-          }
-          .rightContentControlBtn {
-            transition: all .5s;
-            flex-grow: 0.25;
-            height: $full;
-            display: flex;
-            justify-content: space-between;
-            font-weight: bold;
-            margin-right: $marginW;
-            div {
-              display: flex;
-              align-items: center;
-              padding-left: $marginW;
-              padding-right: $marginW;
-              height: $full;
-              color: #117FD1;
-              border: none;
-              background: transparent;
-              font-weight: bold;
-              font-size: 16px;
-              height: $full;
-              border-radius: 0;
-            }
-            div:hover {
-              background: $mainBackgroundColor;
-            }
-          }
-        }
         .rightContent {
           width: $full;
+          // overflow: auto;
+          padding-bottom: 150px;
+          display: flex;
           .rightContentDynamic {
-            padding: 25px;
+            width: 800px;
+            flex-grow: 1;
+            padding: 50px;
           }
-          .rightContentStatic {
+          .rightContentStatic {}
+        }
+      }
+      .rightContentControl {
+        height: $topControl;
+        width: $full;
+        background: white;
+        // width: calc($full - 5px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .rightContentControlName {
+          padding-left: 10px;
+          font-weight: bold;
+          margin-left: $marginW;
+          height: $marginW;
+          display: flex;
+          align-items: center;
+          border-left: 9px solid $minorTextColor;
+          width: 400px;
+        }
+        .rightContentControlBtn {
+          transition: all .5s;
+          // flex-grow: 1;
+          width: 500px;
+          height: $full;
+          display: flex;
+          justify-content: space-between;
+          font-weight: bold;
+          margin-right: $marginW;
+          div {
+            display: flex;
+            align-items: center;
+            padding-left: $marginW;
+            padding-right: $marginW;
+            height: $full;
+            color: #117FD1;
+            border: none;
+            background: transparent;
+            font-weight: bold;
+            font-size: 16px;
+            height: $full;
+            border-radius: 0;
+          }
+          div:hover {
+            background: $mainBackgroundColor;
           }
         }
       }
