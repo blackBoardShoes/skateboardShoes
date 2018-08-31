@@ -1,20 +1,21 @@
 <template>
   <div id="project-member">
     <div class="operate-buttons align-right" v-if="selfBuild">
-      <el-select v-model="addedMember" filterable style="margin-right:20px;width:260px;" placeholder="请搜索成员或选择成员列表">
+      <el-select v-model="addedMember" filterable style="margin-right:20px;flex:1;" multiple collapse-tags  placeholder="请搜索成员或选择成员列表">
         <el-option
           v-for="(item, index) in memberOptions"
-          :laebl="item.name"
-          :value="item.username"
+          :laebl="item.name + '/' + item.username"
+          :value="item.name + '/' + item.username"
           :key="index">
           <span style="float: left; color: #8492a6; font-size: 11px">{{ '账号：' + item.username }}</span>
-          <span style="float: right; color: #8492a6; font-size: 11px">{{ '姓名：' + item.name }}</span>
+          <span style="float: right; color: #8492a6; font-size: 11px;margin-right:20px;">{{ '姓名：' + item.name }}</span>
         </el-option>
       </el-select>
       <el-button size="medium" type="primary" @click="add" >添加成员</el-button>
     </div>
     <div class="project-info">
       <el-table
+        :default-sort = "{prop: 'username', order: 'descending'}"
         class="absolute-table"
         :data="tableData"
         height="100%"
@@ -22,7 +23,7 @@
         size="large"
         fit>
         <el-table-column
-          prop="account"
+          prop="username"
           align="center"
           label="账号">
         </el-table-column>
@@ -42,11 +43,15 @@
           label="科室">
         </el-table-column>
         <el-table-column
-          prop="role"
+          prop="username"
           align="center"
           label="角色">
+          <template slot-scope="scope">
+            <span>{{scope.row.username === user.username ? '负责人': '研究员'}}</span>
+          </template>
         </el-table-column>
         <el-table-column
+          show-overflow-tooltip
           prop="joinTime"
           align="center"
           label="加入日期">
@@ -56,29 +61,18 @@
           align="center"
           label="操作"
           fixed="right"
-          width="120"
-          v-if="userName === projectInfo.creator">
-          <template slot-scope="scope">
+          width="120">
+          <template slot-scope="scope" v-if="scope.row.username !== user.username && user.id === projectInfo.creator">
             <el-button type="danger" size="small" plain @click="removeMember(scope.row)">移除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <div class="pagination align-right">
-      <el-pagination
-        layout="total, sizes, prev, pager, next, jumper"
-        :page-sizes="[10, 15, 20]"
-        :total="total"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        @size-change= "SizeChange"
-        @current-change = "changePage"
-      >
-      </el-pagination>
-    </div>
   </div>
 </template>
 <script>
+import { getAllUser } from '../../../../api/user/user.js'
+import { addProjectMember, getMembers, removeProjectMember } from '../../../../api/project/project.js'
 export default {
   name: 'Project_detail_member',
   props: {
@@ -98,114 +92,133 @@ export default {
   data () {
     return {
       tableData: [
-        {
-          account: '10000',
-          name: '王小虎',
-          gender: '男',
-          department: '科室1',
-          role: '医生',
-          joinTime: '2018-09-10'
-        },
-        {
-          account: '10000',
-          name: '王小虎',
-          gender: '男',
-          department: '科室2',
-          role: '医生',
-          joinTime: '2018-09-10'
-        },
-        {
-          account: '10000',
-          name: '王小虎',
-          gender: '男',
-          department: '科室3',
-          role: '医生',
-          joinTime: '2018-09-10'
-        },
-        {
-          account: '10000',
-          name: '王小虎',
-          gender: '男',
-          department: '科室4',
-          role: '科研管理员',
-          joinTime: '2018-09-10'
-        },
-        {
-          account: '10000',
-          name: '王小虎',
-          gender: '男',
-          department: '科室1',
-          role: '科研管理员',
-          joinTime: '2018-09-10'
-        },
-        {
-          account: '10000',
-          name: '王小虎',
-          gender: '男',
-          department: '科室2',
-          role: '科研管理员',
-          joinTime: '2018-09-10'
-        },
-        {
-          account: '10000',
-          name: '王小虎',
-          gender: '男',
-          department: '科室3',
-          role: '科研管理员',
-          joinTime: '2018-09-10'
-        }
       ],
-      addedMember: '',
+      addedMember: [],
       memberOptions: [
-        {
-          username: '111111',
-          name: '王小虎'
-        },
-        {
-          username: '222222',
-          name: '王二虎'
-        },
-        {
-          username: '333333',
-          name: '王三虎'
-        }
       ],
       projectMes: {
         creator: '王二虎'
       },
-      // 分页信息
-      pageSize: 10,
-      currentPage: 1,
-      total: 40,
-      userName: ''
+      user: {},
+      memberArr: []
     }
   },
   methods: {
-    removeMember (value) {
-      this.$message.warning('移除成员' + value.department + '的' + value.name)
+    async removeMember (value) {
+      let info = {
+        projectId: this.projectId,
+        userId: value.id
+      }
+      let response = await removeProjectMember(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response)
+        this.getProjectMem()
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
     },
-    add () {
+    async add () {
       if (this.addedMember) {
-        this.$message.success(this.addedMember)
+        console.log(this.addedMember)
+        let arr = []
+        this.addedMember.forEach((item1, index1) => {
+          this.memberOptions.forEach((item2) => {
+            if (item1.split('/')[1] === item2.username) {
+              arr.push(item2.id)
+            }
+          })
+        })
+        console.log(arr)
+        let info = {
+          projectId: this.projectId,
+          members: arr
+        }
+        let response = await addProjectMember(info)
+        if (response.data.mitiStatus === 'SUCCESS') {
+          console.log(response)
+          this.addedMember = []
+          this.getProjectMem()
+        } else {
+          this.$message.error('ERROR: ' + response.data.message)
+        }
       } else {
         this.$message.warning('请选择一个成员')
       }
     },
-    // 列表页码信息
-    SizeChange (size) {
-      console.log(size)
-      // this.getProject(size, this.currentPage)
+    async getAllUser () {
+      let info = {
+        currentPage: 1,
+        pageSize: 500
+      }
+      let response = await getAllUser(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        this.memberArr = response.data.entity.data
+        console.log(this.memberArr)
+        this.memberOptions = []
+        this.memberArr.forEach((item) => {
+          if (item.status === '正常' && (item.type === '管理员' || item.type === '科研管理员' || item.type === '医生')) {
+            let obj = {
+              username: item.username,
+              name: item.name,
+              id: item.id
+            }
+            this.memberOptions.push(obj)
+          }
+        })
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
     },
-    changePage (page) {
-      console.log(page)
-      // this.getProject(this.pageSize, page)
+    async getProjectMem () {
+      let info = this.projectId
+      let response = await getMembers(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response.data.entity)
+        let arr = response.data.entity
+        let arr2 = []
+        arr.forEach((item) => {
+          item.t1.joinTime = item.t2
+          arr2.push(item.t1)
+        })
+        console.log(arr2)
+        this.tableData = arr2
+        this.initMemberOptions(this.memberArr)
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    // 初始化项目成员选项列表
+    initMemberOptions () {
+      this.memberOptions = []
+      this.memberArr.forEach((item) => {
+        if (item.username !== this.user.username && item.status === '正常' && (item.type === '管理员' || item.type === '科研管理员' || item.type === '医生') && this.tableData.findIndex((n) => n.id === item.id) < 0) {
+          let obj = {
+            username: item.username,
+            name: item.name,
+            id: item.id
+          }
+          this.memberOptions.push(obj)
+        }
+      })
+      console.log(this.memberOptions)
+    },
+    async getUsers () {
+      let info = {
+        currentPage: 1,
+        pageSize: 500
+      }
+      let response = await getAllUser(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        this.memberArr = response.data.entity.data
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
     }
   },
   mounted () {
-    console.log(this.selfBuild)
-    console.log(this.projectInfo)
-    console.log(this.projectId)
-    this.userName = this.$store.state.user.name
+    this.getProjectMem()
+    this.getUsers()
+    this.user = this.$store.state.user
   }
 }
 </script>
@@ -219,15 +232,15 @@ export default {
     display: flex;
     flex-direction: column;
     .operate-buttons{
-      // height: 40px;
+      display: flex;
+      flex-direction: row;
       min-height: 40px;
       line-height: 40px;
       padding:10px 0;
     }
     .project-info{
-      // flex: 1;
+
       height: 100%;
-      // display: table;
       position: relative;
     }
     .pagination{

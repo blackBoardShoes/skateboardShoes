@@ -118,7 +118,7 @@
         <el-form ref="basicForm" :rules="rules" :model="basicInfo" label-position="right" label-width="80px">
           <el-col :span="24">
             <el-form-item label="住院号" prop="hospitalId">
-              <el-input v-model.number="basicInfo.hospitalId" size="small"></el-input>
+              <el-input v-model="basicInfo.hospitalId" size="small"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">

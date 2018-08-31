@@ -1,8 +1,8 @@
 <template>
   <div id="project-basic">
     <div class="project-info">
-      <!-- <el-form ref="infomation" :rules = "rules" lebel-position="left" :model="basciInfo" label-width="100px" :disabled="!selfBuild"> -->
-      <el-form ref="infomation" :rules = "rules" lebel-position="left" :model="basciInfo" label-width="100px">
+      <el-form ref="infomation" :rules = "rules" lebel-position="left" :model="basciInfo" label-width="100px" :disabled="!selfBuild || projectInfo.status === '0'">
+      <!-- <el-form ref="infomation" :rules = "rules" lebel-position="left" :model="basciInfo" label-width="100px"> -->
         <el-row>
           <el-col :span="24">
             <el-form-item label="项目名称" prop="name">
@@ -28,8 +28,8 @@
         </el-col>
       </el-form>
     </div>
-    <!-- <div class="operate-buttons" v-if="selfBuild"> -->
-    <div class="operate-buttons">
+    <div class="operate-buttons" v-if="selfBuild">
+    <!-- <div class="operate-buttons"> -->
       <ul class="operation-list">
         <li class="operation-item clearfix">
           <ul class="tips-list float-left">
@@ -44,7 +44,7 @@
             <li class="tips-item">锁定当前项目，将无法对当前项目进行其他操作，锁定后将跳转到项目列表页面</li>
           </ul>
           <div class="btn-wrapper float-right">
-            <el-button size="medium" type="primary" @click="lock" :disabled="projectInfo.status === '1'">锁定项目</el-button>
+            <el-button size="medium" type="primary" @click="lock" :disabled="projectInfo.status === '0'">锁定项目</el-button>
           </div>
         </li>
         <li class="operation-item clearfix">
@@ -84,10 +84,10 @@ export default {
       },
       rules: {
         name: [
-          {required: true, message: '必填项不能为空'}
+          {required: true, message: '必填项不能为空', trigger: 'focus'}
         ],
         abbreviation: [
-          {required: true, message: '必填项不能为空'}
+          {required: true, message: '必填项不能为空', trigger: 'focus'}
         ]
       }
     }
@@ -104,13 +104,15 @@ export default {
           let info = {
             name: newInfo.name,
             abbreviation: newInfo.abbreviation,
-            // creator: newInfo,
+            // creator: newInfo.creator,
             // status: 0,
+            id: this.projectInfo.id,
             intro: newInfo.intro
           }
           let response = await modifyProject(info)
           if (response.data.mitiStatus === 'SUCCESS') {
             console.log(response)
+            this.byValue()
           } else {
             this.$message.error('ERROR: ' + response.data.message)
           }
@@ -142,7 +144,15 @@ export default {
     }
   },
   mounted () {
-    this.byValue()
+    console.log(this.projectInfo)
+    if (this.projectInfo !== {}) {
+      this.basciInfo = {
+        name: this.projectInfo.name,
+        abbreviation: this.projectInfo.abbreviation,
+        creator: this.projectInfo.creator,
+        intro: this.projectInfo.intro
+      }
+    }
   },
   watch: {
     'projectInfo': {
@@ -151,7 +161,7 @@ export default {
           this.basciInfo = {
             name: newVal.name,
             abbreviation: newVal.abbreviation,
-            creator: newVal.creator.userId,
+            creator: newVal.creator,
             intro: newVal.intro
           }
         }
@@ -175,9 +185,10 @@ export default {
   @import '../../../../assets/css/variable';
   #project-basic{
     width: 100%;
-    height: 100%;
     box-sizing: border-box;
     padding:16px;
+    display: flex;
+    flex-direction: column;
     .operate-buttons{
       padding: 0 10px 0 40px;
       .operation-list {
@@ -203,6 +214,9 @@ export default {
       }
     }
     .project-info{
+      flex: 1;
+      max-height: 600px;
+      overflow: auto;
       margin-top: 10px;
       min-height: 160px;
     }

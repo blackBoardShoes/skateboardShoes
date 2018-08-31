@@ -51,12 +51,14 @@
             label="项目名称">
           </el-table-column>
           <el-table-column
+            show-overflow-tooltip
             prop="abbreviation"
             align="center"
             label="项目简称"
             width="160">
           </el-table-column>
           <el-table-column
+            show-overflow-tooltip
             prop="creator.userId"
             align="center"
             label="项目负责人"
@@ -84,6 +86,7 @@
             width="80">
           </el-table-column>
           <el-table-column
+            show-overflow-tooltip
             prop="creatTime"
             align="center"
             label="创建日期"
@@ -259,7 +262,7 @@ export default {
     async getJoinProject (perPage, currentPage, searchJoinProject) {
       let info = {
         // @change --- id
-        userId: '001',
+        userId: this.$store.state.user.id,
         projectType: 'join',
         perPage: perPage,
         currentPage: currentPage,
