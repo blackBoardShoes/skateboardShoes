@@ -300,9 +300,9 @@ export default {
             value: '',
             type: 'RADIO',
             values: [
-              {label: '字迹模糊潦草无法分辨', value: 'one'},
-              {label: '上下文逻辑关系错误', value: 'two'},
-              {label: '原始资料缺失无法校验', value: 'three'}
+              {label: '字迹模糊潦草无法分辨', value: '字迹模糊潦草无法分辨'},
+              {label: '上下文逻辑关系错误', value: '上下文逻辑关系错误'},
+              {label: '原始资料缺失无法校验', value: '原始资料缺失无法校验'}
             ]
           },
           {
@@ -519,6 +519,7 @@ export default {
       // this.comments[items.id] = ''
       // this.$delete(this.errors, items.id)
       this.$delete(this.comments, items.id)
+      this.$emit('createEvaluate', this.comments)
     },
     // form conversion rules
     // { "type": "INPUT", "id": "", "label": "", "pattern": "", "message": "", "required": "" }
@@ -701,7 +702,8 @@ export default {
     },
     createEvaluate (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
       // this.errors[this.evaluateRowData.id] = true
-      this.comments[this.evaluateRowData.id] = formModel
+      this.comments[this.evaluateRowData.id] = Object.assign(formModel, {label: this.evaluateRowData.label, id: this.evaluateRowData.id})
+      this.$emit('createEvaluate', this.comments)
       // this.$set(this.errors, this.evaluateRowData.id, true)
       // this.$set(this.comments, this.evaluateRowData.id, formModel)
       // console.log(this.errors, this.comments)

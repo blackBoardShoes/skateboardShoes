@@ -14,7 +14,10 @@
         @click="emitClick(item, index)"
         :key="index">
         <i :class="item.icon"></i>
-        <span class="menuName">{{item.name}}</span>
+        <span class="menuName">{{item.name}}</span>&nbsp;
+        <span class="comments" v-if="comments[item.id] ? Object.keys(comments[item.id]).length ? Object.keys(comments[item.id]).length : '' : ''">
+          {{comments[item.id] ? Object.keys(comments[item.id]).length ? Object.keys(comments[item.id]).length : '' : ''}}
+        </span>
       </div>
     </div>
   </div>
@@ -23,6 +26,12 @@
 <script>
 export default {
   props: {
+    comments: {
+      type: Object,
+      default () {
+        return {}
+      }
+    },
     navArr: {
       type: Array,
       default () {
@@ -98,6 +107,15 @@ $W: 16%;
   }
   .menuName {
     font-weight: bold;
+  }
+  .comments {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    text-align: center;
+    background: #117FD1;
+    font-size: 12px;
+    color: white;
   }
 }
 </style>

@@ -420,23 +420,23 @@ export default {
           // 总表, 待审核
           break
         case '诊疗中心':
-          await this.pendingEntryColumnShowData()
+          await this.formdataUndoneFilledFormShowData()
           // 总表, 待录入, 待修正
           break
         case '科研护士':
-          await this.pendingEntryColumnShowData()
+          await this.formdataUndoneFilledFormShowData()
           // 总表, 待录入, 待修正, 待随访
           break
       }
       // let a = {
       //   AlltableColumn: this.recordAllRecordShowData(),
-      //   pendingEntryColumn: this.pendingEntryColumnShowData(),
+      //   pendingEntryColumn: this.formdataUndoneFilledFormShowData(),
       //   toBeAuditedColumn: this.formdataFinishedFilledFormShowData()
       // }
       // console.log(a)
     },
     async show () {
-      // this.pendingEntryColumnShowData()
+      // this.formdataUndoneFilledFormShowData()
       // this.tableData = this.pendingEntryColumnTableData
       // table
       console.log(this.activeRow.key, 'this.activeRow.key')
@@ -478,7 +478,7 @@ export default {
       }
     },
     // 待录入
-    async pendingEntryColumnShowData () {
+    async formdataUndoneFilledFormShowData () {
       let z = await formdataUndoneFilledForm(Object.assign({currentPage: this.currentPage, perPage: this.perPage}, this.user))
       if (z ? z.data.entity : false) {
         this.pendingEntryColumnTableData = []
