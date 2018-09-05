@@ -271,10 +271,13 @@ export default {
           formModel['createCalculate'] = ''
           // formModel['subFields'] = formModel['createTable']
           formModel['subFields'] = []
-          for (let i of this.listData) {
-            if (formModel['createTable'].includes(i.id)) {
-              formModel['subFields'].push(i)
-            }
+          // for (let i of this.listData) {
+          //   if (formModel['createTable'].includes(i.id)) {
+          //     formModel['subFields'].push(i)
+          //   }
+          // }
+          for (let i of formModel['createTable']) {
+            formModel['subFields'].push({ id: i })
           }
           formModel['type'] = 'TABLE'
           break
@@ -375,7 +378,7 @@ export default {
       return what
     },
     async createFish (mozhuId, formModel, relation, newFields, idGroup) {
-      console.log(mozhuId, formModel)
+      console.log(mozhuId, formModel, 'formModelformModelformModelformModelformModelformModelformModelformModel')
       // formModel['values'] = [...formModel['layerTree']].length ? [...formModel['layerTree']] : []
       let what = this.conversion(this.auxiliaryType(Object.assign({}, formModel)))
       let fe = ''

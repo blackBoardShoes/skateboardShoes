@@ -3,6 +3,7 @@
     <div class="formContent">
       <div class="formContentLeft">
         <!-- :label-width="labelWidth" -->
+        <!-- :label-width="labelWidth" -->
         <el-form
           onkeydown="if(event.keyCode==13){return false}"
           :label-position="labelPosition"
@@ -19,11 +20,13 @@
           <!-- <draggable v-model="newFields"> -->
             <!-- :rules="items.validations" -->
             <div
-              v-if="tf(items)"
+              v-if="disabled ? true : tf(items)"
               v-for="(items, index) in newFields"
+              :class="{normal: labelWidth, abnormal: !labelWidth}"
               :style="{display: 'flex', alignItems: 'flexStart', width: coordinate[items.id] ? coordinate[items.id] + '%' : '100%'}"
               :key="index">
-              <div class="iconErrorClass" @click="deleteError(items)" v-if="disabled">
+              <!--  v-if="disabled" -->
+              <div class="iconErrorClass" @click="deleteError(items)">
                 <i class="el-icon-error"  v-if="iconTf(items)"></i>
               </div>
               <el-form-item
@@ -36,7 +39,7 @@
                 <div style="display: flex">
                   <!-- @change.native="changeRules" -->
                   <el-input
-                    :disabled="items.disabled" :placeholder="items.placeholder" clearable
+                    :disabled="disabled" :placeholder="items.placeholder" clearable
                     v-if="items.type === 'INPUT' | items.type === 'INT' | items.type === 'DOUBLE'" v-model.trim='formModel[items.id]'></el-input>
                   <!-- <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'INT'" v-model.trim='formModel[items.id]'></el-input> -->
                   <!-- <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'DOUBLE'" v-model.trim='formModel[items.id]'></el-input> -->
@@ -52,10 +55,10 @@
                   <el-checkbox v-for="(it, ii) in items.values" :key="ii" :label="it.value" >{{it.label}}</el-checkbox>
                 </el-checkbox-group>
                 <el-switch :disabled="items.disabled" :active-text="items.activeText" :inactive-text="items.inactiveText" v-if="items.type === 'SWITCH'" v-model="formModel[items.id]" ></el-switch>
-                <el-select :key="Math.random()" :disabled="items.disabled" :placeholder="items.placeholder" clearable filterable v-if="items.type === 'SELECT'" v-model="formModel[items.id]" style="width:100%;">
+                <el-select :disabled="items.disabled" :placeholder="items.placeholder" clearable filterable v-if="items.type === 'SELECT'" v-model="formModel[items.id]" style="width:100%;">
                   <el-option v-for="(it, ii) in items.values" :key="ii" :label="it.label" :value="it.value" ></el-option>
                 </el-select>
-                <el-select :key="Math.random()" :disabled="items.disabled" :placeholder="items.placeholder" multiple clearable filterable v-if="items.type === 'SELECTMUTIPLE'" v-model="formModel[items.id]" style="width:100%;">
+                <el-select :disabled="items.disabled" :placeholder="items.placeholder" multiple clearable filterable v-if="items.type === 'SELECTMUTIPLE'" v-model="formModel[items.id]" style="width:100%;">
                   <el-option v-for="(it, ii) in items.values" :key="ii" :label="it.label" :value="it.value" ></el-option>
                 </el-select>
                 <el-date-picker
@@ -94,7 +97,7 @@
                   </div>
                 </div>
                 <div v-if="items.type === 'TABLE'" style="width: 100%;">
-                  <sx-table ref="sxtable" :tableData="items ? items : {}" @getData="getData" style="width: 100%;"></sx-table>
+                  <sx-table v-model="formModel[items.id]" ref="sxtable" :tableData="items ? items : {}" @getData="getData" style="width: 100%;"></sx-table>
                 </div>
                 <!-- 辅助创建 新增 编辑 -->
                 <div v-if="items.type === 'CREATECALCULATE'" >
@@ -182,7 +185,7 @@
       </div>
       <sx-min-form
         :labelPosition="'top'"
-        :labelWidth="'0px'"
+        :labelWidth="false"
         cancel submitTF
         @cancelData="evaluateDialogVisible = false"
         v-if="evaluateDialogVisible" :mozhu="allEvaluate"
@@ -213,9 +216,9 @@ export default {
       }
     },
     labelWidth: {
-      type: String,
+      type: Boolean,
       default () {
-        return '200px'
+        return true
       }
     },
     labelPosition: {
@@ -225,6 +228,12 @@ export default {
       }
     },
     mozhu: {
+      type: Object,
+      default () {
+        return {}
+      }
+    },
+    mozhuComments: {
       type: Object,
       default () {
         return {}
@@ -279,7 +288,7 @@ export default {
       relation: 'relation' in this.mozhu ? Object.assign({}, this.mozhu['relation']) : {},
       coordinate: 'coordinate' in this.mozhu ? Object.assign({}, this.mozhu['coordinate']) : {},
       errors: 'errors' in this.mozhu ? Object.assign({}, this.mozhu['errors']) : {},
-      comments: 'comments' in this.mozhu ? Object.assign({}, this.mozhu['comments']) : {},
+      // comments: 'comments' in this.mozhu ? Object.assign({}, this.mozhu['comments']) : {},
       mozhuId: 'id' in this.mozhu ? this.mozhu['id'] : '',
       // 拥有各种鱼的鱼塘
       repositoryData: this.momo.length ? [...this.momo] : [],
@@ -316,12 +325,24 @@ export default {
       needCreatedRelation: {},
       whatTF: false,
       calculateData: [],
+      comments: this.mozhuComments,
       formModel: this.value
     }
   },
   watch: {
-    value () {
-      this.formModel = Object.assign({}, this.value)
+    mozhuComments: {
+      deep: true,
+      handler (value) {
+        this.comments = {}
+        this.comments = Object.assign({}, value)
+      }
+    },
+    value: {
+      deep: true,
+      handler () {
+        this.formModel = {}
+        this.formModel = Object.assign({}, this.value)
+      }
     },
     mozhu: {
       deep: true,
@@ -345,7 +366,9 @@ export default {
   },
   created () {
     this.init()
+    console.log(this.mozhu)
     console.log(this.newFields)
+    console.log(this.mozhuComments, 'this.mozhuComments')
     console.log(this.formModel, 'this.formModel')
   },
   methods: {
@@ -373,11 +396,12 @@ export default {
         switch (i.type) {
           case 'CHECKBOX':
           case 'CASCADER':
+          case 'TABLE':
           case 'TREE':
           case 'LAYERTREE':
           case 'CREATETABLE':
-          case 'SELECT':
           case 'SELECTMUTIPLE':
+          // case 'SELECT':
             if (!this.formModel[i.id]) {
               if ('value' in i) {
                 this.$set(this.formModel, i.id, [...i.value])
@@ -410,7 +434,11 @@ export default {
               if ('value' in i) {
                 this.$set(this.formModel, i.id, i.value)
               } else {
-                this.$set(this.formModel, i.id, '')
+                if (this.formModel[i.id] === 0) {
+                  this.$set(this.formModel, i.id, 0)
+                } else {
+                  this.$set(this.formModel, i.id, '')
+                }
               }
             }
             break
@@ -418,7 +446,7 @@ export default {
         if (i['validations']) {
           for (let z in i['validations']) {
             if ('pattern' in i['validations'][z]) {
-              console.log(i['validations'][z]['pattern'].toString().includes('***'), "i['validations'][z]['pattern'].toString().includes('***')")
+              // console.log(i['validations'][z]['pattern'].toString().includes('***'), "i['validations'][z]['pattern'].toString().includes('***')")
               if (i['validations'][z]['pattern'].toString().includes('***')) {
                 let arr = i['validations'][z]['pattern'].split('***')
                 let a = { validator: (rule, value, callback) => {
@@ -428,14 +456,14 @@ export default {
                     callback(new Error('范围为' + arr[0] + '-' + arr[1]))
                   }
                 }}
-                console.log(arr[0], arr[1], 'aaaaaaaaaaaaaaaaaaaa')
+                // console.log(arr[0], arr[1], 'aaaaaaaaaaaaaaaaaaaa')
                 // await i['validations'].push(a)
                 i['validations'][z] = a
                 // this.$delete(i['validations'], z)
               } else {
                 // i['validations'][z]['pattern'] = new RegExp(i['validations'][z]['pattern'], 'g')
               }
-              console.log(i['validations'][z]['pattern'])
+              // console.log(i['validations'][z]['pattern'])
               // this.$set(this.fields[j]['validations'][z], 'pattern', new RegExp(this.fields[j]['validations'][z]['pattern']))
             }
           }
@@ -483,13 +511,13 @@ export default {
       return a
     },
     iconTf (items) {
-      return (this.errors[items.id] & this.disabled)
+      return (Boolean(this.comments[items.id]) & this.disabled)
     },
     deleteError (items) {
       // this.errors[items.id] = false
       // this.$set(this.errors, items.id, false)
       // this.comments[items.id] = ''
-      this.$delete(this.errors, items.id)
+      // this.$delete(this.errors, items.id)
       this.$delete(this.comments, items.id)
     },
     // form conversion rules
@@ -561,8 +589,12 @@ export default {
       return idGroup
     },
     notVerifying () {
-      let idGroup = this.formatData()
-      this.$emit('notVerifying', this.mozhuId, this.formModel, this.relation, this.newFields, idGroup, this.errors, this.comments, this.coordinate)
+      this.$refs['formModel'].validate(valid => {
+        if (valid) {
+          let idGroup = this.formatData()
+          this.$emit('notVerifying', this.mozhuId, this.formModel, this.relation, this.newFields, idGroup, this.errors, this.comments, this.coordinate)
+        }
+      })
     },
     changeRules () {
       this.$refs['formModel'].validate(valid => {
@@ -570,20 +602,23 @@ export default {
       })
     },
     consoleData () {
-      this.$nextTick(() => {
-        if (this.$refs['sxtable']) {
-          for (let i of this.$refs['sxtable']) {
-            this.formModel[i.tableData['id']] = i.tableValues
-          }
-        }
-      })
+      // this.$nextTick(() => {
+      //   if (this.$refs['sxtable']) {
+      //     for (let i of this.$refs['sxtable']) {
+      //       this.formModel[i.tableData['id']] = i.tableValues
+      //     }
+      //   }
+      // })
       this.$refs['formModel'].validate(valid => {
         if (valid) {
           let idGroup = this.formatData()
           this.$emit('consoleData', this.mozhuId, this.formModel, this.relation, this.newFields, idGroup, this.errors, this.comments, this.coordinate)
         } else {
-          console.log('error submit!!')
-          return false
+          // this.$message({
+          //   showClose: true,
+          //   message: '验证不通过,请检查',
+          //   type: 'info'
+          // })
         }
       })
     },
@@ -599,7 +634,7 @@ export default {
       //split用
       var reg = /\(|\)|[a-zA-Z]*[a-zA-Z0-9]+|\d+\.\d+|\d+|[a-zA-Z]+|\+|\-|\*|\/|\^|\%/g
       //判断条件
-      var CONSTANT = /\d+\.\d+|\d+/
+      var CONSTANT = /^\d+\.\d+$|^\d+$/
       var LEFT_BRACKET = /\(/
       var RIGHT_BRACKET = /\)/
       var OPERATOR = /\+|\-|\*|\/|\^|\%/
@@ -629,9 +664,14 @@ export default {
           }
           values.push(cal_value);
         } else if (ID.test(patternList[i])) {
-          if (!data[patternList[i]]) {
-            values.push(0)
-          }
+          // if (!(patternList[i] in data)) {
+          //   // values.push(0)
+          //   this.$message({
+          //     showClose: true,
+          //     message: '公式缺少id',
+          //     type: 'warning'
+          //   })
+          // }
           values.push(Number(data[patternList[i]]))
         } else if (CONSTANT.test(patternList[i])) {
           values.push(Number(patternList[i]))
@@ -645,7 +685,10 @@ export default {
           })
         }
       }
-      return values[0].toFixed(2).toString()
+      console.log(values, 'values')
+      return Math.max(...values)
+      // return values[0].toString()
+      // return values[0].toFixed(2).toString()
       /* eslint-disable */
     },
     evaluate (row, index) {
@@ -657,11 +700,11 @@ export default {
       }
     },
     createEvaluate (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
-      this.errors[this.evaluateRowData.id] = true
+      // this.errors[this.evaluateRowData.id] = true
       this.comments[this.evaluateRowData.id] = formModel
       // this.$set(this.errors, this.evaluateRowData.id, true)
       // this.$set(this.comments, this.evaluateRowData.id, formModel)
-      console.log(this.errors, this.comments)
+      // console.log(this.errors, this.comments)
       this.evaluateDialogVisible = false
     },
     // form element operation (计算)
@@ -750,8 +793,8 @@ $full: 100%;
   .iconErrorClass {
     height: 20px;
     margin-top: 3px;
-    width: 35px;
-    font-size: 20px;
+    width: 25px;
+    font-size: 14px;
     color: #F56C6C
   }
   .formContent {
@@ -784,21 +827,32 @@ $full: 100%;
     /deep/ .el-form-item, /deep/ .el-form-item--mini {
       display: flex !important;
       flex-wrap: nowrap;
-      justify-content: space-between;
+      // justify-content: space-between;
       width: 100%;
       .el-form-item__content {
         // flex-grow: 1;
-        width: calc(100% - 125px)
+        width: calc(100% - 138px)
       }
     }
-    /deep/ .el-form-item__label {
-      min-width: 125px;
-      max-width: 190px;
-      // border:1px solid red;
-      // width: 10%;
-      white-space:normal;
-      word-break:break-all;
-      word-wrap:break-word; 
+    .normal {
+      /deep/ .el-form-item__label {
+        min-width: 138px;
+        max-width: 190px;
+        // border:1px solid red;
+        // width: 10%;
+        white-space:normal;
+        word-break:break-all;
+        word-wrap:break-word; 
+      }
+    }
+    .abnormal {
+      /deep/ .el-form-item__label {
+        min-width: 0px;
+      }
+      /deep/ .el-form-item__content {
+        // flex-grow: 1;
+        width: 100%
+      }
     }
   }
 }

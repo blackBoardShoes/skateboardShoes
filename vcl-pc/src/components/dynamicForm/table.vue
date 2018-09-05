@@ -49,6 +49,12 @@
 <script>
 export default {
   props: {
+    value: {
+      type: Array,
+      default () {
+        return []
+      }
+    },
     tableData: {
       type: Object,
       default () {
@@ -73,14 +79,27 @@ export default {
     }
   },
   watch: {
-    tableData (value) {
-      this.subFields = [...this.tableData['subFields']]
-      this.tableValues = [...this.tableData['values']]
+    tableData: {
+      deep: true,
+      handler () {
+        this.subFields = [...this.tableData['subFields']]
+      }
+    },
+    value: {
+      deep: true,
+      handler () {
+        this.tableValues = [...this.value]
+        console.log(this.value)
+      }
     }
+    // tableData (value) {
+    //   this.subFields = [...this.tableData['subFields']]
+    //   this.tableValues = [...this.tableData['values']]
+    // }
   },
   created () {
     console.time('--table init--')
-    console.log(this.tableData, 'table J S')
+    console.log(this.tableData, this.value, 'table J S')
     this.init()
   },
   mounted () {
@@ -89,7 +108,7 @@ export default {
   data () {
     return {
       subFields: 'subFields' in this.tableData ? [...this.tableData['subFields']] : [],
-      tableValues: 'values' in this.tableData ? [...this.tableData['values']] : [],
+      tableValues: this.value ? [...this.value] : [],
       dialogVisible: false,
       mozhu: {
         id: '',
@@ -195,6 +214,7 @@ export default {
       } else {
         this.$set(this.tableValues, this.addEdit.index, formModel)
       }
+      this.$emit('input', this.tableValues)
       this.dialogVisible = false
     },
     deleteClick (row, index, fieldsData) {
