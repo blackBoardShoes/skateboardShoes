@@ -15,7 +15,10 @@ export const recordAllRecord = data => {
 export const formdataUndoneFilledForm = data => {
   return axios.get(api + '/formdata/undoneFilledForm', { params: data })
 }
-
+// 审核
+export const formdataFinishedFilledForm = data => {
+  return axios.get(api + '/formdata/finishedFilledForm', { params: data })
+}
 export const patientGetPatientCount = data => {
   return axios.get(dali + '/patient/getPatientCount', { params: data })
 }

@@ -59,9 +59,10 @@
     <el-dialog
       append-to-body
       modal-append-to-body
+      :close-on-click-modal="false"
       v-if="dialogVisible"
       :visible.sync="dialogVisible">
-      <el-form :model="ruleForm" ref="ruleForm" label-width="125px" size="mini" label-position="left" class="ruleForm">
+      <el-form :model="ruleForm" ref="ruleForm" label-width="138px" size="mini" label-position="left" class="ruleForm">
         <div style="padding-left: 25px;">
           <el-form-item label="住院号" prop="patientId" :rules="[
             { required: true, message: '请输入病人住院号', trigger: 'change'},
@@ -78,6 +79,7 @@
     <el-dialog
       append-to-body
       modal-append-to-body
+      :close-on-click-modal="false"
       v-if="patientDialogVisible"
       :visible.sync="patientDialogVisible">
       <sx-min-form
@@ -91,7 +93,7 @@
 <script>
 import { mapState } from 'vuex'
 import sxMinTable from '../../components/dynamicForm/minTable'
-import { record, recordAllRecord, formdataUndoneFilledForm, patientGetPatientCount, patientAddPatient } from '../../api/rules/index.js'
+import { record, recordAllRecord, formdataFinishedFilledForm, formdataUndoneFilledForm, patientGetPatientCount, patientAddPatient } from '../../api/rules/index.js'
 import { addressData } from '../../data/address/addressData.js'
 export default {
   components: {
@@ -166,11 +168,11 @@ export default {
         patientId: ''
       },
       rulesContainTop: [
-        { title: '总表', key: 'AlltableColumn', icon: 'el-icon-delete', userType: [1, 3, 4, 5, 6] },
-        { title: '待录入', key: 'pendingEntryColumn', icon: 'el-icon-delete', userType: [1, 5, 6] },
-        { title: '待审核', key: 'toBeAuditedColumn', icon: 'el-icon-delete', userType: [1, 3, 4] },
-        { title: '待修正', key: 'toBeAmendedColumn', icon: 'el-icon-delete', userType: [1, 5, 6] },
-        { title: '待随访', key: 'followUpColumn', icon: 'el-icon-delete', userType: [1, 6] }
+        { title: '总表', key: 'AlltableColumn', icon: 'el-icon-delete', codetype: [1, 2, 4, 5, 6] },
+        { title: '待录入', key: 'pendingEntryColumn', icon: 'el-icon-delete', codetype: [1, 5, 6] },
+        { title: '待审核', key: 'toBeAuditedColumn', icon: 'el-icon-delete', codetype: [1, 2, 4] },
+        { title: '待修正', key: 'toBeAmendedColumn', icon: 'el-icon-delete', codetype: [1, 5, 6] },
+        { title: '待随访', key: 'followUpColumn', icon: 'el-icon-delete', codetype: [1, 6] }
       ],
       rulesContainTopModel: {
         AlltableColumn: 0,
@@ -189,38 +191,38 @@ export default {
       whatObj: {
         // 总表 ---> 住院号 编号 姓名 性别 入院日期 术前记录 术中记录 术后记录 是否纳入随访记录
         AlltableColumn: [
-          { prop: 'name', label: '住院号' },
-          { prop: 'name', label: '编号' },
-          { prop: 'namec', label: '姓名' },
-          { prop: 'name', label: '性别', sortable: true },
+          { prop: 'patientId', label: '住院号' },
+          // { prop: 'operationNum', label: '编号' },
+          { prop: 'patientName', label: '姓名' },
+          { prop: 'gender', label: '性别', sortable: true },
           { prop: 'inHospitalDate', label: '入院日期' },
-          { prop: 'name', label: '术前记录', width: '130', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] },
-          { prop: 'name', label: '术中记录', width: '130', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] },
-          { prop: 'name', label: '术后记录', width: '130', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] },
-          { prop: 'name', label: '是否纳入随访记录', width: '180', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] }
+          { prop: '术前', label: '术前记录', width: '180', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] },
+          { prop: '术中', label: '术中记录', width: '180', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] },
+          { prop: '术后', label: '术后记录', width: '180', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] }
+          // { prop: 'name', label: '是否纳入随访记录', width: '180', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] }
         ],
         // 待录入 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (编辑、删除)
         pendingEntryColumn: [
           { prop: 'patientId', label: '住院号' },
-          { prop: 'bh', label: '编号' },
+          { prop: 'operationNum', label: '编号' },
           { prop: 'dept', label: '科室' },
           { prop: 'bedNum', label: '床号' },
           { prop: 'patientName', label: '姓名' },
           { prop: 'gender', label: '性别', sortable: true },
           { prop: 'phase', label: '数据阶段' },
-          { prop: 'name', label: '记录者', width: '130', sortable: true },
+          { prop: 'responseName', label: '记录者', width: '130', sortable: true },
           { option: true, label: '操作', contain: [{label: '编辑'}, {label: '删除', style: 'color: #FF455B'}] }
         ],
         // 待审核 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (审核
         toBeAuditedColumn: [
-          { prop: 'name', label: '住院号' },
-          { prop: 'name', label: '编号' },
-          { prop: 'name', label: '科室' },
-          { prop: 'name', label: '床号' },
-          { prop: 'name', label: '姓名' },
-          { prop: 'name', label: '性别', sortable: true },
-          { prop: 'name', label: '数据阶段', sortable: true },
-          { prop: 'name', label: '记录者', sortable: true },
+          { prop: 'patientId', label: '住院号' },
+          { prop: 'operationNum', label: '编号' },
+          { prop: 'dept', label: '科室' },
+          { prop: 'bedNum', label: '床号' },
+          { prop: 'patientName', label: '姓名' },
+          { prop: 'gender', label: '性别', sortable: true },
+          { prop: 'phase', label: '数据阶段', sortable: true },
+          { prop: 'responseName', label: '记录者', sortable: true },
           { option: true, label: '操作', contain: [{label: '审核'}] }
         ],
         // 待修正 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (编辑
@@ -331,20 +333,21 @@ export default {
       },
       tableData: [],
       recordAllRecordTableData: [],
-      pendingEntryColumnTableData: []
+      pendingEntryColumnTableData: [],
+      formdataFinishedFilledFormTableData: []
     }
   },
   computed: mapState({
     user: state => state.user
   }),
-  created () {
+  async created () {
     // 规则 a
     let a = {
       // 管理员 医生 无页面
       // 科研管理员 临床质控员 诊疗中心 科研护士
-      // 1 - 6 userType 总表 待录入 待审核 待修正 待随访
+      // 1 - 6 codetype 总表 待录入 待审核 待修正 待随访
 
-      // 科研管理员 3（总表, 待审核）---> 1.任务概览：工作量统计 2.总表：查看 3.待审核 4.列表：分页及计数
+      // 科研管理员 2（总表, 待审核）---> 1.任务概览：工作量统计 2.总表：查看 3.待审核 4.列表：分页及计数
       // 1.工作量统计：按日（最近10天）、按周（最近8周）、按月（最近一年）（手术、审核）
       // 2.总表查看：均为不可编辑状态
       // 3.待审核：点击跳转至对应页面
@@ -370,7 +373,7 @@ export default {
     console.log(a)
     console.log(this.user)
     this.init()
-    this.firstShow()
+    await this.firstShow()
     this.show()
   },
   methods: {
@@ -378,18 +381,16 @@ export default {
       // 角色 button 分配   this.user用户数据
       let topArr = []
       for (let i of this.rulesContainTop) {
-        if (i['codeType']) {
-          if (i['codeType'].includes(this.user.codeType)) {
+        if (i['codetype']) {
+          if (i['codetype'].includes(this.user.codetype)) {
             topArr.push(i)
           }
-        } else {
-          topArr.push(i)
         }
       }
       console.log(topArr)
       this.rulesContainTop = [...topArr]
       // 中间数组 mozhu 默认值
-      this.mozhu = [...this.whatObj['pendingEntryColumn']]
+      this.mozhu = [...this.whatObj[this.rulesContainTop[1].key]]
       this.activeRow = this.rulesContainTop[this.activeIndex]
     },
     containTopControl (row, index) {
@@ -411,16 +412,34 @@ export default {
     },
     async firstShow () {
       // table
-      let a = {
-        AlltableColumn: await this.recordAllRecordShowData(),
-        pendingEntryColumn: await this.pendingEntryColumnShowData()
+      this.recordAllRecordShowData()
+      switch (this.user.type) {
+        case '科研管理员':
+        case '临床质控员':
+          await this.formdataFinishedFilledFormShowData()
+          // 总表, 待审核
+          break
+        case '诊疗中心':
+          await this.pendingEntryColumnShowData()
+          // 总表, 待录入, 待修正
+          break
+        case '科研护士':
+          await this.pendingEntryColumnShowData()
+          // 总表, 待录入, 待修正, 待随访
+          break
       }
-      console.log(a)
+      // let a = {
+      //   AlltableColumn: this.recordAllRecordShowData(),
+      //   pendingEntryColumn: this.pendingEntryColumnShowData(),
+      //   toBeAuditedColumn: this.formdataFinishedFilledFormShowData()
+      // }
+      // console.log(a)
     },
     async show () {
       // this.pendingEntryColumnShowData()
       // this.tableData = this.pendingEntryColumnTableData
       // table
+      console.log(this.activeRow.key, 'this.activeRow.key')
       switch (this.activeRow.key) {
         case 'AlltableColumn':
           this.tableData = this.recordAllRecordTableData
@@ -429,6 +448,7 @@ export default {
           this.tableData = this.pendingEntryColumnTableData
           break
         case 'toBeAuditedColumn':
+          this.tableData = this.formdataFinishedFilledFormTableData
           console.log('toBeAuditedColumn')
           break
         case 'toBeAmendedColumn':
@@ -442,20 +462,47 @@ export default {
     // 总表
     async recordAllRecordShowData () {
       let z = await recordAllRecord({currentPage: this.currentPage, perPage: this.perPage})
-      this.recordAllRecordTableData = z.data.entity.data
-      this.total = z.data.entity.total
-      this.$set(this.rulesContainTopModel, 'AlltableColumn', this.total)
+      if (z) {
+        console.log(z.data.entity.data)
+        for (let i of z.data.entity.data) {
+          this.recordAllRecordTableData.push(Object.assign(i, {
+            术前: JSON.stringify(i.information['术前']).replace(/[{}"]/g, ''),
+            术中: JSON.stringify(i.information['术中']).replace(/[{}"]/g, ''),
+            术后: JSON.stringify(i.information['术后']).replace(/[{}"]/g, '')
+          }))
+          if (i.gender) i.gender = '男'
+          else i.gender = '女'
+        }
+        this.total = z.data.entity.total
+        this.$set(this.rulesContainTopModel, 'AlltableColumn', this.total)
+      }
     },
     // 待录入
     async pendingEntryColumnShowData () {
       let z = await formdataUndoneFilledForm(Object.assign({currentPage: this.currentPage, perPage: this.perPage}, this.user))
-      if (z) {
+      if (z ? z.data.entity : false) {
         this.pendingEntryColumnTableData = []
         for (let i of z.data.entity.data) {
           this.pendingEntryColumnTableData.push(Object.assign(i, i.header))
+          if (i.gender) i.gender = '男'
+          else i.gender = '女'
         }
         this.total = z.data.entity.total
         this.$set(this.rulesContainTopModel, 'pendingEntryColumn', this.total)
+      }
+    },
+    // 待审核
+    async formdataFinishedFilledFormShowData () {
+      let z = await formdataFinishedFilledForm(Object.assign({currentPage: this.currentPage, perPage: this.perPage}, this.user))
+      if (z ? z.data.entity : false) {
+        this.formdataFinishedFilledFormTableData = []
+        for (let i of z.data.entity.data) {
+          this.formdataFinishedFilledFormTableData.push(Object.assign(i, i.header))
+          if (i.gender) i.gender = '男'
+          else i.gender = '女'
+        }
+        this.total = z.data.entity.total
+        this.$set(this.rulesContainTopModel, 'toBeAuditedColumn', this.total)
       }
     },
     lookupFormInput () {
@@ -517,6 +564,7 @@ export default {
           if (this.patientIdCheckUp()) {
             let r = await record(Object.assign(formModel, this.ruleForm))
             console.log(r)
+            await this.firstShow()
             this.show()
             this.dialogVisible = false
           }

@@ -497,6 +497,7 @@ export default {
     },
     // one
     templateEdit (value, index) {
+      this.init()
       this.formModel = Object.assign({}, value)
       console.log(this.formModel, '-----')
       console.log(this.mozhu, '---11111111--')
@@ -850,6 +851,7 @@ $bottomH: 200px;
       .createContent {
         width: $full;
         display: flex;
+        justify-content: space-around;
         // .el-transfer {
         //   width: $full;
         //   display: flex;

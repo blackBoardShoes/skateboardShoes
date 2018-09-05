@@ -29,16 +29,20 @@
               </el-tooltip>
             </div>
             <div class="rightContentControlBtn">
-              <el-button @click="generalSubmit" :disabled="activeIndexNav != patientInfo.phase">
+              <el-button @click="generalSubmit"
+                v-if="navArr.length - 1 === activeIndex"
+                :disabled="activeIndexNav != patientInfo.phase">
                 <i class="ercp-icon-general-submit"></i>&nbsp;
                 阶段提交</el-button>
+              <div style="width: 120px;" v-else></div>
               <el-button @click="generalDelete" style="color: #FF455B;" :disabled="activeIndexNav != patientInfo.phase">
                 <i class="ercp-icon-general-delete"></i>&nbsp;
                 删除</el-button>
               <el-button @click="generalSave" :disabled="activeIndexNav != patientInfo.phase">
                 <i class="ercp-icon-general-save"></i>&nbsp;
                 保存</el-button>
-              <el-button @click="generalBack" style="color: #878A8D;" :disabled="activeIndexNav != patientInfo.phase">
+              <el-button @click="generalBack" style="color: #878A8D;" >
+              <!-- :disabled="activeIndexNav != patientInfo.phase"> -->
                 <i class="ercp-icon-general-back"></i>&nbsp;
                 返回</el-button>
             </div>
@@ -49,7 +53,7 @@
                 <sx-min-form
                   v-if="smf"
                   :disabled="activeIndexNav != patientInfo.phase"
-                  v-model="fishData"
+                  v-model="fishData[navArr[activeIndex].id]"
                   ref="thatForm"
                   :mozhu="navArr[activeIndex]"
                   @notVerifying="notVerifying"
@@ -73,7 +77,7 @@
 import sxNoRouteControl from '../../components/submenu/noRouteControl'
 import sxOperationReport from '../../components/staticForm/operationReport'
 import { fieldAllForms } from '../../api/form/bdk.js'
-import { formdataSave } from '../../api/rules/lr.js'
+import { formdataSave, formdataSubmit, formdataData } from '../../api/rules/lr.js'
 
 export default {
   name: 'rules_index',
@@ -85,7 +89,7 @@ export default {
     return {
       // 中间数组
       navArr: [],
-      showData: [],
+      showAllForms: [],
       allArr: {
         zyjb: {
           label: '住院基本情况',
@@ -653,28 +657,35 @@ export default {
       this.patientInfo = JSON.parse(this.$route.params.data)
       this.activeIndexNav = this.patientInfo.phase
     }
+    await this.firstShow()
     await this.init()
     this.show()
     // this.navArrAssignment()
   },
   methods: {
+    async firstShow () {
+      let faf = await fieldAllForms()
+      if (faf) {
+        this.showAllForms = faf.data.entity
+      }
+    },
     async show () {
+      let a = await formdataData(this.patientInfo.id)
+      if (a) {
+        this.fishData = a.data.entity ? Object.assign({}, a.data.entity.data) : {}
+      }
+      console.log(this.fishData, 'firstShow')
+    },
+    async init () {
       this.navArr = []
       let z = []
-      for (let i of this.showData) {
+      for (let i of this.showAllForms) {
         if (i.phase === this.activeIndexNav) {
           await z.push(i)
         }
       }
       this.navArr = [...z]
-      this.fishData = Object.assign({}, this.patientInfo, {height: 55})
       this.smf = true
-    },
-    async init () {
-      let faf = await fieldAllForms()
-      if (faf) {
-        this.showData = faf.data.entity
-      }
     },
     navArrAssignment () {
       let a = (_) => {
@@ -696,6 +707,7 @@ export default {
     async emitClick (data = {}) {
       this.smf = false
       this.activeIndex = data['index']
+      console.log(this.activeIndex, 'this.activeIndex')
       setTimeout(_ => {
         this.smf = true
       }, 1)
@@ -704,7 +716,7 @@ export default {
       this.smf = false
       this.activeIndexNav = key
       setTimeout(_ => {
-        this.show()
+        this.init()
       }, 1)
       // this.navArrAssignment()
       // if (this.$refs['ssbgModel']) {
@@ -727,15 +739,21 @@ export default {
     },
     async notVerifying (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
       console.log(mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate)
-      let fds = await formdataSave(Object.assign(formModel, this.patientInfo))
+      this.fishData[this.navArr[this.activeIndex].id] = formModel
+      let fds = await formdataSave(Object.assign(this.patientInfo, {data: this.fishData}))
       console.log(fds)
-      if (this.activeIndex <= this.activeIndexNav.length) {
+      console.log(this.navArr.length - 1, 'this.activeIndexNav')
+      if (this.activeIndex <= this.navArr.length - 1) {
         this.activeIndex++
       }
     },
     async consoleData (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
-      console.log(mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate)
-      console.log(Object.assign(formModel, this.patientInfo), 'Object.assign(formModel, this.patientInfo)')
+      this.fishData[this.navArr[this.activeIndex].id] = formModel
+      let fds = await formdataSubmit(Object.assign(this.patientInfo, {data: this.fishData}))
+      console.log(fds)
+      if (fds) {
+        this.show()
+      }
       // this.$router.go(-1)
     },
     generalBack () {
