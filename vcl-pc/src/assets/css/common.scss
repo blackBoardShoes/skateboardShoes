@@ -82,6 +82,11 @@
   color: #878A8D;
 }
 
+.hover-bgc:hover{
+  transition: all .5 linear;
+  background-color: rgba($color: $themeColor, $alpha: .05);
+  color: rgba($color: $themeColor, $alpha: .95);
+}
 
 .text-overflow-ellipsis {
   white-space: nowrap;
@@ -103,8 +108,8 @@
 }
 .right-corner-primary{
   position: absolute;
-  top:10px;
-  right: 6px;
+  top:12px;
+  right: 66px;
   font-size: 6px;
   color:$lightTextColor;
   display: block;

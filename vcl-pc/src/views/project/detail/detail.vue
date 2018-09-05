@@ -127,7 +127,7 @@ export default {
       }
       .project-name{
         // border-top: 2px solid #fff;
-        border-bottom: 2px solid #fff;
+        border-bottom: 1px solid #fff;
         padding: 0 10px;
         height: 48px;
         line-height: 48px;

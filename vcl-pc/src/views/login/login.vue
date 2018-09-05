@@ -128,13 +128,11 @@ export default {
           }
           let response = await login(info)
           if (response.data.mitiStatus === 'SUCCESS') {
-            this._updateCheckCode()
-            this.form.yanzhengma = ''
             let user = response.data.entity.User
             let token = response.data.entity.Token.token
             this.$store.commit('SET_TOKEN', token)
             this.$store.commit('SET_USER', user)
-            this.$router.replace('home')
+            this.$router.push('/home')
           } else {
             this.$message.error('ERROR: ' + response.data.message)
           }

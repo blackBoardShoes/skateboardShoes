@@ -59,16 +59,22 @@
           </el-table-column>
           <el-table-column
             show-overflow-tooltip
-            prop="creator.userId"
+            prop="creatorSta"
             align="center"
             label="项目负责人"
             width="100">
+            <template slot-scope="scope">
+              <span style="margin-left: 10px">{{ scope.row.creatorSta.username }}</span>
+            </template>
           </el-table-column>
           <el-table-column
             prop="members"
             align="center"
             label="项目成员数"
             width="100">
+            <template slot-scope="scope">
+              <span style="margin-left: 10px">{{ scope.row.members.length }}</span>
+            </template>
           </el-table-column>
           <el-table-column
             prop="status"
@@ -84,6 +90,9 @@
             align="center"
             label="入组患者"
             width="80">
+            <template slot-scope="scope">
+              <span style="margin-left: 10px">{{ scope.row.patients.length }}</span>
+            </template>
           </el-table-column>
           <el-table-column
             show-overflow-tooltip

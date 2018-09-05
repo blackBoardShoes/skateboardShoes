@@ -1,8 +1,8 @@
 <template>
   <div id="write">
     <el-form ref="messagePen" :rules="rules" :model="message" label-position="left" label-width="80px">
-      <el-form-item prop="receiver" label="发送对象">
-        <el-select v-model="message.receiver" filterable style="margin-right:20px;width:100%;" multiple collapse-tags  placeholder="请搜索用户或选择用户列表">
+      <el-form-item prop="receivers" label="发送对象">
+        <el-select v-model="message.receivers" filterable style="margin-right:20px;width:100%;" multiple collapse-tags  placeholder="请搜索用户账号/姓名或选择用户列表">
         <el-option
           v-for="(item, index) in userOptions"
           :laebl="item.name + '/' + item.username"
@@ -14,15 +14,15 @@
       </el-select>
       </el-form-item>
 
-      <el-form-item prop="theme" label="消息主题">
-        <el-input v-model="message.theme"></el-input>
+      <el-form-item prop="title" label="消息主题">
+        <el-input v-model="message.title"></el-input>
       </el-form-item>
 
-      <el-form-item prop="content" label="消息内容">
+      <el-form-item prop="message" label="消息正文">
         <el-input
-          v-model="message.content"
+          v-model="message.message"
           type="textarea"
-          :autosize="{ minRows: 2, maxRows: 6 }"
+          :autosize="{ minRows: 6, maxRows: 12 }"
           ></el-input>
       </el-form-item>
     </el-form>
@@ -32,24 +32,27 @@
 </template>
 <script>
 import { getAllUser } from '../../../../src/api/user/user'
+import { sendMessage } from '../../../../src/api/message/message'
 export default {
   name: 'message_write',
   data () {
     return {
       message: {
-        receiver: [],
-        theme: '',
-        content: ''
+        receivers: [],
+        title: '',
+        message: '',
+        sender: ''
       },
       rules: {
-        receiver: [
-          {required: true, message: '必填项不能为空', trigger: 'focus'}
+        receivers: [
+          {required: true, message: '请至少选择一个发送对象', trigger: 'focus'}
         ],
-        theme: [
-          {required: true, message: '必填项不能为空', trigger: 'focus'}
+        title: [
+          {required: true, message: '消息主题不能为空', trigger: 'focus'},
+          {min: 1, max: 15, message: '字数在15字以内', trigger: 'change'}
         ],
-        content: [
-          {required: true, message: '必填项不能为空', trigger: 'focus'}
+        message: [
+          {required: true, message: '消息正文不能为空', trigger: 'focus'}
         ]
       },
       userOptions: [
@@ -69,8 +72,24 @@ export default {
       }
       let response = await getAllUser(info)
       if (response.data.mitiStatus === 'SUCCESS') {
-        // console.log(response.data.entity.data)
         this.initUserOptions(response.data.entity.data)
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    async faMessage (info) {
+      // let info = this.message
+      let response = await sendMessage(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        this.$message.success(response.data.entity)
+        this.message = {
+          receivers: [],
+          title: '',
+          message: '',
+          sender: ''
+        }
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
       }
     },
     initUserOptions (arr) {
@@ -91,7 +110,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let arr = []
-          this.message.receiver.forEach((item1, index1) => {
+          this.message.receivers.forEach((item1, index1) => {
             this.userOptions.forEach((item2) => {
               if (item1.split('/')[1] === item2.username) {
                 arr.push(item2.id)
@@ -99,7 +118,8 @@ export default {
             })
           })
           let info = this.message
-          info.receiver = arr
+          info.receivers = arr
+          this.faMessage(info)
           console.log(info)
         } else {
           return false
@@ -109,6 +129,7 @@ export default {
   },
   mounted () {
     this.me = this.$store.state.user
+    this.message.sender = this.me.id
     this.getUser()
   },
   computed: {

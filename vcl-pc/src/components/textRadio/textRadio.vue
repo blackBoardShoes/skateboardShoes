@@ -1,6 +1,6 @@
 <template>
   <div class="text-radio">
-    <el-radio-group v-model="form.radio" class="text-radio-group" :disabled="disabled">
+    <el-radio-group v-model="form.radio" class="text-radio-group">
       <el-radio
         v-for="(radio,index) in radios"
         :key="index"
@@ -15,7 +15,6 @@
       v-show="form.radio === '其它'"
       v-model="form.text"
       @blur="inputBlur"
-      :disabled="disabled"
       placeholder="请填写其它的内容"
       class="text-radio-input"
     >
@@ -38,9 +37,8 @@ export default {
     options: {
       type: Array
     },
-    disabled: {
-      type: Boolean,
-      default: false
+    message: {
+      type: String
     }
   },
   data () {
@@ -94,7 +92,16 @@ export default {
           this.$emit('change', form.radio)
         }
       },
+      immediate: true,
       deep: true
+    },
+    'message': {
+      handler: function (message) {
+        if (message !== '') {
+          this.value = message
+          this.init()
+        }
+      }
     }
   }
 }

@@ -5,31 +5,16 @@
         <h4>消息中心</h4>
         <h5 class="light-text">Message Center</h5>
       </div>
-      <div :class="{'nav-case': true, active: $route.path.split('/')[3] === 'receive'}" @click="$router.push('receive')">
+      <div
+        v-for="(item, index) in navCase"
+        :key="index"
+        :class="{'nav-case': true, active: $route.path.split('/')[3] === item.eng.toLowerCase()}" @click="$router.push(item.eng.toLowerCase())">
         <div class="left-icon">
-          <span class="ercp-icon-general-inbox"></span>
+          <span :class=item.icon></span>
         </div>
         <div class="right-text nav-light-text">
-          <div class="title">收件箱</div>
-          <div class="count">32 条</div>
-        </div>
-      </div>
-      <div :class="{'nav-case': true, active: $route.path.split('/')[3] === 'send'}" @click="$router.push('send')">
-        <div class="left-icon">
-          <span class="ercp-icon-general-outbox"></span>
-        </div>
-        <div class="right-text nav-light-text">
-          <div class="title">发件箱</div>
-          <div class="count">4 条</div>
-        </div>
-      </div>
-      <div :class="{'nav-case': true, active: $route.path.split('/')[3] === 'write'}" @click="$router.push('write')">
-        <div class="left-icon">
-          <span class="ercp-icon-general-send"></span>
-        </div>
-        <div class="right-text nav-light-text">
-          <div class="title">写消息</div>
-          <div class="count">Send</div>
+          <div class="title">{{item.text}}</div>
+          <div class="count">{{item.eng}}</div>
         </div>
       </div>
     </div>
@@ -40,7 +25,28 @@
 </template>
 <script>
 export default {
-  name: 'message_index'
+  name: 'message_index',
+  data () {
+    return {
+      navCase: [
+        {
+          text: '收件箱',
+          eng: 'Receive',
+          icon: 'ercp-icon-general-inbox'
+        },
+        {
+          text: '发件箱',
+          eng: 'Send',
+          icon: 'ercp-icon-general-outbox'
+        },
+        {
+          text: '写消息',
+          eng: 'Write',
+          icon: 'ercp-icon-general-send'
+        }
+      ]
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -70,7 +76,7 @@ export default {
       }
       .nav-case{
         cursor: pointer;
-        transition: all .25s linear;
+        transition: all .5s linear;
         height: 80px;
         .left-icon{
           height: 80px;
@@ -87,7 +93,7 @@ export default {
           width: 80px;
           box-sizing: border-box;
           float: left;
-          text-align: right;
+          text-align: left;
           padding: 15px 15px 15px 0;
           line-height: 25px;
         }

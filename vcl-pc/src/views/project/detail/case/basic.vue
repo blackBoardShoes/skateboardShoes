@@ -18,7 +18,7 @@
         <el-col :span="12">
           <el-form-item label="项目负责人" prop="creator">
             <!-- <el-input v-model="basciInfo.creator.name" disabled></el-input> -->
-            <el-input v-model="basciInfo.creator" disabled></el-input>
+            <el-input v-model="basciInfo.creatorName" disabled></el-input>
           </el-form-item>
         </el-col>
          <el-col :span="24">
@@ -79,7 +79,7 @@ export default {
       basciInfo: {
         name: '',
         abbreviation: '',
-        creator: '',
+        creatorName: '',
         intro: ''
       },
       rules: {
@@ -149,7 +149,7 @@ export default {
       this.basciInfo = {
         name: this.projectInfo.name,
         abbreviation: this.projectInfo.abbreviation,
-        creator: this.projectInfo.creator,
+        creatorName: this.projectInfo.creatorSta ? this.projectInfo.creatorSta.name : '',
         intro: this.projectInfo.intro
       }
     }
@@ -161,7 +161,7 @@ export default {
           this.basciInfo = {
             name: newVal.name,
             abbreviation: newVal.abbreviation,
-            creator: newVal.creator,
+            creatorName: this.projectInfo.creatorSta ? this.projectInfo.creatorSta.name : '',
             intro: newVal.intro
           }
         }

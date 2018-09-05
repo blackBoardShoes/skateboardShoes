@@ -73,14 +73,24 @@
           trigger="hover">
           <div class="message-box">
             <div class="title">
-              <div :class="{'nav-case': true, 'active': presentMessageType === 2 } " @click="presentMessageType = 2">系统通知</div>
-              <div :class="{'nav-case': true, 'active': presentMessageType === 1 } " @click="presentMessageType = 1">私信通知</div>
+              <div :class="{'nav-case': true, 'active': messageType === 'system' } " @click="currentMessage = sysMessage">
+                <div style="position:relative;" @click="messageType = 'system'">
+                系统通知
+                <span class="right-corner-primary" v-if="sysMessage && sysMessage.length > 0">{{sysMessage.length}}</span>
+                </div>
+              </div>
+              <div :class="{'nav-case': true, 'active': messageType === 'user' } " @click="currentMessage = userMessage">
+                <div style="position:relative;" @click="messageType = 'user'">
+                用户消息
+                <span class="right-corner-primary" v-if="userMessage && userMessage.length > 0">{{userMessage.length}}</span>
+                </div>
+              </div>
             </div>
             <div class="message">
-              <div class="no-message" v-if="message.length === 0">
+              <div class="no-message" v-if="currentMessage.length === 0">
                 <span>暂无未读消息</span>
               </div>
-              <div class="message-case unread" v-for="(item, index) in currentMessage" :key="index">
+              <div class="message-case" v-for="(item, index) in currentMessage" :key="index">
                 <div class="from">
                   <div class="sender float-left text-overflow-ellipsis">{{item.sender}}</div>
                   <div class="send-time float-right">{{item.sendTime}}</div>
@@ -98,7 +108,7 @@
           </div>
           <div slot="reference" @click="toMessage">
             <i class="ercp-icon-module-message"></i>
-            <span class="radial-text-primary" v-if="message.length > 0">{{message.length}}</span>
+            <span class="radial-text-primary" v-if="userMessage && userMessage.length + sysMessage.length > 0">{{userMessage.length + sysMessage.length}}</span>
           </div>
         </el-popover>
       </div>
@@ -121,11 +131,11 @@
           </el-dropdown-menu>
         </el-dropdown>
       </div>
-      <div class="system-operate float-right">
+      <!-- <div class="system-operate float-right">
         <span class="el-icon-arrow-left" @click="locationOperate('back')"></span>
         <span class="el-icon-refresh"  @click="locationOperate('refresh')"></span>
         <button class="el-icon-arrow-right" @click="locationOperate('forward')" :disabled="ableForward <= 0"></button>
-      </div>
+      </div> -->
     </div>
     <div id="content-wrapper">
       <router-view></router-view>
@@ -210,8 +220,9 @@ export default {
       },
       message: [
       ],
-      presentMessageType: 2,
-      ableForward: 0
+      ableForward: 0,
+      messageType: 'system',
+      currentMessage: []
     }
   },
   created () {
@@ -306,11 +317,10 @@ export default {
     async getMessage () {
       // console.log(this.$store.state.user)
       // let response = await unreadMessage(this.$store.state.user.id)
-      let response = await unreadMessage('002')
+      let response = await unreadMessage(this.$store.state.user.id)
       if (response.data.mitiStatus === 'SUCCESS') {
-        // this.message = response.entity.data
-        // console.log(response.data.entity)
         this.message = response.data.entity.data
+        this.currentMessage = this.sysMessage
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
@@ -402,11 +412,22 @@ export default {
         return setMenu(this.$store.state.routers, this.user.codetype)
       }
     },
-    currentMessage () {
+    userMessage () {
       if (this.message.length >= 1) {
         let arr = []
         this.message.forEach((item) => {
-          if (item.type === this.presentMessageType) {
+          if (item.type === 1) {
+            arr.push(item)
+          }
+        })
+        return arr
+      }
+    },
+    sysMessage () {
+      if (this.message.length >= 1) {
+        let arr = []
+        this.message.forEach((item) => {
+          if (item.type === 2) {
             arr.push(item)
           }
         })
@@ -670,21 +691,27 @@ export default {
       top: 36px !important;
       opacity: 0.9;
       .message-box{
-        height:400px;
+        // position: relative;
+        // left: -10px;
+        // right: -10px;
+        // bottom: -10px;
+        // top: -10px;
+        transform: scale(1.05, 1.05);
+        height:500px;
         width: 100%;
         box-sizing: border-box;
         line-height:20px;
         cursor:pointer;
 
         .no-message{
-          height: 300px;
-          line-height: 300px;
+          height: 400px;
+          line-height: 400px;
           text-align: center;
         }
 
         .message{
           box-sizing: border-box;
-          height: 300px;
+          height: 400px;
           padding-left: 20px;
           overflow: auto;
 
@@ -702,16 +729,17 @@ export default {
             }
 
             .sender{
-              width: 60%;
+              width: 70%;
             }
             .send-time{
               transition: all .5s linear;
-              width: 40%;
+              width: 30%;
             }
             .single-mark{
+              text-align: right;
               transition: all .5s linear;
               position: absolute;
-              width: 40%;
+              width: 30%;
               right: 0;
               top: 0;
               display: none;
@@ -735,7 +763,7 @@ export default {
 
         .title{
           height:50px;
-          // padding: 0 10px;
+          padding: 10 0px;
           line-height:50px;
           display: flex;
           flex-direction: row;
@@ -743,6 +771,8 @@ export default {
           border-bottom: 1px solid $deepBorderColor;
 
           .nav-case{
+            // padding: 10 0px;
+            // line-height:50px;
             flex:1;
             text-align: center;
           }

@@ -3,7 +3,7 @@ const { dali, qiji } = require('@/dev').proxyTableApi
 
 // 获取项目列表(join/create)
 export const getAllProject = data => {
-  return axios.get(dali + `/ercpProject/getPageErcpProject?userId=${data.userId}&keyword=${data.projectType}&perPage=${data.perPage}&currentPage=${data.currentPage}&like=${data.searchText}`)
+  return axios.get(qiji + `/ercpProject/getPageErcpProject?userId=${data.userId}&keyword=${data.projectType}&perPage=${data.perPage}&currentPage=${data.currentPage}&like=${data.searchText}`)
 }
 
 // 新增项目
@@ -13,7 +13,7 @@ export const addMProject = data => {
 
 // 获取单个项目的基本信息
 export const getProjectInfo = data => {
-  return axios.get(dali + `/ercpProject/getErcpProject?projectId=${data}`)
+  return axios.get(qiji + `/ercpProject/getErcpProject?projectId=${data}`)
 }
 
 // 修改项目基本信息

@@ -200,15 +200,15 @@ export default {
       basicInfo: {
         hospitalId: '',
         name: '',
-        gender: '',
-        nation: '',
-        idCard: '',
+        gender: '1',
+        nation: '维吾尔族',
+        idCard: '360731199501234567',
         phoneNum: '13687654321',
         province: '',
         city: '',
         district: '',
-        staAddress: '',
-        address: []
+        staAddress: '芝麻街12号',
+        address: ['浙江省', '杭州市', '滨江区']
       },
       rules: {
         name: [{

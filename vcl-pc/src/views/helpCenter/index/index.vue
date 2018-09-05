@@ -347,6 +347,13 @@ export default {
           this.$refs.upload.submit()
           console.log(this.file)
           console.log(this.message)
+          setTimeout(() => {
+            this.$refs.feedback.resetFields()
+            this.file = []
+            this.fileLists = []
+            this.fileList = []
+            this.fileNames = []
+          }, 1000)
         } else {
           return false
         }
