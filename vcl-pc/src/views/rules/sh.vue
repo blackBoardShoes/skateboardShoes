@@ -16,7 +16,7 @@
         </div>
       </div>
       <div class="formContentContent" v-if="Boolean(navArr[activeIndex])">
-        <sx-no-route-control :navArr="navArr" :activeIndex="activeIndex" @emitClick="emitClick"></sx-no-route-control>
+        <sx-no-route-control :comments="fishDataComments" :navArr="navArr" :activeIndex="activeIndex" @emitClick="emitClick"></sx-no-route-control>
         <div style="width: 100%;">
           <div class="rightContentControl">
             <div class="rightContentControlName">
@@ -29,22 +29,36 @@
               </el-tooltip>
             </div>
             <div class="rightContentControlBtn">
-                <el-badge :value="fishDataComments[navArr[activeIndex].id].length" class="item">
-                  <el-button @click="generalSubmit"
-                    :disabled="activeIndexNav != patientInfo.phase">
-                    <i class="ercp-icon-general-opinion"></i>&nbsp;
-                    备注</el-button>
-                </el-badge>
-              <el-button @click="generalDelete" style="color: #FF455B;" :disabled="activeIndexNav != patientInfo.phase">
+              <!-- {{fishDataComments[navArr[activeIndex].id] ? Object.keys(fishDataComments[navArr[activeIndex].id]).length ? Object.keys(fishDataComments[navArr[activeIndex].id]).length : '' : ''}} -->
+              <el-popover
+                placement="bottom"
+                width="400"
+                trigger="hover">
+                <el-button
+                  slot="reference"
+                  style="color: #878A8D;"
+                  :disabled="activeIndexNav != patientInfo.phase">
+                  <i class="ercp-icon-general-opinion"></i>&nbsp;
+                  备注&nbsp;
+                </el-button>
+                <div
+                  style="display:flex;justify-content: space-between;
+                    min-height: 25px;align-items:center;white-space:normal;
+                    word-break:break-all;word-wrap:break-word; "
+                  v-for="(val, key, index) in fishDataComments[navArr[activeIndex].id]" :key="index">
+                【{{val.label}}】 {{val.type}} {{val.otherType}}
+                <i class="ercp-icon-general-delete" @click="opinionDelete(val)"></i>
+                </div>
+              </el-popover>
+              <el-button @click="generalReject" style="color: #FF455B;" :disabled="activeIndexNav != patientInfo.phase">
                 <i class="ercp-icon-general-fail"></i>&nbsp;
                 驳回</el-button>
-              <el-button type="success" @click="generalSave" :disabled="activeIndexNav != patientInfo.phase">
+              <el-button type="success" @click="generalPass" :disabled="activeIndexNav != patientInfo.phase">
                 <i class="ercp-icon-general-pass"></i>&nbsp;
                 通过</el-button>
-              <el-button @click="generalBack" style="color: #878A8D;" >
-              <!-- :disabled="activeIndexNav != patientInfo.phase"> -->
-                <i class="ercp-icon-general-back"></i>&nbsp;
-                返回</el-button>
+              <el-button @click="generalSave"  style="color: #117FD1;" :disabled="activeIndexNav != patientInfo.phase">
+                <i class="ercp-icon-general-save"></i>&nbsp;
+                保存</el-button>
             </div>
           </div>
           <div class="formContentRight">
@@ -57,6 +71,7 @@
                   ref="thatForm"
                   :mozhu="navArr[activeIndex]"
                   :mozhuComments="fishDataComments[navArr[activeIndex].id]"
+                  @createEvaluate="createEvaluate"
                   @notVerifying="notVerifying"
                   @consoleData="consoleData"></sx-min-form>
               </div>
@@ -78,7 +93,8 @@
 import sxNoRouteControl from '../../components/submenu/noRouteControl'
 import sxOperationReport from '../../components/staticForm/operationReport'
 import { fieldAllForms } from '../../api/form/bdk.js'
-import { formdataSave, formdataSubmit, formdataData } from '../../api/rules/lr.js'
+import { formdataSave, formdataData } from '../../api/rules/lr.js'
+import { formdataPass, formdataReject } from '../../api/rules/sh.js'
 
 export default {
   name: 'rules_index',
@@ -722,45 +738,47 @@ export default {
       setTimeout(_ => {
         this.init()
       }, 1)
-      // this.navArrAssignment()
-      // if (this.$refs['ssbgModel']) {
-      //   this.$nextTick(_ => {
-      //     this.$refs['ssbgModel'].resetForm()
-      //   })
-      // }
-      // this.navArr = this.allArr[key].subFields
     },
-    generalSubmit () {
-      console.log(this.navArr)
-      console.log(this.activeIndex)
-      console.log(this.activeIndexNav)
-      this.$refs.thatForm.consoleData()
+    opinionDelete (val) {
+      this.$refs.thatForm.deleteError(val)
     },
-    generalDelete () {},
-    generalStorage () {},
-    generalSave () {
+    async generalSave () {
       this.$refs.thatForm.notVerifying()
-    },
-    async notVerifying (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
-      console.log(mozhuId, formModel, relation, newFields, idGroup, comments, coordinate)
-      this.fishData[this.navArr[this.activeIndex].id] = formModel
-      let commentsId = {}
-      commentsId[this.navArr[this.activeIndex].id] = comments
-      let fds = await formdataSave(Object.assign(this.patientInfo, { data: this.fishData, comments: commentsId }))
+      let fds = await formdataSave(Object.assign(this.patientInfo, { data: this.fishData, comments: this.fishDataComments }))
       console.log(fds)
-      console.log(this.navArr.length - 1, 'this.activeIndexNav')
-      if (this.activeIndex <= this.navArr.length - 1) {
-        this.activeIndex++
+    },
+    async generalReject () {
+      this.$refs.thatForm.notVerifying()
+      let fdr = await formdataReject(Object.assign(this.patientInfo, { data: this.fishData, comments: this.fishDataComments }))
+      console.log(fdr)
+      if (fdr) {
+        this.generalBack()
       }
     },
-    async consoleData (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
+    async generalPass () {
+      this.$refs.thatForm.consoleData()
+      let fdp = await formdataPass(Object.assign(this.patientInfo, {data: this.fishData}))
+      console.log(fdp)
+      if (fdp) {
+        this.generalBack()
+      }
+    },
+    createEvaluate (value) {
+      console.log(value)
+      this.$set(this.fishDataComments, this.navArr[this.activeIndex].id, {})
+      this.$set(this.fishDataComments, this.navArr[this.activeIndex].id, value)
+      // this.fishDataComments[this.navArr[this.activeIndex].id] = value
+    },
+    notVerifying (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
+      console.log(mozhuId, formModel, relation, newFields, idGroup, comments, coordinate)
       this.fishData[this.navArr[this.activeIndex].id] = formModel
-      // let fds = await formdataSubmit(Object.assign(this.patientInfo, {data: this.fishData}))
-      // console.log(fds)
-      // if (fds) {
-      //   this.show()
+      this.fishDataComments[this.navArr[this.activeIndex].id] = comments
+      // if (this.activeIndex <= this.navArr.length - 1) {
+      //   this.activeIndex++
       // }
-      // this.$router.go(-1)
+    },
+    consoleData (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
+      this.fishData[this.navArr[this.activeIndex].id] = formModel
     },
     generalBack () {
       this.$router.go(-1)
