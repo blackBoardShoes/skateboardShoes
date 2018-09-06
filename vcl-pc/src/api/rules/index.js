@@ -19,10 +19,15 @@ export const formdataUndoneFilledForm = data => {
 export const formdataFinishedFilledForm = data => {
   return axios.get(api + '/formdata/finishedFilledForm', { params: data })
 }
+// 待修正 rejectedFilledForm
+export const formdataRejectedFilledForm = data => {
+  return axios.get(api + '/formdata/rejectedFilledForm', { params: data })
+}
+// 获取患者信息
 export const patientGetPatientCount = data => {
   return axios.get(dali + '/patient/getPatientCount', { params: data })
 }
-
+// 添加患者信息
 export const patientAddPatient = data => {
   return axios.post(dali + '/patient/addPatient', data)
 }

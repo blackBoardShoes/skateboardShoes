@@ -41,10 +41,9 @@
               <el-button @click="generalSave" :disabled="activeIndexNav != patientInfo.phase">
                 <i class="ercp-icon-general-save"></i>&nbsp;
                 保存</el-button>
-              <el-button @click="generalBack" style="color: #878A8D;" >
-              <!-- :disabled="activeIndexNav != patientInfo.phase"> -->
+              <!-- <el-button @click="generalBack" style="color: #878A8D;" >
                 <i class="ercp-icon-general-back"></i>&nbsp;
-                返回</el-button>
+                返回</el-button> -->
             </div>
           </div>
           <div class="formContentRight">
@@ -726,35 +725,35 @@ export default {
       // }
       // this.navArr = this.allArr[key].subFields
     },
-    generalSubmit () {
+    async generalSubmit () {
       console.log(this.navArr)
       console.log(this.activeIndex)
       console.log(this.activeIndexNav)
       this.$refs.thatForm.consoleData()
-    },
-    generalDelete () {},
-    generalStorage () {},
-    generalSave () {
-      this.$refs.thatForm.notVerifying()
-    },
-    async notVerifying (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
-      console.log(mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate)
-      this.fishData[this.navArr[this.activeIndex].id] = formModel
-      let fds = await formdataSave(Object.assign(this.patientInfo, {data: this.fishData}))
-      console.log(fds)
-      console.log(this.navArr.length - 1, 'this.activeIndexNav')
-      if (this.activeIndex <= this.navArr.length - 1) {
-        this.activeIndex++
-      }
-    },
-    async consoleData (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
-      this.fishData[this.navArr[this.activeIndex].id] = formModel
       let fds = await formdataSubmit(Object.assign(this.patientInfo, {data: this.fishData}))
       console.log(fds)
       if (fds) {
-        this.show()
+        this.generalBack()
       }
-      // this.$router.go(-1)
+    },
+    generalDelete () {},
+    async generalSave () {
+      this.$refs.thatForm.notVerifying()
+      let fds = await formdataSave(Object.assign(this.patientInfo, {data: this.fishData}))
+      if (fds) {
+        if (this.activeIndex <= this.navArr.length - 1) {
+          this.activeIndex++
+        }
+        // this.show()
+      }
+    },
+    async notVerifying (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
+      // this.fishData[this.navArr[this.activeIndex].id] = formModel
+      this.$set(this.fishData, this.navArr[this.activeIndex].id, formModel)
+    },
+    async consoleData (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
+      // this.fishData[this.navArr[this.activeIndex].id] = formModel
+      this.$set(this.fishData, this.navArr[this.activeIndex].id, formModel)
     },
     generalBack () {
       this.$router.go(-1)

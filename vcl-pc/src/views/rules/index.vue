@@ -29,7 +29,6 @@
             <el-col :span="6">
               <el-input
                 @keyup.enter.native="lookupFormInput"
-                size="small"
                 placeholder="姓名/身份证号/住院编号"
                 v-model="lookupFormInputData"
                 clearable
@@ -45,7 +44,7 @@
           <div style="text-align: right;margin-top:15px;">
             <el-pagination
               layout="total, sizes, prev, pager, next, jumper"
-              :total="total"
+              :total="rulesContainTopModel[rulesContainTop[activeIndex].key]"
               :page-sizes="[5, 10, 15]"
               :current-page="currentPage"
               :page-size="perPage"
@@ -93,7 +92,7 @@
 <script>
 import { mapState } from 'vuex'
 import sxMinTable from '../../components/dynamicForm/minTable'
-import { record, recordAllRecord, formdataFinishedFilledForm, formdataUndoneFilledForm, patientGetPatientCount, patientAddPatient } from '../../api/rules/index.js'
+import { record, recordAllRecord, formdataRejectedFilledForm, formdataFinishedFilledForm, formdataUndoneFilledForm, patientGetPatientCount, patientAddPatient } from '../../api/rules/index.js'
 import { addressData } from '../../data/address/addressData.js'
 export default {
   components: {
@@ -196,9 +195,12 @@ export default {
           { prop: 'patientName', label: '姓名' },
           { prop: 'gender', label: '性别', sortable: true },
           { prop: 'inHospitalDate', label: '入院日期' },
-          { prop: '术前', label: '术前记录', width: '180', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] },
-          { prop: '术中', label: '术中记录', width: '180', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] },
-          { prop: '术后', label: '术后记录', width: '180', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] }
+          { prop: '住院基本情况', label: '住院基本情况', width: '122' },
+          { prop: '术前', label: '术前记录', width: '122' },
+          { prop: '术中', label: '术中记录', width: '122' },
+          { prop: '术后', label: '术后记录', width: '122' },
+          { prop: '出院综合评估', label: '出院综合评估', width: '122' },
+          { option: true, label: '操作', contain: [{label: '查看'}] }
           // { prop: 'name', label: '是否纳入随访记录', width: '180', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] }
         ],
         // 待录入 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (编辑、删除)
@@ -227,14 +229,14 @@ export default {
         ],
         // 待修正 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (编辑
         toBeAmendedColumn: [
-          { prop: 'name', label: '住院号' },
-          { prop: 'name', label: '编号' },
-          { prop: 'name', label: '科室' },
-          { prop: 'name', label: '床号' },
-          { prop: 'name', label: '姓名' },
-          { prop: 'name', label: '性别', sortable: true },
-          { prop: 'name', label: '数据阶段', sortable: true },
-          { prop: 'name', label: '记录者', sortable: true },
+          { prop: 'patientId', label: '住院号' },
+          { prop: 'operationNum', label: '编号' },
+          { prop: 'dept', label: '科室' },
+          { prop: 'bedNum', label: '床号' },
+          { prop: 'patientName', label: '姓名' },
+          { prop: 'gender', label: '性别', sortable: true },
+          { prop: 'phase', label: '数据阶段', sortable: true },
+          { prop: 'responseName', label: '记录者', sortable: true },
           { option: true, label: '操作', contain: [{label: '编辑'}] }
         ],
         // 待随访 ---> 住院号 编号 姓名 性别 主管医生 术后诊断 出院日期 记录者 状态（待问询、已失联、待复查） 操作（编辑）
@@ -334,7 +336,8 @@ export default {
       tableData: [],
       recordAllRecordTableData: [],
       pendingEntryColumnTableData: [],
-      formdataFinishedFilledFormTableData: []
+      toBeAuditedColumnTableData: [],
+      toBeAmendedColumnTableData: []
     }
   },
   computed: mapState({
@@ -421,10 +424,12 @@ export default {
           break
         case '诊疗中心':
           await this.formdataUndoneFilledFormShowData()
+          await this.formdataRejectedFilledFormShowData()
           // 总表, 待录入, 待修正
           break
         case '科研护士':
           await this.formdataUndoneFilledFormShowData()
+          await this.formdataRejectedFilledFormShowData()
           // 总表, 待录入, 待修正, 待随访
           break
       }
@@ -436,9 +441,7 @@ export default {
       // console.log(a)
     },
     async show () {
-      // this.formdataUndoneFilledFormShowData()
-      // this.tableData = this.pendingEntryColumnTableData
-      // table
+      // tableData
       console.log(this.activeRow.key, 'this.activeRow.key')
       switch (this.activeRow.key) {
         case 'AlltableColumn':
@@ -448,10 +451,10 @@ export default {
           this.tableData = this.pendingEntryColumnTableData
           break
         case 'toBeAuditedColumn':
-          this.tableData = this.formdataFinishedFilledFormTableData
-          console.log('toBeAuditedColumn')
+          this.tableData = this.toBeAuditedColumnTableData
           break
         case 'toBeAmendedColumn':
+          this.tableData = this.toBeAmendedColumnTableData
           console.log('toBeAmendedColumn')
           break
         case 'followUpColumn':
@@ -461,25 +464,30 @@ export default {
     },
     // 总表
     async recordAllRecordShowData () {
-      let z = await recordAllRecord({currentPage: this.currentPage, perPage: this.perPage})
-      if (z) {
+      let z = await recordAllRecord({currentPage: this.currentPage, perPage: this.perPage, searchPattern: this.lookupFormInputData})
+      if (z ? z.data.entity : false) {
         console.log(z.data.entity.data)
+        this.recordAllRecordTableData = []
         for (let i of z.data.entity.data) {
           this.recordAllRecordTableData.push(Object.assign(i, {
             术前: JSON.stringify(i.information['术前']).replace(/[{}"]/g, ''),
             术中: JSON.stringify(i.information['术中']).replace(/[{}"]/g, ''),
-            术后: JSON.stringify(i.information['术后']).replace(/[{}"]/g, '')
+            术后: JSON.stringify(i.information['术后']).replace(/[{}"]/g, ''),
+            住院基本情况: JSON.stringify(i.information['住院基本情况']).replace(/[{}"]/g, ''),
+            出院综合评估: JSON.stringify(i.information['出院综合评估']).replace(/[{}"]/g, '')
           }))
           if (i.gender) i.gender = '男'
           else i.gender = '女'
         }
-        this.total = z.data.entity.total
-        this.$set(this.rulesContainTopModel, 'AlltableColumn', this.total)
+        // this.total = z.data.entity.total
+        this.$set(this.rulesContainTopModel, 'AlltableColumn', z.data.entity.total)
+        return true
       }
+      return false
     },
     // 待录入
     async formdataUndoneFilledFormShowData () {
-      let z = await formdataUndoneFilledForm(Object.assign({currentPage: this.currentPage, perPage: this.perPage}, this.user))
+      let z = await formdataUndoneFilledForm(Object.assign({currentPage: this.currentPage, perPage: this.perPage, searchPattern: this.lookupFormInputData}, this.user))
       if (z ? z.data.entity : false) {
         this.pendingEntryColumnTableData = []
         for (let i of z.data.entity.data) {
@@ -487,27 +495,76 @@ export default {
           if (i.gender) i.gender = '男'
           else i.gender = '女'
         }
-        this.total = z.data.entity.total
-        this.$set(this.rulesContainTopModel, 'pendingEntryColumn', this.total)
+        // this.total = z.data.entity.total
+        this.$set(this.rulesContainTopModel, 'pendingEntryColumn', z.data.entity.total)
+        return true
       }
+      return false
     },
     // 待审核
     async formdataFinishedFilledFormShowData () {
-      let z = await formdataFinishedFilledForm(Object.assign({currentPage: this.currentPage, perPage: this.perPage}, this.user))
+      let z = await formdataFinishedFilledForm(Object.assign({currentPage: this.currentPage, perPage: this.perPage, searchPattern: this.lookupFormInputData}, this.user))
       if (z ? z.data.entity : false) {
-        this.formdataFinishedFilledFormTableData = []
+        this.toBeAuditedColumnTableData = []
         for (let i of z.data.entity.data) {
-          this.formdataFinishedFilledFormTableData.push(Object.assign(i, i.header))
+          this.toBeAuditedColumnTableData.push(Object.assign(i, i.header))
           if (i.gender) i.gender = '男'
           else i.gender = '女'
         }
-        this.total = z.data.entity.total
-        this.$set(this.rulesContainTopModel, 'toBeAuditedColumn', this.total)
+        // this.total = z.data.entity.total
+        this.$set(this.rulesContainTopModel, 'toBeAuditedColumn', z.data.entity.total)
+        return true
       }
+      return false
     },
-    lookupFormInput () {
-      console.log(this.lookupFormInputData)
-      console.log(this.activeRow)
+    // 待修正
+    async formdataRejectedFilledFormShowData () {
+      let z = await formdataRejectedFilledForm(Object.assign({currentPage: this.currentPage, perPage: this.perPage, searchPattern: this.lookupFormInputData}, this.user))
+      if (z ? z.data.entity : false) {
+        this.toBeAmendedColumnTableData = []
+        for (let i of z.data.entity.data) {
+          this.toBeAmendedColumnTableData.push(Object.assign(i, i.header))
+          if (i.gender) i.gender = '男'
+          else i.gender = '女'
+        }
+        // this.total = z.data.entity.total
+        this.$set(this.rulesContainTopModel, 'toBeAmendedColumn', z.data.entity.total)
+        return true
+      }
+      return false
+    },
+    async lookupFormInput () {
+      let successOrFail = false
+      switch (this.activeRow.key) {
+        case 'AlltableColumn':
+          successOrFail = await this.recordAllRecordShowData()
+          break
+        case 'pendingEntryColumn':
+          successOrFail = await this.formdataUndoneFilledFormShowData()
+          break
+        case 'toBeAuditedColumn':
+          successOrFail = await this.formdataFinishedFilledFormShowData()
+          break
+        case 'toBeAmendedColumn':
+          successOrFail = await this.formdataRejectedFilledFormShowData()
+          break
+        case 'followUpColumn':
+          console.log('followUpColumn')
+          break
+      }
+      this.show()
+      if (successOrFail) {
+        this.$message({
+          type: 'success',
+          message: '搜索成功',
+          showClose: true
+        })
+      } else {
+        this.$message({
+          showClose: true,
+          message: '搜索失败'
+        })
+      }
     },
     filterHandler (value, row, column) {
       console.log(value, row, column, '=======, filterHandler')
@@ -564,9 +621,9 @@ export default {
           if (this.patientIdCheckUp()) {
             let r = await record(Object.assign(formModel, this.ruleForm))
             console.log(r)
+            this.dialogVisible = false
             await this.firstShow()
             this.show()
-            this.dialogVisible = false
           }
         } else {
           console.log('error submit!!')
@@ -578,6 +635,9 @@ export default {
       console.log(this.activeRow)
       let deleteBtn = true
       switch (x.label) {
+        case '查看':
+          console.log('查看')
+          break
         case '编辑':
           console.log('编辑')
           break
