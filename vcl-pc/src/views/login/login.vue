@@ -71,6 +71,9 @@ export default {
     this.$store.commit('SET_USER', null)
     console.log(this.$store.state)
   },
+  mounted () {
+    this.env = process.env.NODE_ENV
+  },
   data () {
     var checkYanzhengma = (rule, value, callback) => {
       value = value.toUpperCase()
@@ -101,7 +104,8 @@ export default {
         yanzhengma: [
           { validator: checkYanzhengma, trigger: 'blur' }
         ]
-      }
+      },
+      env: ''
     }
   },
   methods: {
@@ -132,7 +136,13 @@ export default {
             let token = response.data.entity.Token.token
             this.$store.commit('SET_TOKEN', token)
             this.$store.commit('SET_USER', user)
+            // if (this.env === 'production') {
+            //   let ipc = this.$electron.ipcRenderer
+            //   ipc.send('mainResize')
+            // }
+            // setTimeout(() => {
             this.$router.push('/home')
+            // }, 3000)
           } else {
             this.$message.error('ERROR: ' + response.data.message)
           }

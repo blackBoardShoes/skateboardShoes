@@ -227,15 +227,15 @@ export default {
   },
   created () {
     this.checkAuth()
-    this.env = process.env.NODE_ENV
   },
   mounted () {
+    // fixed: 页面刷新清空缓存
+    // fixed：刷新后面包屑重置
+    this.env = process.env.NODE_ENV
     if (this.env === 'production') {
       let ipc = this.$electron.ipcRenderer
       ipc.send('mainResize')
     }
-    // fixed: 页面刷新清空缓存
-    // fixed：刷新后面包屑重置
     this.user = this.$store.state.user
     this.initMenu(this.menu)
     this.currentPath = getCurrentPath(this, this.$route)
