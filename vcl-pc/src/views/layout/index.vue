@@ -534,9 +534,11 @@ export default {
           background-color: rgba($color: #fff, $alpha: 0.1);
           .menu-icon{
             color:$themeColor;
+            text-shadow: 1px 1px 1px #fff;
           }
           .menu-title{
             color:$themeColor;
+            text-shadow: 1px 1px 1px #fff;
           }
         }
 

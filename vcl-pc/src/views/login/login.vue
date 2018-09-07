@@ -126,7 +126,7 @@ export default {
     // 更换验证码
     _setCheckCode (value) {
       this.checkCode = value
-      // this.form.yanzhengma = value
+      this.form.yanzhengma = value
     },
     // 密码是否可见
     _togglePasswordType () {
