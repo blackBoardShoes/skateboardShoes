@@ -94,7 +94,7 @@
               </div>
             </div>
             <div class="message">
-              <div class="no-message" v-if="currentMessage.length === 0">
+              <div class="no-message" v-if="currentMessage && currentMessage.length === 0">
                 <span>暂无未读消息</span>
               </div>
               <div class="message-case" v-for="(item, index) in currentMessage" :key="index">
