@@ -96,8 +96,8 @@
                     <el-button @click="onEval(items)">计算</el-button>
                   </div>
                 </div>
-                <div v-if="items.type === 'TABLE'" style="width: 100%;">
-                  <sx-table v-model="formModel[items.id]" ref="sxtable" :tableData="items ? items : {}" @getData="getData" style="width: 100%;"></sx-table>
+                <div v-if="items.type === 'TABLE'">
+                  <sx-table v-model="formModel[items.id]" ref="sxtable" :tableData="items ? items : {}" @getData="getData"></sx-table>
                 </div>
                 <!-- 辅助创建 新增 编辑 -->
                 <div v-if="items.type === 'CREATECALCULATE'" >

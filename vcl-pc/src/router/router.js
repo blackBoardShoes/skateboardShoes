@@ -130,6 +130,16 @@ export const appRouter = [
         component: () => import('../../src/views/rules/index.vue')
       },
       {
+        path: 'zb/:data',
+        name: 'zb',
+        meta: {
+          title: '总表',
+          navigator: false,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../../src/views/rules/zb.vue')
+      },
+      {
         path: 'lr/:data',
         name: 'lr',
         meta: {

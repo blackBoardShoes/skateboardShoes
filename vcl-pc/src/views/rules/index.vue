@@ -158,7 +158,15 @@ export default {
             label: '入院日期',
             type: 'DATE',
             validations: [
-              { required: true, message: '请选择时间', trigger: 'change' }
+              { required: true, message: '请选择日期', trigger: 'change' }
+            ]
+          },
+          {
+            id: 'inHospitalDate',
+            label: '手术日期',
+            type: 'DATE',
+            validations: [
+              { required: true, message: '请选择日期', trigger: 'change' }
             ]
           }
         ]
@@ -470,11 +478,11 @@ export default {
         this.recordAllRecordTableData = []
         for (let i of z.data.entity.data) {
           this.recordAllRecordTableData.push(Object.assign(i, {
-            术前: JSON.stringify(i.information['术前']).replace(/[{}"]/g, ''),
-            术中: JSON.stringify(i.information['术中']).replace(/[{}"]/g, ''),
-            术后: JSON.stringify(i.information['术后']).replace(/[{}"]/g, ''),
-            住院基本情况: JSON.stringify(i.information['住院基本情况']).replace(/[{}"]/g, ''),
-            出院综合评估: JSON.stringify(i.information['出院综合评估']).replace(/[{}"]/g, '')
+            // 术前: JSON.stringify(i.information['术前']).replace(/[{}"]/g, ''),
+            // 术中: JSON.stringify(i.information['术中']).replace(/[{}"]/g, ''),
+            // 术后: JSON.stringify(i.information['术后']).replace(/[{}"]/g, ''),
+            // 住院基本情况: JSON.stringify(i.information['住院基本情况']).replace(/[{}"]/g, ''),
+            // 出院综合评估: JSON.stringify(i.information['出院综合评估']).replace(/[{}"]/g, '')
           }))
           if (i.gender) i.gender = '男'
           else i.gender = '女'
@@ -661,6 +669,9 @@ export default {
       }
       if (deleteBtn) {
         switch (this.activeRow.title) {
+          case '总表':
+            this.$router.push({ name: 'zb', params: { data: JSON.stringify(row) } })
+            break
           case '待录入':
             this.$router.push({ name: 'lr', params: { data: JSON.stringify(row) } })
             break

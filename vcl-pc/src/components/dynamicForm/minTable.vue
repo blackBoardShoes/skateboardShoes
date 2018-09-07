@@ -32,7 +32,9 @@
           :style="x.style"
           @click="operateClick(scope.row, scope.$index, x)">{{x.label}}</el-button>
           <div v-if="!item.option">
-            {{scope.row[item.prop]}}
+            {{
+              formatter(scope.row, scope.column, scope.row[item.prop], scope.$index)
+            }}
           </div>
       </template>
     </el-table-column>
@@ -77,6 +79,13 @@ export default {
     return {}
   },
   methods: {
+    formatter (row, column, cellValue, index) {
+      if (!row[column.property]) {
+        return '/'
+      } else {
+        return row[column.property]
+      }
+    },
     handleCurrentChange (val) {
       this.$emit('handleCurrentChange', val)
     },

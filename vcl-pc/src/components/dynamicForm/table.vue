@@ -27,10 +27,10 @@
         align="center"
         fixed="right"
         label="操作"
-        width="100">
+        width="110">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="editClick(scope.row, scope.$index, subFields)">编辑</el-button>
-          <el-button @click="deleteClick(scope.row, scope.$index, subFields)" type="text" size="small"   style="color:#FF455B">删除</el-button>
+          <el-button @click="deleteClick(scope.row, scope.$index, subFields)" size="small" type="danger" plain  style="border: none;background:transparent;padding:0;">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

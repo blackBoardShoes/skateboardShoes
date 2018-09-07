@@ -4,15 +4,17 @@
       <div class="formTopContent">
         <el-menu :default-active="activeIndexNav" class="formTopLeft" mode="horizontal" @select="handleSelect">
           <template v-for="(item, index) in allArr">
-            <el-submenu :index="item.label" :key="index" v-if="item.submenu" :show-timeout="100">
+            <el-submenu :disabled="!['术前', '术中', '术后'].includes(activeIndexNav)" :index="item.label" :key="index" v-if="item.submenu" :show-timeout="100">
               <template slot="title">{{item.label}}</template>
-              <el-menu-item v-for="(x, i) in item.submenu" :index="x.label" :key="i">{{x.label}}</el-menu-item>
+              <el-menu-item :disabled="activeIndexNav !== x.label" v-for="(x, i) in item.submenu" :index="x.label" :key="i">
+                {{x.label}}
+              </el-menu-item>
             </el-submenu>
-            <el-menu-item :key="index" :index="item.label" v-else>{{item.label}}</el-menu-item>
+            <el-menu-item :disabled="activeIndexNav !== item.label" :key="index" :index="item.label" v-else>{{item.label}}</el-menu-item>
           </template>
         </el-menu>
         <div class="formTopRight">
-          患者: <span style="color: #117FD1;opacity: 0.9">{{patientInfo.patientName}}</span> ({{patientInfo.gender ? '男' : '女'}}) 住院号：{{patientInfo.patientId}}
+          患者: <span style="color: #117FD1;opacity: 0.9">{{patientInfo.patientName}}</span> ({{patientInfo.gender ? '男' : '女'}}) &nbsp;住院号: {{patientInfo.patientId}}
         </div>
       </div>
       <div class="formContentContent" v-if="Boolean(navArr[activeIndex])">
