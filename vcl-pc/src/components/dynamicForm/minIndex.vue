@@ -339,9 +339,9 @@ export default {
     },
     value: {
       deep: true,
-      handler () {
+      handler (value) {
         this.formModel = {}
-        this.formModel = Object.assign({}, this.value)
+        this.formModel = Object.assign({}, value)
       }
     },
     mozhu: {
@@ -511,15 +511,18 @@ export default {
       return a
     },
     iconTf (items) {
-      return (Boolean(this.comments[items.id]) & this.disabled)
+      // return (Boolean(this.comments[items.id]) & this.disabled)
+      return Boolean(this.comments[items.id])
     },
     deleteError (items) {
       // this.errors[items.id] = false
       // this.$set(this.errors, items.id, false)
       // this.comments[items.id] = ''
       // this.$delete(this.errors, items.id)
-      this.$delete(this.comments, items.id)
-      this.$emit('createEvaluate', this.comments)
+      if (this.disabled) {
+        this.$delete(this.comments, items.id)
+        this.$emit('createEvaluate', this.comments)
+      }
     },
     // form conversion rules
     // { "type": "INPUT", "id": "", "label": "", "pattern": "", "message": "", "required": "" }

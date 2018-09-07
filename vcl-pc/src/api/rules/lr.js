@@ -2,7 +2,7 @@
 import axios from '../index'
 const {api, hot} = require('@/dev').proxyTableApi
 console.log(api, hot)
-// 暂存
+// 保存
 export const formdataSave = data => {
   return axios.post(`${api}/formdata/save`, data)
 }
