@@ -1,44 +1,54 @@
 <template>
-  <div class="login">
-    <div class="middle-wrapper">
-      <div class="login-form">
-        <div class="bgi">
-          <div class="system-title">
-            <span>信息录入管理系统</span>
-          </div>
+  <div id="login">
+    <div class="login-wrapper">
+      <div class="left-bgi">
+        <img src="../../assets/images/登录框@2x.png" alt="">
+      </div>
+      <div class="right-login">
+        <div class="login-title">
+          <img src="../../assets/images/ercp标题.png" alt="">
+          <br>
+          <span>信息录入管理系统</span>
         </div>
-        <el-form
-          ref="loginForm"
-          :model="form"
-          :rules="rules"
-          @keyup.enter.native="login('loginForm')">
-          <el-form-item prop="username">
-            <el-input v-model="form.username" placeholder="请输入账号">
-              <i slot="prefix" class="el-input__icon ercp-icon-general-account" style="font-size: 18px;"></i>
-            </el-input>
-          </el-form-item>
-          <el-form-item prop="password">
-            <el-input :type="passwordType" v-model="form.password" placeholder="请输入密码" @keyup.enter.native="login('loginForm')">
-              <i slot="prefix" class="el-input__icon ercp-icon-general-password" style="font-size: 18px;"></i>
-              <i slot="suffix" class="el-input__icon ercp-icon-general-preview" style="cursor: pointer;"
-                 @click="_togglePasswordType"></i>
-            </el-input>
-          </el-form-item>
-          <el-form-item prop="yanzhengma">
-            <div class="check-code-wrapper">
-              <div class="yanzhengma-wrapper">
-                <el-input v-model="form.yanzhengma" @keyup.enter.native="login('loginForm')" placeholder="请输入验证码">
-                  <i slot="prefix" class="el-input__icon ercp-icon-module-authority" style="font-size: 18px;"></i>
-                </el-input>
-              </div>
-              <div class="validate-code-wrapper">
-                <validate-code ref="validate-code" @change="_setCheckCode"></validate-code>
-              </div>
-            </div>
-          </el-form-item>
-          <el-form-item style="margin-bottom: 0;margin-top:40px;">
-            <el-col :span="24">
-              <el-form-item>
+        <div class="login-form">
+          <el-form
+            ref="loginForm"
+            :model="form"
+            :rules="rules"
+            @keyup.enter.native="login('loginForm')">
+            <el-form-item prop="username">
+              <el-input v-model="form.username" placeholder="请输入账号">
+                <i slot="prefix" class="el-input__icon ercp-icon-general-account" style="font-size: 18px;line-height:48px;"></i>
+              </el-input>
+            </el-form-item>
+            <el-form-item prop="password">
+              <el-input :type="passwordType" v-model="form.password" placeholder="请输入密码" @keyup.enter.native="login('loginForm')">
+                <i slot="prefix" class="el-input__icon ercp-icon-general-password" style="font-size: 18px;line-height:48px;"></i> -->
+                <i slot="suffix" class="el-input__icon ercp-icon-general-preview" style="cursor: pointer;line-height:48px;"
+                  @click="_togglePasswordType"></i>
+              </el-input>
+            </el-form-item>
+            <el-row>
+              <el-col :span="13">
+                <el-form-item prop="yanzhengma">
+                  <div class="check-code-wrapper">
+                    <div class="yanzhengma-wrapper">
+                      <el-input v-model="form.yanzhengma" @keyup.enter.native="login('loginForm')" :placeholder="yanzhengmaHolder">
+                        <i slot="prefix" class="el-input__icon ercp-icon-general-pass" style="font-size: 12px;line-height:48px;border:2px solid #c0c4cc;border-radius:50%;padding:2px;"></i>
+                      </el-input>
+                    </div>
+                  </div>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <div class="validate-code-wrapper">
+                  <validate-code ref="validate-code" @change="_setCheckCode"></validate-code>
+                </div>
+              </el-col>
+            </el-row>
+            <div style="margin-bottom: 0;margin-top:40px;height:48px;">
+              <el-col :offset="6" :span="12">
+                <!-- <el-form-item> -->
                 <el-button
                   type="primary"
                   class="login-btn"
@@ -46,15 +56,16 @@
                   @click="login('loginForm')">
                   登录系统
                 </el-button>
-              </el-form-item>
-            </el-col>
-          </el-form-item>
-        </el-form>
+                <!-- </el-form-item> -->
+              </el-col>
+            </div>
+          </el-form>
+        </div>
+        <div class="close-button">
+          <i class="ercp-icon-general-close" @click="windwowOperate('mini')"></i>
+        </div>
       </div>
     </div>
-    <!-- <div class="bottom-wrapper">
-      <b>Copyright © 2018 MITI Genomics Inc, All Rights Reserved</b>
-    </div> -->
   </div>
 </template>
 <script>
@@ -65,6 +76,7 @@ export default {
     if (process.env.NODE_ENV === 'production') {
       let ipc = this.$electron.ipcRenderer
       ipc.send('loginResize')
+      ipc.send('loginResize2')
     }
     // 每次在登录页面都要重新清除用户信息
     this.$store.commit('SET_TOKEN', '')
@@ -78,8 +90,10 @@ export default {
     var checkYanzhengma = (rule, value, callback) => {
       value = value.toUpperCase()
       if (value === '') {
+        this.yanzhengmaHolder = ''
         callback(new Error('请输入验证码'))
       } else if (value !== this.checkCode) {
+        this.yanzhengmaHolder = ''
         callback(new Error('验证码错误'))
         this.$refs['validate-code'].draw()
       } else {
@@ -105,6 +119,7 @@ export default {
           { validator: checkYanzhengma, trigger: 'blur' }
         ]
       },
+      yanzhengmaHolder: '请输入验证码',
       env: ''
     }
   },
@@ -112,7 +127,7 @@ export default {
     // 更换验证码
     _setCheckCode (value) {
       this.checkCode = value
-      this.form.yanzhengma = value
+      // this.form.yanzhengma = value
     },
     // 密码是否可见
     _togglePasswordType () {
@@ -136,12 +151,14 @@ export default {
             let token = response.data.entity.Token.token
             this.$store.commit('SET_TOKEN', token)
             this.$store.commit('SET_USER', user)
-            // if (this.env === 'production') {
-            //   let ipc = this.$electron.ipcRenderer
-            //   ipc.send('mainResize')
-            // }
+            if (this.env === 'production') {
+              let ipc = this.$electron.ipcRenderer
+              ipc.send('miniful')
+              this.$router.push('/blank')
+            } else {
+              this.$router.push('/home')
+            }
             // setTimeout(() => {
-            this.$router.push('/home')
             // }, 3000)
           } else {
             this.$message.error('ERROR: ' + response.data.message)
@@ -150,6 +167,11 @@ export default {
           return false
         }
       })
+    },
+    windwowOperate (operate) {
+      // 按钮操控主进程窗口
+      let ipc = this.$electron.ipcRenderer
+      ipc.send('close')
     }
   },
   components: {
@@ -158,93 +180,111 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .login {
-    -webkit-app-region: drag;
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background-image:url('../../assets/images/login-bg.png');
-    background-size: cover;
-    .middle-wrapper {
+  @import '../../assets/css/variable';
+  #login{
+    width: 100%;
+    height: 100%;
+    background-color: rgba($color: $siderbarBgColor, $alpha: .9);
+    .login-wrapper{
+      width: 840px;
+      height: 360px;
       position: fixed;
-      width: 100%;
-      margin: 0 auto;
+      left: 50%;
       top: 50%;
-      transform: translateY(-55%);
-
-      .login-form {
-        position: relative;
-        margin: 0 auto;
+      margin-left: -420px;
+      margin-top: -180px;
+      background-size: 100% 100%;
+      background-origin: padding-box;
+      .left-bgi{
+        -webkit-app-region: drag;
         width: 480px;
         height: 360px;
-        padding: 30px;
+        float: left;
+        background-color: rgba($color: $siderbarBgColor, $alpha: 1);
+        img{
+          width: 100%;
+          height: 100%;
+          filter: grayscale(90%);
+        }
+      }
+      .right-login{
+        float: left;
+        width: 360px;
+        height: 360px;
         box-sizing: border-box;
-        border-radius: 5px;
-        background-color: #ffffff;
-        .bgi{
+        padding: 30px;
+        background-color: rgba($color: $siderbarBgColor, $alpha: .9);
+        // background: url('../../assets/images/ldyy.png') center center;
+        // background-size: 100% 100%;
+        .login-title{
+          // width:300px;
+          text-align: center;
+          font-size:19px;
+          font-weight: 900;
+          color: #fff;
+          // background-color: rgba($color: $themeColor, $alpha: 0.05);
+
+          img{
+            width: 80px;
+            height: 18px;
+            // vertical-align: middle;
+            // margin-bottom: 4px;
+          }
+        }
+        .login-form{
+          margin-top: 30px;
+          overflow: hidden;
+          border-radius: 2px;
+        }
+        .close-button{
           position: absolute;
-          top: -120px;
-          left: -10px;
-          right: 0;
-          bottom: 0;
-          height: 490px;
-          width: 500px;
-          background-image: url('../../assets/images/登录框.png');
-          background-repeat: no-repeat;
-          // display: none;
-          .system-title{
-            height: 40px;
-            line-height: 40px;
-            color:#000;
-            margin-top: 150px;
-            text-align: center;
-            font-size: 20px;
-            font-weight: 900;
-            display: block;
-          }
-        }
-        .el-form{
-          background-image: url('../../assets/images/ldyy.png');
-          background-repeat: no-repeat,no-repeat;
-          background-position: -50px -50px, 330px 0px;
-          background-size: 160px 160px, 80px 80px;
-          -webkit-app-region: no-drag;
-          margin-top: 50px;
-          padding:0 15px;
-        }
-        .el-row {
-          margin-bottom: 20px;
-
-          &:last-child {
-            margin-bottom: 0;
-          }
-
-        }
-
-        .check-code-wrapper {
-          display: flex;
-          justify-content: space-between;
-          height: 40px;
-
-          .yanzhengma-wrapper {
-            flex: 0 1 auto;
-          }
-
-          .validate-code-wrapper {
-            flex: 0 0 160px;
-          }
+          right: 16px;
+          top: 16px;
+          color: #c0c4cc;
+          cursor: pointer;
         }
       }
     }
-    .bottom-wrapper{
-      position: fixed;
-      bottom: 40px;
-      margin: 0 auto;
-      width: 100%;
-      font-size: 14px;
-      text-align: center;
-    }
+  }
+</style>
+<style lang="scss">
+  @import '../../assets/css/variable';
+  .login-form .el-input__inner{
+    height: 48px;
+    line-height: 48px;
+    background-color: rgba($color: $siderbarBgColor, $alpha: .9) !important;
+    border: none;
+    border-radius: 0;
+    color:#fff;
+  }
+  .login-form .el-form-item{
+    margin: 0;
+    padding: 0;
+  }
+  .validate-code-wrapper{
+    height: 48px;
+    padding: 6px;
+    box-sizing: border-box;
+    background-color: rgba($color: $siderbarBgColor, $alpha: .9);
+  }
+
+  .login-form .el-form .el-form-item__error{
+    width: 72px;
+    top: 16px;
+    text-align: right;
+    right: 32px;
+    left: auto;
+  }
+
+  .login-form .el-input--prefix .el-input__inner{
+    padding-left: 40px !important;
+  }
+
+  .login-form .el-row .el-form-item__error{
+    width: 72px;
+    top: 16px;
+    text-align: right;
+    right: 16px;
+    left: auto;
   }
 </style>

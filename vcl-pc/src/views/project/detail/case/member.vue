@@ -106,8 +106,9 @@ export default {
   methods: {
     async removeMember (value) {
       let info = {
+        userId: this.$store.state.user.id,
         projectId: this.projectId,
-        userId: value.id
+        memberId: value.id
       }
       let response = await removeProjectMember(info)
       if (response.data.mitiStatus === 'SUCCESS') {
@@ -130,6 +131,7 @@ export default {
         })
         console.log(arr)
         let info = {
+          userId: this.$store.state.user.id,
           projectId: this.projectId,
           members: arr
         }

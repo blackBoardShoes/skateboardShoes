@@ -10,15 +10,26 @@ export const otherRouter = {
 }
 
 // 初始页面  ==> login
-export const loginRouter = {
-  path: '/login',
-  name: 'login',
-  meta: {
-    title: 'Login - 登录',
-    role: [1, 2, 3, 4, 5, 6]
+export const loginRouter = [
+  {
+    path: '/login',
+    name: 'login',
+    meta: {
+      title: 'Login - 登录',
+      role: [1, 2, 3, 4, 5, 6]
+    },
+    component: () => import('../views/login/login')
   },
-  component: () => import('../views/login/login')
-}
+  {
+    path: '/blank',
+    name: 'blank',
+    meta: {
+      title: 'blank - 空白',
+      role: [1, 2, 3, 4, 5, 6]
+    },
+    component: () => import('../views/login/blank')
+  }
+]
 
 // 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
 export const appRouter = [
@@ -564,7 +575,7 @@ export const appRouter = [
 ]
 
 export const routers = [
-  loginRouter,
+  ...loginRouter,
   otherRouter,
   ...appRouter
 ]

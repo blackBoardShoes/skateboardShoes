@@ -40,12 +40,12 @@ export const getMembers = data => {
 
 // 添加成员至项目
 export const addProjectMember = data => {
-  return axios.post(dali + `/mix/addProjectMember?projectId=${data.projectId}`, data.members)
+  return axios.post(qiji + `/mix/addProjectMember?id=${data.userId}&projectId=${data.projectId}`, data.members)
 }
 
 // 移除项目成员
 export const removeProjectMember = data => {
-  return axios.delete(dali + `/mix/deleteProjectMember?projectId=${data.projectId}&userId=${data.userId}`)
+  return axios.delete(qiji + `/mix/deleteProjectMember?id=${data.userId}&projectId=${data.projectId}&userId=${data.memberId}`)
 }
 
 // 项目成员分页

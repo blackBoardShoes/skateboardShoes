@@ -18,7 +18,8 @@ export default {
     return {
       codes: [],
       ctx: '',
-      colors: ['#000', '#000', '#000', '#000', '#000'],
+      colors1: ['#fff', '#fff', '#fff', '#fff', '#fff'],
+      colors2: ['#000', '#000', '#000', '#000', '#000'],
       code_Len: this.codeLength
     }
   },
@@ -52,10 +53,10 @@ export default {
     },
     drawLine () {
       const lineNumber = 300 // 线条条数
-      const lineX = 160
+      const lineX = 120
       const lineY = 40 // 最大线条坐标
       for (let i = 0; i < lineNumber; i++) {
-        this.ctx.strokeStyle = this.colors[Math.floor(Math.random() * 5)]
+        this.ctx.strokeStyle = this.colors2[Math.floor(Math.random() * 5)]
         this.ctx.beginPath()
         let ori = Math.random() * lineX
         let eni = Math.floor(Math.random() * lineY)
@@ -68,14 +69,14 @@ export default {
     drawText () {
       const canvas = this.$refs['canvas']
       this.ctx = canvas.getContext('2d')
-      this.ctx.fillStyle = '#ffffff'
-      this.ctx.fillRect(0, 0, 160, 40)
+      this.ctx.fillStyle = '#20272c'
+      this.ctx.fillRect(0, 0, 100, 40)
       this.ctx.font = '20px Verdana'
       let x = 15
       for (let i = 0; i < 4; i++) {
-        this.ctx.fillStyle = this.colors[Math.floor(Math.random() * 5)]
+        this.ctx.fillStyle = this.colors1[Math.floor(Math.random() * 5)]
         this.ctx.fillText(this.codes[i], x, 25)
-        x = x + 40
+        x = x + 25
       }
       this.drawLine()
     }
@@ -83,13 +84,15 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+  @import '../../assets/css/variable';
   .validate-code {
+    background-color: rgba($color: $siderbarBgColor, $alpha: 1.0);
     width: 100%;
-    height: 100%;
+    height: 36px;
     box-sizing: border-box;
-    border-radius: 4px;
+    // border-radius: 4px;
     overflow: hidden;
-    border: 1px solid #ddd;
+    // border: 1px solid #ddd;
 
     canvas {
       cursor: pointer;
