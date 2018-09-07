@@ -435,7 +435,7 @@ export default {
       }
     },
     sysMessage () {
-      if (this.message.length >= 1) {
+      if (Array.isArray(this.message) && this.message.length >= 1) {
         let arr = []
         this.message.forEach((item) => {
           if (item.type === 2) {
