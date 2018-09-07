@@ -50,27 +50,23 @@
     <div id="topbar-wrapper">
       <!-- 顶部导航 -->
       <div class="bread-nav float-left">
-        <!-- 系统标题 -->
-        <div class="float-left page-operate">
-          <i class="ercp-icon-general-forward"></i>
-          <i class="ercp-icon-general-reflesh"></i>
-          <i class="ercp-icon-general-forward"></i>
+        <div class="float-left">
+          <i class="ercp-icon-general-menu"></i>
         </div>
-        <div class="line-30"></div>
         <el-breadcrumb separator="/">
           <el-breadcrumb-item :to="{ path: item.path }" v-for="(item, index) in currentPath" :key="index">{{item.title}}</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
-      <div class="system-title float-right">
-        <img src="../../assets/images/ercp标题.png" alt="">
-        <span>信息录入管理系统</span>
-      </div>
-      <div class="line-30"></div>
       <!-- 系统操作按钮: 最大化/最小化/关闭 -->
       <div class="system-operate float-right" v-if="env === 'production'">
         <span class="ercp-icon-general-minimine" @click="windwowOperate('mini')"></span>
         <span class="ercp-icon-general-restore"  @click="windwowOperate('max')"></span>
         <span class="ercp-icon-general-close" @click="windwowOperate('close')"></span>
+      </div>
+      <!-- 系统标题 -->
+      <div class="system-title float-right">
+        <img src="../../assets/images/ercp标题.png" alt="">
+        <span>信息录入管理系统</span>
       </div>
       <!-- 消息提醒 -->
       <div class="message float-right" @click="$router.push('/message/index')">
@@ -115,7 +111,7 @@
           </div>
           <div slot="reference" @click="toMessage">
             <i class="ercp-icon-module-message"></i>
-            <span class="radial-text-primary" v-if="userMessage && sysMessage && userMessage.length + sysMessage.length > 0">{{userMessage.length + sysMessage.length}}</span>
+            <span class="radial-text-primary" v-if="userMessage && userMessage.length + sysMessage.length > 0">{{userMessage.length + sysMessage.length}}</span>
           </div>
         </el-popover>
       </div>
@@ -421,8 +417,7 @@ export default {
       }
     },
     userMessage () {
-      console.log(Array.isArray(this.message))
-      if (Array.isArray(this.message) && this.message.length >= 1) {
+      if (this.message.length >= 1) {
         let arr = []
         this.message.forEach((item) => {
           if (item.type === 1) {
@@ -430,12 +425,10 @@ export default {
           }
         })
         return arr
-      } else {
-        return []
       }
     },
     sysMessage () {
-      if (Array.isArray(this.message) && this.message.length >= 1) {
+      if (this.message.length >= 1) {
         let arr = []
         this.message.forEach((item) => {
           if (item.type === 2) {
@@ -459,13 +452,11 @@ export default {
     // 左侧导航栏
     #sliderbar-wrapper{
       position: fixed;
-      top: 48px;
+      top: 0;
       bottom: 0;
       left: 0;
       width: $siderbarWidth;
-      background-color: #fff;
-      // border-right: 2px solid #ddd;
-      box-sizing: border-box;
+      background-color: $siderbarBgColor;
       cursor: pointer;
       overflow: hidden;
       display: flex;
@@ -475,16 +466,11 @@ export default {
         flex:1;
         // display: flex;
         // flex-direction: column;
-        // justify-content: center;
         // overflow-x: hidden;
         // overflow-y: auto;
         .logo{
-          // display: none;
           width: 150px;
           height: 150px;
-          box-sizing: border-box;
-          background-color: #fff;
-          border-bottom: 1px solid rgba($color: $themeColor, $alpha: 0.05);
           img{
             width: 150px;
             height: 150px;
@@ -609,33 +595,17 @@ export default {
       position: fixed;
       left: $siderbarWidth;
       top: 0;
-      left: 0;
       right: 0;
       height:$topbarHeight;
       box-sizing: border-box;
       line-height:$topbarHeight;
-      background-color: rgba($color: $themeColor, $alpha: 0.05);
+      background-color: $topbarBgColor;
       border-bottom:1px solid $deepBorderColor;
       line-height: 48px;
 
       .bread-nav{
         -webkit-app-region: no-drag;
-        // padding:0 15px;
-
-        .page-operate{
-          width: 150px;
-          display: flex;
-          flex-direction: row;
-          justify-content: space-around;
-        }
-
-        .line-30{
-          height: 20px;
-          width: 2px;
-          margin-top: 14px;
-          background-color: #666;
-          float: left;
-        }
+        padding:0 15px;
 
         .el-breadcrumb{
           float: left;
@@ -671,7 +641,7 @@ export default {
         text-align: center;
         font-size:19px;
         font-weight: 900;
-        // background-color: rgba($color: $themeColor, $alpha: 0.05);
+        background-color: rgba($color: $themeColor, $alpha: 0.05);
 
         img{
           width: 80px;

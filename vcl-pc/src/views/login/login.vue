@@ -76,7 +76,6 @@ export default {
     if (process.env.NODE_ENV === 'production') {
       let ipc = this.$electron.ipcRenderer
       ipc.send('loginResize')
-      ipc.send('loginResize2')
     }
     // 每次在登录页面都要重新清除用户信息
     this.$store.commit('SET_TOKEN', '')
@@ -151,15 +150,7 @@ export default {
             let token = response.data.entity.Token.token
             this.$store.commit('SET_TOKEN', token)
             this.$store.commit('SET_USER', user)
-            if (this.env === 'production') {
-              let ipc = this.$electron.ipcRenderer
-              ipc.send('miniful')
-              this.$router.push('/blank')
-            } else {
-              this.$router.push('/home')
-            }
-            // setTimeout(() => {
-            // }, 3000)
+            this.$router.push('/home')
           } else {
             this.$message.error('ERROR: ' + response.data.message)
           }
