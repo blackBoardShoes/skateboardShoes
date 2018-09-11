@@ -4,7 +4,7 @@ const {api, hot} = require('@/dev').proxyTableApi
 console.log(api, hot)
 // 保存
 export const formdataSave = data => {
-  return axios.post(`${api}/formdata/save`, data)
+  return axios.post(`${api}/formdata/save?t=${Date.now()}`, data)
 }
 // 提交
 export const formdataSubmit = data => {

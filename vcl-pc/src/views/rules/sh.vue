@@ -2,7 +2,7 @@
   <div class="formAll">
     <div class="formContent">
       <div class="formTopContent">
-        <el-menu :default-active="activeIndexNav" class="formTopLeft" mode="horizontal" @select="handleSelect">
+        <!-- <el-menu :default-active="activeIndexNav" class="formTopLeft" mode="horizontal" @select="handleSelect">
           <template v-for="(item, index) in allArr">
             <el-submenu :index="item.label" :key="index" v-if="item.submenu" :show-timeout="100">
               <template slot="title">{{item.label}}</template>
@@ -10,6 +10,9 @@
             </el-submenu>
             <el-menu-item :key="index" :index="item.label" v-else>{{item.label}}</el-menu-item>
           </template>
+        </el-menu> -->
+        <el-menu :default-active="activeIndexNav" class="formTopLeft" mode="horizontal" @select="handleSelect">
+          <el-menu-item :index="activeIndexNav">{{activeIndexNav}}</el-menu-item>
         </el-menu>
         <div class="formTopRight">
           患者: <span style="color: #117FD1;opacity: 0.9">{{patientInfo.patientName}}</span> ({{patientInfo.gender ? '男' : '女'}}) 住院号：{{patientInfo.patientId}}

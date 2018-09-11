@@ -24,7 +24,7 @@
       :width="item.width">
       <template slot-scope="scope">
         <el-button
-          v-if="item.option"
+          v-if="item.option & x.hidden ? filterBtn(scope.row, scope.column, scope.row[item.prop], scope.$index) : true"
           v-for="(x, key) in item.contain"
           :key="key"
           :type="x.type ? x.type : 'text'"
@@ -71,7 +71,13 @@ export default {
     filterHandler: {
       type: Function,
       default () {
-        return () => {}
+        return _ => {}
+      }
+    },
+    filterBtn: {
+      type: Function,
+      default () {
+        return _ => {}
       }
     }
   },

@@ -39,7 +39,7 @@
                 <div style="display: flex">
                   <!-- @change.native="changeRules" -->
                   <el-input
-                    :disabled="disabled" :placeholder="items.placeholder" clearable
+                    :disabled="disabled" :placeholder="items.placeholder ? items.placeholder : '请输入'" clearable
                     v-if="items.type === 'INPUT' | items.type === 'INT' | items.type === 'DOUBLE'" v-model.trim='formModel[items.id]'></el-input>
                   <!-- <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'INT'" v-model.trim='formModel[items.id]'></el-input> -->
                   <!-- <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'DOUBLE'" v-model.trim='formModel[items.id]'></el-input> -->
@@ -64,6 +64,7 @@
                 <el-date-picker
                   :disabled="items.disabled"
                   clearable
+                  value-format="yyyy-MM-dd"
                   style="width:100%;"
                   v-if="items.type === 'DATE'"
                   v-model="formModel[items.id]"
@@ -73,6 +74,7 @@
                 <el-date-picker
                   :disabled="items.disabled"
                   clearable
+                  value-format="yyyy-MM-dd/HH:mm:ss"
                   style="width:100%;"
                   v-if="items.type === 'DATETIME'"
                   v-model="formModel[items.id]"
@@ -178,13 +180,12 @@
     <el-dialog
       :modal="false"
       :visible.sync="evaluateDialogVisible"
-      width="21%">
+      width="300px">
       <div slot="title">
         <i class="el-icon-error" style="color: #FF455B"></i>
         <span style="font-weight: bold">错误原因</span>
       </div>
       <sx-min-form
-        :labelPosition="'top'"
         :labelWidth="false"
         cancel submitTF
         @cancelData="evaluateDialogVisible = false"

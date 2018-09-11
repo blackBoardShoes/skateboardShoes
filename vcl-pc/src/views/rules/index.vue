@@ -29,7 +29,7 @@
             <el-col :span="6">
               <el-input
                 @keyup.enter.native="lookupFormInput"
-                placeholder="姓名/身份证号/住院编号"
+                placeholder="姓名/住院编号"
                 v-model="lookupFormInputData"
                 clearable
                 prefix-icon="el-icon-search"></el-input>
@@ -40,6 +40,7 @@
             :tableData="tableData"
             :filterHandler="filterHandler"
             @operateClick="operateClick"
+            :filterBtn="filterBtn"
             ></sx-min-table>
           <div style="text-align: right;margin-top:15px;">
             <el-pagination
@@ -66,7 +67,7 @@
           <el-form-item label="住院号" prop="patientId" :rules="[
             { required: true, message: '请输入病人住院号', trigger: 'change'},
             { pattern: '^[0-9]{11}$', message: '11位', trigger: 'change' }]">
-            <el-input v-model="ruleForm.patientId" @blur="patientIdCheckUp"></el-input>
+            <el-input v-model="ruleForm.patientId" @blur="patientIdCheckUp" placeholder="请输入"></el-input>
           </el-form-item>
         </div>
       </el-form>
@@ -92,8 +93,9 @@
 <script>
 import { mapState } from 'vuex'
 import sxMinTable from '../../components/dynamicForm/minTable'
-import { record, recordAllRecord, formdataRejectedFilledForm, formdataFinishedFilledForm, formdataUndoneFilledForm, patientGetPatientCount, patientAddPatient } from '../../api/rules/index.js'
+import { record, formdataDelete, recordAllRecord, formdataRejectedFilledForm, formdataFinishedFilledForm, formdataUndoneFilledForm, patientGetPatientCount, patientAddPatient } from '../../api/rules/index.js'
 import { addressData } from '../../data/address/addressData.js'
+import { formdataSave } from '../../api/rules/lr.js'
 export default {
   components: {
     sxMinTable
@@ -162,7 +164,7 @@ export default {
             ]
           },
           {
-            id: 'inHospitalDate',
+            id: 'operationDate',
             label: '手术日期',
             type: 'DATE',
             validations: [
@@ -215,22 +217,24 @@ export default {
         pendingEntryColumn: [
           { prop: 'patientId', label: '住院号' },
           { prop: 'operationNum', label: '编号' },
-          { prop: 'dept', label: '科室' },
-          { prop: 'bedNum', label: '床号' },
           { prop: 'patientName', label: '姓名' },
           { prop: 'gender', label: '性别', sortable: true },
+          { prop: 'dept', label: '科室' },
+          { prop: 'bedNum', label: '床号' },
+          { prop: 'operationDate', label: '手术日期' },
           { prop: 'phase', label: '数据阶段' },
           { prop: 'responseName', label: '记录者', width: '130', sortable: true },
-          { option: true, label: '操作', contain: [{label: '编辑'}, {label: '删除', style: 'color: #FF455B'}] }
+          { option: true, label: '操作', width: '130', contain: [{label: '编辑', hidden: true}, {label: '录入'}, {label: '删除', style: 'color: #FF455B'}] }
         ],
         // 待审核 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (审核
         toBeAuditedColumn: [
           { prop: 'patientId', label: '住院号' },
           { prop: 'operationNum', label: '编号' },
-          { prop: 'dept', label: '科室' },
-          { prop: 'bedNum', label: '床号' },
           { prop: 'patientName', label: '姓名' },
           { prop: 'gender', label: '性别', sortable: true },
+          { prop: 'dept', label: '科室' },
+          { prop: 'bedNum', label: '床号' },
+          { prop: 'operationDate', label: '手术日期' },
           { prop: 'phase', label: '数据阶段', sortable: true },
           { prop: 'responseName', label: '记录者', sortable: true },
           { option: true, label: '操作', contain: [{label: '审核'}] }
@@ -239,10 +243,11 @@ export default {
         toBeAmendedColumn: [
           { prop: 'patientId', label: '住院号' },
           { prop: 'operationNum', label: '编号' },
-          { prop: 'dept', label: '科室' },
-          { prop: 'bedNum', label: '床号' },
           { prop: 'patientName', label: '姓名' },
           { prop: 'gender', label: '性别', sortable: true },
+          { prop: 'dept', label: '科室' },
+          { prop: 'bedNum', label: '床号' },
+          { prop: 'operationDate', label: '手术日期' },
           { prop: 'phase', label: '数据阶段', sortable: true },
           { prop: 'responseName', label: '记录者', sortable: true },
           { option: true, label: '操作', contain: [{label: '编辑'}] }
@@ -263,6 +268,7 @@ export default {
       },
       dialogVisible: false,
       patientDialogVisible: false,
+      createFishOrEditFish: true,
       patientData: {},
       patientFish: {
         fields: [
@@ -416,8 +422,9 @@ export default {
       this.perPage = val
       this.show()
     },
-    changePage (val) {
+    async changePage (val) {
       this.currentPage = val
+      await this.firstShow()
       this.show()
       console.log(val, this.perPage)
     },
@@ -474,18 +481,25 @@ export default {
     async recordAllRecordShowData () {
       let z = await recordAllRecord({currentPage: this.currentPage, perPage: this.perPage, searchPattern: this.lookupFormInputData})
       if (z ? z.data.entity : false) {
-        console.log(z.data.entity.data)
+        console.log(z, 'z.data.entity.data')
         this.recordAllRecordTableData = []
         for (let i of z.data.entity.data) {
-          this.recordAllRecordTableData.push(Object.assign(i, {
-            // 术前: JSON.stringify(i.information['术前']).replace(/[{}"]/g, ''),
-            // 术中: JSON.stringify(i.information['术中']).replace(/[{}"]/g, ''),
-            // 术后: JSON.stringify(i.information['术后']).replace(/[{}"]/g, ''),
-            // 住院基本情况: JSON.stringify(i.information['住院基本情况']).replace(/[{}"]/g, ''),
-            // 出院综合评估: JSON.stringify(i.information['出院综合评估']).replace(/[{}"]/g, '')
-          }))
+          for (let z of i.information.data) {
+            if (z.state) {
+              i[z.label] = z.state
+            } else {
+              if (z.submenu.length) {
+                i[z.label] = []
+                for (let o of z.submenu) {
+                  i[z.label].push(`${o.label}: ${o.state}`)
+                }
+                i[z.label] = i[z.label].toString()
+              }
+            }
+          }
           if (i.gender) i.gender = '男'
           else i.gender = '女'
+          this.recordAllRecordTableData.push(i)
         }
         // this.total = z.data.entity.total
         this.$set(this.rulesContainTopModel, 'AlltableColumn', z.data.entity.total)
@@ -499,9 +513,20 @@ export default {
       if (z ? z.data.entity : false) {
         this.pendingEntryColumnTableData = []
         for (let i of z.data.entity.data) {
+          console.log(i, 'z.data.entity.data1')
           this.pendingEntryColumnTableData.push(Object.assign(i, i.header))
           if (i.gender) i.gender = '男'
           else i.gender = '女'
+          // if (i.phase === '术中') {
+          //   console.log(i.data, '12222222')
+          //   for (let s of i.data) {
+          //     for (let i in s) {
+          //       if (i === 'surgeryDate') {
+          //         console.log('cao zhaodaole', s[i])
+          //       }
+          //     }
+          //   }
+          // }
         }
         // this.total = z.data.entity.total
         this.$set(this.rulesContainTopModel, 'pendingEntryColumn', z.data.entity.total)
@@ -585,13 +610,14 @@ export default {
       if (this.$refs['ruleForm']) {
         this.$refs['ruleForm'].resetFields()
       }
+      this.createFishOrEditFish = true
       this.dialogVisible = true
     },
     async patientIdCheckUp () {
       let pgp = await patientGetPatientCount(this.ruleForm)
       console.log(pgp, 'pgp')
       if (pgp) {
-        this.thatFishData = Object.assign(this.thatFishData, this.ruleForm)
+        this.thatFishData = Object.assign(this.ruleForm, this.thatFishData)
         for (let i in pgp.data.entity) {
           this.$set(this.thatFishData, i, pgp.data.entity[i])
         }
@@ -626,9 +652,19 @@ export default {
     async createFish (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
       this.$refs['ruleForm'].validate(async valid => {
         if (valid) {
-          if (this.patientIdCheckUp()) {
-            let r = await record(Object.assign(formModel, this.ruleForm))
-            console.log(r)
+          if (this.createFishOrEditFish) {
+            if (this.patientIdCheckUp()) {
+              let r = await record(Object.assign(this.ruleForm, formModel))
+              console.log(r)
+              this.dialogVisible = false
+              await this.firstShow()
+              this.show()
+            }
+          } else {
+            this.ruleForm.header = Object.assign({ patientId: this.ruleForm.patientId }, formModel)
+            console.log(this.ruleForm)
+            let r = await formdataSave(this.ruleForm)
+            console.log(r, 'createFishOrEditFishcreateFishOrEditFishcreateFishOrEditFish')
             this.dialogVisible = false
             await this.firstShow()
             this.show()
@@ -639,6 +675,9 @@ export default {
       })
     },
     async updateFish () {},
+    filterBtn (row) {
+      return row.phase === '术中'
+    },
     async operateClick (row, index, x) {
       console.log(this.activeRow)
       let deleteBtn = true
@@ -647,6 +686,9 @@ export default {
           console.log('查看')
           break
         case '编辑':
+          console.log('编辑')
+          break
+        case '录入':
           console.log('编辑')
           break
         case '审核':
@@ -658,12 +700,12 @@ export default {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
-          }).then(_ => {
-            this.$message({
-              type: 'success',
-              message: '删除成功!',
-              showClose: true
-            })
+          }).then(async _ => {
+            let fd = await formdataDelete(row)
+            if (fd) {
+              await this.firstShow()
+              this.show()
+            }
           }).catch(_ => {})
           break
       }
@@ -673,7 +715,17 @@ export default {
             this.$router.push({ name: 'zb', params: { data: JSON.stringify(row) } })
             break
           case '待录入':
-            this.$router.push({ name: 'lr', params: { data: JSON.stringify(row) } })
+            if (x.label === '录入') {
+              this.$router.push({ name: 'lr', params: { data: JSON.stringify(row) } })
+            } else {
+              this.createFishOrEditFish = false
+              let r = Object.assign({}, row)
+              if (r.gender === '男') r.gender = 1
+              else r.gender = 0
+              this.ruleForm = this.thatFishData = r
+              this.dialogVisible = true
+              console.log('bianji', 'row', row)
+            }
             break
           case '待审核':
             this.$router.push({ name: 'sh', params: { data: JSON.stringify(row) } })

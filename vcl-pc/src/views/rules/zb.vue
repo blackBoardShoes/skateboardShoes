@@ -3,7 +3,7 @@
     <div class="formContent">
       <div class="formTopContent">
         <el-menu :default-active="activeIndexNav" class="formTopLeft" mode="horizontal" @select="handleSelect">
-          <template v-for="(item, index) in allArr">
+          <template v-for="(item, index) in subNavData">
             <el-submenu :index="item.label" :key="index" v-if="item.submenu.length" :show-timeout="100">
               <template slot="title">{{item.label}}</template>
               <el-menu-item v-for="(x, i) in item.submenu" :index="x.label" :key="i" v-if="x.submenu.length">
@@ -55,13 +55,8 @@
           <div class="formContentRight">
             <div class="rightContent">
               <div class="rightContentDynamic" v-if="!(navArr[activeIndex] ? navArr[activeIndex].isStatic : false)">
-                {{
-                  fishData[navArr[activeIndex].id]
-                }}
-                {{
-                  navArr[activeIndex].id
-                }}
                 <sx-min-form
+                  disabled
                   v-if="smf"
                   v-model="fishData[navArr[activeIndex].id]"
                   ref="thatForm"
@@ -101,7 +96,7 @@ export default {
       // 中间数组
       navArr: [],
       showAllForms: [],
-      allArr: [
+      subNavData: [
         { label: '住院基本情况' },
         {
           label: '手术记录',
@@ -298,14 +293,13 @@ export default {
   async created () {
     if (this.$route.params.data) {
       this.patientInfo = JSON.parse(this.$route.params.data)
-      this.allArr = this.patientInfo.information.data
+      this.subNavData = this.patientInfo.information.data
       // this.activeIndexNav = this.patientInfo.phase
-      console.log(this.allArr)
+      console.log(this.subNavData, 'cccccccc')
     }
     await this.firstShow()
     await this.init()
     this.show()
-    // this.navArrAssignment()
   },
   methods: {
     async firstShow () {
@@ -319,6 +313,12 @@ export default {
       if (a) {
         this.fishAllData = a.data.entity ? [...a.data.entity.forms] : []
         // this.fishData = a.data.entity ? Object.assign({}, a.data.entity.data) : {}
+        let id = this.gainId(this.subNavData, this.activeIndexNav)
+        for (let z of this.fishAllData) {
+          if (id === z.id) {
+            this.fishData = z.data
+          }
+        }
       }
       console.log(this.fishAllData, 'firstShow')
     },
@@ -333,23 +333,6 @@ export default {
       this.navArr = [...z]
       this.smf = true
     },
-    navArrAssignment () {
-      let a = _ => {
-        for (let i in _) {
-          if (_[i].value === this.activeIndexNav) {
-            return _[i]
-          } else {
-            if ('submenu' in _[i]) {
-              if (a(_[i].submenu)) {
-                return a(_[i].submenu)
-              }
-            }
-          }
-        }
-      }
-      let b = a(this.allArr)
-      this.navArr = b ? b.subFields : []
-    },
     async emitClick (data = {}) {
       this.smf = false
       this.activeIndex = data['index']
@@ -358,24 +341,24 @@ export default {
         this.smf = true
       }, 1)
     },
-    async handleSelect (key, keyPath) {
-      console.log(key, keyPath)
-      this.smf = false
-      this.activeIndexNav = key
-      let a = _ => {
-        for (let i in _) {
-          if (_[i].label === key) {
-            return _[i].id
-          } else {
-            if (_[i]['submenu'].length) {
-              if (a(_[i].submenu)) {
-                return a(_[i].submenu)
-              }
+    gainId (_, key) {
+      for (let i in _) {
+        if (_[i].label === key) {
+          return _[i].id
+        } else {
+          if (_[i]['submenu'].length) {
+            if (this.gainId(_[i].submenu)) {
+              return this.gainId(_[i].submenu)
             }
           }
         }
       }
-      let id = a(this.allArr)
+    },
+    async handleSelect (key, keyPath) {
+      console.log(key, keyPath)
+      this.smf = false
+      this.activeIndexNav = key
+      let id = this.gainId(this.subNavData, key)
       for (let z of this.fishAllData) {
         if (id === z.id) {
           this.fishData = z.data
@@ -384,13 +367,6 @@ export default {
       setTimeout(_ => {
         this.init()
       }, 1)
-      // this.navArrAssignment()
-      // if (this.$refs['ssbgModel']) {
-      //   this.$nextTick(_ => {
-      //     this.$refs['ssbgModel'].resetForm()
-      //   })
-      // }
-      // this.navArr = this.allArr[key].subFields
     },
     async generalSubmit () {
       console.log(this.navArr)
