@@ -64,7 +64,8 @@
                   @consoleData="consoleData"></sx-min-form>
               </div>
               <div class="rightContentStatic">
-                <sx-operation-report v-model="ssbgModel" ref="ssbgModel" v-if="navArr[activeIndex] ? navArr[activeIndex].isStatic === 'ssbg' : false"></sx-operation-report>
+                <sx-operation-report v-model="ssbgModel" ref="ssbgModel"
+                  v-if="navArr[activeIndex] ? navArr[activeIndex].isStatic === 'ssbg' : false"></sx-operation-report>
               </div>
             </div>
           </div>
@@ -75,13 +76,24 @@
         暂无数据
       </div>
     </div>
+    <el-dialog
+      append-to-body
+      modal-append-to-body
+      :close-on-click-modal="false"
+      v-if="undoneFilledFormDialogVisible"
+      :visible.sync="undoneFilledFormDialogVisible">
+      <sx-min-form
+        submitTF v-model="undoneFilledFormData" :mozhu="undoneFilledFormDataMozhu[user.type]"
+        @consoleData="undoneFilledFormConsoleData" ></sx-min-form>
+    </el-dialog>
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 import sxNoRouteControl from '../../components/submenu/noRouteControl'
 import sxOperationReport from '../../components/staticForm/operationReport'
 import { fieldAllForms } from '../../api/form/bdk.js'
-import { formdataSave, formdataSubmit, formdataData } from '../../api/rules/lr.js'
+import { formdataSave, formdataSubmit, formdataData, userByMyType } from '../../api/rules/lr.js'
 
 export default {
   name: 'rules_index',
@@ -653,10 +665,47 @@ export default {
         operationSelectHj: [],
         operationDateTime: ''
       },
-      smf: false
+      smf: false,
+      // UndoneFilledFormDialogVisible
+      undoneFilledFormDialogVisible: false,
+      undoneFilledFormData: {},
+      undoneFilledFormDataMozhu: {
+        科研护士: {
+          fields: [
+            {
+              id: 'responseName',
+              label: '记录者',
+              values: [
+                {label: '123', value: '123'}
+              ],
+              type: 'SELECT',
+              validations: [
+                { required: true, message: '请选择记录者', trigger: 'change' }
+              ]
+            }
+          ]
+        },
+        诊疗中心: {
+          fields: [
+            {
+              id: 'responseName',
+              label: '记录者',
+              type: 'INPUT',
+              validations: [
+                { required: true, message: '请输入姓名', trigger: 'change' }
+              ]
+            }
+          ]
+        }
+      },
+      ubmtData: []
     }
   },
+  computed: mapState({
+    user: state => state.user
+  }),
   async created () {
+    console.log(this.user, 'useruseruser')
     if (this.$route.params.data) {
       this.patientInfo = JSON.parse(this.$route.params.data)
       this.activeIndexNav = this.patientInfo.phase
@@ -734,12 +783,17 @@ export default {
       console.log(this.navArr)
       console.log(this.activeIndex)
       console.log(this.activeIndexNav)
-      this.$refs.thatForm.consoleData()
-      let fds = await formdataSubmit(Object.assign(this.patientInfo, {data: this.fishData}))
-      console.log(fds)
-      if (fds) {
-        this.generalBack()
+      this.undoneFilledFormData = {}
+      if (this.user.type === '科研护士') {
+        this.ubmtData = await userByMyType()
+        console.log(this.ubmtData)
+        // this.undoneFilledFormDataMozhu
+      } else {
+        console.log(this.patientInfo)
       }
+      console.log(this.user)
+      console.log(this.patientInfo.header['responseId'], this.patientInfo.header['responseName'], 'patientInfopatientInfo')
+      this.undoneFilledFormDialogVisible = true
     },
     generalDelete () {},
     async generalSave () {
@@ -760,6 +814,25 @@ export default {
     async consoleData (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
       // this.fishData[this.navArr[this.activeIndex].id] = formModel
       this.$set(this.fishData, this.navArr[this.activeIndex].id, formModel)
+    },
+    async undoneFilledFormConsoleData (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
+      console.log(mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate)
+      this.$refs.thatForm.consoleData()
+      if (this.user.type === '科研护士') {
+        for (let i of this.ubmtData) {
+          if (i.toString().includes(formModel['responseName'])) {
+            this.patientInfo.header = Object.assign(this.patientInfo.header, { responseId: i.value, responseName: i.label })
+          }
+        }
+        // this.undoneFilledFormDataMozhu
+      } else {
+        this.patientInfo.header = Object.assign(this.patientInfo.header, formModel, { responseId: this.user.username })
+      }
+      let fds = await formdataSubmit(Object.assign(this.patientInfo, {data: this.fishData}))
+      console.log(fds)
+      if (fds) {
+        this.generalBack()
+      }
     },
     generalBack () {
       this.$router.go(-1)

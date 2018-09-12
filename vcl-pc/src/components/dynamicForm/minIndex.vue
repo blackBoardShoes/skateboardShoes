@@ -74,7 +74,7 @@
                 <el-date-picker
                   :disabled="items.disabled"
                   clearable
-                  value-format="yyyy-MM-dd/HH:mm:ss"
+                  value-format="yyyy-MM-dd HH:mm:ss"
                   style="width:100%;"
                   v-if="items.type === 'DATETIME'"
                   v-model="formModel[items.id]"
@@ -200,14 +200,14 @@ import sxTable from './table'
 import sxLayerTree from './layerTree'
 import sxTree from './tree'
 import sxCalculate from './calculate'
-import draggable from 'vuedraggable'
+// import draggable from 'vuedraggable'
 export default {
   components: {
     sxTable,
     sxTree,
     sxLayerTree,
-    sxCalculate,
-    draggable
+    sxCalculate
+    // draggable
   },
   props: {
     inline: {
@@ -341,8 +341,10 @@ export default {
     value: {
       deep: true,
       handler (value) {
-        this.formModel = {}
-        this.formModel = Object.assign({}, value)
+        // this.formModel = {}
+        // this.formModel = Object.assign({}, value)
+        this.init()
+        this.formModel = Object.assign(this.formModel, value)
       }
     },
     mozhu: {
@@ -442,8 +444,16 @@ export default {
                 }
               }
             }
+            // if (!this.formModel[i.id]) {
+            //   if (this.formModel[i.id] === 0) {
+            //     this.$set(this.formModel, i.id, 0)
+            //   } else {
+            //     this.$set(this.formModel, i.id, '')
+            //   }
+            // }
             break
         }
+        // this.$emit('input', this.formModel)
         if (i['validations']) {
           for (let z in i['validations']) {
             if ('pattern' in i['validations'][z]) {
