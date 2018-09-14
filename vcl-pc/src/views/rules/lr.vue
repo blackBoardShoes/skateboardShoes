@@ -53,7 +53,7 @@
           </div>
           <div class="formContentRight">
             <div class="rightContent">
-              <div class="rightContentDynamic" v-if="!(navArr[activeIndex] ? navArr[activeIndex].isStatic : false)">
+              <div class="rightContentDynamic" v-if="!navArr[activeIndex].isStatic">
                 <sx-min-form
                   v-if="smf"
                   :disabled="activeIndexNav != patientInfo.phase"
@@ -63,9 +63,10 @@
                   @notVerifying="notVerifying"
                   @consoleData="consoleData"></sx-min-form>
               </div>
-              <div class="rightContentStatic">
-                <sx-operation-report v-model="ssbgModel" ref="ssbgModel"
-                  v-if="navArr[activeIndex] ? navArr[activeIndex].isStatic === 'ssbg' : false"></sx-operation-report>
+              <div class="rightContentStatic" v-else>
+                <!-- v-model="ssbgModel" -->
+                <sx-operation-report v-model="fishData[navArr[activeIndex].id]"
+                  ref="ssbgModel" v-if="navArr[activeIndex].name === '手术报告'"></sx-operation-report>
               </div>
             </div>
           </div>
@@ -786,8 +787,8 @@ export default {
       this.undoneFilledFormData = {}
       if (this.user.type === '科研护士') {
         this.ubmtData = await userByMyType()
-        console.log(this.ubmtData)
-        // this.undoneFilledFormDataMozhu
+        console.log(this.ubmtData.entity)
+        this.undoneFilledFormDataMozhu['科研护士'].fields[0].values = [...this.ubmtData.data.entity]
       } else {
         console.log(this.patientInfo)
       }
@@ -797,12 +798,19 @@ export default {
     },
     generalDelete () {},
     async generalSave () {
-      this.$refs.thatForm.notVerifying()
+      if (!this.navArr[this.activeIndex].isStatic) {
+        this.$refs.thatForm.notVerifying()
+      } else {
+        console.log(this.fishData, 'this.fishData')
+      }
       let fds = await formdataSave(Object.assign(this.patientInfo, {data: this.fishData}))
       if (fds) {
-        console.log(this.navArr.length, 'this.navArr.length')
         if (this.activeIndex < this.navArr.length - 1) {
+          this.smf = false
           this.activeIndex++
+          setTimeout(_ => {
+            this.smf = true
+          }, 1)
         }
         // this.show()
       }
@@ -817,10 +825,14 @@ export default {
     },
     async undoneFilledFormConsoleData (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
       console.log(mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate)
-      this.$refs.thatForm.consoleData()
+      if (!this.navArr[this.activeIndex].isStatic) {
+        this.$refs.thatForm.consoleData()
+      } else {
+        console.log(this.fishData, 'this.fishData')
+      }
       if (this.user.type === '科研护士') {
-        for (let i of this.ubmtData) {
-          if (i.toString().includes(formModel['responseName'])) {
+        for (let i of this.ubmtData.data.entity) {
+          if (i.value === formModel['responseName']) {
             this.patientInfo.header = Object.assign(this.patientInfo.header, { responseId: i.value, responseName: i.label })
           }
         }
@@ -895,7 +907,9 @@ $marginW: 15px;
             flex-grow: 1;
             padding: 50px 25px;
           }
-          .rightContentStatic {}
+          .rightContentStatic {
+            width: $full;
+          }
         }
       }
       .rightContentControl {

@@ -12,10 +12,14 @@ let host2 = 'http://192.168.10.13:8080'
 // yt
 // let host3 = 'http://192.168.10.216:8085'
 // fwq
-let host3 = 'http://192.168.10.104:8085'
+// let host3 = 'http://192.168.10.104:8085'
+
 // 杜宣
 let host4 = 'http://192.168.10.144:8089'
-let host5 = 'http://192.168.10.13:8090'
+
+// let host5 = 'http://192.168.10.13:8090'
+
+let all = 'http://192.168.10.104:8090'
 // Is your service nginx  和 npm run dev 都是代理方式
 let nginx = false
 // nginx = true
@@ -39,14 +43,14 @@ let proxyTable = {
     }
   },
   '/qiji': {
-    target: host5,
+    target: all,
     changeOrigin: true,
     pathRewrite: {
       '^/qiji': '/'
     }
   },
   '/yt': {
-    target: host3,
+    target: all,
     changeOrigin: true,
     pathRewrite: {
       '^/yt': '/'
@@ -57,6 +61,13 @@ let proxyTable = {
     changeOrigin: true,
     pathRewrite: {
       '^/dx': '/'
+    }
+  },
+  '/all': {
+    target: all,
+    changeOrigin: true,
+    pathRewrite: {
+      '^/all': '/'
     }
   },
   // 没有代理服务器环境 不可用, 用上nginx代理 可用

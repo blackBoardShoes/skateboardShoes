@@ -705,8 +705,6 @@ export default {
           }
           this.$set(this.formModel, 'fields', idArr)
           if (this.checkUpData()) {
-            console.log(this.formModel, '1------')
-            console.log(this.rightData, '2------')
             let e = ''
             if (this.editOrAdd) {
               e = await editFormPut(this.formModel)
@@ -716,9 +714,8 @@ export default {
               // this.cardArr.push(this.formModel)
             }
             if (e) {
-              await this.show()
               this.fewStepsTF = true
-              console.log(this.formModel, 'this.formModel')
+              await this.show()
             }
           }
         } else {

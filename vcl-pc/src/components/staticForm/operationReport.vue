@@ -167,7 +167,7 @@ $marginContentW: 25px;
 .operationAll {
   width: $full;
   height: $full;
-  overflow: hidden;
+  // overflow: hidden;
   .operationContent {
     width: $full;
     /deep/ .el-collapse-item__header{

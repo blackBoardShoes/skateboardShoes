@@ -343,6 +343,7 @@ export default {
       handler (value) {
         // this.formModel = {}
         // this.formModel = Object.assign({}, value)
+        // this.formModel = {}
         this.init()
         this.formModel = Object.assign(this.formModel, value)
       }

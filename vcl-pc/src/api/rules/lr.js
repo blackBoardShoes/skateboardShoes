@@ -1,6 +1,6 @@
 
 import axios from '../index'
-const {api, yt} = require('@/dev').proxyTableApi
+const {api, all} = require('@/dev').proxyTableApi
 // 保存
 export const formdataSave = data => {
   return axios.post(`${api}/formdata/save?t=${Date.now()}`, data)
@@ -16,5 +16,5 @@ export const formdataData = data => {
 }
 // 获取所有能录入的人 id 和 name
 export const userByMyType = data => {
-  return axios.get(`${yt}/userByMyType`, { params: data })
+  return axios.get(`${all}/user/userByMyType`, { params: data })
 }
