@@ -15,7 +15,8 @@
           <el-menu-item :index="activeIndexNav">{{activeIndexNav}}</el-menu-item>
         </el-menu>
         <div class="formTopRight">
-          患者: <span style="color: #117FD1;opacity: 0.9">{{patientInfo.patientName}}</span> ({{patientInfo.gender ? '男' : '女'}}) 住院号：{{patientInfo.patientId}}
+          患者: <span style="color: #117FD1;opacity: 0.9">{{patientInfo.patientName}}</span>&nbsp;({{patientInfo.gender ? '男' : '女'}})&nbsp;&nbsp;&nbsp;&nbsp;
+          住院号: {{patientInfo.patientId}}
         </div>
       </div>
       <div class="formContentContent" v-if="Boolean(navArr[activeIndex])">
@@ -868,7 +869,7 @@ $marginW: 15px;
         .rightContentControlBtn {
           transition: all .5s;
           // flex-grow: 1;
-          width: 500px;
+          width: 400px;
           height: $full;
           display: flex;
           justify-content: space-between;
