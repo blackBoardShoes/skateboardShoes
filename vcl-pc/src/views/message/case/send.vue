@@ -33,7 +33,7 @@
     </div>
     <div class="message-list">
       <div class="message-box">
-        <div class="message-box-title light-text">
+        <div class="message-box-title">
           <div class="sender-title">收件人</div>
           <div class="theme-title">主题 - 正文</div>
           <div class="sendtime-title">时间</div>
@@ -46,7 +46,7 @@
           <el-collapse-item v-for="(item, index) in messageList" :key="index" style="position:relative;">
             <div class="message-case" slot="title">
               <div class="message-title">
-                <div class="sender text-overflow-ellipsis"><span :class="{'primary-text': item.status === 1}">{{item.receiveUser.name}}</span></div>
+                <div class="sender text-overflow-ellipsis"><span :class="{'primary-text': item.status === 1}">{{item.receiveUser=== null ? '' : item.receiveUser.name}}</span></div>
               </div>
               <div class="message-content">
                 <div class="theme">{{item.title}}</div>
@@ -57,7 +57,9 @@
               </div>
               <div class="operate">
                 <div class="inside">
-                  <i class="ercp-icon-general-close danger-text" @click.stop="deleteSingle(item)"></i>
+                  <el-tooltip class="item" effect="dark" content="删除消息" placement="top">
+                    <i class="ercp-icon-general-remove danger-text" @click.stop="deleteSingle(item)"></i>
+                  </el-tooltip>
                 </div>
               </div>
             </div>
@@ -216,6 +218,8 @@ export default {
     height:100%;
     box-sizing: border-box;
     overflow: auto;
+    display: flex;
+    flex-direction: column;
     .top-nav{
       overflow: hidden;
       height: 40px;
@@ -227,14 +231,18 @@ export default {
       justify-content: space-between;
     }
     .message-list{
-      overflow: hidden;
+      overflow-y: auto;
+      overflow-x: hidden;
+      flex: 1;
       padding: 8px;
       .message-box{
+        background-color: #fff;
         width: 100%;
         height: 100%;
         display: flex;
         flex-direction: column;
         .message-box-title{
+          color: #909399;
           display: flex;
           flex-direction: row;
           text-align: center;
@@ -332,7 +340,7 @@ export default {
         }
         .message-view{
           padding-left: 103px;
-          padding-right: 80px;
+          padding-right: 230px;
           box-sizing: border-box;
           text-align: justify;
           line-height: 30px;

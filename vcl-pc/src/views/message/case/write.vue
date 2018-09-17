@@ -82,12 +82,6 @@ export default {
       let response = await sendMessage(info)
       if (response.data.mitiStatus === 'SUCCESS') {
         this.$message.success(response.data.entity)
-        this.message = {
-          receivers: [],
-          title: '',
-          message: '',
-          sender: ''
-        }
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
@@ -118,9 +112,16 @@ export default {
             })
           })
           let info = this.message
+          this.message = {
+            receivers: [],
+            title: '',
+            message: '',
+            sender: this.me.id,
+            type: 1
+          }
           info.receivers = arr
+          info.type = 1
           this.faMessage(info)
-          console.log(info)
         } else {
           return false
         }

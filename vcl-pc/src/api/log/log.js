@@ -1,23 +1,23 @@
 import axios from '../index'
-const {dali} = require('@/dev').proxyTableApi
+const {qiji} = require('@/dev').proxyTableApi
 
 // 日期筛选
 export const dateFilter = data => {
-  return axios.post(dali + '/auth/login', data)
+  return axios.get(qiji + `log/TimePageGetLogMessage?startTime=${data.startTime}&endTime=${data.endTime}&currentPage=${data.currentPage}&perPage=${data.pageSize}`)
 }
 // 搜索
-export const search = data => {
-  return axios.post(dali + `/user/update_password?old_password=${data.oldPassword}&new_password=${data.newPassword}`)
+export const getLog = data => {
+  return axios.get(qiji + `/log/UserPageLogMessage?username=${data.username}&currentPage=${data.currentPage}&perPage=${data.pageSize}`)
 }
 // 导出日志
 export const exportLog = data => {
-  return axios.post(dali + '/auth/logout ', data)
+  return axios.post(qiji + '/auth/logout ', data)
 }
 // 清空日志
 export const clearLog = data => {
-  return axios.post(dali + `/user`, data)
+  return axios.delete(qiji + `/user`, data)
 }
 // 获取日志列表
-export const getAllLog = data => {
-  return axios.get(dali + `/user/all?page=${data.currentPage}&page_size=${data.pageSize}`)
-}
+// export const getAllLog = data => {
+//   return axios.get(qiji + `/log/listGetLogMessage?perPage=${data.pageSize}&currentPage=${data.currentPage}`)
+// }

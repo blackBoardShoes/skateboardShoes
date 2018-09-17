@@ -5,6 +5,7 @@
         <!-- 测试阶段使用  后期去掉 -->
         <div class="logo">
           <img src="../../assets/images/导航栏@2x.png" alt="">
+          <!-- <img src="../../assets/images/ercp标题.png" style="width:150px;height: 48px;position:relative;top:20px;" alt=""> -->
         </div>
         <el-tooltip
           placement="right"
@@ -20,9 +21,6 @@
             </div>
             <div class="menu-title">
               {{menu.title}}
-            </div>
-            <div class="underline">
-              <div class="round" v-for="round in 3" :key="round"></div>
             </div>
           </div>
           <!-- 测试阶段使用  后期去掉 -->
@@ -46,32 +44,31 @@
       </div>
     </div>
     <!-- 禁止右键: 程序上不允许调出自定义菜单 -->
-    <!-- <div id="topbar-wrapper" @contextmenu.prevent.stop="ban"> -->
-    <div id="topbar-wrapper">
+    <div id="topbar-wrapper" @contextmenu.prevent.stop="ban">
       <!-- 顶部导航 -->
       <div class="bread-nav float-left">
-        <div class="float-left">
-          <i class="ercp-icon-general-menu"></i>
-        </div>
-        <el-breadcrumb separator="/">
+        <!-- <div class="between-line float-left"></div> -->
+        <el-breadcrumb separator=">" class="float-left">
           <el-breadcrumb-item :to="{ path: item.path }" v-for="(item, index) in currentPath" :key="index">{{item.title}}</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
       <!-- 系统操作按钮: 最大化/最小化/关闭 -->
-      <div class="system-operate float-right" v-if="env === 'production'">
+      <div class="system-operate float-right">
         <span class="ercp-icon-general-minimine" @click="windwowOperate('mini')"></span>
         <span class="ercp-icon-general-restore"  @click="windwowOperate('max')"></span>
         <span class="ercp-icon-general-close" @click="windwowOperate('close')"></span>
       </div>
+      <!-- <div class="between-line float-right"></div> -->
       <!-- 系统标题 -->
-      <div class="system-title float-right">
+      <!-- <div class="system-title float-right">
         <img src="../../assets/images/ercp标题.png" alt="">
         <span>信息录入管理系统</span>
-      </div>
+      </div> -->
+      <div class="between-line float-right"></div>
       <!-- 消息提醒 -->
       <div class="message float-right" @click="$router.push('/message/index')">
         <el-popover
-          placement="bottom-start"
+          placement="bottom"
           width="410"
           trigger="hover">
           <div class="message-box">
@@ -95,7 +92,7 @@
               </div>
               <div class="message-case" v-for="(item, index) in currentMessage" :key="index">
                 <div class="from">
-                  <div class="sender float-left text-overflow-ellipsis">{{item.sender}}</div>
+                  <div class="sender float-left text-overflow-ellipsis">{{item.sendUser === null ? '系统通知' : item.sendUser.username}}</div>
                   <div class="send-time float-right">{{item.sendTime}}</div>
                   <div class="single-mark" @click="singleMarkRead(item)">标为已读</div>
                 </div>
@@ -134,11 +131,12 @@
           </el-dropdown-menu>
         </el-dropdown>
       </div>
-      <!-- <div class="system-operate float-right">
-        <span class="el-icon-arrow-left" @click="locationOperate('back')"></span>
-        <span class="el-icon-refresh"  @click="locationOperate('refresh')"></span>
-        <button class="el-icon-arrow-right" @click="locationOperate('forward')" :disabled="ableForward <= 0"></button>
-      </div> -->
+      <div class="between-line float-right"></div>
+      <div class="system-operate float-right">
+        <span class="ercp-icon-general-previous" @click="locationOperate('back')"></span>
+        <span class="ercp-icon-general-next" @click="locationOperate('forward')" :class="{'no-click': ableForward <= 0}"></span>
+        <span class="ercp-icon-general-reflesh"  @click="locationOperate('refresh')"></span>
+      </div>
     </div>
     <div id="content-wrapper">
       <router-view></router-view>
@@ -237,8 +235,9 @@ export default {
     this.env = process.env.NODE_ENV
     if (this.env === 'production') {
       let ipc = this.$electron.ipcRenderer
-      ipc.send('mainResize')
-      ipc.send('mainshow')
+      setTimeout(() => {
+        ipc.send('mainshow')
+      }, 1000)
     }
     this.user = this.$store.state.user
     this.initMenu(this.menu)
@@ -461,14 +460,17 @@ export default {
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
 
       .slider-menu{
         flex:1;
-        // display: flex;
-        // flex-direction: column;
-        // overflow-x: hidden;
-        // overflow-y: auto;
         .logo{
+          text-align: center;
           width: 150px;
           height: 150px;
           img{
@@ -478,7 +480,6 @@ export default {
         }
 
         .menu{
-          // flex:1;
           font-size: 14px;
           height: 50px;
           padding: 0 15px;
@@ -486,41 +487,23 @@ export default {
           box-sizing: border-box;
           position: relative;
           color:$minorTextColor;
+          display: flex;
+          flex-direction: row;
           .menu-icon{
-            height:50px;
             text-align: right;
-            width: 35px;
-            float: left;
+            width: 30px;
             font-size:20px;
           }
           .menu-title{
-            width: 85px;
+            flex: 1;
             padding: 0 12px;
             box-sizing: border-box;
-            text-align: left;
-            float: left;
-            height:50px;
-            // font-size: 14px;
+            text-align: center;
           }
-          // .underline{
-          //   position: absolute;
-          //   bottom: 0;
-          //   width: 30px;
-          //   display: flex;
-          //   justify-content: center;
-          //   .round{
-          //     margin:0 2px;
-          //     width: 4px;
-          //     height: 4px;
-          //     border-radius: 50%;
-          //     background-color: $minorTextColor;
-          //   }
-          // }
         }
 
         .menu:hover{
           transition: all .5s linear;
-          // background-color: rgba($color: #fff, $alpha: 0.05);
           .menu-icon{
             color:$themeColor;
           }
@@ -530,15 +513,13 @@ export default {
         }
 
         .active{
-          transition: all 1.5s linear;
+          transition: all .5s linear;
           background-color: rgba($color: #fff, $alpha: 0.1);
           .menu-icon{
             color:$themeColor;
-            text-shadow: 1px 1px 1px #fff;
           }
           .menu-title{
             color:$themeColor;
-            text-shadow: 1px 1px 1px #fff;
           }
         }
 
@@ -605,6 +586,13 @@ export default {
       border-bottom:1px solid $deepBorderColor;
       line-height: 48px;
 
+      .between-line{
+        width: 1px;
+        height: 16px;
+        margin: 16px;
+        background-color: #ababab;
+      }
+
       .bread-nav{
         -webkit-app-region: no-drag;
         padding:0 15px;
@@ -643,7 +631,7 @@ export default {
         text-align: center;
         font-size:19px;
         font-weight: 900;
-        background-color: rgba($color: $themeColor, $alpha: 0.05);
+        // background-color: rgba($color: $themeColor, $alpha: 0.05);
 
         img{
           width: 80px;
@@ -670,7 +658,7 @@ export default {
       .system-operate{
         -webkit-app-region: no-drag;
         cursor: pointer;
-        width: 100px;
+        width: 120px;
         height: 48px;
         line-height: 48px;
         display: flex;
@@ -678,6 +666,13 @@ export default {
         align-items: center;
         span:hover{
           color: $themeColor;
+        }
+        .no-click{
+          color: #eee;
+          cursor: not-allowed;
+        }
+        .no-click:hover{
+          color: #eee;
         }
       }
 
@@ -701,11 +696,6 @@ export default {
       top: 36px !important;
       opacity: 0.9;
       .message-box{
-        // position: relative;
-        // left: -10px;
-        // right: -10px;
-        // bottom: -10px;
-        // top: -10px;
         transform: scale(1.05, 1.05);
         height:500px;
         width: 100%;
@@ -781,8 +771,6 @@ export default {
           border-bottom: 1px solid $deepBorderColor;
 
           .nav-case{
-            // padding: 10 0px;
-            // line-height:50px;
             flex:1;
             text-align: center;
           }

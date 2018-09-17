@@ -19,12 +19,14 @@
         :default-sort = "{prop: 'status', order: 'encoding'}"
         class="absolute-table">
         <el-table-column
+          show-overflow-tooltip
           fixed
           prop="username"
           align="center"
           label="账号">
         </el-table-column>
         <el-table-column
+          show-overflow-tooltip
           prop="type"
           align="center"
           label="用户类型"
@@ -32,16 +34,19 @@
           :filter-method="filterTag1">
         </el-table-column>
         <el-table-column
+          show-overflow-tooltip
           prop="name"
           align="center"
           label="姓名">
         </el-table-column>
         <el-table-column
+          show-overflow-tooltip
           prop="gender"
           align="center"
           label="性别">
         </el-table-column>
         <el-table-column
+          show-overflow-tooltip
           prop="department"
           align="center"
           label="科室"
@@ -55,12 +60,15 @@
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
+          style="min-width:100px"
+          show-overflow-tooltip
           prop="createDate"
           align="center"
           sortable
           label="创建日期">
         </el-table-column>
         <el-table-column
+          show-overflow-tooltip
           prop="status"
           align="center"
           label="状态"

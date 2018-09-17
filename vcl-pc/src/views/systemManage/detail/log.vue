@@ -1,9 +1,10 @@
 <template>
   <div id="system-log">
-    <div class="operate-buttons align-right">
+    <div class="operate-buttons">
       <div class="filter-conditions float-left">
-        <span class="light-text">请选择日期范围：</span>
+        <span class="light-text">日期：</span>
         <el-date-picker
+          style="width:55%"
           size="medium"
           v-model="dataRange"
           type="daterange"
@@ -15,7 +16,7 @@
           :picker-options="pickerOptions"
           @change="timeFilter">
         </el-date-picker>
-          <el-input size="medium" v-model="searchObj" placeholder="搜索对象ID" clearable style="width:30%;" @keyup.enter.native="search">
+          <el-input size="medium" v-model="searchObj" placeholder="搜索对象账号" clearable style="width:30%;" @keyup.enter.native="search">
             <i slot="prefix" class="el-input__icon el-icon-search" @click="search" style="cursor:pointer;"></i>
           </el-input>
       </div>
@@ -32,32 +33,37 @@
         height="100%"
         class="absolute-table">
         <el-table-column
-          prop="operateTime"
+          show-overflow-tooltip
+          prop="time"
           align="center"
           label="操作日期">
         </el-table-column>
         <el-table-column
-          prop="ip"
+          show-overflow-tooltip
+          prop="uriMessage"
           align="center"
-          label="IP地址">
+          label="接口地址">
         </el-table-column>
         <el-table-column
-          prop="operateAccount"
+          show-overflow-tooltip
+          prop="username"
           align="center"
           label="操作账号">
         </el-table-column>
         <el-table-column
-          prop="operate"
+          show-overflow-tooltip
+          prop="methodType"
           align="center"
           label="操作">
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
+          show-overflow-tooltip
           prop="operated"
           align="center"
           label="对象">
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
-          prop="detail"
+          prop="bodyMessage"
           align="center"
           label="详情"
           show-overflow-tooltip>
@@ -79,139 +85,19 @@
   </div>
 </template>
 <script>
-// import { dateFilter, search, exportLog, clearLog, getAllLog } from '../../../api/log/log.js'
+import { dateFilter, getLog, exportLog, clearLog } from '../../../api/log/log.js'
 export default {
   name: 'system_detail_log',
   data () {
     return {
       tableData: [
-        {
-          operateTime: '2018-10-12',
-          ip: '192.168.10.241',
-          operateAccount: '10029',
-          operate: '删除',
-          operated: '32132333',
-          detail: '/patient/deleted?id=32132333'
-        },
-        {
-          operateTime: '2018-10-12',
-          ip: '192.168.10.241',
-          operateAccount: '10029',
-          operate: '删除',
-          operated: '32132333',
-          detail: '/patient/deleted?id=32132333'
-        },
-        {
-          operateTime: '2018-10-12',
-          ip: '192.168.10.241',
-          operateAccount: '10029',
-          operate: '删除',
-          operated: '32132333',
-          detail: '/patient/deleted?id=32132333'
-        },
-        {
-          operateTime: '2018-10-12',
-          ip: '192.168.10.241',
-          operateAccount: '10029',
-          operate: '删除',
-          operated: '32132333',
-          detail: '/patient/deleted?id=32132333'
-        },
-        {
-          operateTime: '2018-10-12',
-          ip: '192.168.10.241',
-          operateAccount: '10029',
-          operate: '删除',
-          operated: '32132333',
-          detail: '/patient/deleted?id=32132333'
-        },
-        {
-          operateTime: '2018-10-12',
-          ip: '192.168.10.241',
-          operateAccount: '10029',
-          operate: '删除',
-          operated: '32132333',
-          detail: '/patient/deleted?id=32132333'
-        },
-        {
-          operateTime: '2018-10-12',
-          ip: '192.168.10.241',
-          operateAccount: '10029',
-          operate: '删除',
-          operated: '32132333',
-          detail: '/patient/deleted?id=32132333'
-        },
-        {
-          operateTime: '2018-10-12',
-          ip: '192.168.10.241',
-          operateAccount: '10029',
-          operate: '删除',
-          operated: '32132333',
-          detail: '/patient/deleted?id=32132333'
-        },
-        {
-          operateTime: '2018-10-12',
-          ip: '192.168.10.241',
-          operateAccount: '10029',
-          operate: '删除',
-          operated: '32132333',
-          detail: '/patient/deleted?id=32132333'
-        },
-        {
-          operateTime: '2018-10-12',
-          ip: '192.168.10.241',
-          operateAccount: '10029',
-          operate: '删除',
-          operated: '32132333',
-          detail: '/patient/deleted?id=32132333'
-        },
-        {
-          operateTime: '2018-10-12',
-          ip: '192.168.10.241',
-          operateAccount: '10029',
-          operate: '删除',
-          operated: '32132333',
-          detail: '/patient/deleted?id=32132333'
-        },
-        {
-          operateTime: '2018-10-12',
-          ip: '192.168.10.241',
-          operateAccount: '10029',
-          operate: '删除',
-          operated: '32132333',
-          detail: '/patient/deleted?id=32132333'
-        },
-        {
-          operateTime: '2018-10-12',
-          ip: '192.168.10.241',
-          operateAccount: '10029',
-          operate: '删除',
-          operated: '32132333',
-          detail: '/patient/deleted?id=32132333'
-        },
-        {
-          operateTime: '2018-10-12',
-          ip: '192.168.10.241',
-          operateAccount: '10029',
-          operate: '删除',
-          operated: '32132333',
-          detail: '/patient/deleted?id=32132333'
-        },
-        {
-          operateTime: '2018-10-12',
-          ip: '192.168.10.241',
-          operateAccount: '10029',
-          operate: '删除',
-          operated: '32132333',
-          detail: '/patient/deleted?id=32132333'
-        }
       ],
       dataRange: [],
       searchObj: '',
       // 分页
-      pageSize: 10,
+      pageSize: 20,
       currentPage: 1,
-      total: 100,
+      total: 0,
       pickerOptions: {
         disabledDate: (time) => {
           return time.getTime() > Date.now()
@@ -245,91 +131,80 @@ export default {
     }
   },
   methods: {
-    // async getAllLog () {
-    //   let info = {
-    //     currentPage: this.currentpage,
-    //     pageSize: this.pageSize
-    //   }
-    //   let response = await getAllLog(info)
-    //   if (response.data.mitiStatus === 'SUCCESS') {
-    //     this.tableData = response.data.entity.data
-    //   } else {
-    //     this.$message.error('ERROR: ' + response.data.message)
-    //   }
-    // },
-    // async dateFilter () {
-    //   let info = {
-    //     currentPage: this.currentpage,
-    //     pageSize: this.pageSize
-    //   }
-    //   let response = await dateFilter(info)
-    //   if (response.data.mitiStatus === 'SUCCESS') {
-    //     this.tableData = response.data.entity.data
-    //   } else {
-    //     this.$message.error('ERROR: ' + response.data.message)
-    //   }
-    // },
-    // async exportLog () {
-    //   let info = {
-    //     currentPage: this.currentpage,
-    //     pageSize: this.pageSize
-    //   }
-    //   let response = await getAllLog(info)
-    //   if (response.data.mitiStatus === 'SUCCESS') {
-    //     this.tableData = response.data.entity.data
-    //   } else {
-    //     this.$message.error('ERROR: ' + response.data.message)
-    //   }
-    // },
-    // async search () {
-    //   let info = {
-    //     currentPage: this.currentpage,
-    //     pageSize: this.pageSize
-    //   }
-    //   let response = await getAllLog(info)
-    //   if (response.data.mitiStatus === 'SUCCESS') {
-    //     this.tableData = response.data.entity.data
-    //   } else {
-    //     this.$message.error('ERROR: ' + response.data.message)
-    //   }
-    // },
-    // async clearLog () {
-    //   let info = {
-    //     currentPage: this.currentpage,
-    //     pageSize: this.pageSize
-    //   }
-    //   let response = await getAllLog(info)
-    //   if (response.data.mitiStatus === 'SUCCESS') {
-    //     this.tableData = response.data.entity.data
-    //   } else {
-    //     this.$message.error('ERROR: ' + response.data.message)
-    //   }
-    // },
+    async dateFilter (startTime, endTime) {
+      let info = {
+        startTime: startTime,
+        endTime: endTime,
+        currentPage: 1,
+        pageSize: this.pageSize
+      }
+      let response = await dateFilter(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        this.total = response.data.entity.total
+        this.tableData = response.data.entity.data
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    async exportLog () {
+      let info = {
+        currentPage: this.currentpage,
+        pageSize: this.pageSize
+      }
+      let response = await exportLog(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        this.tableData = response.data.entity.data
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    async getLog (currentPage, pageSize) {
+      let info = {
+        currentPage: currentPage,
+        pageSize: pageSize,
+        username: this.searchObj
+      }
+      let response = await getLog(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        this.tableData = response.data.entity.data
+        this.total = response.data.entity.total
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    async clearLog () {
+      let info = {
+        currentPage: this.currentpage,
+        pageSize: this.pageSize
+      }
+      let response = await clearLog(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        this.tableData = response.data.entity.data
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    search () {
+      this.getLog(1, this.pageSize)
+    },
     beforeToday (today) {
-      console.log(today)
       return false
-    },
-    exportLog () {
-      this.$message.success('导出日志')
-    },
-    clearLog () {
-      this.$message.warning('清空日志')
     },
     timeFilter () {
       console.log(this.dataRange)
+      this.dateFilter(this.dataRange[0] + ' 00:00:00', this.dataRange[1] + ' 00:00:00')
     },
     pageSizeChange (size) {
-      console.log(size)
+      this.pageSize = size
+      this.getLog(this.currentPage, this.pageSize)
     },
     changePage (page) {
-      console.log(page)
-    },
-    search () {
-      console.log(this.searchObj)
+      this.currentPage = page
+      this.getLog(this.currentPage, this.pageSize)
     }
   },
   mounted () {
-    // this.getAllLog()
+    this.getLog(1, this.pageSize)
   }
 }
 </script>
@@ -348,6 +223,14 @@ export default {
       width: 100%;
       line-height: 40px;
       padding:10px 0;
+      display: flex;
+      flex-direction: row;
+      .filter-conditions{
+        flex: 1;
+      }
+      .buttons{
+        width: auto;
+      }
     }
     .system-log{
       flex: 1;

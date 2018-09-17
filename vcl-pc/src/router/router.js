@@ -178,7 +178,7 @@ export const appRouter = [
     meta: {
       title: '表单管理',
       navigator: true,
-      role: [1, 2],
+      role: [1],
       icon: 'module-form'
     },
     component: Layout,
@@ -191,7 +191,7 @@ export const appRouter = [
           requireAuth: true,
           title: '表单详情',
           navigator: true,
-          role: [1, 2]
+          role: [1]
         },
         component: () => import('../../src/views/form/index.vue'),
         children: [
@@ -201,7 +201,7 @@ export const appRouter = [
             meta: {
               title: '表单库',
               navigator: true,
-              role: [1, 2]
+              role: [1]
             },
             component: () => import('../../src/views/form/bdk.vue')
           },
@@ -211,7 +211,7 @@ export const appRouter = [
             meta: {
               title: '字段库',
               navigator: true,
-              role: [1, 2]
+              role: [1]
             },
             component: () => import('../../src/views/form/zdk.vue')
           },
@@ -221,7 +221,7 @@ export const appRouter = [
             meta: {
               title: '术语库',
               navigator: true,
-              role: [1, 2]
+              role: [1]
             },
             component: () => import('../../src/views/form/syk.vue')
           }

@@ -7,8 +7,8 @@
           :laebl="item.name + '/' + item.username"
           :value="item.name + '/' + item.username"
           :key="index">
-          <span style="float: left; color: #8492a6; font-size: 11px">{{ '账号：' + item.username }}</span>
-          <span style="float: right; color: #8492a6; font-size: 11px;margin-right:20px;">{{ '姓名：' + item.name }}</span>
+          <span style="float: left; color: #8492a6; font-size: 11px">{{ '姓名：' + item.name + '(' + item.type + ')' }}</span>
+          <span style="float: right; color: #8492a6; font-size: 11px;margin-right:20px;">{{'账号：' + item.username }}</span>
         </el-option>
       </el-select>
       <el-button size="medium" type="primary" @click="add" >添加成员</el-button>
@@ -57,12 +57,11 @@
           label="加入日期">
         </el-table-column>
         <el-table-column
-          prop="operate"
           align="center"
           label="操作"
           fixed="right"
           width="120">
-          <template slot-scope="scope" v-if="scope.row.username !== user.username && user.id === projectInfo.creator">
+          <template slot-scope="scope"  v-if="scope.row.username !== user.username && user.id === projectInfo.creator">
             <el-button type="danger" size="small" plain @click="removeMember(scope.row)">移除</el-button>
           </template>
         </el-table-column>
@@ -182,9 +181,8 @@ export default {
           item.t1.joinTime = item.t2
           arr2.push(item.t1)
         })
-        console.log(arr2)
+        this.getUsers()
         this.tableData = arr2
-        this.initMemberOptions(this.memberArr)
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
@@ -197,12 +195,12 @@ export default {
           let obj = {
             username: item.username,
             name: item.name,
-            id: item.id
+            id: item.id,
+            type: item.type
           }
           this.memberOptions.push(obj)
         }
       })
-      console.log(this.memberOptions)
     },
     async getUsers () {
       let info = {
@@ -212,6 +210,7 @@ export default {
       let response = await getAllUser(info)
       if (response.data.mitiStatus === 'SUCCESS') {
         this.memberArr = response.data.entity.data
+        this.initMemberOptions(this.memberArr)
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
@@ -219,7 +218,6 @@ export default {
   },
   mounted () {
     this.getProjectMem()
-    this.getUsers()
     this.user = this.$store.state.user
   }
 }

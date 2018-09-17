@@ -34,7 +34,7 @@
                   <div class="check-code-wrapper">
                     <div class="yanzhengma-wrapper">
                       <el-input v-model="form.yanzhengma" @keyup.enter.native="login('loginForm')" :placeholder="yanzhengmaHolder">
-                        <i slot="prefix" class="el-input__icon ercp-icon-general-pass" style="font-size: 12px;line-height:48px;border:2px solid #c0c4cc;border-radius:50%;padding:2px;"></i>
+                        <i slot="prefix" class="el-input__icon ercp-icon-general-vertify" style="font-size: 18px;line-height:48px;"></i>
                       </el-input>
                     </div>
                   </div>
@@ -62,7 +62,8 @@
           </el-form>
         </div>
         <div class="close-button">
-          <i class="ercp-icon-general-close" @click="windwowOperate('mini')"></i>
+          <i class="ercp-icon-general-minimine" @click="windwowOperate('mini')"></i>
+          <i class="ercp-icon-general-close" @click="windwowOperate('close')"></i>
         </div>
       </div>
     </div>
@@ -76,6 +77,8 @@ export default {
     if (process.env.NODE_ENV === 'production') {
       let ipc = this.$electron.ipcRenderer
       ipc.send('loginResize')
+      ipc.send('nonableResize')
+      ipc.send('center')
     }
     // 每次在登录页面都要重新清除用户信息
     this.$store.commit('SET_TOKEN', '')
@@ -151,6 +154,14 @@ export default {
             this.$store.commit('SET_TOKEN', token)
             this.$store.commit('SET_USER', user)
             this.$router.push('/home')
+            this.env = process.env.NODE_ENV
+            if (this.env === 'production') {
+              let ipc = this.$electron.ipcRenderer
+              ipc.send('hide')
+              ipc.send('mainResize')
+              ipc.send('ableResize')
+              ipc.send('center')
+            }
           } else {
             this.$message.error('ERROR: ' + response.data.message)
           }
@@ -162,7 +173,18 @@ export default {
     windwowOperate (operate) {
       // 按钮操控主进程窗口
       let ipc = this.$electron.ipcRenderer
-      ipc.send('close')
+      switch (operate) {
+        case 'mini':
+          ipc.send('min')
+          break
+        case 'max':
+          ipc.send('max')
+          break
+        case 'close':
+          ipc.send('close')
+          break
+      }
+      console.log(operate)
     }
   },
   components: {
@@ -192,6 +214,12 @@ export default {
         height: 360px;
         float: left;
         background-color: rgba($color: $siderbarBgColor, $alpha: 1);
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
         img{
           width: 100%;
           height: 100%;
@@ -199,6 +227,7 @@ export default {
         }
       }
       .right-login{
+        -webkit-app-region: drag;
         float: left;
         width: 360px;
         height: 360px;
@@ -208,6 +237,7 @@ export default {
         // background: url('../../assets/images/ldyy.png') center center;
         // background-size: 100% 100%;
         .login-title{
+          -webkit-app-region: no-drag;
           // width:300px;
           text-align: center;
           font-size:19px;
@@ -223,11 +253,17 @@ export default {
           }
         }
         .login-form{
+          -webkit-app-region: no-drag;
           margin-top: 30px;
           overflow: hidden;
           border-radius: 2px;
         }
         .close-button{
+          -webkit-app-region: no-drag;
+          width: 50px;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
           position: absolute;
           right: 16px;
           top: 16px;

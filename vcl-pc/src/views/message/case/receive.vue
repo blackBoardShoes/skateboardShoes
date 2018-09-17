@@ -63,8 +63,12 @@
               </div>
               <div class="operate">
                 <div class="inside">
-                  <i class="ercp-icon-general-forward primary-text" @click.stop="recall(item)"></i>
-                  <i class="ercp-icon-general-close danger-text" @click.stop="deleteSingle(item)"></i>
+                  <el-tooltip effect="dark" content="回复消息" placement="top">
+                    <i class="ercp-icon-general-forward primary-text" v-if="item.type === 1" @click.stop="recall(item)"></i>
+                  </el-tooltip>
+                  <el-tooltip effect="dark" content="删除消息" placement="top">
+                    <i class="ercp-icon-general-remove light-text" @click.stop="deleteSingle(item)"></i>
+                  </el-tooltip>
                 </div>
               </div>
             </div>
@@ -276,7 +280,8 @@ export default {
           let info = {
             receivers: [this.recallMessage.backReceiver],
             title: this.recallMessage.title,
-            message: this.recallMessage.message
+            message: this.recallMessage.message,
+            type: 1
           }
           info.sender = this.$store.state.user.id
           let response = await sendMessage(info)
@@ -358,14 +363,16 @@ export default {
       overflow: auto;
     }
     .message-list{
-      // overflow: auto;
+      overflow-y: auto;
+      overflow-x: hidden;
+      flex: 1;
       padding: 8px;
       .message-box{
+        background-color: #fff;
         width: 100%;
         height: 100%;
-        // overflow-x: hidden;
-        // overflow-y: auto;
         .message-box-title{
+          color: #909399;
           display: flex;
           flex-direction: row;
           text-align: center;
@@ -475,7 +482,7 @@ export default {
         }
         .message-view{
           padding-left: 103px;
-          padding-right: 80px;
+          padding-right: 230px;
           box-sizing: border-box;
           // width: 100%;
           text-align: justify;
