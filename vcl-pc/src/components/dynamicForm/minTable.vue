@@ -24,7 +24,7 @@
       :width="item.width">
       <template slot-scope="scope">
         <el-button
-          v-if="item.option"
+          v-if="item.option & x.hidden ? filterBtn(scope.row, scope.column, scope.row[item.prop], scope.$index) : true"
           v-for="(x, key) in item.contain"
           :key="key"
           :type="x.type ? x.type : 'text'"
@@ -32,7 +32,9 @@
           :style="x.style"
           @click="operateClick(scope.row, scope.$index, x)">{{x.label}}</el-button>
           <div v-if="!item.option">
-            {{scope.row[item.prop]}}
+            {{
+              formatter(scope.row, scope.column, scope.row[item.prop], scope.$index)
+            }}
           </div>
       </template>
     </el-table-column>
@@ -69,7 +71,13 @@ export default {
     filterHandler: {
       type: Function,
       default () {
-        return () => {}
+        return _ => {}
+      }
+    },
+    filterBtn: {
+      type: Function,
+      default () {
+        return _ => {}
       }
     }
   },
@@ -77,6 +85,13 @@ export default {
     return {}
   },
   methods: {
+    formatter (row, column, cellValue, index) {
+      if (!row[column.property]) {
+        return '/'
+      } else {
+        return row[column.property]
+      }
+    },
     handleCurrentChange (val) {
       this.$emit('handleCurrentChange', val)
     },

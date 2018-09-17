@@ -39,7 +39,7 @@
                 <div style="display: flex">
                   <!-- @change.native="changeRules" -->
                   <el-input
-                    :disabled="disabled" :placeholder="items.placeholder" clearable
+                    :disabled="disabled" :placeholder="items.placeholder ? items.placeholder : '请输入'" clearable
                     v-if="items.type === 'INPUT' | items.type === 'INT' | items.type === 'DOUBLE'" v-model.trim='formModel[items.id]'></el-input>
                   <!-- <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'INT'" v-model.trim='formModel[items.id]'></el-input> -->
                   <!-- <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'DOUBLE'" v-model.trim='formModel[items.id]'></el-input> -->
@@ -64,6 +64,7 @@
                 <el-date-picker
                   :disabled="items.disabled"
                   clearable
+                  value-format="yyyy-MM-dd"
                   style="width:100%;"
                   v-if="items.type === 'DATE'"
                   v-model="formModel[items.id]"
@@ -73,6 +74,7 @@
                 <el-date-picker
                   :disabled="items.disabled"
                   clearable
+                  value-format="yyyy-MM-dd HH:mm:ss"
                   style="width:100%;"
                   v-if="items.type === 'DATETIME'"
                   v-model="formModel[items.id]"
@@ -96,8 +98,8 @@
                     <el-button @click="onEval(items)">计算</el-button>
                   </div>
                 </div>
-                <div v-if="items.type === 'TABLE'" style="width: 100%;">
-                  <sx-table v-model="formModel[items.id]" ref="sxtable" :tableData="items ? items : {}" @getData="getData" style="width: 100%;"></sx-table>
+                <div v-if="items.type === 'TABLE'">
+                  <sx-table v-model="formModel[items.id]" ref="sxtable" :tableData="items ? items : {}" @getData="getData"></sx-table>
                 </div>
                 <!-- 辅助创建 新增 编辑 -->
                 <div v-if="items.type === 'CREATECALCULATE'" >
@@ -178,13 +180,12 @@
     <el-dialog
       :modal="false"
       :visible.sync="evaluateDialogVisible"
-      width="21%">
+      width="300px">
       <div slot="title">
         <i class="el-icon-error" style="color: #FF455B"></i>
         <span style="font-weight: bold">错误原因</span>
       </div>
       <sx-min-form
-        :labelPosition="'top'"
         :labelWidth="false"
         cancel submitTF
         @cancelData="evaluateDialogVisible = false"
@@ -199,14 +200,14 @@ import sxTable from './table'
 import sxLayerTree from './layerTree'
 import sxTree from './tree'
 import sxCalculate from './calculate'
-import draggable from 'vuedraggable'
+// import draggable from 'vuedraggable'
 export default {
   components: {
     sxTable,
     sxTree,
     sxLayerTree,
-    sxCalculate,
-    draggable
+    sxCalculate
+    // draggable
   },
   props: {
     inline: {
@@ -340,8 +341,11 @@ export default {
     value: {
       deep: true,
       handler (value) {
-        this.formModel = {}
-        this.formModel = Object.assign({}, value)
+        // this.formModel = {}
+        // this.formModel = Object.assign({}, value)
+        // this.formModel = {}
+        this.init()
+        this.formModel = Object.assign(this.formModel, value)
       }
     },
     mozhu: {
@@ -441,8 +445,16 @@ export default {
                 }
               }
             }
+            // if (!this.formModel[i.id]) {
+            //   if (this.formModel[i.id] === 0) {
+            //     this.$set(this.formModel, i.id, 0)
+            //   } else {
+            //     this.$set(this.formModel, i.id, '')
+            //   }
+            // }
             break
         }
+        // this.$emit('input', this.formModel)
         if (i['validations']) {
           for (let z in i['validations']) {
             if ('pattern' in i['validations'][z]) {

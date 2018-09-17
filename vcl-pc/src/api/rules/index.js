@@ -6,6 +6,10 @@ console.log(api, hot)
 export const record = data => {
   return axios.post(api + '/record', data)
 }
+// 删除
+export const formdataDelete = data => {
+  return axios.delete(api + '/formdata/delete', { data: data })
+}
 // TABLE
 // 总表
 export const recordAllRecord = data => {

@@ -261,7 +261,7 @@ export default {
       // this.$set(this.thatFish, 'fields', [])
       // this.$refs['thatFormPreview'].againData()
     },
-    //  CREATECALCULATE TREE LAYERTREE CREATETABLE
+    //  CREATECALCULATE TREE LAYERTREE CREATETABLE 辅助字段
     auxiliaryType (formModel) {
       switch (formModel['type']) {
         case 'CREATETABLE':

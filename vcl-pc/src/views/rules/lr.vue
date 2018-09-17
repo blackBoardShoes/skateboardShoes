@@ -2,17 +2,23 @@
   <div class="formAll">
     <div class="formContent">
       <div class="formTopContent">
-        <el-menu :default-active="activeIndexNav" class="formTopLeft" mode="horizontal" @select="handleSelect">
+        <!-- <el-menu :default-active="activeIndexNav" class="formTopLeft" mode="horizontal" @select="handleSelect">
           <template v-for="(item, index) in allArr">
-            <el-submenu :index="item.label" :key="index" v-if="item.submenu" :show-timeout="100">
+            <el-submenu :disabled="!['术前', '术中', '术后'].includes(activeIndexNav)" :index="item.label" :key="index" v-if="item.submenu" :show-timeout="100">
               <template slot="title">{{item.label}}</template>
-              <el-menu-item v-for="(x, i) in item.submenu" :index="x.label" :key="i">{{x.label}}</el-menu-item>
+              <el-menu-item :disabled="activeIndexNav !== x.label" v-for="(x, i) in item.submenu" :index="x.label" :key="i">
+                {{x.label}}
+              </el-menu-item>
             </el-submenu>
-            <el-menu-item :key="index" :index="item.label" v-else>{{item.label}}</el-menu-item>
+            <el-menu-item :disabled="activeIndexNav !== item.label" :key="index" :index="item.label" v-else>{{item.label}}</el-menu-item>
           </template>
+        </el-menu> -->
+        <el-menu :default-active="activeIndexNav" class="formTopLeft" mode="horizontal" @select="handleSelect">
+          <el-menu-item :index="activeIndexNav">{{activeIndexNav}}</el-menu-item>
         </el-menu>
         <div class="formTopRight">
-          患者: <span style="color: #117FD1;opacity: 0.9">{{patientInfo.patientName}}</span> ({{patientInfo.gender ? '男' : '女'}}) 住院号：{{patientInfo.patientId}}
+          患者: <span style="color: #117FD1;opacity: 0.9">{{patientInfo.patientName}}</span>&nbsp;({{patientInfo.gender ? '男' : '女'}})&nbsp;&nbsp;&nbsp;&nbsp;
+          住院号: {{patientInfo.patientId}}
         </div>
       </div>
       <div class="formContentContent" v-if="Boolean(navArr[activeIndex])">
@@ -48,7 +54,7 @@
           </div>
           <div class="formContentRight">
             <div class="rightContent">
-              <div class="rightContentDynamic" v-if="!(navArr[activeIndex] ? navArr[activeIndex].isStatic : false)">
+              <div class="rightContentDynamic" v-if="!navArr[activeIndex].isStatic">
                 <sx-min-form
                   v-if="smf"
                   :disabled="activeIndexNav != patientInfo.phase"
@@ -58,8 +64,10 @@
                   @notVerifying="notVerifying"
                   @consoleData="consoleData"></sx-min-form>
               </div>
-              <div class="rightContentStatic">
-                <sx-operation-report v-model="ssbgModel" ref="ssbgModel" v-if="navArr[activeIndex] ? navArr[activeIndex].isStatic === 'ssbg' : false"></sx-operation-report>
+              <div class="rightContentStatic" v-else>
+                <!-- v-model="ssbgModel" -->
+                <sx-operation-report v-model="fishData[navArr[activeIndex].id]"
+                  ref="ssbgModel" v-if="navArr[activeIndex].name === '手术报告'"></sx-operation-report>
               </div>
             </div>
           </div>
@@ -70,13 +78,24 @@
         暂无数据
       </div>
     </div>
+    <el-dialog
+      append-to-body
+      modal-append-to-body
+      :close-on-click-modal="false"
+      v-if="undoneFilledFormDialogVisible"
+      :visible.sync="undoneFilledFormDialogVisible">
+      <sx-min-form
+        submitTF v-model="undoneFilledFormData" :mozhu="undoneFilledFormDataMozhu[user.type]"
+        @consoleData="undoneFilledFormConsoleData" ></sx-min-form>
+    </el-dialog>
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 import sxNoRouteControl from '../../components/submenu/noRouteControl'
 import sxOperationReport from '../../components/staticForm/operationReport'
 import { fieldAllForms } from '../../api/form/bdk.js'
-import { formdataSave, formdataSubmit, formdataData } from '../../api/rules/lr.js'
+import { formdataSave, formdataSubmit, formdataData, userByMyType } from '../../api/rules/lr.js'
 
 export default {
   name: 'rules_index',
@@ -648,10 +667,47 @@ export default {
         operationSelectHj: [],
         operationDateTime: ''
       },
-      smf: false
+      smf: false,
+      // UndoneFilledFormDialogVisible
+      undoneFilledFormDialogVisible: false,
+      undoneFilledFormData: {},
+      undoneFilledFormDataMozhu: {
+        科研护士: {
+          fields: [
+            {
+              id: 'responseName',
+              label: '记录者',
+              values: [
+                {label: '123', value: '123'}
+              ],
+              type: 'SELECT',
+              validations: [
+                { required: true, message: '请选择记录者', trigger: 'change' }
+              ]
+            }
+          ]
+        },
+        诊疗中心: {
+          fields: [
+            {
+              id: 'responseName',
+              label: '记录者',
+              type: 'INPUT',
+              validations: [
+                { required: true, message: '请输入姓名', trigger: 'change' }
+              ]
+            }
+          ]
+        }
+      },
+      ubmtData: []
     }
   },
+  computed: mapState({
+    user: state => state.user
+  }),
   async created () {
+    console.log(this.user, 'useruseruser')
     if (this.$route.params.data) {
       this.patientInfo = JSON.parse(this.$route.params.data)
       this.activeIndexNav = this.patientInfo.phase
@@ -729,20 +785,33 @@ export default {
       console.log(this.navArr)
       console.log(this.activeIndex)
       console.log(this.activeIndexNav)
-      this.$refs.thatForm.consoleData()
-      let fds = await formdataSubmit(Object.assign(this.patientInfo, {data: this.fishData}))
-      console.log(fds)
-      if (fds) {
-        this.generalBack()
+      this.undoneFilledFormData = {}
+      if (this.user.type === '科研护士') {
+        this.ubmtData = await userByMyType()
+        console.log(this.ubmtData.entity)
+        this.undoneFilledFormDataMozhu['科研护士'].fields[0].values = [...this.ubmtData.data.entity]
+      } else {
+        console.log(this.patientInfo)
       }
+      console.log(this.user)
+      console.log(this.patientInfo.header['responseId'], this.patientInfo.header['responseName'], 'patientInfopatientInfo')
+      this.undoneFilledFormDialogVisible = true
     },
     generalDelete () {},
     async generalSave () {
-      this.$refs.thatForm.notVerifying()
+      if (!this.navArr[this.activeIndex].isStatic) {
+        this.$refs.thatForm.notVerifying()
+      } else {
+        console.log(this.fishData, 'this.fishData')
+      }
       let fds = await formdataSave(Object.assign(this.patientInfo, {data: this.fishData}))
       if (fds) {
-        if (this.activeIndex <= this.navArr.length - 1) {
+        if (this.activeIndex < this.navArr.length - 1) {
+          this.smf = false
           this.activeIndex++
+          setTimeout(_ => {
+            this.smf = true
+          }, 1)
         }
         // this.show()
       }
@@ -754,6 +823,29 @@ export default {
     async consoleData (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
       // this.fishData[this.navArr[this.activeIndex].id] = formModel
       this.$set(this.fishData, this.navArr[this.activeIndex].id, formModel)
+    },
+    async undoneFilledFormConsoleData (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
+      console.log(mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate)
+      if (!this.navArr[this.activeIndex].isStatic) {
+        this.$refs.thatForm.consoleData()
+      } else {
+        console.log(this.fishData, 'this.fishData')
+      }
+      if (this.user.type === '科研护士') {
+        for (let i of this.ubmtData.data.entity) {
+          if (i.value === formModel['responseName']) {
+            this.patientInfo.header = Object.assign(this.patientInfo.header, { responseId: i.value, responseName: i.label })
+          }
+        }
+        // this.undoneFilledFormDataMozhu
+      } else {
+        this.patientInfo.header = Object.assign(this.patientInfo.header, formModel, { responseId: this.user.username })
+      }
+      let fds = await formdataSubmit(Object.assign(this.patientInfo, {data: this.fishData}))
+      console.log(fds)
+      if (fds) {
+        this.generalBack()
+      }
     },
     generalBack () {
       this.$router.go(-1)
@@ -816,7 +908,9 @@ $marginW: 15px;
             flex-grow: 1;
             padding: 50px 25px;
           }
-          .rightContentStatic {}
+          .rightContentStatic {
+            width: $full;
+          }
         }
       }
       .rightContentControl {
@@ -840,7 +934,7 @@ $marginW: 15px;
         .rightContentControlBtn {
           transition: all .5s;
           // flex-grow: 1;
-          width: 500px;
+          width: 400px;
           height: $full;
           display: flex;
           justify-content: space-between;

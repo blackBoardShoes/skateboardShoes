@@ -142,8 +142,11 @@ export default {
       }
       this.minTreeData = arr
     },
-    value (val) {
-      this.minTreeData = val
+    value: {
+      // deep: true,
+      handler (value) {
+        this.minTreeData = value
+      }
     }
     // minTreeData: {
     //   handler (val, oldVal) {
