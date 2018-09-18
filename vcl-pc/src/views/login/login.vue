@@ -14,8 +14,7 @@
           <el-form
             ref="loginForm"
             :model="form"
-            :rules="rules"
-            @keyup.enter.native="login('loginForm')">
+            :rules="rules">
             <el-form-item prop="username">
               <el-input v-model="form.username" placeholder="请输入账号">
                 <i slot="prefix" class="el-input__icon ercp-icon-general-account" style="font-size: 18px;line-height:48px;"></i>
@@ -53,7 +52,7 @@
                   type="primary"
                   class="login-btn"
                   style="width: 100%;"
-                  @click="login('loginForm')">
+                  @click="login()">
                   登录系统
                 </el-button>
                 <!-- </el-form-item> -->
@@ -141,7 +140,7 @@ export default {
     },
     // 登录请求
     async login (formName) {
-      this.$refs[formName].validate(async valid => {
+      this.$refs['loginForm'].validate(async valid => {
         if (valid) {
           let info = {
             username: this.form.username,

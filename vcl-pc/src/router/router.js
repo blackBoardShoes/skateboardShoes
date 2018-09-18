@@ -194,7 +194,7 @@ export const appRouter = [
     component: Layout,
     children: [
       {
-        redirect: '/form/index/bdk',
+        redirect: '/form/index/syk',
         path: 'index',
         name: 'form_index',
         meta: {

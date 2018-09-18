@@ -2,9 +2,23 @@
   <div class="sykAll">
     <div class="sykContent">
       <div class="sykContentTop">
+        <el-row type="flex" justify="space-between">
+          <el-col :span="6">
+            <el-input
+              @keyup.enter.native="searchPattern"
+              placeholder="术语名字"
+              v-model="searchPatternData"
+              clearable
+              prefix-icon="el-icon-search"></el-input>
+          </el-col>
+          <el-col :span="2">
+            <el-button type="primary" @click="addWhat" >新增术语</el-button>
+          </el-col>
+        </el-row>
+        <br>
         <el-table
           :data="tableData"
-          height="252"
+          height="300"
           highlight-current-row
           @current-change="handleCurrentChange"
           style="width: 100%">
@@ -42,6 +56,16 @@
             label="释义"
             ></el-table-column>
         </el-table>
+        <div style="text-align: right;margin-top:15px;">
+          <el-pagination
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+            :page-sizes="[5, 10, 15]"
+            :current-page="currentPage"
+            :page-size="perPage"
+            @size-change="pageSize"
+            @current-change="changePage"></el-pagination>
+        </div>
       </div>
       <sx-segmenting-line>
         <div slot="prepend" class="centerCenter">
@@ -62,38 +86,66 @@
           <el-form-item label="术语名称" prop="name" style="flex-grow: 1">
             <el-input v-model="formModel.name"></el-input>
           </el-form-item>
-          <el-form-item label="术语类别" prop="region" >
-            <el-select v-model="formModel.region" placeholder="请选择活动区域">
+          <el-form-item label="术语类别" prop="type" >
+            <el-select v-model="formModel.type" placeholder="请选择活动区域">
               <el-option label="内科" value="内科"></el-option>
               <el-option label="外科" value="外科"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="术语备注" prop="remarks"  style="flex-grow: 1">
-            <el-input v-model="formModel.remarks"></el-input>
+          <el-form-item label="术语备注" prop="reference"  style="flex-grow: 1">
+            <el-input v-model="formModel.reference"></el-input>
           </el-form-item>
-          <el-form-item label="术语释义" prop="desc" style="width: 100%">
-            <el-input type="textarea" v-model="formModel.desc" :rows="5"></el-input>
+          <el-form-item label="术语释义" prop="paraphrase" style="width: 100%">
+            <el-input type="textarea" v-model="formModel.paraphrase" :rows="5"></el-input>
           </el-form-item>
-          <el-form-item label="示例图像" style="width: 100%">
+          <el-form-item label="示例图像" style="width: 100%" prop="images" >
             <div class="exampleImg">
-              <img :src="imgSrc" alt="">
               <div class="exampleImgBtn">
+                <i class="el-icon-close"  @click="deleteImages"></i>
                 <sx-file @onRead="onRead">
-                  <i class="el-icon-edit"></i>
+                  <i class="el-icon-upload"></i>
                 </sx-file>
-                <i class="el-icon-close"></i>
+              </div>
+              <!-- <img :src="imgSrc" alt=""> -->
+              <div class="exampleImages">
+                <viewer
+                  :images="formModel.images"
+                  :options="options"
+                  @inited="inited"
+                  class="viewer" ref="viewer">
+                  <template slot-scope="scope">
+                    <figure class="images">
+                      <div class="image-wrapper" v-for="(item, index) in scope.images" :key="index">
+                        <img class="image" :src="item" :data-source="item" :alt="item.split('/').pop()">
+                      </div>
+                    </figure>
+                  </template>
+                </viewer>
               </div>
             </div>
           </el-form-item>
         </el-form>
       </div>
     </div>
+    <!-- <viewer
+      :images="images"
+      :options="options"
+      @inited="inited"
+      class="viewer" ref="viewer">
+      <template slot-scope="scope">
+        <figure class="images">
+          <div class="image-wrapper" v-for="{source, thumbnail} in scope.images" :key="source">
+            <img class="image" :src="thumbnail" :data-source="source" :alt="source.split('/').pop()">
+          </div>
+        </figure>
+      </template>
+    </viewer> -->
   </div>
 </template>
 <script>
 import sxSegmentingLine from '@/components/segmentingLine'
 import sxFile from '@/components/dynamicForm/file'
-
+import { termbaseGetPageTermbases, termbaseAddTermbase } from '../../api/form/syk.js'
 export default {
   components: {
     sxFile,
@@ -104,9 +156,13 @@ export default {
       tableData: [{name: 'cccc'}, {name: 'aaa'}, {name: 'ddd'}, {}],
       formModel: {
         name: '',
-        region: '',
-        remarks: '',
-        desc: 'I 型:左右肝管汇合部下方肝总管或胆管残端长度≥2cm\nII 型:左右肝管汇合部下方肝总管残端长度<2cm\nIII 型:左右肝管汇合部完整，左右肝管系统相通\nIV 型:左右肝管汇合部损伤，左右肝管系统狭窄不相通\nV 型:I 型、II 型或III 型+右侧副肝管或迷走胆管狭窄，左侧副肝管或迷走胆管狭窄'
+        type: '',
+        reference: '',
+        paraphrase: 'I 型:左右肝管汇合部下方肝总管或胆管残端长度≥2cm\nII 型:左右肝管汇合部下方肝总管残端长度<2cm\nIII 型:左右肝管汇合部完整，左右肝管系统相通\nIV 型:左右肝管汇合部损伤，左右肝管系统狭窄不相通\nV 型:I 型、II 型或III 型+右侧副肝管或迷走胆管狭窄，左侧副肝管或迷走胆管狭窄',
+        images: [
+          require('../../../src/assets/images/xbx.jpg'),
+          'https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=116399c62434349b6b066885f9eb1521/91ef76c6a7efce1ba958b016a351f3deb58f65fe.jpg'
+        ]
       },
       rules: {
         name: [
@@ -114,18 +170,84 @@ export default {
           { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
         ]
       },
-      imgSrc: 'https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=116399c62434349b6b066885f9eb1521/91ef76c6a7efce1ba958b016a351f3deb58f65fe.jpg'
+      searchPatternData: '',
+      currentPage: 1,
+      perPage: 5,
+      total: 0,
+      imgSrc: 'https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=116399c62434349b6b066885f9eb1521/91ef76c6a7efce1ba958b016a351f3deb58f65fe.jpg',
+      images: [
+        {
+          source: require('../../../src/assets/images/xbx.jpg'),
+          thumbnail: require('../../../src/assets/images/xbx.jpg')
+        },
+        {
+          source: 'https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=116399c62434349b6b066885f9eb1521/91ef76c6a7efce1ba958b016a351f3deb58f65fe.jpg',
+          thumbnail: require('../../../src/assets/images/xbx.jpg')
+        }
+      ],
+      options: {
+        inline: true,
+        button: true,
+        navbar: true,
+        title: true,
+        toolbar: true,
+        tooltip: true,
+        movable: true,
+        zoomable: true,
+        rotatable: true,
+        scalable: true,
+        transition: true,
+        fullscreen: true,
+        keyboard: true,
+        url: 'data-source'
+      },
+      addOrEdit: true
     }
   },
+  created () {
+    this.show()
+  },
   methods: {
+    inited (viewer) {
+      this.$viewer = viewer
+    },
+    async show () {
+      let tgp = await termbaseGetPageTermbases({currentPage: this.currentPage, perPage: this.perPage, searchPattern: this.searchPatternData})
+      console.log(tgp)
+      if (tgp) {
+        this.total = tgp.data.entity.total
+        this.tableData = tgp.data.entity.data
+      }
+    },
+    searchPattern () {
+      this.show()
+    },
     deleteWhat () {
       console.log('111')
       this.$refs['formModel'].resetFields()
     },
+    pageSize (val) {
+      this.perPage = val
+      this.show()
+    },
+    async changePage (val) {
+      this.currentPage = val
+      this.show()
+    },
+    addWhat () {
+      this.addOrEdit = true
+    },
     saveWhat () {
-      this.$refs['formModel'].validate(valid => {
+      this.$refs['formModel'].validate(async valid => {
         if (valid) {
-          console.log(1)
+          if (this.addOrEdit) {
+            // 新增
+            console.log(this.formModel)
+            let tbati = await termbaseAddTermbase(this.formModel)
+            console.log(tbati)
+          } else {
+            // 编辑
+          }
         } else {
           console.log('error submit!!')
           return false
@@ -133,7 +255,7 @@ export default {
       })
     },
     handleCurrentChange (val) {
-      this.formModel = Object.assign({}, val)
+      this.formModel = Object.assign(this.formModel, val)
       console.log(val)
     },
     filterHandler (value, row, column) {
@@ -141,10 +263,21 @@ export default {
       const property = column['property']
       return row[property] === value
     },
+    deleteImages () {
+      this.formModel.images.splice(this.$viewer.index, 1)
+    },
     onRead (data) {
       if (data) {
-        console.log(data)
-        this.imgSrc = data.result
+        console.log(this.formModel.images.length)
+        if (parseInt(this.formModel.images.length) < 5) {
+          this.formModel.images.push(data.result)
+        } else {
+          this.$message({
+            showClose: true,
+            message: '最多上传5张'
+          })
+        }
+        // this.imgSrc = data.result
       } else {
         console.log(data)
       }
@@ -158,6 +291,8 @@ $contentW: 95%;
 $padding: 30px;
 .sykAll {
   width: $full;
+  padding-bottom: 100px;
+  overflow: auto;
   .sykContent {
     width: $full;
     display: flex;
@@ -178,32 +313,53 @@ $padding: 30px;
         flex-wrap: wrap;
         .exampleImg {
           flex-grow: 1;
+          flex-direction: column;
           height: 260px;
           background: white;
           display: flex;
           padding: 18px;
-          img {
-            align-self: center;
-            margin: auto;
-            height: 80%;
-            // width: 100%;
-            padding: 20px;
-          }
           .exampleImgBtn {
-            align-self: flex-end;
+            width: 80px;
+            margin: 5px 0;
             display: flex;
-            flex-direction: column;
+            align-self: flex-end;
+            // flex-direction: column;
             font-size: 26px;
-            text-align: center;
-            height: 70px;
             justify-content: space-between;
             i:hover {
               cursor: pointer;
             }
           }
+          .exampleImages {
+            flex: 1;
+            .viewer {
+              .images {
+                display: none;
+                justify-content: center;
+                align-content: center;
+                align-items: center;
+                flex-wrap: wrap;
+                padding: 5px;
+                .image-wrapper {
+                  display: inline-block;
+                  width: calc(33% - 20px);
+                  margin: 5px 5px 0 5px;
+                  .image {
+                    width: 100%;
+                    cursor: pointer;
+                    display: inline-block;
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
+  }
+
+  .el-table--group::after, .el-table--border::after, .el-table::before {
+    z-index: 0
   }
   .centerCenter {
     display: flex;
