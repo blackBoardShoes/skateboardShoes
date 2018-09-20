@@ -36,8 +36,8 @@
           <el-table-column
             show-overflow-tooltip
             align="center"
-            prop="address"
-            :filters="[{ text: '家', value: '家' }, { text: '公司', value: '公司' }]"
+            prop="type"
+            :filters="[{ text: '外科', value: '外科' }, { text: '内科', value: '内科' }]"
             :filter-method="filterHandler"
             filter-placement="bottom-end"
             width="110"
@@ -46,13 +46,13 @@
           <el-table-column
             show-overflow-tooltip
             align="center"
-            prop="tag"
+            prop="reference"
             label="备注"
             ></el-table-column>
           <el-table-column
             show-overflow-tooltip
             align="center"
-            prop="shiyi"
+            prop="paraphrase"
             label="释义"
             ></el-table-column>
         </el-table>
@@ -99,12 +99,16 @@
             <el-input type="textarea" v-model="formModel.paraphrase" :rows="5"></el-input>
           </el-form-item>
           <el-form-item label="示例图像" style="width: 100%" prop="images" >
-            <div class="exampleImg">
+            <div class="exampleImg" v-loading="imgLoading">
               <div class="exampleImgBtn">
-                <i class="el-icon-close"  @click="deleteImages"></i>
-                <sx-file @onRead="onRead">
-                  <i class="el-icon-upload"></i>
-                </sx-file>
+                <el-tooltip effect="dark" content="删除当前图片" placement="top">
+                  <i class="el-icon-close"  @click="deleteImages"></i>
+                </el-tooltip>
+                <el-tooltip effect="dark" content="上传图片" placement="top">
+                  <sx-file @onRead="onRead">
+                    <i class="el-icon-upload"></i>
+                  </sx-file>
+                </el-tooltip>
               </div>
               <!-- <img :src="imgSrc" alt=""> -->
               <div class="exampleImages">
@@ -145,7 +149,7 @@
 <script>
 import sxSegmentingLine from '@/components/segmentingLine'
 import sxFile from '@/components/dynamicForm/file'
-import { termbaseGetPageTermbases, termbaseAddTermbase } from '../../api/form/syk.js'
+import { termbaseGetPageTermbases, termbaseAddTermbase, termbaseRemoveTermbase, updateTermbase, termbaseSelectTermbase } from '../../api/form/syk.js'
 export default {
   components: {
     sxFile,
@@ -153,28 +157,31 @@ export default {
   },
   data () {
     return {
-      tableData: [{name: 'cccc'}, {name: 'aaa'}, {name: 'ddd'}, {}],
+      imgLoading: false,
+      tableData: [],
       formModel: {
         name: '',
         type: '',
         reference: '',
         paraphrase: 'I 型:左右肝管汇合部下方肝总管或胆管残端长度≥2cm\nII 型:左右肝管汇合部下方肝总管残端长度<2cm\nIII 型:左右肝管汇合部完整，左右肝管系统相通\nIV 型:左右肝管汇合部损伤，左右肝管系统狭窄不相通\nV 型:I 型、II 型或III 型+右侧副肝管或迷走胆管狭窄，左侧副肝管或迷走胆管狭窄',
         images: [
-          require('../../../src/assets/images/xbx.jpg'),
-          'https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=116399c62434349b6b066885f9eb1521/91ef76c6a7efce1ba958b016a351f3deb58f65fe.jpg'
+          // require('../../../src/assets/images/xbx.jpg'),
+          // 'https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=116399c62434349b6b066885f9eb1521/91ef76c6a7efce1ba958b016a351f3deb58f65fe.jpg'
         ]
       },
       rules: {
         name: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          { required: true, message: '请输入术语名称', trigger: 'change' }
+        ],
+        type: [
+          { required: true, message: '请选择术语类别', trigger: 'change' }
         ]
       },
       searchPatternData: '',
       currentPage: 1,
       perPage: 5,
       total: 0,
-      imgSrc: 'https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=116399c62434349b6b066885f9eb1521/91ef76c6a7efce1ba958b016a351f3deb58f65fe.jpg',
+      // imgSrc: 'https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=116399c62434349b6b066885f9eb1521/91ef76c6a7efce1ba958b016a351f3deb58f65fe.jpg',
       images: [
         {
           source: require('../../../src/assets/images/xbx.jpg'),
@@ -194,8 +201,8 @@ export default {
         tooltip: true,
         movable: true,
         zoomable: true,
-        rotatable: true,
-        scalable: true,
+        rotatable: false,
+        scalable: false,
         transition: true,
         fullscreen: true,
         keyboard: true,
@@ -217,14 +224,39 @@ export default {
       if (tgp) {
         this.total = tgp.data.entity.total
         this.tableData = tgp.data.entity.data
+        return true
+      }
+      return false
+    },
+    async searchPattern () {
+      if (await this.show()) {
+        this.$message({
+          type: 'success',
+          showClose: true,
+          message: '查询完毕'
+        })
+      } else {
+        this.$message({
+          showClose: true,
+          message: '查询失败'
+        })
       }
     },
-    searchPattern () {
-      this.show()
-    },
-    deleteWhat () {
+    async deleteWhat () {
       console.log('111')
-      this.$refs['formModel'].resetFields()
+      if (!this.addOrEdit) {
+        console.log(this.formModel)
+        let tbrtb = await termbaseRemoveTermbase(this.formModel)
+        console.log(tbrtb)
+        this.show()
+        this.$refs['formModel'].resetFields()
+        this.addOrEdit = true
+      } else {
+        this.$message({
+          showClose: true,
+          message: '请点击要删除的表格行'
+        })
+      }
     },
     pageSize (val) {
       this.perPage = val
@@ -236,6 +268,7 @@ export default {
     },
     addWhat () {
       this.addOrEdit = true
+      this.$refs['formModel'].resetFields()
     },
     saveWhat () {
       this.$refs['formModel'].validate(async valid => {
@@ -245,8 +278,18 @@ export default {
             console.log(this.formModel)
             let tbati = await termbaseAddTermbase(this.formModel)
             console.log(tbati)
+            if (tbati) {
+              this.$refs['formModel'].resetFields()
+              this.show()
+            }
           } else {
             // 编辑
+            let udtb = await updateTermbase(this.formModel)
+            if (udtb) {
+              this.addOrEdit = true
+              this.$refs['formModel'].resetFields()
+              this.show()
+            }
           }
         } else {
           console.log('error submit!!')
@@ -254,9 +297,16 @@ export default {
         }
       })
     },
-    handleCurrentChange (val) {
-      this.formModel = Object.assign(this.formModel, val)
-      console.log(val)
+    async handleCurrentChange (val) {
+      console.log(val, 'valvalvalvalvalvla')
+      if (val) {
+        this.addOrEdit = false
+        this.imgLoading = true
+        this.formModel = Object.assign(this.formModel, val)
+        let tbstb = await termbaseSelectTermbase(this.formModel)
+        if (tbstb) this.formModel = Object.assign(this.formModel, tbstb.data.entity)
+        this.imgLoading = false
+      }
     },
     filterHandler (value, row, column) {
       console.log(value, row, column)
@@ -357,7 +407,6 @@ $padding: 30px;
       }
     }
   }
-
   .el-table--group::after, .el-table--border::after, .el-table::before {
     z-index: 0
   }
@@ -370,6 +419,12 @@ $padding: 30px;
       font-size: 26px;
     }
   }
-}
 
+}
 </style>
+<style lang="scss">
+  .el-tooltip__popper, .is-dark{
+    max-width: 650px !important;
+  }
+</style>
+

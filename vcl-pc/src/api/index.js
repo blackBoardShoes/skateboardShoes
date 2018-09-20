@@ -8,7 +8,6 @@ import { Message } from 'element-ui'
 
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.defaults.timeout = 120000
-
 axios.interceptors.request.use(
   config => {
     if (store.user !== null) {
@@ -16,9 +15,12 @@ axios.interceptors.request.use(
     } else {
       config.headers.token = null
     }
-    // if (config.method === 'post') {
-    //   config.data = Qs.stringify(config.data)
-    // }
+    if (!config['cancelToken']) {
+      var CancelToken = axios.CancelToken
+      config['cancelToken'] = new CancelToken(function executor (c) {
+        store.commit('setCancelTokenData', c)
+      })
+    }
     return config
   },
   err => {

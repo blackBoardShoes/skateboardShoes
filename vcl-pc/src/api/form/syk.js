@@ -19,3 +19,32 @@ export const termbaseAddTermbaseImage = data => {
 export const termbaseAddTermbase = data => {
   return axios.post(all + '/termbase/addTermbase', data)
 }
+// termbase/removeTermbase 删除术语
+export const termbaseRemoveTermbase = data => {
+  return axios.delete(all + '/termbase/removeTermbase', { params: data })
+}
+// updateTermbase 更新接口
+export const updateTermbase = data => {
+  return axios.put(all + '/termbase/updateTermbase', data)
+}
+var CancelToken = axios.CancelToken
+var cancel
+// termbase/selectTermbase .根据术语id搜索术语
+export const termbaseSelectTermbase = data => {
+  if (typeof cancel === 'function') {
+    cancel()
+    cancel = null
+  }
+  return axios.get(all + '/termbase/selectTermbase', {
+    cancelToken: new CancelToken(function executor (c) {
+      cancel = c
+    }),
+    params: data
+  })
+}
+
+// export const termbaseSelectTermbase = data => {
+//   return axios.get(all + '/termbase/selectTermbase', {
+//     params: data
+//   })
+// }

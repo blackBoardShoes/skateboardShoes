@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import store from '../store'
 import VueRouter from 'vue-router'
 import { routers } from './router'
 import { Loading, Message } from 'element-ui'
@@ -21,6 +22,9 @@ const router = new VueRouter(routerConfig)
 
 let loading
 router.beforeEach((to, from, next) => {
+  if (typeof store.state.cancelTokenData === 'function') {
+    store.state.cancelTokenData()
+  }
   let user = sessionStorage.getItem('user') === null ? null : sessionStorage.getItem('user')
   let token = sessionStorage.getItem('token') === null ? null : sessionStorage.getItem('token')
   let codeType = null

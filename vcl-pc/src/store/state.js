@@ -8,7 +8,8 @@ const state = {
   // 路由信息
   routers: [loginRouter, ...appRouter],
   // 所有的动态字段,
-  fieldAllFieldsData: []
+  fieldAllFieldsData: [],
+  cancelTokenData: null
 }
 
 export default state

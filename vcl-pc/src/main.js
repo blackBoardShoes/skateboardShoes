@@ -52,6 +52,9 @@ if (process.env.NODE_ENV === 'production') {
 Vue.use(ElementUI)
 Vue.use(Viewer)
 Vue.component('chart', ECharts)
+Vue.prototype.cancelAjax = () => {
+  axios.CancelToken.source().cancel('what')
+}
 Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({

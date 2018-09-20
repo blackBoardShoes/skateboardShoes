@@ -21,6 +21,9 @@ const mutations = {
   },
   GET_TOKEN (state) {
     state.token = sessionStorage.getItem('token')
+  },
+  setCancelTokenData (state, cancelTokenData) {
+    state.cancelTokenData = cancelTokenData
   }
 }
 
