@@ -427,4 +427,3 @@ $padding: 30px;
     max-width: 650px !important;
   }
 </style>
-

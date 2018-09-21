@@ -543,6 +543,16 @@ export const appRouter = [
           role: [1, 2, 3, 4, 5, 6]
         },
         component: () => import('../components/cartogram/scalingChart.vue')
+      },
+      {
+        path: '/test/ccc',
+        name: 'ccc',
+        meta: {
+          title: 'cccc',
+          navigator: true,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../components/staticForm/radiography.vue')
       }
     ]
   },
