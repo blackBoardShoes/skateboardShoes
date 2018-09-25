@@ -360,7 +360,7 @@ export default {
         // this.formModel = {}
         // this.init()
         this.resetData()
-        console.log(this.formModel, 'initinitinitinitinitinitinit')
+        console.log(this.formModel, 'formModel')
       }
     },
     momo () {
