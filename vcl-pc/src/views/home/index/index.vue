@@ -51,6 +51,7 @@
         <el-button type="primary" size="medium" @click="refresh" v-if="user.codetype=== 5 || user.codetype=== 6">更新患者</el-button>
         <el-button type="primary" size="medium" @click="add" v-if="user.codetype=== 5">添加患者</el-button>
       </div>
+      <!-- </div> -->
       <div class="daily-work">
         <div class="yet case" v-for="item in ['a', 'b' , 'c', 'd']" :key="item">
           <div class="time">
@@ -446,10 +447,6 @@ export default {
 <style lang="scss" scoped>
   #home{
     position: relative;
-    // left: 16px;
-    // right: 16px;
-    // top: 16px;
-    // bottom: 16px;
     width:100%;
     height: 100%;
     padding: 16px;
@@ -518,7 +515,7 @@ export default {
         flex-direction: column;
         .case-top{
           width:100%;
-          height: 40%;
+          height: 60%;
           min-height: 40%;
           padding: 8px;
           margin-bottom: 8px;
@@ -549,12 +546,14 @@ export default {
       min-width: 360px;
       margin-left: 8px;
       height: 100%;
-      background-color: #fff;
       display: flex;
       flex-direction: column;
+      .top{
+        margin-bottom: 8px;
+      }
       .case-statistics{
-        height: 60px;
-        margin: 20px 0;
+        height: 65px;
+        margin: 10px 0 0 0;
         line-height: 30px;
         display: flex;
         flex-direction: row;
@@ -574,17 +573,18 @@ export default {
         }
       }
       .operation-buttons{
-        height: 30px;
+        height: 38px;
         width: 100%;
         line-height: 30px;
         padding: 10px 0;
         text-align: center;
+        border-bottom: 1px solid #ddd;
       }
       .daily-work{
+        // margin-bottom: 16px;
         flex: 1;
         padding:16px;
-        border-top: 1px solid #ddd;
-        overflow-x: auto;
+        overflow-y: auto;
         .case{
           height: 80px;
           padding: 0 10px;

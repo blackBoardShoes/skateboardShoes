@@ -26,6 +26,7 @@
           label="账号">
         </el-table-column>
         <el-table-column
+          min-width='100'
           show-overflow-tooltip
           prop="type"
           align="center"
@@ -60,7 +61,7 @@
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          style="min-width:100px"
+          min-width='100'
           show-overflow-tooltip
           prop="createDate"
           align="center"

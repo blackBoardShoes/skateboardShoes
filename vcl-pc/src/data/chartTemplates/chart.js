@@ -47,19 +47,19 @@ export const charts = [
         label: {
           // 环内则设置center
           normal: {
-            show: true,
-            position: 'outside',
+            show: false,
+            position: 'center',
             formatter: '{b}:{c}'
-          }
+          },
           // 强调
-          // emphasis: {
-          //   show: true,
-          //   position: 'center',
-          //   textStyle: {
-          //     fontSize: '30',
-          //     fontWeight: 'bold'
-          //   }
-          // }
+          emphasis: {
+            show: true,
+            position: 'center',
+            textStyle: {
+              fontSize: '30',
+              fontWeight: 'bold'
+            }
+          }
         },
         // 标签线
         labelLine: {
