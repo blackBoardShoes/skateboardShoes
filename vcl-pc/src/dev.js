@@ -8,7 +8,7 @@ let host = 'http://192.168.10.249:8089'
 // let host = 'http://192.168.10.196:8089'
 // let host = 'http://192.168.2.105:8089'
 // 大力
-let host2 = 'http://192.168.10.13:8080'
+let host2 = 'http://192.168.10.13:8090'
 // yt
 // let host3 = 'http://192.168.10.216:8085'
 // fwq
@@ -19,7 +19,7 @@ let host4 = 'http://192.168.10.144:8089'
 
 // let host5 = 'http://192.168.10.13:8090'
 
-let all = 'http://192.168.10.13:8090'
+let all = 'http://192.168.10.13:8080'
 // Is your service nginx  和 npm run dev 都是代理方式
 let nginx = false
 // nginx = true
@@ -50,7 +50,7 @@ let proxyTable = {
     }
   },
   '/yt': {
-    target: all,
+    target: host2,
     changeOrigin: true,
     pathRewrite: {
       '^/yt': '/'

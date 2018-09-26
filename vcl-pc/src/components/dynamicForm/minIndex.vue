@@ -515,6 +515,27 @@ export default {
             a = false
             break
         }
+        // for (let i of this.newFields) {
+        //   if (i.id === this.relation[items.id].target) {
+        //     console.log(i.values)
+        //   }
+        // }
+        // let relationArr = []
+        // for (let j in this.relation) {
+        //   if (this.relation[j].target === this.relation[items.id].target) {
+        //     relationArr.push(j)
+        //   }
+        // }
+        // console.log(items.id, relationArr, 'relationArrrelationArrrelationArr')
+        // for (let j of relationArr) {
+        //   if (this.relation[items.id].target !== j) {
+        //     if (typeof this.formModel[j] === 'string') {
+        //       this.$set(this.formModel, j, '')
+        //     } else {
+        //       this.$set(this.formModel, j, '')
+        //     }
+        //   }
+        // }
         // if (!a) {
         //   this.$delete(this.formModel, items.id)
         //   // this.$set(this.formModel, items.id, null)
@@ -605,6 +626,17 @@ export default {
       return idGroup
     },
     notVerifying () {
+      for (let i in this.relation) {
+        if (this.relation[i].ruleType === 'EQUAL') {
+          if (this.formModel[this.relation[i].target] !== this.relation[i].value) {
+            this.formModel[i] = ''
+          }
+        } else {
+          if (this.formModel[this.relation[i].target] === this.relation[i].value) {
+            this.formModel[i] = ''
+          }
+        }
+      }
       this.$refs['formModel'].validate(valid => {
         if (valid) {
           let idGroup = this.formatData()
@@ -625,6 +657,17 @@ export default {
       //     }
       //   }
       // })
+      for (let i in this.relation) {
+        if (this.relation[i].ruleType === 'EQUAL') {
+          if (this.formModel[this.relation[i].target] !== this.relation[i].value) {
+            this.formModel[i] = ''
+          }
+        } else {
+          if (this.formModel[this.relation[i].target] === this.relation[i].value) {
+            this.formModel[i] = ''
+          }
+        }
+      }
       this.$refs['formModel'].validate(valid => {
         if (valid) {
           let idGroup = this.formatData()

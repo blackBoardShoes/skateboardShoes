@@ -107,7 +107,15 @@ export default {
     value: {
       type: Object,
       default () {
-        return {}
+        return {
+          radiographyOrNot: '',
+          radiographyPipeline: '',
+          imagingTime: '',
+          unobstructed: '',
+          irrigation: '',
+          incumbent: '',
+          removeTime: ''
+        }
       }
     }
   },
@@ -116,6 +124,12 @@ export default {
       deep: true,
       handler (value) {
         this.contentModel = Object.assign({}, value)
+      }
+    },
+    'contentModel.radiographyOrNot' (val) {
+      let arr = ['radiographyPipeline', 'imagingTime', 'unobstructed', 'irrigation', 'incumbent', 'removeTime']
+      for (let i of arr) {
+        this.contentModel[i] = ''
       }
     },
     'contentModel.radiographyPipeline' (val) {
