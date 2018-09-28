@@ -700,7 +700,9 @@ export default {
           ]
         }
       },
-      ubmtData: []
+      ubmtData: [],
+      notVerifyingTF: false,
+      consoleDataTF: false
     }
   },
   computed: mapState({
@@ -797,32 +799,39 @@ export default {
       console.log(this.patientInfo.header['responseId'], this.patientInfo.header['responseName'], 'patientInfopatientInfo')
       this.undoneFilledFormDialogVisible = true
     },
-    generalDelete () {},
+    generalDelete () {
+      this.$refs.thatForm.clearData()
+    },
     async generalSave () {
       if (!this.navArr[this.activeIndex].isStatic) {
         this.$refs.thatForm.notVerifying()
       } else {
         console.log(this.fishData, 'this.fishData')
       }
-      let fds = await formdataSave(Object.assign(this.patientInfo, {data: this.fishData}))
-      if (fds) {
-        if (this.activeIndex < this.navArr.length - 1) {
-          this.smf = false
-          this.activeIndex++
-          setTimeout(_ => {
-            this.smf = true
-          }, 1)
+      if (this.notVerifyingTF) {
+        let fds = await formdataSave(Object.assign(this.patientInfo, {data: this.fishData}))
+        if (fds) {
+          if (this.activeIndex < this.navArr.length - 1) {
+            this.smf = false
+            this.activeIndex++
+            setTimeout(_ => {
+              this.smf = true
+            }, 1)
+          }
+          // this.show()
         }
-        // this.show()
+        this.notVerifyingTF = false
       }
     },
     async notVerifying (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
       // this.fishData[this.navArr[this.activeIndex].id] = formModel
       this.$set(this.fishData, this.navArr[this.activeIndex].id, formModel)
+      this.notVerifyingTF = true
     },
     async consoleData (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
       // this.fishData[this.navArr[this.activeIndex].id] = formModel
       this.$set(this.fishData, this.navArr[this.activeIndex].id, formModel)
+      this.consoleDataTF = true
     },
     async undoneFilledFormConsoleData (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
       console.log(mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate)
@@ -831,20 +840,23 @@ export default {
       } else {
         console.log(this.fishData, 'this.fishData')
       }
-      if (this.user.type === '科研护士') {
-        for (let i of this.ubmtData.data.entity) {
-          if (i.value === formModel['responseName']) {
-            this.patientInfo.header = Object.assign(this.patientInfo.header, { responseId: i.value, responseName: i.label })
+      if (this.consoleDataTF) {
+        if (this.user.type === '科研护士') {
+          for (let i of this.ubmtData.data.entity) {
+            if (i.value === formModel['responseName']) {
+              this.patientInfo.header = Object.assign(this.patientInfo.header, { responseId: i.value, responseName: i.label })
+            }
           }
+          // this.undoneFilledFormDataMozhu
+        } else {
+          this.patientInfo.header = Object.assign(this.patientInfo.header, formModel, { responseId: this.user.username })
         }
-        // this.undoneFilledFormDataMozhu
-      } else {
-        this.patientInfo.header = Object.assign(this.patientInfo.header, formModel, { responseId: this.user.username })
-      }
-      let fds = await formdataSubmit(Object.assign(this.patientInfo, {data: this.fishData}))
-      console.log(fds)
-      if (fds) {
-        this.generalBack()
+        let fds = await formdataSubmit(Object.assign(this.patientInfo, {data: this.fishData}))
+        console.log(fds)
+        if (fds) {
+          this.generalBack()
+        }
+        this.consoleDataTF = false
       }
     },
     generalBack () {

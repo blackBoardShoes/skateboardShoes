@@ -36,7 +36,7 @@ let proxyTable = {
     }
   },
   '/dali': {
-    target: host2,
+    target: all,
     changeOrigin: true,
     pathRewrite: {
       '^/dali': '/'

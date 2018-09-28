@@ -338,7 +338,8 @@ export default {
             label: '街道',
             type: 'INPUT',
             validations: [
-              { required: true, message: '请输入街道', trigger: 'change' }
+              { required: true, message: '请输入街道', trigger: 'change' },
+              { min: 1, max: 40, message: '长度在 1 到 40 个字符', trigger: 'change' }
             ]
           }
         ],

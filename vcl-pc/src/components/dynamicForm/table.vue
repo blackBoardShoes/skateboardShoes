@@ -153,13 +153,14 @@ export default {
               break
             case 'CASCADER':
               var forFn = arr => {
-                // console.log(arr, 'ararararararar')
                 for (let i of row[column.property]) {
                   for (let j in arr) {
                     if (arr[j].value === i) {
-                      z = z + arr[j].label + '、'
                       if ('children' in arr[j]) {
+                        z = z + arr[j].label + '-'
                         forFn(arr[j].children)
+                      } else {
+                        z = z + arr[j].label
                       }
                     }
                   }

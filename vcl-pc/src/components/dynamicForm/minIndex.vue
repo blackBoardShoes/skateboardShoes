@@ -44,15 +44,42 @@
                   <!-- <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'INT'" v-model.trim='formModel[items.id]'></el-input> -->
                   <!-- <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'DOUBLE'" v-model.trim='formModel[items.id]'></el-input> -->
                   <el-input :disabled="items.disabled" :placeholder="items.placeholder" v-if="items.type === 'TEXTAREA'" type="textarea"  v-model='formModel[items.id]'></el-input>
-                  <div style="width: 50px;text-align:center" v-if="items.unit">
-                    {{items.unit}}
+                  <div style="width: 50px;text-align:center">
+                    <!--  v-if="items.unit" -->
+                    {{items.unit ? items.unit : ''}}
                   </div>
                 </div>
                 <el-radio-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'RADIO'">
                   <el-radio v-for="(it, ii) in items.values" :key="ii" :label="it.value">{{(it.label.split('**'))[0]}}</el-radio>
                 </el-radio-group>
+                <el-radio-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'RADIOTEXT'">
+                  <el-radio v-for="(it, ii) in items.values" :key="ii" :label="it.label">
+                    <!-- {{
+                      (items.values.length - 1) !== ii ? (it.label.split('**'))[0] : ''
+                    }} -->
+                    {{
+                      (it.label.split('**'))[0]
+                    }}
+                    <!-- v-if="onceThat(items.values, it, ii)" -->
+                    <el-input
+                      placeholder="请输入"
+                      v-if="(items.values.length - 1) === ii"
+                      v-model.trim='formModel[items.id]'></el-input>
+                  </el-radio>
+                </el-radio-group>
                 <el-checkbox-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'CHECKBOX'">
                   <el-checkbox v-for="(it, ii) in items.values" :key="ii" :label="it.value" >{{it.label}}</el-checkbox>
+                </el-checkbox-group>
+                <el-checkbox-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'CHECKBOXTEXT'">
+                  <el-checkbox v-for="(it, ii) in items.values" :key="ii" :label="it.label" >
+                    <div>
+                      {{it.label}}
+                      <el-input
+                        placeholder="请输入"
+                        v-if="(items.values.length - 1) === ii"
+                        v-model.trim='formModel[items.id][30]'></el-input>
+                    </div>
+                  </el-checkbox>
                 </el-checkbox-group>
                 <el-switch :disabled="items.disabled" :active-text="items.activeText" :inactive-text="items.inactiveText" v-if="items.type === 'SWITCH'" v-model="formModel[items.id]" ></el-switch>
                 <el-select :disabled="items.disabled" :placeholder="items.placeholder" clearable filterable v-if="items.type === 'SELECT'" v-model="formModel[items.id]" style="width:100%;">
@@ -285,6 +312,7 @@ export default {
   },
   data () {
     return {
+      once: false,
       newFields: 'fields' in this.mozhu ? [...this.mozhu['fields']] : [],
       relation: 'relation' in this.mozhu ? Object.assign({}, this.mozhu['relation']) : {},
       coordinate: 'coordinate' in this.mozhu ? Object.assign({}, this.mozhu['coordinate']) : {},
@@ -376,6 +404,30 @@ export default {
     console.log(this.formModel, 'this.formModel')
   },
   methods: {
+    // radioTextEdit (arr = [], data) {
+    //   if (data !== '其他') {
+    //     arr[arr.length - 1].label = data
+    //   }
+    //   return arr
+    // },
+    onceThat (items, item, value, index) {
+      console.log(items, item, value, index, (items.length - 1) === index)
+      item = 1123123123
+      // it.label = items.values.includes(formModel[items.id]) ? it.label : formModel[items.id]
+      return (items.length - 1) === index
+    },
+    onceThat1 (all, item, index) {
+      if (item.label.includes('其他') | this.once) {
+        if (all.length - 1 === index) {
+          this.once = true
+          return this.once
+        } else {
+          return false
+        }
+      } else {
+        return false
+      }
+    },
     firstShow () {
       let accordWithCalculateData = ['INT', 'DOUBLE', 'RADIO']
       if (this.repositoryData) {
@@ -399,6 +451,7 @@ export default {
         // this.$set(this.rules, i.id, i.validations)
         switch (i.type) {
           case 'CHECKBOX':
+          case 'CHECKBOXTEXT':
           case 'CASCADER':
           case 'TABLE':
           case 'TREE':
@@ -628,12 +681,24 @@ export default {
     notVerifying () {
       for (let i in this.relation) {
         if (this.relation[i].ruleType === 'EQUAL') {
-          if (this.formModel[this.relation[i].target] !== this.relation[i].value) {
-            this.formModel[i] = ''
+          if (Array.isArray(this.relation[i].value)) {
+            if (!this.relation[i].value.includes(this.formModel[this.relation[i].target])) {
+              this.formModel[i] = ''
+            }
+          } else {
+            if (this.formModel[this.relation[i].target] !== this.relation[i].value) {
+              this.formModel[i] = ''
+            }
           }
         } else {
-          if (this.formModel[this.relation[i].target] === this.relation[i].value) {
-            this.formModel[i] = ''
+          if (Array.isArray(this.relation[i].value)) {
+            if (this.relation[i].value.includes(this.formModel[this.relation[i].target])) {
+              this.formModel[i] = ''
+            }
+          } else {
+            if (this.formModel[this.relation[i].target] === this.relation[i].value) {
+              this.formModel[i] = ''
+            }
           }
         }
       }
@@ -641,6 +706,12 @@ export default {
         if (valid) {
           let idGroup = this.formatData()
           this.$emit('notVerifying', this.mozhuId, this.formModel, this.relation, this.newFields, idGroup, this.errors, this.comments, this.coordinate)
+        } else {
+          this.$message({
+            showClose: true,
+            message: '请检查数据',
+            type: 'info'
+          })
         }
       })
     },
@@ -659,12 +730,24 @@ export default {
       // })
       for (let i in this.relation) {
         if (this.relation[i].ruleType === 'EQUAL') {
-          if (this.formModel[this.relation[i].target] !== this.relation[i].value) {
-            this.formModel[i] = ''
+          if (Array.isArray(this.relation[i].value)) {
+            if (!this.relation[i].value.includes(this.formModel[this.relation[i].target])) {
+              this.formModel[i] = ''
+            }
+          } else {
+            if (this.formModel[this.relation[i].target] !== this.relation[i].value) {
+              this.formModel[i] = ''
+            }
           }
         } else {
-          if (this.formModel[this.relation[i].target] === this.relation[i].value) {
-            this.formModel[i] = ''
+          if (Array.isArray(this.relation[i].value)) {
+            if (this.relation[i].value.includes(this.formModel[this.relation[i].target])) {
+              this.formModel[i] = ''
+            }
+          } else {
+            if (this.formModel[this.relation[i].target] === this.relation[i].value) {
+              this.formModel[i] = ''
+            }
           }
         }
       }
@@ -673,11 +756,11 @@ export default {
           let idGroup = this.formatData()
           this.$emit('consoleData', this.mozhuId, this.formModel, this.relation, this.newFields, idGroup, this.errors, this.comments, this.coordinate)
         } else {
-          // this.$message({
-          //   showClose: true,
-          //   message: '验证不通过,请检查',
-          //   type: 'info'
-          // })
+          this.$message({
+            showClose: true,
+            message: '请检查数据',
+            type: 'info'
+          })
         }
       })
     },
@@ -831,6 +914,11 @@ export default {
         this.$set(this.formModel, 'createTable', [])
         // this.formModel['createTable'] = []
       }
+    },
+    async clearData () {
+      // this.formModel = {}
+      this.formModel = {}
+      this.init()
     },
     againData () {
       this.newFields = this.mozhu['fields']

@@ -84,7 +84,7 @@ export default {
           required: {
             target: 'type',
             ruleType: 'EQUAL',
-            value: ['INPUT', 'INT', 'DOUBLE', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'RADIO', 'TEXTAREA', 'CHECKBOX', 'CASCADER']
+            value: ['INPUT', 'INT', 'DOUBLE', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'RADIO', 'RADIOTEXT', 'TEXTAREA', 'CHECKBOX', 'CHECKBOXTEXT', 'CASCADER']
           },
           tree: {
             target: 'type',
@@ -94,13 +94,13 @@ export default {
           layerTree: {
             target: 'type',
             ruleType: 'EQUAL',
-            value: ['SELECT', 'SELECTMUTIPLE', 'RADIO', 'CHECKBOX']
+            value: ['SELECT', 'SELECTMUTIPLE', 'RADIO', 'RADIOTEXT', 'CHECKBOX', 'CHECKBOXTEXT']
           },
-          radioAgain: {
-            target: 'type',
-            ruleType: 'EQUAL',
-            value: 'RADIO'
-          },
+          // radioAgain: {
+          //   target: 'type',
+          //   ruleType: 'EQUAL',
+          //   value: 'RADIO'
+          // },
           createCalculate: {
             target: 'type',
             ruleType: 'EQUAL',
@@ -120,6 +120,7 @@ export default {
             type: 'RADIO',
             values: [
               {label: '单选框', value: 'RADIO'},
+              {label: '文本单选框', value: 'RADIOTEXT'},
               {label: '文本标签', value: 'TEXTAREA'},
               {label: '多选选择器', value: 'SELECTMUTIPLE'},
               {label: '日期时间选择器', value: 'DATETIME'},
@@ -129,6 +130,7 @@ export default {
               {label: '日期选择器', value: 'DATE'},
               {label: '整数类型输入框', value: 'INT'},
               {label: '多选框', value: 'CHECKBOX'},
+              {label: '文本多选框', value: 'CHECKBOXTEXT'},
               {label: '输入框', value: 'INPUT'},
               {label: '级联选择器', value: 'CASCADER'},
               {label: '浮点类型输入框', value: 'DOUBLE'}
@@ -287,7 +289,9 @@ export default {
         case 'SELECT':
         case 'SELECTMUTIPLE':
         case 'RADIO':
+        case 'RADIOTEXT':
         case 'CHECKBOX':
+        case 'CHECKBOXTEXT':
           formModel['createTable'] = []
           if (formModel['layerTree']) {
             formModel['values'] = formModel['layerTree']
@@ -357,8 +361,10 @@ export default {
         case 'DATE':
         case 'DATETIME':
         case 'RADIO':
+        case 'RADIOTEXT':
         case 'TEXTAREA':
         case 'CHECKBOX':
+        case 'CHECKBOXTEXT':
         case 'CASCADER':
         case 'SELECTMUTIPLE':
           if (what['required']) {

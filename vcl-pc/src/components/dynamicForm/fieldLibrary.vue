@@ -123,11 +123,13 @@ export default {
         {label: '多选框', value: 'CHECKBOX'},
         {label: '输入框', value: 'INPUT'},
         {label: '级联选择器', value: 'CASCADER'},
+        {label: '文本单选框', value: 'RADIOTEXT'},
+        {label: '文本多选框', value: 'CHECKBOXTEXT'},
         {label: '浮点类型输入框', value: 'DOUBLE'}
       ],
-      defaultCheckList: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT', 'TABLE', 'CALCULATE'],
-      checkList: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT', 'TABLE', 'CALCULATE'],
-      checkListData: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT', 'TABLE', 'CALCULATE']
+      defaultCheckList: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'RADIOTEXT', 'CHECKBOX', 'CHECKBOXTEXT', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT', 'TABLE', 'CALCULATE'],
+      checkList: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'RADIOTEXT', 'CHECKBOX', 'CHECKBOXTEXT', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT', 'TABLE', 'CALCULATE'],
+      checkListData: ['INT', 'DOUBLE', 'TEXTAREA', 'RADIO', 'RADIOTEXT', 'CHECKBOX', 'CHECKBOXTEXT', 'SELECT', 'SELECTMUTIPLE', 'DATE', 'DATETIME', 'CASCADER', 'INPUT', 'TABLE', 'CALCULATE']
     }
   },
   computed: {
@@ -172,9 +174,11 @@ export default {
           icon = 'ercp-icon-component-textarea'
           break
         case 'RADIO':
+        case 'RADIOTEXT':
           icon = 'ercp-icon-component--radio'
           break
         case 'CHECKBOX':
+        case 'CHECKBOXTEXT':
           icon = 'ercp-icon-component-check'
           break
         case 'SELECT':
