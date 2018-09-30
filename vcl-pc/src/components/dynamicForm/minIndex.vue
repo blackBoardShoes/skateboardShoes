@@ -44,102 +44,104 @@
                   <!-- <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'INT'" v-model.trim='formModel[items.id]'></el-input> -->
                   <!-- <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'DOUBLE'" v-model.trim='formModel[items.id]'></el-input> -->
                   <el-input :disabled="items.disabled" :placeholder="items.placeholder" v-if="items.type === 'TEXTAREA'" type="textarea"  v-model='formModel[items.id]'></el-input>
-                  <div style="width: 50px;text-align:center">
-                    <!--  v-if="items.unit" -->
-                    {{items.unit ? items.unit : ''}}
-                  </div>
-                </div>
-                <el-radio-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'RADIO'">
-                  <el-radio v-for="(it, ii) in items.values" :key="ii" :label="it.value">{{(it.label.split('**'))[0]}}</el-radio>
-                </el-radio-group>
-                <el-radio-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'RADIOTEXT'">
-                  <el-radio v-for="(it, ii) in items.values" :key="ii" :label="it.label">
-                    <!-- {{
-                      (items.values.length - 1) !== ii ? (it.label.split('**'))[0] : ''
-                    }} -->
-                    {{
-                      (it.label.split('**'))[0]
-                    }}
-                    <!-- v-if="onceThat(items.values, it, ii)" -->
+                  <el-radio-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'RADIO'">
+                    <el-radio v-for="(it, ii) in items.values" :key="ii" :label="it.value">{{(it.label.split('**'))[0]}}</el-radio>
+                  </el-radio-group>
+                  <el-radio-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'RADIOTEXT'"
+                    style="display:flex;flex-wrap:wrap">
+                    <el-radio
+                      v-for="(it, ii) in items.values" :key="ii" :label="it.label"
+                      style="display:flex">
+                      <!-- {{
+                        (items.values.length - 1) !== ii ? (it.label.split('**'))[0] : ''
+                      }} -->
+                      {{
+                        (it.label.split('**'))[0]
+                      }}
+                      <!-- v-if="onceThat(items.values, it, ii)" -->
+                      <!-- v-if="(items.values.length - 1) === ii" -->
+                    </el-radio>
                     <el-input
                       placeholder="请输入"
-                      v-if="(items.values.length - 1) === ii"
                       v-model.trim='formModel[items.id]'></el-input>
-                  </el-radio>
-                </el-radio-group>
-                <el-checkbox-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'CHECKBOX'">
-                  <el-checkbox v-for="(it, ii) in items.values" :key="ii" :label="it.value" >{{it.label}}</el-checkbox>
-                </el-checkbox-group>
-                <el-checkbox-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'CHECKBOXTEXT'">
-                  <el-checkbox v-for="(it, ii) in items.values" :key="ii" :label="it.label" >
+                  </el-radio-group>
+                  <el-checkbox-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'CHECKBOX'">
+                    <el-checkbox v-for="(it, ii) in items.values" :key="ii" :label="it.value" >{{it.label}}</el-checkbox>
+                  </el-checkbox-group>
+                  <el-checkbox-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'CHECKBOXTEXT'"
+                  style="display:flex;flex-wrap:wrap">
+                    <el-checkbox v-for="(it, ii) in items.values" :key="ii" :label="it.label" >
+                      <div>
+                        {{it.label}}
+                      </div>
+                    </el-checkbox>
+                      <!-- v-if="(items.values.length - 1) === ii" -->
+                    <el-input
+                      placeholder="请输入"
+                      v-model.trim='formModel[items.id][30]'></el-input>
+                  </el-checkbox-group>
+                  <el-switch :disabled="items.disabled" :active-text="items.activeText" :inactive-text="items.inactiveText" v-if="items.type === 'SWITCH'" v-model="formModel[items.id]" ></el-switch>
+                  <el-select :disabled="items.disabled" :placeholder="items.placeholder" clearable filterable v-if="items.type === 'SELECT'" v-model="formModel[items.id]" style="width:100%;">
+                    <el-option v-for="(it, ii) in items.values" :key="ii" :label="it.label" :value="it.value" ></el-option>
+                  </el-select>
+                  <el-select :disabled="items.disabled" :placeholder="items.placeholder" multiple clearable filterable v-if="items.type === 'SELECTMUTIPLE'" v-model="formModel[items.id]" style="width:100%;">
+                    <el-option v-for="(it, ii) in items.values" :key="ii" :label="it.label" :value="it.value" ></el-option>
+                  </el-select>
+                  <el-date-picker
+                    :disabled="items.disabled"
+                    clearable
+                    value-format="yyyy-MM-dd"
+                    style="width:100%;"
+                    v-if="items.type === 'DATE'"
+                    v-model="formModel[items.id]"
+                    type="date"
+                    placeholder="选择日期">
+                  </el-date-picker>
+                  <el-date-picker
+                    :disabled="items.disabled"
+                    clearable
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    style="width:100%;"
+                    v-if="items.type === 'DATETIME'"
+                    v-model="formModel[items.id]"
+                    type="datetime"
+                    placeholder="选择日期时间">
+                  </el-date-picker>
+                  <!-- value-format="yyyy-MM-dd/HH:mm:ss" -->
+                  <el-cascader
+                    expand-trigger="hover"
+                    :disabled="items.disabled"
+                    :placeholder="items.placeholder"
+                    clearable filterable
+                    style="width:100%;"
+                    v-if="items.type === 'CASCADER'"
+                    :options="items.children ? items.children : []"
+                    v-model="formModel[items.id]">
+                  </el-cascader>
+                  <div v-if="items.type === 'CALCULATE'" >
                     <div>
-                      {{it.label}}
-                      <el-input
-                        placeholder="请输入"
-                        v-if="(items.values.length - 1) === ii"
-                        v-model.trim='formModel[items.id][30]'></el-input>
+                      {{formModel[items.id] ? formModel[items.id] : 0}}&nbsp;&nbsp;&nbsp;
+                      <el-button @click="onEval(items)">计算</el-button>
                     </div>
-                  </el-checkbox>
-                </el-checkbox-group>
-                <el-switch :disabled="items.disabled" :active-text="items.activeText" :inactive-text="items.inactiveText" v-if="items.type === 'SWITCH'" v-model="formModel[items.id]" ></el-switch>
-                <el-select :disabled="items.disabled" :placeholder="items.placeholder" clearable filterable v-if="items.type === 'SELECT'" v-model="formModel[items.id]" style="width:100%;">
-                  <el-option v-for="(it, ii) in items.values" :key="ii" :label="it.label" :value="it.value" ></el-option>
-                </el-select>
-                <el-select :disabled="items.disabled" :placeholder="items.placeholder" multiple clearable filterable v-if="items.type === 'SELECTMUTIPLE'" v-model="formModel[items.id]" style="width:100%;">
-                  <el-option v-for="(it, ii) in items.values" :key="ii" :label="it.label" :value="it.value" ></el-option>
-                </el-select>
-                <el-date-picker
-                  :disabled="items.disabled"
-                  clearable
-                  value-format="yyyy-MM-dd"
-                  style="width:100%;"
-                  v-if="items.type === 'DATE'"
-                  v-model="formModel[items.id]"
-                  type="date"
-                  placeholder="选择日期">
-                </el-date-picker>
-                <el-date-picker
-                  :disabled="items.disabled"
-                  clearable
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  style="width:100%;"
-                  v-if="items.type === 'DATETIME'"
-                  v-model="formModel[items.id]"
-                  type="datetime"
-                  placeholder="选择日期时间">
-                </el-date-picker>
-                <!-- value-format="yyyy-MM-dd/HH:mm:ss" -->
-                <el-cascader
-                  expand-trigger="hover"
-                  :disabled="items.disabled"
-                  :placeholder="items.placeholder"
-                  clearable filterable
-                  style="width:100%;"
-                  v-if="items.type === 'CASCADER'"
-                  :options="items.children ? items.children : []"
-                  v-model="formModel[items.id]">
-                </el-cascader>
-                <div v-if="items.type === 'CALCULATE'" >
-                  <div>
-                    {{formModel[items.id] ? formModel[items.id] : 0}}&nbsp;&nbsp;&nbsp;
-                    <el-button @click="onEval(items)">计算</el-button>
                   </div>
-                </div>
-                <div v-if="items.type === 'TABLE'">
-                  <sx-table v-model="formModel[items.id]" ref="sxtable" :tableData="items ? items : {}" @getData="getData"></sx-table>
-                </div>
+                  <div v-if="items.type === 'TABLE'" style="width:100%">
+                    <sx-table
+                      :disabled="disabled"
+                      v-model="formModel[items.id]" ref="sxtable" :tableData="items ? items : {}" @getData="getData" ></sx-table>
+                  </div>
+
                 <!-- 辅助创建 新增 编辑 -->
-                <div v-if="items.type === 'CREATECALCULATE'" >
+                <div v-if="items.type === 'CREATECALCULATE'" style="width:100%">
                   <sx-calculate v-model="formModel['createCalculate']" :calculateData="calculateData"></sx-calculate>
                 </div>
-                <div v-if="items.type === 'TREE'">
+                <div v-if="items.type === 'TREE'" style="width:100%">
                   <sx-tree v-model="formModel['tree']"></sx-tree>
                 </div>
-                <div v-if="items.type === 'LAYERTREE'">
+                <div v-if="items.type === 'LAYERTREE'" style="width:100%">
                   <sx-layer-tree v-model="formModel['layerTree']"></sx-layer-tree>
                 </div>
                 <!-- 辅助创建 新增 编辑  CREATETABLE -> TABLE  table -> CREATETABLE-->
-                <div v-if="items.type === 'CREATETABLE'">
+                <div v-if="items.type === 'CREATETABLE'" style="width:100%">
                   <!-- {{formModel['createTable']}} -->
                   <el-select v-model="formModel['createTable']" multiple clearable filterable style="width: 100%">
                     <el-option
@@ -151,7 +153,7 @@
                       v-for="(row, i) in repositoryData" :label="row.id" :key="i">{{row.label + ' - ' + row.type}}</el-checkbox-button>
                   </el-checkbox-group> -->
                 </div>
-                <div v-if="items.type === 'EXAMPLE'">
+                <div v-if="items.type === 'EXAMPLE'" style="width:100%">
                   <span style="font-size: 12px">
                     数&nbsp;值&nbsp;限&nbsp;制: 3***100.66 (即3 &#8804; x &#8804; 100.66)
                     <br>
@@ -182,7 +184,7 @@
                     <br> -->
                   </span>
                 </div>
-                <div v-if="items.type === 'NULLRADIO'">
+                <div v-if="items.type === 'NULLRADIO'" style="width:100%">
                   <span style="font-size: 12px">
                     未加入选项时可作为标题使用<br>
                     例子: 腹部体征 v
@@ -191,6 +193,11 @@
                 <el-button-group v-if="edit" style="margin-top:3px">
                   <el-button type="danger" @click="deleteFormRow(items, index)">删除当前行</el-button>
                 </el-button-group>
+                  <div style="width: 40px;text-align:center">
+                    <!--  v-if="items.unit" -->
+                    {{items.unit ? items.unit : ''}}
+                  </div>
+                </div>
               </el-form-item>
             </div>
           <!-- </draggable> -->
@@ -410,12 +417,12 @@ export default {
     //   }
     //   return arr
     // },
-    onceThat (items, item, value, index) {
-      console.log(items, item, value, index, (items.length - 1) === index)
-      item = 1123123123
-      // it.label = items.values.includes(formModel[items.id]) ? it.label : formModel[items.id]
-      return (items.length - 1) === index
-    },
+    // onceThat (items, item, value, index) {
+    //   console.log(items, item, value, index, (items.length - 1) === index)
+    //   item = 1123123123
+    //   // it.label = items.values.includes(formModel[items.id]) ? it.label : formModel[items.id]
+    //   return (items.length - 1) === index
+    // },
     onceThat1 (all, item, index) {
       if (item.label.includes('其他') | this.once) {
         if (all.length - 1 === index) {
@@ -508,17 +515,31 @@ export default {
             break
         }
         // this.$emit('input', this.formModel)
+        let type = i.type
         if (i['validations']) {
           for (let z in i['validations']) {
             if ('pattern' in i['validations'][z]) {
               // console.log(i['validations'][z]['pattern'].toString().includes('***'), "i['validations'][z]['pattern'].toString().includes('***')")
               if (i['validations'][z]['pattern'].toString().includes('***')) {
                 let arr = i['validations'][z]['pattern'].split('***')
+                let message = i['validations'][z]['message']
                 let a = { validator: (rule, value, callback) => {
                   if ((Number(arr[0]) <= Number(value)) && (Number(arr[1]) >= Number(value))) {
-                    callback()
+                    if (type === 'INT') {
+                      if (value.includes('.')) {
+                        callback(new Error('类型为整数,不可以输入小数'))
+                      } else {
+                        callback()
+                      }
+                    } else {
+                      callback()
+                    }
                   } else {
-                    callback(new Error('范围为' + arr[0] + '-' + arr[1]))
+                    if (message === '请按规则填写') {
+                      callback(new Error('范围为' + arr[0] + '-' + arr[1]))
+                    } else {
+                      callback(new Error(message))
+                    }
                   }
                 }}
                 // console.log(arr[0], arr[1], 'aaaaaaaaaaaaaaaaaaaa')
@@ -984,8 +1005,9 @@ $full: 100%;
     }
     .normal {
       /deep/ .el-form-item__label {
-        min-width: 138px;
-        max-width: 190px;
+        // min-width: 138px;
+        // max-width: 190px;
+        width: 138px;
         // border:1px solid red;
         // width: 10%;
         white-space:normal;

@@ -68,10 +68,12 @@
                 <!-- v-model="ssbgModel" -->
                 <sx-operation-report v-model="fishData[navArr[activeIndex].id]"
                   ref="ssbgModel" v-if="navArr[activeIndex].name === '手术报告'"></sx-operation-report>
+                <sx-radiography
+                  v-model="fishData[navArr[activeIndex].id]"
+                  v-if="navArr[activeIndex].name === '造影'"></sx-radiography>
               </div>
             </div>
           </div>
-
         </div>
       </div>
       <div  v-if="!Boolean(navArr[activeIndex])" style="text-align:center;padding: 150px;">
@@ -94,6 +96,7 @@
 import { mapState } from 'vuex'
 import sxNoRouteControl from '../../components/submenu/noRouteControl'
 import sxOperationReport from '../../components/staticForm/operationReport'
+import sxRadiography from '../../components/staticForm/radiography'
 import { fieldAllForms } from '../../api/form/bdk.js'
 import { formdataSave, formdataSubmit, formdataData, userByMyType } from '../../api/rules/lr.js'
 
@@ -101,7 +104,8 @@ export default {
   name: 'rules_index',
   components: {
     sxNoRouteControl,
-    sxOperationReport
+    sxOperationReport,
+    sxRadiography
   },
   data () {
     return {

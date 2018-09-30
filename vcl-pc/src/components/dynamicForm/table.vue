@@ -29,7 +29,10 @@
         label="操作"
         width="110">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="editClick(scope.row, scope.$index, subFields)">编辑</el-button>
+          <div style="font-size:12px;color:#117FD1;display:inline-block;cursor:pointer;margin-right:5px"
+          @click="editClick(scope.row, scope.$index, subFields)">
+          {{disabled ? '查看' : '编辑'}}
+          </div>
           <el-button @click="deleteClick(scope.row, scope.$index, subFields)" size="small"
             style="border: none;background:transparent;padding:0; color: #FF455B">删除</el-button>
         </template>
@@ -38,6 +41,7 @@
     <el-button style="margin-top:15px;" size="small" @click="addRow" v-if="showBtn">新增</el-button>
     <!-- <el-button style="margin-top:15px;" size="small" @click="getData">getData</el-button> -->
     <el-dialog
+      width="80%"
       append-to-body
       modal-append-to-body
       :visible.sync="dialogVisible">
@@ -77,6 +81,12 @@ export default {
       default () {
         return true
       }
+    },
+    disabled: {
+      type: Boolean,
+      default () {
+        return true
+      }
     }
   },
   watch: {
@@ -90,7 +100,7 @@ export default {
       deep: true,
       handler () {
         this.tableValues = [...this.value]
-        console.log(this.value)
+        // console.log(this.value)
       }
     }
     // tableData (value) {
@@ -132,13 +142,23 @@ export default {
       }
     },
     formatter (row, column, cellValue, index) {
-      // console.log(row, column, cellValue, index)
+      // console.log(row[column.property])
       if (!row[column.property]) {
         return '/'
       } else {
         let z = ''
         if (this.formLabel[column.property]) {
           switch (this.formLabel[column.property]['type']) {
+            case 'TABLE':
+              console.log(this.formLabel[column.property])
+              // for (let i of row[column.property]) {
+              //   for (let j in i) {
+              //     z = z + this.formLabel[column.property][j]
+              //   }
+              //   z = z + ' & '
+              // }
+              z = '表格数据过于复杂,请点编辑或查看进行查看'
+              break
             case 'CHECKBOX':
               if (Array.isArray(this.formLabel[column.property]['values'])) {
                 for (let i of this.formLabel[column.property]['values']) {
@@ -234,8 +254,10 @@ export default {
       this.mozhu['relation'] = this.tableData['relation']
       this.mozhu['fields'] = fieldsData
       for (let i in row) {
-        if (this.formLabel[i].type === 'DATE' | this.formLabel[i].type === 'DATETIME') {
-          row[i] = new Date(row[i])
+        if (this.formLabel[i]) {
+          if (this.formLabel[i].type === 'DATE' | this.formLabel[i].type === 'DATETIME') {
+            row[i] = new Date(row[i])
+          }
         }
       }
       this.formModel = Object.assign({}, row)
@@ -250,6 +272,7 @@ export default {
       this.dialogVisible = true
     },
     getData () {
+      // console.log(this.tableValues)
       this.$emit('getData', this.tableValues)
     }
   }
@@ -258,7 +281,9 @@ export default {
 
 <style lang="scss" scoped>
 .tableAll {
+  // width: calc(100%-255px);
   width: 100%;
-  min-width: 650px;
+  max-width: 560px;
+  // min-width: 650px;
 }
 </style>
