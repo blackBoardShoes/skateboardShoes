@@ -562,9 +562,11 @@ export default {
           icon = 'ercp-icon-component-textarea'
           break
         case 'RADIO':
+        case 'RADIOTEXT':
           icon = 'ercp-icon-component--radio'
           break
         case 'CHECKBOX':
+        case 'CHECKBOXTEXT':
           icon = 'ercp-icon-component-check'
           break
         case 'SELECT':

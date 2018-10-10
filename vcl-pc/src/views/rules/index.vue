@@ -63,7 +63,7 @@
       v-if="dialogVisible"
       :visible.sync="dialogVisible">
       <el-form :model="ruleForm" ref="ruleForm" label-width="138px" size="mini" label-position="left" class="ruleForm">
-        <div style="padding-left: 25px;">
+        <div style="padding-left: 25px;padding-right: 45px;">
           <el-form-item label="住院号" prop="patientId" :rules="[
             { required: true, message: '请输入病人住院号', trigger: 'change'},
             { pattern: '^[0-9]{11}$', message: '11位', trigger: 'change' }]">
@@ -338,12 +338,13 @@ export default {
             label: '街道',
             type: 'INPUT',
             validations: [
-              { required: true, message: '请输入街道', trigger: 'change' }
+              { required: true, message: '请输入街道', trigger: 'change' },
+              { min: 1, max: 40, message: '长度在 1 到 40 个字符', trigger: 'change' }
             ]
           }
         ],
         coordinate: {
-          provinceCityDistrict: 45,
+          provinceCityDistrict: 50,
           staAddress: 50
         }
       },

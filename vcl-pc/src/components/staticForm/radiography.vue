@@ -1,43 +1,56 @@
 <template>
   <div class='all'>
-    <el-form size="mini"
+    <el-form
+      size="mini"
+      :rules="rules"
       :model="contentModel" ref="contentModel"
       label-width="120px">
       <el-form-item label="是否造影" prop="radiographyOrNot" >
         <el-radio-group v-model="contentModel.radiographyOrNot">
-          <el-radio label="是"></el-radio>
-          <el-radio label="否"></el-radio>
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="0">否</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="造影管道" prop="radiographyPipeline">
+      <el-form-item label="造影管道" prop="radiographyPipeline" v-if="contentModel.radiographyOrNot">
         <el-radio-group v-model="contentModel.radiographyPipeline">
-          <el-radio label="鼻胆管"></el-radio>
-          <el-radio label="鼻胰管"></el-radio>
+          <el-radio :label="1">鼻胆管</el-radio>
+          <el-radio :label="2">鼻胰管</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="造影时间" >
-        <div style="display: flex;justify-content: space-around">
+      <el-form-item label="造影时间"  prop="imagingTime" v-if="contentModel.radiographyPipeline">
+        <div style="display: flex;justify-content: space-between">
           术后
-          <el-input v-model="contentModel.radiographyPipeline" style="width:90%"></el-input>
+          <el-input v-model="contentModel.imagingTime" style="width:90%"></el-input>
           天
         </div>
       </el-form-item>
-      <el-form-item label="鼻胆管造影结果">
+      <el-form-item label="造影结果" prop="imagingResult" v-if="contentModel.radiographyPipeline">
         <div class="editContain">
           <div v-for="(item, index) in content" :key="index">
             <div v-if="item['type']" style="height: 26px;">
               <el-form-item
+                v-if="item.vIf ? contentModel[item.vIf.id] === item.vIf.value : true"
+                :label-width="item.labelWidth"
+                :label="item.label"
                 :prop="item.id"
                 :rules="item.validations">
-                <el-input :style="{ width: 40 + contentModel[item.id].toString().length * 6 + 'px !important', height: '100%' }" v-if="item['type'] === 'INPUT'" v-model="contentModel[item.id]"></el-input>
-                <el-select :style="{ width: 40 + contentModel[item.id].toString().length * 6 + 'px !important', height: '100%' }" v-if="item['type'] === 'SELECT'" v-model="contentModel[item.id]" placeholder="">
-                  <el-option
-                    v-for="option in item.values"
-                    :key="option.value"
-                    :label="option.label"
-                    :value="option.value">
-                  </el-option>
-                </el-select>
+                <div style="display: flex">
+                  <!-- @change.native="changeRules" -->
+                  <el-select
+                    :style="{ width: 40 + contentModel[item.id].toString().length * 7 + 'px !important', height: '100%' }" v-if="item['type'] === 'SELECT'" v-model="contentModel[item.id]" placeholder="">
+                    <el-option
+                      v-for="option in item.values"
+                      :key="option.value"
+                      :label="option.label"
+                      :value="option.value">
+                    </el-option>
+                  </el-select>
+                  <el-input :style="{ width: 55 + contentModel[item.id].toString().length * 6 + 'px !important', height: '100%' }"
+                    v-if="item['type'] === 'INPUT'" v-model="contentModel[item.id]"></el-input>
+                  <div style="max-width: 50px;text-align:center" v-if="item.unit">
+                    {{item.unit}}
+                  </div>
+                </div>
                 <el-date-picker
                   :style="{ width: 40 + contentModel[item.id].toString().length * 6 + 'px !important', height: '100%' }"
                   v-if="item['type'] === 'DATE'"
@@ -62,8 +75,29 @@
           </div>
         </div>
       </el-form-item>
-
+      <el-form-item label="是否通畅" prop="unobstructed"  v-if="contentModel.radiographyPipeline&contentModel.radiographyOrNot">
+        <el-radio-group v-model="contentModel.unobstructed">
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="0">否</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="是否冲洗" prop="irrigation"  v-if="contentModel.radiographyPipeline&contentModel.radiographyOrNot">
+        <el-radio-group v-model="contentModel.irrigation">
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="0">否</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="是否在位" prop="incumbent"  v-if="contentModel.radiographyPipeline&contentModel.radiographyOrNot">
+        <el-radio-group v-model="contentModel.incumbent">
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="0">否</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="拔除时间" prop="removeTime"  v-if="contentModel.radiographyPipeline&contentModel.radiographyOrNot">
+        <el-input v-model="contentModel.removeTime"></el-input>
+      </el-form-item>
     </el-form>
+    {{contentModel}}
   </div>
 </template>
 
@@ -73,7 +107,15 @@ export default {
     value: {
       type: Object,
       default () {
-        return {}
+        return {
+          radiographyOrNot: '',
+          radiographyPipeline: '',
+          imagingTime: '',
+          unobstructed: '',
+          irrigation: '',
+          incumbent: '',
+          removeTime: ''
+        }
       }
     }
   },
@@ -83,29 +125,83 @@ export default {
       handler (value) {
         this.contentModel = Object.assign({}, value)
       }
+    },
+    'contentModel.radiographyOrNot' (val) {
+      let arr = ['radiographyPipeline', 'imagingTime', 'unobstructed', 'irrigation', 'incumbent', 'removeTime']
+      for (let i of arr) {
+        this.contentModel[i] = ''
+      }
+    },
+    'contentModel.radiographyPipeline' (val) {
+      console.log(val)
+      if (val === 1) {
+        this.text = this.dText
+      } else {
+        this.text = this.yText
+      }
+      this.init()
     }
   },
   data () {
     return {
-      text: `
-        鼻胆管造影结果
-        胆总管（扩张/不扩张[select]）
-        {{"id":"nasobiliaryDrainageUnobstructed","type": "RADIO","values":[{"label": "是"},{"label": "否"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }],"label": "鼻胆管通畅"}}
-        ，直径（ ）mm[double]（0＜范围≤），伴（肝门部胆管/胆管中段/胆管下端/胆管下段[select]）狭窄，
-        {{"id": "input","type": "INPUT","validations": [{ "required": true, "message": "liveRADIO", "trigger": "change" }],"label": "label"}}
-        狭窄长度（ ）mm[double]（0＜范围≤），
-        <div style="color: red;dispaly:inline-block"> 514</div>
-        肝内胆管（扩张/不扩张/未显影）rselect]。
-        胆总管内（可/未[select]）见结石负影，（如果前面选择“可”），
-        结石数目：（ ）枚，最大结石直径（ ）mm[double]（0＜范围≤）；
-        肝内胆管（可/未[select]）见结石负影，（如果全面选择“可”），结石位于（左/右/全肝内[select]）
-        结石数目：（ ）枚，最大结石直径（ ）mm[double]（0＜范围≤）；（是/否[select]）有造影剂外漏，部位（肝内/上段/中段/下段[select]）胆管。
-        草草草
-        {{"id": "input","type": "INPUT","validations": [{ "required": true, "message": "liveRADIO", "trigger": "change" }],"label": "label"}}
-        asdassaassad,ca asdasdas1
+      text: '',
+      dText: `
+        胆总管
+        {{"id":"choledocho","type": "SELECT","values":[{"label": "扩张", "value": "扩张"},{"label": "不扩张", "value": "不扩张"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
+        ，直径
+        {{"id": "dia","type": "INPUT","validations": [{ "required": "true", "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]+([.]{1}[0-9]+){0,1}$", "message": "小数或整数" }]}}
+        mm，伴
+        {{"id":"choledochoNarrowLocation","type": "SELECT","values":[{"label": "肝门部胆管", "value": "肝门部胆管"},{"label": "胆管中段", "value": "胆管中段"},{"label": "胆管下端", "value": "胆管下端"},{"label": "胆管下段", "value": "胆管下段"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
+        狭窄，
+        狭窄长度
+        {{"id": "narrowLength","type": "INPUT","validations": [{ "required": true, "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]+([.]{1}[0-9]+){0,1}$", "message": "小数或整数" }]}}
+        mm，
+        肝内胆管
+        {{"id":"intrahepaticBileDuct","type": "SELECT","values":[{"label": "扩张", "value": "扩张"},{"label": "不扩张", "value": "不扩张"},{"label": "未显影", "value": "未显影"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
+        。胆总管内
+        {{"id":"choledocholithiasis","type": "SELECT","values":[{"label": "可", "value": "可"},{"label": "未", "value": "未"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
+        见结石负影，
+        {{"vIf": {"id":"choledocholithiasis", "value": "可"},"label":"结石数目","labelWidth": "70px","unit": "枚，","id": "calculusAmount","type": "INPUT","validations": [{ "required": true, "message": "请输入", "trigger": "change" },{ "pattern": "^[1-9]{0,1}$|^10$", "message": "小数或整数" }]}}
+        {{"vIf": {"id":"choledocholithiasis", "value": "可"},"label":"最大结石直径","labelWidth": "100px","unit": "mm，","id": "maxCalculusDia","type": "INPUT","validations": [{ "required": true, "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]{0,2}([.]{1}[0-9]+){0,1}$|^[1-2][0-9]{0,2}([.]{1}[0-9]+){0,1}$|^300$", "message": "小数或整数0-300" }]}}
+        肝内胆管
+        {{"id":"hepatolithiasis","type": "SELECT","values":[{"label": "可", "value": "可"},{"label": "未", "value": "未"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
+        见结石负影，
+        {{"vIf": {"id":"hepatolithiasis", "value": "可"},"label":"结石位于","labelWidth": "70px","id":"calculusLocation","type": "SELECT","values":[{"label": "左", "value": "左"},{"label": "右", "value": "右"},{"label": "全肝内", "value": "全肝内"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
+        {{"vIf": {"id":"hepatolithiasis", "value": "可"},"label":"结石数目","labelWidth": "70px","id": "calculusAmount","type": "INPUT","validations": [{ "required": true, "message": "请输入", "trigger": "change" },{ "pattern": "^[1-9]{0,1}$|^10$", "message": "小数或整数" }]}}
+        {{"vIf": {"id":"hepatolithiasis", "value": "可"},"labelWidth": "130px","unit": "mm，","label": "枚，最大结石直径","id": "maxCalculusDia","type": "INPUT","validations": [{ "required": true, "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]{0,2}([.]{1}[0-9]+){0,1}$|^[1-2][0-9]{0,2}([.]{1}[0-9]+){0,1}$|^300$", "message": "小数或整数0-300" }]}}
+        {{"id":"contrastMediaLeakage","type": "SELECT","values":[{"label": "有", "value": "有"},{"label": "无", "value": "无"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
+        造影剂外漏
+        {{"vIf": {"id":"contrastMediaLeakage", "value": "有"},"label":"，部位","labelWidth": "55px","unit": "胆管。","id":"leakageLocation","type": "SELECT","values":[{"label": "肝内", "value": "肝内"},{"label": "上段", "value": "上段"},{"label": "中段", "value": "中段"},{"label": "下段", "value": "下段"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
+      `,
+      yText: `
+        主胰管
+        {{"id":"wirsung","type": "SELECT","values":[{"label": "扩张", "value": "扩张"},{"label": "不扩张", "value": "不扩张"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
+        ，直径
+        {{"id": "dia","type": "INPUT","validations": [{ "required": "true", "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]+([.]{1}[0-9]+){0,1}$", "message": "小数或整数" }]}}
+        mm，
+        伴胰
+        {{"id":"wirsungNarrowLocation","type": "SELECT","values":[{"label": "头", "value": "头"},{"label": "颈", "value": "颈"},{"label": "体", "value": "体"},{"label": "体", "value": "尾"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
+        部狭窄，
+        狭窄长度
+        {{"id": "narrowLength","type": "INPUT","validations": [{ "required": "true", "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]+([.]{1}[0-9]+){0,1}$", "message": "小数或整数" }]}}
+        mm。
+        胰管内
+        {{"id":"pancreatolithiasis","type": "SELECT","values":[{"label": "可", "value": "可"},{"label": "未", "value": "未"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
+        见结石负影，
+        {{"vIf": {"id":"pancreatolithiasis", "value": "可"},"label":"结石数目","unit": "枚，","labelWidth": "70px","id": "calculusAmount","type": "INPUT","validations": [{ "required": "true", "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]+([.]{1}[0-9]+){0,1}$", "message": "小数或整数" }]}}
+        {{"vIf": {"id":"pancreatolithiasis", "value": "可"},"label":"最大结石直径","labelWidth": "100px","unit": "mm，","id": "maxCalculusDia","type": "INPUT","validations": [{ "required": "true", "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]{0,2}([.]{1}[0-9]+){0,1}$|^[1-2][0-9]{0,2}([.]{1}[0-9]+){0,1}$|^300$", "message": "小数或整数0-300" }]}}
+        {{"id":"contrastMediaLeakage","type": "SELECT","values":[{"label": "有", "value": "有"},{"label": "无", "value": "无"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
+        造影剂外漏
+        {{"vIf": {"id":"contrastMediaLeakage", "value": "有"},"labelWidth": "55px","label":"，部位","unit": "胰管。","id":"nasopancreaticTubeleakageLocation","type": "SELECT","values":[{"label": "头", "value": "头"},{"label": "颈", "value": "颈"},{"label": "体", "value": "体"},{"label": "体", "value": "尾"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
       `,
       content: [],
-      contentModel: this.value
+      contentModel: Object.assign({}, this.value),
+      rules: {
+        cholangiographyTime: [
+          { required: true, message: '请输入', trigger: 'change' },
+          { pattern: '^[0-9]$|^[1-2][0-9]$|^30$', message: '0-30' }
+        ]
+      }
     }
   },
   async created () {
@@ -114,7 +210,7 @@ export default {
   mounted () {},
   methods: {
     init () {
-      this.content = this.text ? this.text.match(/\{\{.*?\}\}|[^{}]{0,7}/g) : []
+      this.content = this.text ? this.text.match(/\{\{.*?\}\}|[^{}]{0,6}/g) : []
       // this.content = this.text.match(/\{\{.*?\}\}|[\w\s]+/g) ? this.text.match(/\{\{.*?\}\}|[\w,，。.]+/g) : []
       for (let z in this.content) {
         if (/\{\{.*?\}\}/g.test(this.content[z])) {
@@ -146,22 +242,32 @@ export default {
 .all {
   height: 100%;
   display: flex;
+  flex-direction: column;
   .editContain {
-    border: 1px solid red;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    line-height: 40px;
+    /deep/ .el-form-item__label {
+      color: black;
+    }
+    /deep/ .el-form-item__label:before{
+      content: '';
+      margin-right: 0px;
+    }
     /deep/ .el-input__inner {
       background-color: transparent;
       border-radius: 0;
-      font-size: 16px;
+      font-size: 14px;
       padding: 0px !important;
       margin:0px !important;
-      border:none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
       width:100%;
       height:100% !important;
-      color: #117FD1;
-      border-bottom:1px solid #117FD1;
+      // color: #117FD1;
+      // border-bottom:1px solid #117FD1;
       text-align: center;
       // &:hover{
       //   border-color: #b4bccc;
@@ -170,6 +276,9 @@ export default {
       //   border-color: #409EFF;
       //   outline: 0;
       // }
+    }
+    /deep/ .el-select__caret{
+      display:none;
     }
   }
 }
