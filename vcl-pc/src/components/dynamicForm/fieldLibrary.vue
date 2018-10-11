@@ -21,6 +21,7 @@
                   :label="x" v-for="(x, i) in checkListData" :key="i">{{oneToOneText(x)}}</el-checkbox>
               </el-checkbox-group>
               <div style="width:100%;text-align:right">
+                <el-button @click="clearCheckList" size="small">清空</el-button>
                 <el-button @click="resetCheckList" type="primary" plain size="small" style="margin: 10px 20px;">重置</el-button>
               </div>
             </el-popover>
@@ -144,6 +145,9 @@ export default {
     }
   },
   methods: {
+    clearCheckList () {
+      this.checkList = []
+    },
     resetCheckList () {
       this.checkList = this.defaultCheckList
     },

@@ -222,8 +222,8 @@ export default {
           { prop: 'dept', label: '科室' },
           { prop: 'bedNum', label: '床号' },
           { prop: 'operationDate', label: '手术日期' },
-          { prop: 'phase', label: '数据阶段' },
-          { prop: 'responseName', label: '记录者', width: '130', sortable: true },
+          { prop: 'phase', label: '数据阶段', sortable: true, width: '122' },
+          { prop: 'responseName', label: '记录者', width: '122', sortable: true },
           { option: true, label: '操作', width: '130', contain: [{label: '编辑', hidden: true}, {label: '录入'}, {label: '删除', style: 'color: #FF455B'}] }
         ],
         // 待审核 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (审核
@@ -235,8 +235,8 @@ export default {
           { prop: 'dept', label: '科室' },
           { prop: 'bedNum', label: '床号' },
           { prop: 'operationDate', label: '手术日期' },
-          { prop: 'phase', label: '数据阶段', sortable: true },
-          { prop: 'responseName', label: '记录者', sortable: true },
+          { prop: 'phase', label: '数据阶段', sortable: true, width: '122' },
+          { prop: 'responseName', label: '记录者', sortable: true, width: '122' },
           { option: true, label: '操作', contain: [{label: '审核'}] }
         ],
         // 待修正 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (编辑
@@ -652,9 +652,10 @@ export default {
     },
     async createFish (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
       this.$refs['ruleForm'].validate(async valid => {
+        console.log(valid)
         if (valid) {
           if (this.createFishOrEditFish) {
-            if (this.patientIdCheckUp()) {
+            if (await this.patientIdCheckUp()) {
               let r = await record(Object.assign(this.ruleForm, formModel))
               console.log(r)
               this.dialogVisible = false

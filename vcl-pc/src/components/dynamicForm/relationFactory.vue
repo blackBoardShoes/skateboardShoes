@@ -127,7 +127,8 @@ export default {
           value: i[3]
         }
       }
-      console.log(this.formatAfter)
+      console.log(this.formatBefore, 'formatBeforeformatBeforeformatBefore')
+      console.log(this.formatAfter, 'formatAfterformatAfterformatAfterformatAfter')
       this.$emit('getRealationData', this.formatAfter, this.id)
     }
   }

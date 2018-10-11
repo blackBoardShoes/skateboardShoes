@@ -458,7 +458,7 @@ export default {
       })
     },
     async getRealationData (data) {
-      console.log(data)
+      console.log(data, 'getRealationDatagetRealationData')
       if (data.subFields) {
         for (let i in data.subFields) {
           data.subFields[i] = {id: data.subFields[i].id}

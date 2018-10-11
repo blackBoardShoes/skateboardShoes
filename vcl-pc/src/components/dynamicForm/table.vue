@@ -164,9 +164,21 @@ export default {
                 for (let i of this.formLabel[column.property]['values']) {
                   // console.log(i.value, row[column.property], '-----------------------checkBox')
                   for (let j in row[column.property]) {
+                    console.log(row[column.property][j])
                     if (row[column.property][j] === i.value) {
-                      z = z + i.label + '、'
+                      z = z + i.label + '/'
                     }
+                  }
+                }
+              }
+              break
+            case 'CHECKBOXTEXT':
+              for (let i in row[column.property]) {
+                if (row[column.property][i]) {
+                  if ((row[column.property].length - 1) === parseInt(i)) {
+                    z = z + row[column.property][i]
+                  } else {
+                    z = z + row[column.property][i] + '/'
                   }
                 }
               }
@@ -244,9 +256,11 @@ export default {
       // this.formModel = {}
       // this.dialogVisible = true
       this.tableValues.splice(index, 1)
+      this.$emit('input', this.tableValues)
       // this.tableData['values'].splice(index, 1)
     },
     editClick (row, index, fieldsData) {
+      console.log(row, index, fieldsData)
       this.addEdit.add = 0
       this.addEdit.index = index
       // console.log(row, index, fieldsData)
@@ -260,7 +274,7 @@ export default {
           }
         }
       }
-      this.formModel = Object.assign({}, row)
+      this.formModel = row
       this.dialogVisible = true
     },
     addRow () {
@@ -282,8 +296,9 @@ export default {
 <style lang="scss" scoped>
 .tableAll {
   // width: calc(100%-255px);
-  width: 100%;
-  max-width: 560px;
+  // width: 100%;
+  width: 520px;
+  // max-width: 520px;
   // min-width: 650px;
 }
 </style>
