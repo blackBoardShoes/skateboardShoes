@@ -22,7 +22,7 @@
             <div
               v-if="disabled ? true : tf(items)"
               v-for="(items, index) in newFields"
-              :class="{normal: labelWidth, abnormal: !labelWidth}"
+              :class="(items.type === 'RADIO' & (!items.values)) ? 'abnormal' : 'normal'"
               :style="{display: 'flex', alignItems: 'flexStart', width: coordinate[items.id] ? coordinate[items.id] + '%' : '100%'}"
               :key="index">
               <!--  v-if="disabled" -->
@@ -1039,10 +1039,12 @@ $full: 100%;
     .abnormal {
       /deep/ .el-form-item__label {
         min-width: 0px;
+        width: 100%;
       }
       /deep/ .el-form-item__content {
+        width: 0%;
         // flex-grow: 1;
-        width: 100%
+        // width: 100%
       }
     }
   }
