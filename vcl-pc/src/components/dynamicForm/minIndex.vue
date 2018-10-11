@@ -545,7 +545,7 @@ export default {
                 let message = i['validations'][z]['message']
                 let a = { validator: (rule, value, callback) => {
                   console.log(Number(arr[0]), Number(arr[1]), Number(value))
-                  if ((Number(arr[0]) <= Number(value)) && (Number(arr[1]) >= Number(value))) {
+                  if ((!required) & (!value) | (Number(arr[0]) <= Number(value)) & (Number(arr[1]) >= Number(value))) {
                     if (type === 'INT') {
                       if (value.includes('.')) {
                         callback(new Error('类型为整数,不可以输入小数'))
@@ -559,11 +559,7 @@ export default {
                     if (message === '请按规则填写') {
                       callback(new Error('范围为' + arr[0] + '-' + arr[1]))
                     } else {
-                      if (required) {
-                        callback(new Error(message))
-                      } else {
-                        callback()
-                      }
+                      callback(new Error(message))
                     }
                   }
                 }}
