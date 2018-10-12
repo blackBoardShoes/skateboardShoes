@@ -150,7 +150,7 @@ export default {
               { pattern: '^[a-z][a-zA-Z0-9]+$', message: '只能输入以小写英文字母开头的英文或数字(两位以上),为统一建议驼峰式,如oneTwo', trigger: 'change' }
             ]
           },
-          // label
+          // labellabel
           {
             id: 'label',
             label: '标签名字',
