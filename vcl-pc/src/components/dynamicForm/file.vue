@@ -33,6 +33,7 @@ export default {
           var reader = new FileReader()
           reader.readAsDataURL(file[0])
           reader.onload = (e) => {
+            console.log({ 'model': model, 'index': index, 'file': file[0], 'result': e.target.result, 'event': e }, '-----file')
             this.$emit('onRead', { 'model': model, 'index': index, 'file': file[0], 'result': e.target.result, 'event': e })
             // this.$emit('onRead', e.target.result)
           }

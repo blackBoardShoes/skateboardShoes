@@ -557,7 +557,7 @@ export default {
                     }
                   } else {
                     if (message === '请按规则填写') {
-                      callback(new Error('范围为' + arr[0] + '-' + arr[1]))
+                      callback(new Error('取值范围：' + arr[0] + '-' + arr[1]))
                     } else {
                       callback(new Error(message))
                     }

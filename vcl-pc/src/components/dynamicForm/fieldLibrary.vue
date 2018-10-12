@@ -152,6 +152,12 @@ export default {
       this.checkList = this.defaultCheckList
     },
     lookupChange (item) {
+      // let z = ''
+      // for (let i of item['subFields']) {
+      //   z = z + Object.values(i).toString()
+      // }
+      // console.log(z)
+      // return (z + Object.values(item).toString()).includes(this.lookupData)
       return Object.values(item).toString().includes(this.lookupData)
     },
     filterItem (item) {
