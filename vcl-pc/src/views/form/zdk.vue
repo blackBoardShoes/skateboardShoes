@@ -147,10 +147,10 @@ export default {
             type: 'INPUT',
             validations: [
               { required: true, message: '请输入组件ID', trigger: 'change' },
-              { pattern: '^[a-zA-Z][a-zA-Z0-9]+$', message: '只能输入以英文字母开头的英文或数字(两位以上)', trigger: 'change' }
+              { pattern: '^[a-z][a-zA-Z0-9]+$', message: '只能输入以小写英文字母开头的英文或数字(两位以上),为统一建议驼峰式,如oneTwo', trigger: 'change' }
             ]
           },
-          // label
+          // labellabel
           {
             id: 'label',
             label: '标签名字',
@@ -176,7 +176,7 @@ export default {
           // patten message
           {
             id: 'message',
-            label: '提示信息',
+            label: '取值范围提示',
             type: 'INPUT'
           },
           // patten message
@@ -458,7 +458,7 @@ export default {
       })
     },
     async getRealationData (data) {
-      console.log(data)
+      console.log(data, 'getRealationDatagetRealationData')
       if (data.subFields) {
         for (let i in data.subFields) {
           data.subFields[i] = {id: data.subFields[i].id}

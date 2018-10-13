@@ -56,6 +56,7 @@
             <div class="rightContent">
               <div class="rightContentDynamic" v-if="!navArr[activeIndex].isStatic">
                 <sx-min-form
+                  :question="{a: 'cccc', testAA: 'testAAtestAAtestAAtestAA'}"
                   v-if="smf"
                   :disabled="activeIndexNav != patientInfo.phase"
                   v-model="fishData[navArr[activeIndex].id]"

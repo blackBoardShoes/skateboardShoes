@@ -16,6 +16,7 @@
         @click="append(false)">新建</el-button>
     </div>
     <el-tree
+      @node-click="nodeClick"
       :data="layerTreeData"
       :allow-drop="allowDrop"
       node-key="value"
@@ -158,6 +159,9 @@ export default {
     },
     showTreeData () {
       console.log(this.layerTreeData)
+    },
+    nodeClick (a, node, c) {
+      console.log(node, c)
     }
   }
 }

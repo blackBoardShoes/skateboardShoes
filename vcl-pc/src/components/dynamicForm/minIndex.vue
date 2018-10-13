@@ -22,7 +22,7 @@
             <div
               v-if="disabled ? true : tf(items)"
               v-for="(items, index) in newFields"
-              :class="{normal: labelWidth, abnormal: !labelWidth}"
+              :class="(items.type === 'RADIO' & (!items.values)) ? 'abnormal' : 'normal'"
               :style="{display: 'flex', alignItems: 'flexStart', width: coordinate[items.id] ? coordinate[items.id] + '%' : '100%'}"
               :key="index">
               <!--  v-if="disabled" -->
@@ -124,7 +124,7 @@
                       <el-button @click="onEval(items)">计算</el-button>
                     </div>
                   </div>
-                  <div v-if="items.type === 'TABLE'" style="width:100%">
+                  <div v-if="items.type === 'TABLE'">
                     <sx-table
                       :disabled="disabled"
                       v-model="formModel[items.id]" ref="sxtable" :tableData="items ? items : {}" @getData="getData" ></sx-table>
@@ -145,9 +145,10 @@
                   <!-- {{formModel['createTable']}} -->
                   <el-select v-model="formModel['createTable']" multiple clearable filterable style="width: 100%">
                     <el-option
-                      v-if="it.type !== 'TABLE' & it.type !== 'CALCULATE'"
-                      v-for="(it, ii) in repositoryData" :key="ii" :label="it.label + ' - ' + it.type" :value="it.id" ></el-option>
+                      v-if="it.type !== 'CALCULATE'"
+                      v-for="(it, ii) in repositoryData" :key="ii" :label="it.label + ' - ' + it.id" :value="it.id" ></el-option>
                   </el-select>
+                  <!-- it.type !== 'TABLE' &  -->
                   <!-- <el-checkbox-group v-model="formModel['createTable']">
                     <el-checkbox-button v-if="row.type !== 'TABLE' &  row.type !== 'CALCULATE'"
                       v-for="(row, i) in repositoryData" :label="row.id" :key="i">{{row.label + ' - ' + row.type}}</el-checkbox-button>
@@ -196,6 +197,17 @@
                   <div style="width: 40px;text-align:center">
                     <!--  v-if="items.unit" -->
                     {{items.unit ? items.unit : ''}}
+                  </div>
+                  <div style="width: 40px;text-align:center">
+                    <el-popover
+                      v-if="question[items.id]"
+                      placement="left"
+                      title="术语解释"
+                      width="200"
+                      trigger="hover">
+                      {{question[items.id]}}
+                      <i class="el-icon-question" slot="reference" style="font-size: 16px"></i>
+                    </el-popover>
                   </div>
                 </div>
               </el-form-item>
@@ -260,6 +272,12 @@ export default {
       type: String,
       default () {
         return 'left'
+      }
+    },
+    question: {
+      type: Object,
+      default () {
+        return {}
       }
     },
     mozhu: {
@@ -516,6 +534,8 @@ export default {
         }
         // this.$emit('input', this.formModel)
         let type = i.type
+        let required = i.required
+        console.log(required, 'requiredrequiredrequiredrequired')
         if (i['validations']) {
           for (let z in i['validations']) {
             if ('pattern' in i['validations'][z]) {
@@ -524,7 +544,8 @@ export default {
                 let arr = i['validations'][z]['pattern'].split('***')
                 let message = i['validations'][z]['message']
                 let a = { validator: (rule, value, callback) => {
-                  if ((Number(arr[0]) <= Number(value)) && (Number(arr[1]) >= Number(value))) {
+                  console.log(Number(arr[0]), Number(arr[1]), Number(value))
+                  if ((!required) & (!value) | (Number(arr[0]) <= Number(value)) & (Number(arr[1]) >= Number(value))) {
                     if (type === 'INT') {
                       if (value.includes('.')) {
                         callback(new Error('类型为整数,不可以输入小数'))
@@ -536,7 +557,7 @@ export default {
                     }
                   } else {
                     if (message === '请按规则填写') {
-                      callback(new Error('范围为' + arr[0] + '-' + arr[1]))
+                      callback(new Error('取值范围：' + arr[0] + '-' + arr[1]))
                     } else {
                       callback(new Error(message))
                     }
@@ -1018,10 +1039,12 @@ $full: 100%;
     .abnormal {
       /deep/ .el-form-item__label {
         min-width: 0px;
+        width: 100%;
       }
       /deep/ .el-form-item__content {
+        width: 0%;
         // flex-grow: 1;
-        width: 100%
+        // width: 100%
       }
     }
   }

@@ -94,6 +94,7 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 import sxNoRouteControl from '../../components/submenu/noRouteControl'
 import sxOperationReport from '../../components/staticForm/operationReport'
 import { fieldAllForms } from '../../api/form/bdk.js'
@@ -674,6 +675,9 @@ export default {
       smf: false
     }
   },
+  computed: mapState({
+    user: state => state.user
+  }),
   async created () {
     if (this.$route.params.data) {
       this.patientInfo = JSON.parse(this.$route.params.data)
@@ -682,6 +686,7 @@ export default {
     await this.firstShow()
     await this.init()
     this.show()
+    console.log(this.user, 'useruseruseruser')
     // this.navArrAssignment()
   },
   methods: {
@@ -761,7 +766,7 @@ export default {
     },
     async generalPass () {
       this.$refs.thatForm.consoleData()
-      let fdp = await formdataPass(Object.assign(this.patientInfo, {data: this.fishData}))
+      let fdp = await formdataPass(Object.assign(this.patientInfo, {data: this.fishData}, { whatUser: this.user }))
       console.log(fdp)
       if (fdp) {
         this.generalBack()

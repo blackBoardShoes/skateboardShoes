@@ -28,9 +28,23 @@ export const formdataRejectedFilledForm = data => {
   return axios.get(api + '/formdata/rejectedFilledForm', { params: data })
 }
 // 获取患者信息
+var CancelToken = axios.CancelToken
+var cancel
 export const patientGetPatientCount = data => {
-  return axios.get(dali + '/patient/getPatientCount', { params: data })
+  if (typeof cancel === 'function') {
+    cancel()
+    cancel = null
+  }
+  return axios.get(dali + '/patient/getPatientCount', {
+    cancelToken: new CancelToken(function executor (c) {
+      cancel = c
+    }),
+    params: data
+  })
 }
+// export const patientGetPatientCount = data => {
+//   return axios.get(dali + '/patient/getPatientCount', { params: data })
+// }
 // 添加患者信息
 export const patientAddPatient = data => {
   return axios.post(dali + '/patient/addPatient', data)
