@@ -30,10 +30,10 @@
               <i slot="prefix" class="el-input__icon el-icon-search" @click="search" style="cursor:pointer;"></i>
             </el-input>
           </div>
-          <div class="refresh float-right">
+          <!-- <div class="refresh float-right">
             <el-button type="primary" @click="refresh">更新患者</el-button>
             <el-button type="primary" @click="add">新增患者</el-button>
-          </div>
+          </div> -->
         </div>
         <!-- 患者列表 -->
         <div class="table">
@@ -114,7 +114,7 @@
           </el-pagination>
         </div>
       </div>
-      <el-dialog title="新增患者" :visible.sync="dialogTableVisible" :modal="true" append-to-body width="700px">
+      <!-- <el-dialog title="新增患者" :visible.sync="dialogTableVisible" :modal="true" append-to-body width="700px">
         <el-form ref="basicForm" :rules="rules" :model="basicInfo" label-position="right" label-width="80px">
           <el-col :span="24">
             <el-form-item label="住院号" prop="hospitalId">
@@ -169,7 +169,7 @@
           <el-button type="info" @click="cancel">取消</el-button>
           <el-button type="primary" @click="confirmAdd">确定</el-button>
         </div>
-      </el-dialog>
+      </el-dialog> -->
     </el-card>
   </div>
 </template>
@@ -177,7 +177,8 @@
 import textRadio from '../../../components/textRadio/textRadio'
 import {addressData} from '../../../data/address/addressData'
 import {charts} from '../../../data/chartTemplates/chart'
-import { getAllPatient, addPatient, searchPatient } from '../../../api/patient/patient.js'
+// import { getAllPatient, addPatient, searchPatient } from '../../../api/patient/patient.js'
+import { getAllPatient, searchPatient } from '../../../api/patient/patient.js'
 // import { error } from 'util';
 export default {
   name: 'patient_index',
@@ -194,74 +195,74 @@ export default {
       // 分页信息：
       pageSize: 10,
       currentPage: 1,
-      total: 20,
+      total: 0,
       optionA: {},
-      optionB: {},
-      basicInfo: {
-        hospitalId: '',
-        name: '',
-        gender: '1',
-        nation: '维吾尔族',
-        idCard: '360731199501234567',
-        phoneNum: '13687654321',
-        province: '',
-        city: '',
-        district: '',
-        staAddress: '芝麻街12号',
-        address: ['浙江省', '杭州市', '滨江区']
-      },
-      rules: {
-        name: [{
-          required: true,
-          message: '必填项不能为空',
-          trigger: 'change'
-        }],
-        gender: [{
-          required: true,
-          message: '必填项不能为空',
-          trigger: 'change'
-        }],
-        hospitalId: [
-          {
-            required: true,
-            message: '必填项不能为空',
-            trigger: 'change'
-          }
-        ],
-        phoneNum: [
-          { validator (rule, value, callback) {
-            setTimeout(() => {
-              if (value !== '') {
-                let pattern = /^\d[\d-]{5,12}$/
-                if (!pattern.test(value)) {
-                  callback(new Error('请输入正确的联系方式'))
-                } else {
-                  callback()
-                }
-              } else {
-                callback()
-              }
-            }, 1500)
-          }}
-        ],
-        idCard: [
-          { validator (rule, value, callback) {
-            setTimeout(() => {
-              if (value !== '') {
-                let pattern = /^\d{17}[\dxX]$/
-                if (!pattern.test(value)) {
-                  callback(new Error('请输入正确的身份证号'))
-                } else {
-                  callback()
-                }
-              } else {
-                callback()
-              }
-            }, 1500)
-          }}
-        ]
-      },
-      addressOption: []
+      optionB: {}
+      // basicInfo: {
+      //   hospitalId: '',
+      //   name: '',
+      //   gender: '1',
+      //   nation: '维吾尔族',
+      //   idCard: '360731199501234567',
+      //   phoneNum: '13687654321',
+      //   province: '',
+      //   city: '',
+      //   district: '',
+      //   staAddress: '芝麻街12号',
+      //   address: ['浙江省', '杭州市', '滨江区']
+      // },
+      // rules: {
+      //   name: [{
+      //     required: true,
+      //     message: '必填项不能为空',
+      //     trigger: 'change'
+      //   }],
+      //   gender: [{
+      //     required: true,
+      //     message: '必填项不能为空',
+      //     trigger: 'change'
+      //   }],
+      //   hospitalId: [
+      //     {
+      //       required: true,
+      //       message: '必填项不能为空',
+      //       trigger: 'change'
+      //     }
+      //   ],
+      //   phoneNum: [
+      //     { validator (rule, value, callback) {
+      //       setTimeout(() => {
+      //         if (value !== '') {
+      //           let pattern = /^\d[\d-]{5,12}$/
+      //           if (!pattern.test(value)) {
+      //             callback(new Error('请输入正确的联系方式'))
+      //           } else {
+      //             callback()
+      //           }
+      //         } else {
+      //           callback()
+      //         }
+      //       }, 1500)
+      //     }}
+      //   ],
+      //   idCard: [
+      //     { validator (rule, value, callback) {
+      //       setTimeout(() => {
+      //         if (value !== '') {
+      //           let pattern = /^\d{17}[\dxX]$/
+      //           if (!pattern.test(value)) {
+      //             callback(new Error('请输入正确的身份证号'))
+      //           } else {
+      //             callback()
+      //           }
+      //         } else {
+      //           callback()
+      //         }
+      //       }, 1500)
+      //     }}
+      //   ]
+      // },
+      // addressOption: []
     }
   },
   methods: {
@@ -290,49 +291,49 @@ export default {
       this.$message.success('从医院的his系统更新患者')
     },
     // 地区
-    handleChange (data) {
-      if (data.length === 2) {
-        this.basicInfo.province = data[0]
-        this.basicInfo.city = data[0]
-        this.basicInfo.district = data[1]
-      } else if (data.length === 3) {
-        this.basicInfo.province = data[0]
-        this.basicInfo.city = data[1]
-        this.basicInfo.district = data[2]
-      } else {
-        this.basicInfo.province = ''
-        this.basicInfo.city = ''
-        this.basicInfo.district = ''
-      }
-    },
+    // handleChange (data) {
+    //   if (data.length === 2) {
+    //     this.basicInfo.province = data[0]
+    //     this.basicInfo.city = data[0]
+    //     this.basicInfo.district = data[1]
+    //   } else if (data.length === 3) {
+    //     this.basicInfo.province = data[0]
+    //     this.basicInfo.city = data[1]
+    //     this.basicInfo.district = data[2]
+    //   } else {
+    //     this.basicInfo.province = ''
+    //     this.basicInfo.city = ''
+    //     this.basicInfo.district = ''
+    //   }
+    // },
     // 弹出添加患者的对话框
-    add () {
-      this.dialogTableVisible = true
-    },
+    // add () {
+    //   this.dialogTableVisible = true
+    // },
     // 取消添加
-    cancel () {
-      this.dialogTableVisible = false
-      this.$refs.basicForm.resetFields()
-    },
-    // 确认添加患者
-    async confirmAdd () {
-      this.$refs.basicForm.validate(async valid => {
-        if (valid) {
-          let info = this.basicInfo
-          delete info.address
-          let response = await addPatient(info)
-          if (response.data.mitiStatus === 'SUCCESS') {
-            this.getPatient(this.pageSize, 1)
-            this.$refs.basicForm.resetFields()
-            this.dialogTableVisible = false
-          } else {
-            this.$message.error('ERROR: ' + response.data.message)
-          }
-        } else {
-          return false
-        }
-      })
-    },
+    // cancel () {
+    //   this.dialogTableVisible = false
+    //   this.$refs.basicForm.resetFields()
+    // },
+    // // 确认添加患者
+    // async confirmAdd () {
+    //   this.$refs.basicForm.validate(async valid => {
+    //     if (valid) {
+    //       let info = this.basicInfo
+    //       delete info.address
+    //       let response = await addPatient(info)
+    //       if (response.data.mitiStatus === 'SUCCESS') {
+    //         this.getPatient(this.pageSize, 1)
+    //         this.$refs.basicForm.resetFields()
+    //         this.dialogTableVisible = false
+    //       } else {
+    //         this.$message.error('ERROR: ' + response.data.message)
+    //       }
+    //     } else {
+    //       return false
+    //     }
+    //   })
+    // },
     // 列表页码信息
     SizeChange (size) {
       this.pageSize = size

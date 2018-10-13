@@ -77,31 +77,33 @@
               <div class="prev" @click="next('content' + item)"><i class="el-icon-arrow-left"></i></div>
               <div class="next" @click="prev('content' + item)"><i class="el-icon-arrow-right"></i></div>
               <template slot="title">
-                <div class="record-title ">
+                <div class="record-title text-overflow-ellipsis">
                   <span class="light-text">编号：</span>
                   <span>13149527</span>
                 </div>
-                <div class="record-title ">
+                <div class="record-title text-overflow-ellipsis">
                   <span class="light-text">入院日期：</span>
                   <span>2018-03-09</span>
                 </div>
-                 <div class="record-title ">
+                 <div class="record-title text-overflow-ellipsis">
                   <span class="light-text">科室：</span>
-                  <span>科室一</span>
+                  <el-tooltip class="item" effect="dark" content="科室一" placement="top-start">
+                    <span>科室一</span>
+                  </el-tooltip>
                 </div>
-                <div class="record-title ">
+                <div class="record-title text-overflow-ellipsis">
                   <span class="light-text">入院诊断：</span>
                   <span>瞌睡病</span>
                 </div>
-                <div class="record-title ">
+                <div class="record-title text-overflow-ellipsis">
                   <span class="light-text">主管医生：</span>
                   <span>熊本熊</span>
                 </div>
-                <div class="record-title ">
+                <div class="record-title text-overflow-ellipsis">
                   <span class="light-text">出院状态：</span>
                   <span class="success-text">治愈</span>
                 </div>
-                <div class="record-title ">
+                <div class="record-title text-overflow-ellipsis">
                   <span class="light-text">出院日期：</span>
                   <span>2018-03-29</span>
                 </div>
@@ -508,10 +510,14 @@ export default {
       box-sizing: border-box;
       overflow-x: hidden;
       overflow-y: hidden;
+      // display: flex;
+      // flex-direction: row;
       .record-title{
+        // flex:1;
         float: left;
         font-size: 15px;
         padding: 0 15px;
+        // max-width: 11%;
         b{
          padding-left:10px;
         }

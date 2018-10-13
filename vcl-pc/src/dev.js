@@ -19,7 +19,7 @@ let host4 = 'http://192.168.10.144:8089'
 
 // let host5 = 'http://192.168.10.13:8090'
 
-let all = 'http://192.168.10.13:8080'
+let all = 'http://192.168.10.13:8090'
 // Is your service nginx  和 npm run dev 都是代理方式
 let nginx = false
 // nginx = true

@@ -66,11 +66,11 @@
       </div> -->
       <div class="between-line float-right"></div>
       <!-- 消息提醒 -->
-      <div class="message float-right" @click="$router.push('/message/index')">
+      <div class="message float-right">
         <el-popover
           placement="bottom"
           width="410"
-          trigger="hover">
+          trigger="click">
           <div class="message-box">
             <div class="title">
               <div :class="{'nav-case': true, 'active': messageType === 'system' } " @click="currentMessage = sysMessage">
@@ -106,7 +106,7 @@
               <span @click="toMessage">查看全部消息  <i class="el-icon-arrow-right"></i> </span>
             </div>
           </div>
-          <div slot="reference" @click="toMessage">
+          <div slot="reference">
             <i class="ercp-icon-module-message"></i>
             <span class="radial-text-primary" v-if="userMessage && userMessage.length + sysMessage.length > 0">{{userMessage.length + sysMessage.length}}</span>
           </div>

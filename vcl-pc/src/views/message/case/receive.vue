@@ -52,7 +52,7 @@
             <div class="message-case" slot="title">
               <div :class="{'read': true, 'not-readyet': item.isRead === 0}"></div>
               <div class="message-title" @click="singleMark(item)">
-                <div class="sender text-overflow-ellipsis"><span :class="{'primary-text': item.isRead === 0}">{{item.sendUser === null ? '系统通知' : item.sendUser.name}}</span></div>
+                <div class="sender text-overflow-ellipsis"><span :class="{'primary-text': item.isRead === 0}">{{item.type === 0 ? '系统通知' : (item.sendUser === null ? '无发件人' : item.sendUser.name)}}</span></div>
               </div>
               <div class="message-content" @click="singleMark(item)">
                 <div class="theme">{{item.title}}</div>
