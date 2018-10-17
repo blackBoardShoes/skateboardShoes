@@ -1,9 +1,9 @@
 import axios from '../index'
 const { all } = require('@/dev').proxyTableApi
 
-// let config = {
-//   headers: { 'Content-Type': 'multipart/form-data' }
-// }
+let config = {
+  headers: { 'Content-Type': 'multipart/form-data' }
+}
 // termbase/getPageTermbases 获取术语列表
 export const termbaseGetPageTermbases = data => {
   return axios.get(all + '/termbase/getPageTermbases', { params: data })
@@ -13,12 +13,15 @@ export const termbaseAddTermbaseImage = data => {
   return axios.post(all + '/termbase/addTermbaseImage', data)
 }
 // termbase/addTermbaseImage 添加术语
-// export const termbaseAddTermbase = data => {
-//   return axios.post(all + '/termbase/addTermbase', data, config)
-// }
 export const termbaseAddTermbase = data => {
-  return axios.post(all + '/termbase/addTermbase', data)
+  return axios.post(all + '/termbase/addTermbase', data, config)
 }
+// export const termbaseAddTermbase = data => {
+//   return axios.post(all + '/termbase/addTermbase', data)
+// }
+// export const termbaseAddTermbase = data => {
+//   return axios.post(all + '/termbase/tests', data)
+// }
 // termbase/removeTermbase 删除术语
 export const termbaseRemoveTermbase = data => {
   return axios.delete(all + '/termbase/removeTermbase', { params: data })

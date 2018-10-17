@@ -78,6 +78,7 @@
                   </el-radio-group>
                 <el-button slot="reference" :icon="formModel[item.id] ? formModel[item.id] : 'el-icon-plus'" circle></el-button>
               </el-popover>
+              <el-input-number v-if="item.type === 'INPUTNUMBER'" :min="0" v-model="formModel[item.id]"></el-input-number>
             </el-form-item>
           </el-form>
         </div>
@@ -384,7 +385,7 @@ export default {
         {
           id: 'name',
           label: '表单名称',
-          placeholder: '术前诊断结果',
+          // placeholder: '术前诊断结果',
           type: 'INPUT',
           validations: [
             { required: true, message: '请输入表单名称', trigger: 'change' }
@@ -421,7 +422,7 @@ export default {
             }
           ],
           label: '所属阶段',
-          placeholder: '请选择所属阶段',
+          // placeholder: '请选择所属阶段',
           type: 'SELECT',
           validations: [
             { required: true, message: '请选择所属阶段', trigger: 'change' }
@@ -439,9 +440,16 @@ export default {
         {
           id: 'description',
           label: '表单简介',
-          placeholder: '表单的简要说明',
+          // placeholder: '表单的简要说明',
           type: 'INPUT',
-          width: '67.5%'
+          width: '60.5%'
+        },
+        {
+          id: 'sortIndex',
+          label: '排序索引',
+          // placeholder: '数字越小越小优先级越大,0代表优先级最高,默认为0',
+          type: 'INPUTNUMBER',
+          width: '190px'
         }
       ],
       lookupData: '',
@@ -492,7 +500,11 @@ export default {
       // this.$set(this.formModel, 'fields', this.formModel['fields'] ? this.formModel['fields'] : [])
       // this.$set(this.formModel, 'relation', this.formModel['relation'] ? this.formModel['relation'] : {})
       for (let i of this.createTopForm) {
-        this.$set(this.formModel, i.id, '')
+        if (i.type === 'INPUTNUMBER') {
+          this.$set(this.formModel, i.id, this.cardArr.length)
+        } else {
+          this.$set(this.formModel, i.id, '')
+        }
       }
     },
     // one
@@ -544,6 +556,11 @@ export default {
       })
       // this.cardArr.splice(index, 1)
       // this.cardComplementShow()
+    },
+    addForm () {
+      this.init()
+      this.editOrAdd = false
+      this.fewStepsTF = false
     },
     // two
     iconJudgeChoose (type) {
@@ -687,11 +704,6 @@ export default {
       this.previewFormModel = Object.assign({}, this.formModel)
       this.$set(this.previewFormModel, 'fields', [...this.rightData])
       this.previewDialogVisible = true
-    },
-    addForm () {
-      this.init()
-      this.editOrAdd = false
-      this.fewStepsTF = false
     },
     editAddBack () {
       console.log(this.formModel)

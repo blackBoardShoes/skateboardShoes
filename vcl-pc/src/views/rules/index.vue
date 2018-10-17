@@ -325,6 +325,15 @@ export default {
             ]
           },
           {
+            id: 'phoneNum',
+            label: '联系方式',
+            type: 'INPUT',
+            validations: [
+              { required: true, message: '请输入联系方式', trigger: 'change' },
+              { pattern: /^\d{11}$/, message: '你输入的联系方式不正确', trigger: 'change' }
+            ]
+          },
+          {
             id: 'provinceCityDistrict',
             label: '常居住地',
             type: 'CASCADER',
