@@ -3,7 +3,7 @@ import axios from '../index'
 const {api, all} = require('@/dev').proxyTableApi
 // 保存
 export const formdataSave = data => {
-  return axios.post(`${api}/formdata/save?t=${Date.now()}`, data)
+  return axios.post(`${api}/formdata/save/${data['whatUser'].id}/${data['whatUser'].name}?t=${Date.now()}`, data)
 }
 // 提交
 export const formdataSubmit = data => {

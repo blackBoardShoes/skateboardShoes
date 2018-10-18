@@ -785,6 +785,15 @@ export default {
           }
         }
       }
+      for (let o of this.newFields) {
+        if (o.type === 'INT' | o.type === 'DOUBLE') {
+          if (this.formModel[o.id] === '') {
+            this.formModel[o.id] = null
+          } else {
+            this.formModel[o.id] = Number(this.formModel[o.id])
+          }
+        }
+      }
       this.$refs['formModel'].validate(valid => {
         if (valid) {
           let idGroup = this.formatData()
@@ -831,6 +840,15 @@ export default {
             if (this.formModel[this.relation[i].target] === this.relation[i].value) {
               this.formModel[i] = ''
             }
+          }
+        }
+      }
+      for (let o of this.newFields) {
+        if (o.type === 'INT' | o.type === 'DOUBLE') {
+          if (this.formModel[o.id] === '') {
+            this.formModel[o.id] = null
+          } else {
+            this.formModel[o.id] = Number(this.formModel[o.id])
           }
         }
       }

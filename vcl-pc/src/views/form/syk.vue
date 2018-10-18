@@ -83,9 +83,9 @@
           class="formModelClass"
           :model="formModel" :rules="rules"
           ref="formModel" size="mini" label-width="100px">
-          <el-form-item label="术语名称" prop="id" >
-            <el-select v-model="formModel.id" placeholder="请选择字段" clearable filterable @change="changeName">
-              <el-option :label="item.label" :value="item.id" v-for="(item, index) in fieldsData" :key="index"></el-option>
+          <el-form-item label="术语ID" prop="id" >
+            <el-select v-model="formModel.id" placeholder="请选择字段id" clearable filterable @change="changeName">
+              <el-option :label="item.label + ' ' + item.id" :value="item.id" v-for="(item, index) in fieldsData" :key="index"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="术语名称" prop="name" style="flex-grow: 1">
@@ -155,7 +155,7 @@
 import sxSegmentingLine from '@/components/segmentingLine'
 import sxFile from '@/components/dynamicForm/file'
 import { fieldAllFields } from '@/api/form/zdk.js'
-import { termbaseGetPageTermbases, termbaseAddTermbase, termbaseRemoveTermbase, updateTermbase, termbaseSelectTermbase } from '../../api/form/syk.js'
+import { termbaseGetPageTermbases, termbaseAddTermbase, termbaseRemoveTermbase, updateTermbase } from '../../api/form/syk.js'
 export default {
   components: {
     sxFile,
@@ -336,11 +336,11 @@ export default {
       console.log(val, 'valvalvalvalvalvla')
       if (val) {
         this.addOrEdit = false
-        this.imgLoading = true
+        // this.imgLoading = true
         this.formModel = Object.assign(this.formModel, val)
-        let tbstb = await termbaseSelectTermbase(this.formModel)
-        if (tbstb) this.formModel = Object.assign(this.formModel, tbstb.data.entity)
-        this.imgLoading = false
+        // let tbstb = await termbaseSelectTermbase(this.formModel)
+        // if (tbstb) this.formModel = Object.assign(this.formModel, tbstb.data.entity)
+        // this.imgLoading = false
       }
     },
     filterHandler (value, row, column) {
@@ -349,14 +349,18 @@ export default {
       return row[property] === value
     },
     deleteImages () {
-      this.formModel.inputImages.splice(this.$viewer.index, 1)
+      if (this.formModel.inputImages) {
+        this.formModel.inputImages.splice(this.$viewer.index, 1)
+      }
       this.formModel.images.splice(this.$viewer.index, 1)
     },
     onRead (data) {
       if (data) {
         console.log(this.formModel.images.length)
         if (parseInt(this.formModel.images.length) < 5) {
-          this.formModel.inputImages.push(data.file)
+          if (this.formModel.inputImages) {
+            this.formModel.inputImages.push(data.file)
+          }
           this.formModel.images.push(data.result)
         } else {
           this.$message({
