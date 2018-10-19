@@ -210,7 +210,7 @@ export default {
           { prop: '术中', label: '术中记录', width: '122' },
           { prop: '术后', label: '术后记录', width: '122' },
           { prop: '出院综合评估', label: '出院综合评估', width: '122' },
-          { option: true, label: '操作', contain: [{label: '查看'}] }
+          { option: true, label: '操作', contain: [{label: '查看'}], fixed: 'right' }
           // { prop: 'name', label: '是否纳入随访记录', width: '180', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] }
         ],
         // 待录入 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (编辑、删除)

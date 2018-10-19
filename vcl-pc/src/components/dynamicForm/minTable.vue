@@ -21,6 +21,7 @@
       :filters="item.filters"
       :filter-method="filterHandler"
       filter-placement="bottom-end"
+      :fixed="item.fixed"
       :width="item.width">
       <template slot-scope="scope">
         <el-button
