@@ -158,7 +158,8 @@ export default {
       // }
       // console.log(z)
       // return (z + Object.values(item).toString()).includes(this.lookupData)
-      return Object.values(item).toString().includes(this.lookupData)
+      let tf = this.lookupData ? Object.values(item).toString().includes(this.lookupData) : true
+      return tf
     },
     filterItem (item) {
       return this.checkList.includes(item.type)

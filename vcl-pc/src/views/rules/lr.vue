@@ -814,7 +814,7 @@ export default {
         console.log(this.fishData, 'this.fishData')
       }
       if (this.notVerifyingTF) {
-        let fds = await formdataSave(Object.assign(this.patientInfo, {data: this.fishData}))
+        let fds = await formdataSave(Object.assign(this.patientInfo, {data: this.fishData}, { whatUser: this.user }))
         if (fds) {
           if (this.activeIndex < this.navArr.length - 1) {
             this.smf = false

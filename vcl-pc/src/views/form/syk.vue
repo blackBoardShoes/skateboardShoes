@@ -83,6 +83,11 @@
           class="formModelClass"
           :model="formModel" :rules="rules"
           ref="formModel" size="mini" label-width="100px">
+          <el-form-item label="术语ID" prop="id" >
+            <el-select v-model="formModel.id" placeholder="请选择字段id" clearable filterable @change="changeName">
+              <el-option :label="item.label + ' ' + item.id" :value="item.id" v-for="(item, index) in fieldsData" :key="index"></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="术语名称" prop="name" style="flex-grow: 1">
             <el-input v-model="formModel.name"></el-input>
           </el-form-item>
@@ -149,7 +154,8 @@
 <script>
 import sxSegmentingLine from '@/components/segmentingLine'
 import sxFile from '@/components/dynamicForm/file'
-import { termbaseGetPageTermbases, termbaseAddTermbase, termbaseRemoveTermbase, updateTermbase, termbaseSelectTermbase } from '../../api/form/syk.js'
+import { fieldAllFields } from '@/api/form/zdk.js'
+import { termbaseGetPageTermbases, termbaseAddTermbase, termbaseRemoveTermbase, updateTermbase } from '../../api/form/syk.js'
 export default {
   components: {
     sxFile,
@@ -167,7 +173,8 @@ export default {
         images: [
           // require('../../../src/assets/images/xbx.jpg'),
           // 'https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=116399c62434349b6b066885f9eb1521/91ef76c6a7efce1ba958b016a351f3deb58f65fe.jpg'
-        ]
+        ],
+        inputImages: []
       },
       rules: {
         name: [
@@ -208,15 +215,24 @@ export default {
         keyboard: true,
         url: 'data-source'
       },
-      addOrEdit: true
+      addOrEdit: true,
+      fieldsData: []
     }
   },
   created () {
+    this.firstShow()
     this.show()
   },
   methods: {
     inited (viewer) {
       this.$viewer = viewer
+    },
+    async firstShow () {
+      let faf = await fieldAllFields()
+      if (faf) {
+        this.fieldsData = faf.data.entity
+      }
+      console.log(this.fieldsData)
     },
     async show () {
       let tgp = await termbaseGetPageTermbases({currentPage: this.currentPage, perPage: this.perPage, searchPattern: this.searchPatternData})
@@ -227,6 +243,13 @@ export default {
         return true
       }
       return false
+    },
+    changeName (val) {
+      for (let i of this.fieldsData) {
+        if (val === i.id) {
+          this.formModel.name = i.label
+        }
+      }
     },
     async searchPattern () {
       if (await this.show()) {
@@ -268,6 +291,7 @@ export default {
     },
     addWhat () {
       this.addOrEdit = true
+      this.imgLoading = false
       this.$refs['formModel'].resetFields()
     },
     saveWhat () {
@@ -276,15 +300,26 @@ export default {
           if (this.addOrEdit) {
             // 新增
             console.log(this.formModel)
-            let tbati = await termbaseAddTermbase(this.formModel)
+            let formModels = Object.assign(this.formModel, { images: [] })
+            let newFormModels = new FormData()
+            for (let i in formModels) {
+              if (i === 'inputImages') {
+                for (let i of formModels['inputImages']) {
+                  newFormModels.append('inputImages', i)
+                }
+              } else newFormModels.append(i, formModels[i])
+            }
+            let tbati = await termbaseAddTermbase(newFormModels)
             console.log(tbati)
             if (tbati) {
               this.$refs['formModel'].resetFields()
+              this.formModel.inputImages = []
               this.show()
             }
           } else {
             // 编辑
-            let udtb = await updateTermbase(this.formModel)
+            let formModels = Object.assign(this.formModel, { images: [] })
+            let udtb = await updateTermbase(formModels)
             if (udtb) {
               this.addOrEdit = true
               this.$refs['formModel'].resetFields()
@@ -301,11 +336,11 @@ export default {
       console.log(val, 'valvalvalvalvalvla')
       if (val) {
         this.addOrEdit = false
-        this.imgLoading = true
+        // this.imgLoading = true
         this.formModel = Object.assign(this.formModel, val)
-        let tbstb = await termbaseSelectTermbase(this.formModel)
-        if (tbstb) this.formModel = Object.assign(this.formModel, tbstb.data.entity)
-        this.imgLoading = false
+        // let tbstb = await termbaseSelectTermbase(this.formModel)
+        // if (tbstb) this.formModel = Object.assign(this.formModel, tbstb.data.entity)
+        // this.imgLoading = false
       }
     },
     filterHandler (value, row, column) {
@@ -314,12 +349,18 @@ export default {
       return row[property] === value
     },
     deleteImages () {
+      if (this.formModel.inputImages) {
+        this.formModel.inputImages.splice(this.$viewer.index, 1)
+      }
       this.formModel.images.splice(this.$viewer.index, 1)
     },
     onRead (data) {
       if (data) {
         console.log(this.formModel.images.length)
         if (parseInt(this.formModel.images.length) < 5) {
+          if (this.formModel.inputImages) {
+            this.formModel.inputImages.push(data.file)
+          }
           this.formModel.images.push(data.result)
         } else {
           this.$message({

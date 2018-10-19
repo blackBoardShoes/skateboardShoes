@@ -194,7 +194,8 @@
                 <el-button-group v-if="edit" style="margin-top:3px">
                   <el-button type="danger" @click="deleteFormRow(items, index)">删除当前行</el-button>
                 </el-button-group>
-                  <div style="width: 40px;text-align:center">
+                  <div style="width: 40px;text-align:center"
+                    v-if="!(items.type === 'RADIO' | items.type === 'RADIOTEXT' | items.type === 'CHECKBOXTEXT' | items.type === 'CHECKBOX')">
                     <!--  v-if="items.unit" -->
                     {{items.unit ? items.unit : ''}}
                   </div>
@@ -535,7 +536,6 @@ export default {
         // this.$emit('input', this.formModel)
         let type = i.type
         let required = i.required
-        console.log(required, 'requiredrequiredrequiredrequired')
         if (i['validations']) {
           for (let z in i['validations']) {
             if ('pattern' in i['validations'][z]) {
@@ -544,7 +544,6 @@ export default {
                 let arr = i['validations'][z]['pattern'].split('***')
                 let message = i['validations'][z]['message']
                 let a = { validator: (rule, value, callback) => {
-                  console.log(Number(arr[0]), Number(arr[1]), Number(value))
                   if ((!required) & (!value) | (Number(arr[0]) <= Number(value)) & (Number(arr[1]) >= Number(value))) {
                     if (type === 'INT') {
                       if (value.includes('.')) {
@@ -567,11 +566,53 @@ export default {
                 // await i['validations'].push(a)
                 i['validations'][z] = a
                 // this.$delete(i['validations'], z)
-              } else {
-                // i['validations'][z]['pattern'] = new RegExp(i['validations'][z]['pattern'], 'g')
               }
               // console.log(i['validations'][z]['pattern'])
               // this.$set(this.fields[j]['validations'][z], 'pattern', new RegExp(this.fields[j]['validations'][z]['pattern']))
+            }
+          }
+        } else {
+          if (type === 'INT') {
+            let a = { validator: (rule, value, callback) => {
+              if (value.includes('.')) {
+                callback(new Error('类型为整数,不可以输入小数'))
+              } else if (!(/^\d*$/.test(value))) {
+                callback(new Error('类型为整数,只可以为数字。'))
+              } else {
+                callback()
+              }
+            }}
+            i['validations'] = [a]
+          } else if (type === 'DOUBLE') {
+            let a = { validator: (rule, value, callback) => {
+              if ((!(/^[0-9]+([.][0-9]+){0,}$|^\d*$/.test(value)))) {
+                callback(new Error('类型为浮点类型'))
+              } else {
+                callback()
+              }
+            }}
+            i['validations'] = [a]
+          }
+          // i['validations'][z]['pattern'] = new RegExp(i['validations'][z]['pattern'], 'g')
+        }
+        if (required & Array.isArray(i['validations'])) {
+          if ((i['validations'].length === 1) & ('required' in i['validations'][0])) {
+            if (type === 'INT') {
+              let a = { validator: (rule, value, callback) => {
+                if (/^\d{1,}$/.test(value)) {
+                  callback()
+                } else {
+                  callback(new Error('类型为整数'))
+                }
+              }}
+              i['validations'].push(a)
+            } else if (type === 'DOUBLE') {
+              let a = { validator: (rule, value, callback) => {
+                if ((!(/^[0-9]+([.][0-9]+){0,}$/.test(value)))) {
+                  callback(new Error('类型为浮点类型'))
+                }
+              }}
+              i['validations'].push(a)
             }
           }
         }
@@ -744,6 +785,15 @@ export default {
           }
         }
       }
+      for (let o of this.newFields) {
+        if (o.type === 'INT' | o.type === 'DOUBLE') {
+          if (this.formModel[o.id] === '') {
+            this.formModel[o.id] = null
+          } else {
+            this.formModel[o.id] = Number(this.formModel[o.id])
+          }
+        }
+      }
       this.$refs['formModel'].validate(valid => {
         if (valid) {
           let idGroup = this.formatData()
@@ -790,6 +840,15 @@ export default {
             if (this.formModel[this.relation[i].target] === this.relation[i].value) {
               this.formModel[i] = ''
             }
+          }
+        }
+      }
+      for (let o of this.newFields) {
+        if (o.type === 'INT' | o.type === 'DOUBLE') {
+          if (this.formModel[o.id] === '') {
+            this.formModel[o.id] = null
+          } else {
+            this.formModel[o.id] = Number(this.formModel[o.id])
           }
         }
       }
@@ -856,6 +915,7 @@ export default {
           //     type: 'warning'
           //   })
           // }
+          // console.log(data[patternList[i]], 'data[patternList[i]]', patternList[i])
           values.push(Number(data[patternList[i]]))
         } else if (CONSTANT.test(patternList[i])) {
           values.push(Number(patternList[i]))
@@ -869,7 +929,7 @@ export default {
           })
         }
       }
-      console.log(values, 'values')
+      // console.log(values, 'values')
       return Math.max(...values)
       // return values[0].toString()
       // return values[0].toFixed(2).toString()

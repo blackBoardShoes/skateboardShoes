@@ -13,7 +13,7 @@
       </div>
     </div>
     <br>
-    <div style="width: 90.2%; display:flex">
+    <div style="width: 90.2%; display:flex" class="searchClass">
       <el-input
         clearable
         placeholder="输入关键字进行过滤"
@@ -24,6 +24,7 @@
         width="300"
         trigger="click">
         <el-button
+          style="border-left: none; border-radius: 0;"
           slot="reference"
           >筛选</el-button>
         <el-checkbox-group v-model="checkList">
@@ -49,9 +50,16 @@
         <span
           class="custom-tree-node"
           slot-scope="{ node, data }">
+          <!-- <div style="
+          width:100%;
+          text-indent:1em each-line;
+          line-height: 25px;
+          white-space:normal;
+        word-break:break-all;
+        word-wrap:break-word; "> -->
           <div>
-            &nbsp;&nbsp;<i :class="iconJudgeChoose(data.type)"></i>
-            &nbsp;&nbsp;{{ node.label }}
+            <i :class="iconJudgeChoose(data.type)"></i>
+            &nbsp;&nbsp;{{ node.label }}&nbsp;&nbsp;{{ data.id }}
           </div>
         </span>
       </el-tree>
@@ -282,6 +290,11 @@ export default {
   }
   /deep/ .el-tree-node__content {
     height: 35px;
+  }
+  .searchClass {
+    /deep/ .el-input--suffix .el-input__inner {
+      border-radius: 0px !important;
+    }
   }
 }
 

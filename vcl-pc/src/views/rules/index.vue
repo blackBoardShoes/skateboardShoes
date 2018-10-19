@@ -221,6 +221,7 @@ export default {
           { prop: 'gender', label: '性别', sortable: true },
           { prop: 'dept', label: '科室' },
           { prop: 'bedNum', label: '床号' },
+          { prop: 'inHospitalDate', label: '入院日期' },
           { prop: 'operationDate', label: '手术日期' },
           { prop: 'phase', label: '数据阶段', sortable: true, width: '122' },
           { prop: 'responseName', label: '记录者', width: '122', sortable: true },
@@ -322,6 +323,15 @@ export default {
             validations: [
               { required: true, message: '请输入身份证号', trigger: 'change' },
               { pattern: /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/, message: '你输入的身份证不正确', trigger: 'change' }
+            ]
+          },
+          {
+            id: 'phoneNum',
+            label: '联系方式',
+            type: 'INPUT',
+            validations: [
+              { required: true, message: '请输入联系方式', trigger: 'change' },
+              { pattern: /^\d{11}$/, message: '你输入的联系方式不正确', trigger: 'change' }
             ]
           },
           {
