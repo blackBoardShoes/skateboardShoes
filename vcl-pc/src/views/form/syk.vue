@@ -88,9 +88,12 @@
               <el-option :label="item.label + ' ' + item.id" :value="item.id" v-for="(item, index) in fieldsData" :key="index"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="术语名称" prop="name" style="flex-grow: 1">
+          <el-form-item label="术语名称" prop="name" style="flex-grow: 0.7">
             <el-input v-model="formModel.name"></el-input>
           </el-form-item>
+            <el-form-item label="是否显示" prop="emerge" style="flex-grow: 0.3">
+              <el-switch v-model="formModel.emerge"></el-switch>
+            </el-form-item>
           <el-form-item label="术语类别" prop="type" >
             <el-select v-model="formModel.type" placeholder="请选择活动区域">
               <el-option label="内科" value="内科"></el-option>
@@ -168,8 +171,10 @@ export default {
       formModel: {
         name: '',
         type: '',
+        emerge: false,
         reference: '',
-        paraphrase: 'I 型:左右肝管汇合部下方肝总管或胆管残端长度≥2cm\nII 型:左右肝管汇合部下方肝总管残端长度<2cm\nIII 型:左右肝管汇合部完整，左右肝管系统相通\nIV 型:左右肝管汇合部损伤，左右肝管系统狭窄不相通\nV 型:I 型、II 型或III 型+右侧副肝管或迷走胆管狭窄，左侧副肝管或迷走胆管狭窄',
+        paraphrase: '',
+        // paraphrase: 'I 型:左右肝管汇合部下方肝总管或胆管残端长度≥2cm\nII 型:左右肝管汇合部下方肝总管残端长度<2cm\nIII 型:左右肝管汇合部完整，左右肝管系统相通\nIV 型:左右肝管汇合部损伤，左右肝管系统狭窄不相通\nV 型:I 型、II 型或III 型+右侧副肝管或迷走胆管狭窄，左侧副肝管或迷走胆管狭窄',
         images: [
           // require('../../../src/assets/images/xbx.jpg'),
           // 'https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=116399c62434349b6b066885f9eb1521/91ef76c6a7efce1ba958b016a351f3deb58f65fe.jpg'

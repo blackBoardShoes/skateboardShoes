@@ -14,7 +14,19 @@
         @click="emitClick(item, index)"
         :key="index">
         <i :class="item.icon"></i>
-        <span class="menuName">{{item.name}}</span>&nbsp;
+        <span class="menuName" v-if="item.name.length < 6">{{item.name}}</span>
+        <span class="menuName" v-else>
+          <el-tooltip class="item" effect="dark" :content="item.name" placement="right">
+            <div style="
+              width: 70px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;">
+              {{item.name}}
+            </div>
+          </el-tooltip>
+        </span>
+        &nbsp;
         <span class="comments" v-if="comments[item.id] ? Object.keys(comments[item.id]).length ? Object.keys(comments[item.id]).length : '' : ''">
           {{comments[item.id] ? Object.keys(comments[item.id]).length ? Object.keys(comments[item.id]).length : '' : ''}}
         </span>
@@ -109,12 +121,14 @@ $W: 16%;
     font-weight: bold;
   }
   .comments {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    text-align: center;
     background: #117FD1;
-    font-size: 12px;
+    font-size: 10px;
     color: white;
   }
 }

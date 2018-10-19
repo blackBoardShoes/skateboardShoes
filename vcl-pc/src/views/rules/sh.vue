@@ -71,6 +71,7 @@
                 <sx-min-form
                   v-if="smf"
                   disabled
+                  isSh
                   v-model="fishData[navArr[activeIndex].id]"
                   ref="thatForm"
                   :mozhu="navArr[activeIndex]"

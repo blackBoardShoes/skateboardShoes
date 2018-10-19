@@ -275,7 +275,7 @@ export default {
           }
         ]
       },
-      activeIndexNav: '术前2018-09-12',
+      activeIndexNav: '住院基本情况',
       activeIndexId: '',
       activeIndex: 0,
       patientInfo: {},
@@ -294,6 +294,7 @@ export default {
     if (this.$route.params.data) {
       this.patientInfo = JSON.parse(this.$route.params.data)
       this.subNavData = this.patientInfo.information.data
+      // this.activeIndexNav = this.patientInfo.phase
       this.activeIndexNav = this.patientInfo.activeIndexNav ? this.patientInfo.activeIndexNav : '住院基本情况'
       console.log(this.subNavData, 'cccccccc')
     }

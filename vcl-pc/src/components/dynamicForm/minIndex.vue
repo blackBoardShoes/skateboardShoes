@@ -22,7 +22,7 @@
             <div
               v-if="disabled ? true : tf(items)"
               v-for="(items, index) in newFields"
-              :class="(items.type === 'RADIO' & (!items.values)) ? 'abnormal' : 'normal'"
+              :class="(items.type === 'RADIO' & (!items.values)) ? 'abnormal' : noLabel ? 'noLabel' : 'normal'"
               :style="{display: 'flex', alignItems: 'flexStart', width: coordinate[items.id] ? coordinate[items.id] + '%' : '100%'}"
               :key="index">
               <!--  v-if="disabled" -->
@@ -36,14 +36,18 @@
                 :prop="items.id"
                 :label="items.label"
                 @dblclick.native="evaluate(items, index)">
-                <div style="display: flex">
+                <div style="display: flex;">
                   <!-- @change.native="changeRules" -->
                   <el-input
                     :disabled="disabled" :placeholder="items.placeholder ? items.placeholder : '请输入'" clearable
                     v-if="items.type === 'INPUT' | items.type === 'INT' | items.type === 'DOUBLE'" v-model.trim='formModel[items.id]'></el-input>
                   <!-- <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'INT'" v-model.trim='formModel[items.id]'></el-input> -->
                   <!-- <el-input :disabled="items.disabled" :placeholder="items.placeholder" clearable v-if="items.type === 'DOUBLE'" v-model.trim='formModel[items.id]'></el-input> -->
-                  <el-input :disabled="items.disabled" :placeholder="items.placeholder" v-if="items.type === 'TEXTAREA'" type="textarea"  v-model='formModel[items.id]'></el-input>
+                  <el-input
+                    :disabled="items.disabled"
+                    :placeholder="items.placeholder"
+                    v-if="items.type === 'TEXTAREA'" type="textarea"
+                    v-model='formModel[items.id]'></el-input>
                   <el-radio-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'RADIO'">
                     <el-radio v-for="(it, ii) in items.values" :key="ii" :label="it.value">{{(it.label.split('**'))[0]}}</el-radio>
                   </el-radio-group>
@@ -58,7 +62,6 @@
                       {{
                         (it.label.split('**'))[0]
                       }}
-                      <!-- v-if="onceThat(items.values, it, ii)" -->
                       <!-- v-if="(items.values.length - 1) === ii" -->
                     </el-radio>
                     <el-input
@@ -195,11 +198,12 @@
                   <el-button type="danger" @click="deleteFormRow(items, index)">删除当前行</el-button>
                 </el-button-group>
                   <div style="width: 40px;text-align:center"
-                    v-if="!(items.type === 'RADIO' | items.type === 'RADIOTEXT' | items.type === 'CHECKBOXTEXT' | items.type === 'CHECKBOX')">
+                    v-if="!(items.type === 'RADIO' | items.type === 'RADIOTEXT' | items.type === 'CHECKBOXTEXT' | items.type === 'CHECKBOX' | items.type === 'TEXTAREA')">
                     <!--  v-if="items.unit" -->
                     {{items.unit ? items.unit : ''}}
                   </div>
-                  <div style="width: 40px;text-align:center">
+                  <div
+                    style="width: 40px;text-align:center">
                     <el-popover
                       v-if="question[items.id]"
                       placement="left"
@@ -233,7 +237,7 @@
         <span style="font-weight: bold">错误原因</span>
       </div>
       <sx-min-form
-        :labelWidth="false"
+        :noLabel="true"
         cancel submitTF
         @cancelData="evaluateDialogVisible = false"
         v-if="evaluateDialogVisible" :mozhu="allEvaluate"
@@ -263,10 +267,10 @@ export default {
         return false
       }
     },
-    labelWidth: {
+    noLabel: {
       type: Boolean,
       default () {
-        return true
+        return false
       }
     },
     labelPosition: {
@@ -334,11 +338,16 @@ export default {
       default () {
         return false
       }
+    },
+    isSh: {
+      type: Boolean,
+      default () {
+        return false
+      }
     }
   },
   data () {
     return {
-      once: false,
       newFields: 'fields' in this.mozhu ? [...this.mozhu['fields']] : [],
       relation: 'relation' in this.mozhu ? Object.assign({}, this.mozhu['relation']) : {},
       coordinate: 'coordinate' in this.mozhu ? Object.assign({}, this.mozhu['coordinate']) : {},
@@ -430,30 +439,6 @@ export default {
     console.log(this.formModel, 'this.formModel')
   },
   methods: {
-    // radioTextEdit (arr = [], data) {
-    //   if (data !== '其他') {
-    //     arr[arr.length - 1].label = data
-    //   }
-    //   return arr
-    // },
-    // onceThat (items, item, value, index) {
-    //   console.log(items, item, value, index, (items.length - 1) === index)
-    //   item = 1123123123
-    //   // it.label = items.values.includes(formModel[items.id]) ? it.label : formModel[items.id]
-    //   return (items.length - 1) === index
-    // },
-    onceThat1 (all, item, index) {
-      if (item.label.includes('其他') | this.once) {
-        if (all.length - 1 === index) {
-          this.once = true
-          return this.once
-        } else {
-          return false
-        }
-      } else {
-        return false
-      }
-    },
     firstShow () {
       let accordWithCalculateData = ['INT', 'DOUBLE', 'RADIO']
       if (this.repositoryData) {
@@ -936,7 +921,7 @@ export default {
       /* eslint-disable */
     },
     evaluate (row, index) {
-      if (this.disabled) {
+      if (this.disabled & this.isSh) {
         console.log(row, index)
         this.evaluateRowData = row
         this.evaluateData = this.comments[row.id]
@@ -1089,7 +1074,6 @@ $full: 100%;
         // min-width: 138px;
         // max-width: 190px;
         width: 138px;
-        // border:1px solid red;
         // width: 10%;
         white-space:normal;
         word-break:break-all;
@@ -1107,6 +1091,14 @@ $full: 100%;
         // width: 100%
       }
     }
+    .noLabel {
+      /deep/ .el-form-item__label {
+        width: 0px;
+      }
+      /deep/ .el-form-item__content {
+        width: 100%;
+      }
+    }    
   }
 }
 </style>
