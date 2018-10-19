@@ -101,7 +101,30 @@ export const appRouter = [
           navigator: true,
           role: [1, 2, 3]
         },
-        component: () => import('../../src/views/statistics/index/index.vue')
+        redirect: '/statistics/index/charts',
+        component: () => import('../../src/views/statistics/index/index.vue'),
+        children: [
+          {
+            path: 'charts',
+            name: 'statistics_charts',
+            meta: {
+              title: '统计报表',
+              navigator: true,
+              role: [1, 2, 3]
+            },
+            component: () => import('../../src/views/statistics/detail/charts.vue')
+          },
+          {
+            path: 'export',
+            name: 'statistics_export',
+            meta: {
+              title: '数据导出',
+              navigator: true,
+              role: [1, 2, 3]
+            },
+            component: () => import('../../src/views/statistics/detail/export.vue')
+          }
+        ]
       }
     ]
   },

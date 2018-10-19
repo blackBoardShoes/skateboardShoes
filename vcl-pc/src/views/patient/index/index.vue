@@ -62,7 +62,7 @@
               label="性别"
               :width="120">
               <template slot-scope="scope">
-                <span>{{ scope.row.gender === 1 ? '男' : '女' }}</span>
+                <span>{{ scope.row.gender === '1' ? '男' : '女' }}</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -71,12 +71,6 @@
               label="民族"
               :width="120">
             </el-table-column>
-            <!-- <el-table-column
-              prop="identity"
-              align="center"
-              label="身份证编号"
-              :width="200">
-            </el-table-column> -->
             <el-table-column
               prop="phoneNum"
               align="center"
@@ -284,7 +278,7 @@ export default {
     },
     // 查看具体患者
     viewPatient (value) {
-      this.$router.push(`/patient/detail/${value.id}`)
+      this.$router.push(`/patient/detail/${value.hospitalId}`)
     },
     // 更新患者列表
     refresh () {

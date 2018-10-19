@@ -1,5 +1,5 @@
 import axios from '../index'
-const { dali } = require('@/dev').proxyTableApi
+const { dali, api } = require('@/dev').proxyTableApi
 // 患者中心首页
 // 获取所有患者列表
 export const getAllPatient = data => {
@@ -19,7 +19,7 @@ export const searchPatient = data => {
 // 患者详情页:
 // 根据患者id获取患者的基本信息
 export const getPatientBasic = data => {
-  return axios.get(dali + `/patient/getPatient?patientId=${data}`)
+  return axios.get(dali + `/patient/getPatient?hospitalId=${data}`)
 }
 // 删除患者
 export const deletePatient = data => {
@@ -33,5 +33,9 @@ export const editPatientBasic = data => {
 // 患者记录部分:
 // 获取患者的所有记录
 export const getPatientRecords = data => {
-  return axios.get(dali + `/patient/vagueSelect?like=${data}&perPage=10&currentPage=1`)
+  return axios.get(api + `/records/patient/${data}`)
+}
+
+export const getAllFormTemplates = data => {
+  return axios.get(api + `/form/allForms`)
 }

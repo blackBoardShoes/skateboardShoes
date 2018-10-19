@@ -158,7 +158,7 @@ export const charts = [
       show: true,
       left: '1%',
       right: '1%',
-      bottom: '1%',
+      bottom: '3%',
       containLabel: true
     },
     xAxis: [
@@ -248,7 +248,7 @@ export const charts = [
       show: true,
       left: '1%',
       right: '1%',
-      bottom: '1%',
+      bottom: '3%',
       containLabel: true
     },
     xAxis: [
