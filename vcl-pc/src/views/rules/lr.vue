@@ -352,6 +352,7 @@ export default {
       }
     },
     async show () {
+      this.fishData = {}
       let a = await formdataData(this.patientInfo.id)
       if (a) {
         this.fishData = a.data.entity ? Object.assign({}, a.data.entity.data) : {}
@@ -429,11 +430,13 @@ export default {
     },
     async generalSave () {
       if (!this.navArr[this.activeIndex].isStatic) {
-        this.$refs.thatForm.notVerifying()
+        await this.$refs.thatForm.notVerifying()
       } else {
         console.log(this.fishData, 'this.fishData')
       }
+      console.log('truetruetruetruetrue123123123')
       if (this.notVerifyingTF) {
+        console.log('ccccccccccccccccccccccccc')
         let fds = await formdataSave(Object.assign(this.patientInfo, {data: this.fishData}, { whatUser: this.user }))
         if (fds) {
           if (this.activeIndex < this.navArr.length - 1) {
@@ -443,7 +446,7 @@ export default {
               this.smf = true
             }, 1)
           }
-          // this.show()
+          // await this.show()
         }
         this.notVerifyingTF = false
       }
@@ -461,7 +464,7 @@ export default {
     async undoneFilledFormConsoleData (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
       console.log(mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate)
       if (!this.navArr[this.activeIndex].isStatic) {
-        this.$refs.thatForm.consoleData()
+        await this.$refs.thatForm.consoleData()
       } else {
         console.log(this.fishData, 'this.fishData')
       }

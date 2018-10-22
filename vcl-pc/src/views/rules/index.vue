@@ -77,10 +77,11 @@
         @consoleData="createFish" ></sx-min-form>
     </el-dialog>
     <el-dialog
+      width="60%"
       append-to-body
+      v-if="patientDialogVisible"
       modal-append-to-body
       :close-on-click-modal="false"
-      v-if="patientDialogVisible"
       :visible.sync="patientDialogVisible">
       <sx-min-form
         submitTF
@@ -115,6 +116,26 @@ export default {
           //   ]
           // },
           {
+            id: 'patientName',
+            label: '姓名',
+            type: 'INPUT',
+            validations: [
+              { required: true, message: '请输入组件标签名', trigger: 'change' }
+            ]
+          },
+          {
+            id: 'gender',
+            label: '性别',
+            type: 'RADIO',
+            values: [
+              {value: 1, label: '男'},
+              {value: 0, label: '女'}
+            ],
+            validations: [
+              { required: true, message: '请选择性别', trigger: 'change' }
+            ]
+          },
+          {
             id: 'dept',
             label: '科室',
             type: 'SELECT',
@@ -133,26 +154,6 @@ export default {
             type: 'INPUT',
             validations: [
               { required: true, message: '请输入床号', trigger: 'change' }
-            ]
-          },
-          {
-            id: 'patientName',
-            label: '姓名',
-            type: 'INPUT',
-            validations: [
-              { required: true, message: '请输入组件标签名', trigger: 'change' }
-            ]
-          },
-          {
-            id: 'gender',
-            label: '性别',
-            type: 'RADIO',
-            values: [
-              {value: 1, label: '男'},
-              {value: 0, label: '女'}
-            ],
-            validations: [
-              { required: true, message: '请选择性别', trigger: 'change' }
             ]
           },
           {
@@ -638,6 +639,8 @@ export default {
           cancelButtonText: '取消',
           type: 'info'
         }).then(() => {
+          this.patientData = {}
+          this.patientData.hospitalId = this.ruleForm.patientId
           this.patientDialogVisible = true
         }).catch(() => {})
       }

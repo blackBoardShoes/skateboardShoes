@@ -95,7 +95,7 @@
                     <el-radio v-for="(it, ii) in items.values" :key="ii" :label="it.value">{{(it.label.split('**'))[0]}}</el-radio>
                   </el-radio-group>
                   <el-radio-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'RADIOTEXT'"
-                    style="display:flex;flex-wrap:wrap">
+                    style="display:flex;flex-wrap:wrap;width: 100%">
                     <el-radio
                       v-for="(it, ii) in items.values" :key="ii" :label="it.label"
                       style="display:flex">
@@ -108,6 +108,7 @@
                       <!-- v-if="(items.values.length - 1) === ii" -->
                     </el-radio>
                     <el-input
+                      style="width: 100%"
                       placeholder="请输入"
                       v-model.trim='formModel[items.id]'></el-input>
                   </el-radio-group>
@@ -115,7 +116,7 @@
                     <el-checkbox v-for="(it, ii) in items.values" :key="ii" :label="it.value" >{{it.label}}</el-checkbox>
                   </el-checkbox-group>
                   <el-checkbox-group :disabled="items.disabled" class="radioAndCheckbox" v-model="formModel[items.id]" v-if="items.type === 'CHECKBOXTEXT'"
-                  style="display:flex;flex-wrap:wrap">
+                  style="display:flex;flex-wrap:wrap;width: 100%">
                     <el-checkbox v-for="(it, ii) in items.values" :key="ii" :label="it.label" >
                       <div>
                         {{it.label}}
@@ -123,6 +124,7 @@
                     </el-checkbox>
                       <!-- v-if="(items.values.length - 1) === ii" -->
                     <el-input
+                      style="width: 100%"
                       placeholder="请输入"
                       v-model.trim='formModel[items.id][30]'></el-input>
                   </el-checkbox-group>
@@ -241,7 +243,8 @@
                   <el-button type="danger" @click="deleteFormRow(items, index)">删除当前行</el-button>
                 </el-button-group>
                   <div style="width: 40px;text-align:center"
-                    v-if="!(items.type === 'RADIO' | items.type === 'RADIOTEXT' | items.type === 'CHECKBOXTEXT' | items.type === 'CHECKBOX' | items.type === 'TEXTAREA')">
+                    v-if="!(items.type === 'TEXTAREA')">
+                    <!-- v-if="!(items.type === 'RADIO' | items.type === 'RADIOTEXT' | items.type === 'CHECKBOXTEXT' | items.type === 'CHECKBOX' | items.type === 'TEXTAREA')" -->
                     <!--  v-if="items.unit" -->
                     {{items.unit ? items.unit : ''}}
                   </div>
@@ -456,6 +459,7 @@ export default {
         // this.formModel = {}
         this.init()
         this.formModel = Object.assign(this.formModel, value)
+        console.log(this.formModel, 'this.formModelthis.formModelthis.formModel')
       }
     },
     mozhu: {
@@ -511,6 +515,14 @@ export default {
       for (let i of this.newFields) {
         // this.$set(this.rules, i.id, i.validations)
         switch (i.type) {
+          // case 'INT':
+          // case 'DOUBLE':
+          // if (this.formModel[i.id]) {
+          //   this.$set(this.formModel, i.id, this.formModel[i.id].toString())
+          // } else {
+          //   this.$set(this.formModel, i.id, '')
+          // }
+          // break
           case 'CHECKBOX':
           case 'CHECKBOXTEXT':
           case 'CASCADER':
@@ -570,7 +582,7 @@ export default {
         }
         // this.$emit('input', this.formModel)
         let type = i.type
-        let required = i.required
+        let required = Boolean(i.required)
         if (i['validations']) {
           for (let z in i['validations']) {
             if ('pattern' in i['validations'][z]) {
@@ -579,22 +591,45 @@ export default {
                 let arr = i['validations'][z]['pattern'].split('***')
                 let message = i['validations'][z]['message']
                 let a = { validator: (rule, value, callback) => {
-                  if ((!required) & (!value) | (Number(arr[0]) <= Number(value)) & (Number(arr[1]) >= Number(value))) {
-                    if (type === 'INT') {
+                  // if (required & (Number(arr[0]) <= Number(value)) & (Number(arr[1]) >= Number(value))) {
+                  //   callback()
+                  // } else {
+                  //   if (value) {
+                  //     if (value.toString().includes('.')) {
+                  //       callback(new Error('类型为整数,不可以输入小数'))
+                  //     } else if (!(/^\d*$/.test(value.toString()))) {
+                  //       callback(new Error('类型为整数,只可以为数字。'))
+                  //     } else {
+                  //       callback()
+                  //     }
+                  //   } else {
+                  //     callback()
+                  //   }
+                  // }
+                  // console.log('required', required)
+                  if (required) {
+                    if ((Number(arr[0]) <= Number(value)) & (Number(arr[1]) >= Number(value))) {
+                      callback()
+                    } else {
+                      if (message === '请按规则填写') {
+                        callback(new Error('取值范围：' + arr[0] + '-' + arr[1]))
+                      } else {
+                        callback(new Error(message))
+                      }
+                    }
+                  } else {
+                    // callback()
+                    if (value) {
+                      // callback()
                       if (value.includes('.')) {
                         callback(new Error('类型为整数,不可以输入小数'))
+                      } else if (!(/^\d*$/.test(value))) {
+                        callback(new Error('类型为整数,只可以为数字。'))
                       } else {
                         callback()
                       }
                     } else {
                       callback()
-                    }
-                    // callback()
-                  } else {
-                    if (message === '请按规则填写') {
-                      callback(new Error('取值范围：' + arr[0] + '-' + arr[1]))
-                    } else {
-                      callback(new Error(message))
                     }
                   }
                 }}
@@ -605,10 +640,14 @@ export default {
         } else {
           if (type === 'INT') {
             let a = { validator: (rule, value, callback) => {
-              if (value.includes('.')) {
-                callback(new Error('类型为整数,不可以输入小数'))
-              } else if (!(/^\d*$/.test(value))) {
-                callback(new Error('类型为整数,只可以为数字。'))
+              if (value) {
+                if (value.includes('.')) {
+                  callback(new Error('类型为整数,不可以输入小数'))
+                } else if (!(/^\d*$/.test(value))) {
+                  callback(new Error('类型为整数,只可以为数字。'))
+                } else {
+                  callback()
+                }
               } else {
                 callback()
               }
@@ -640,6 +679,8 @@ export default {
               let a = { validator: (rule, value, callback) => {
                 if ((!(/^[0-9]+([.][0-9]+){0,}$/.test(value)))) {
                   callback(new Error('类型为浮点类型'))
+                } else {
+                  callback()
                 }
               }}
               i['validations'].push(a)
@@ -726,52 +767,52 @@ export default {
     // form conversion rules
     // { "type": "INPUT", "id": "", "label": "", "pattern": "", "message": "", "required": "" }
     conversion (what = {}) {
-      what['validations'] = []
-      switch (what.type) {
-        case 'INPUT':
-        case 'INT':
-        case 'DOUBLE':
-        case 'SELECT':
-        case 'DATE':
-        case 'DATETIME':
-        case 'RADIO':
-        case 'TEXTAREA':
-        case 'CHECKBOX':
-        case 'CASCADER':
-        case 'SELECTMUTIPLE':
-          if (what['required']) {
-            what['validations'].push(
-              { required: (Boolean(what['required'])), message: '请输入或选择' + what['label'], trigger: 'change' }
-            )
-          }
-          if (what.type === 'INPUT' | what.type === 'INT' | what.type === 'DOUBLE' | what.type === 'TEXTAREA') {
-            if (what['pattern']) {
-              // what['validations'] = []
-              // if (what['pattern'].includes('/^') | what['pattern'].includes('$/')) {
-              //   what['pattern'].replace('/^', '^')
-              // }
-              what['validations'].push(
-                { pattern: what['pattern'], message: what['message'] ? what['message'] : '请按规则填写', trigger: 'change' }
-              )
-            }
-          }
-          break
-        case 'CREATETABLE':
-          what.type = 'TABLE'
-          what['subFields'] = []
-          for (let i in what.createTable) {
-            for (let j of this.repositoryData) {
-              if (what.createTable[i] === j.label) {
-                what['subFields'].push(j)
-              }
-            }
-          }
-          break
-        case 'CREATECALCULATE':
-          what.type = 'CALCULATE'
-          break
-      }
-      return what
+      // what['validations'] = []
+      // switch (what.type) {
+      //   case 'INPUT':
+      //   case 'INT':
+      //   case 'DOUBLE':
+      //   case 'SELECT':
+      //   case 'DATE':
+      //   case 'DATETIME':
+      //   case 'RADIO':
+      //   case 'TEXTAREA':
+      //   case 'CHECKBOX':
+      //   case 'CASCADER':
+      //   case 'SELECTMUTIPLE':
+      //     if (what['required']) {
+      //       what['validations'].push(
+      //         { required: (Boolean(what['required'])), message: '请输入或选择' + what['label'], trigger: 'change' }
+      //       )
+      //     }
+      //     if (what.type === 'INPUT' | what.type === 'INT' | what.type === 'DOUBLE' | what.type === 'TEXTAREA') {
+      //       if (what['pattern']) {
+      //         // what['validations'] = []
+      //         // if (what['pattern'].includes('/^') | what['pattern'].includes('$/')) {
+      //         //   what['pattern'].replace('/^', '^')
+      //         // }
+      //         what['validations'].push(
+      //           { pattern: what['pattern'], message: what['message'] ? what['message'] : '请按规则填写', trigger: 'change' }
+      //         )
+      //       }
+      //     }
+      //     break
+      //   case 'CREATETABLE':
+      //     what.type = 'TABLE'
+      //     what['subFields'] = []
+      //     for (let i in what.createTable) {
+      //       for (let j of this.repositoryData) {
+      //         if (what.createTable[i] === j.label) {
+      //           what['subFields'].push(j)
+      //         }
+      //       }
+      //     }
+      //     break
+      //   case 'CREATECALCULATE':
+      //     what.type = 'CALCULATE'
+      //     break
+      // }
+      // return what
     },
     // form element all data  -> fromModel
     formatData () {
@@ -779,56 +820,51 @@ export default {
       for (let i of this.newFields) {
         idGroup.push({id: i.id})
       }
-      // switch (this.formModel.type) {
-      //   case 'RADIO':
-      //   case 'CHECKBOX':
-      //   case 'SELECTMUTIPLE':
-      //     this.$set(this.formModel, 'values', this.formModel.layerTree)
-      //     break
-      //   case 'CASCADER':
-      //     this.$set(this.formModel, 'values', this.formModel.tree)
-      //     break
-      // }
       return idGroup
     },
-    notVerifying () {
+    formatSubmission () {
+      let newFormModels = Object.assign({}, this.formModel)
+      // let formModels = Object.assign({}, this.formModel)
       for (let i in this.relation) {
         if (this.relation[i].ruleType === 'EQUAL') {
           if (Array.isArray(this.relation[i].value)) {
-            if (!this.relation[i].value.includes(this.formModel[this.relation[i].target])) {
-              this.formModel[i] = ''
+            if (!this.relation[i].value.includes(newFormModels[this.relation[i].target])) {
+              newFormModels[i] = ''
             }
           } else {
-            if (this.formModel[this.relation[i].target] !== this.relation[i].value) {
-              this.formModel[i] = ''
+            if (newFormModels[this.relation[i].target] !== this.relation[i].value) {
+              newFormModels[i] = ''
             }
           }
         } else {
           if (Array.isArray(this.relation[i].value)) {
-            if (this.relation[i].value.includes(this.formModel[this.relation[i].target])) {
-              this.formModel[i] = ''
+            if (this.relation[i].value.includes(newFormModels[this.relation[i].target])) {
+              newFormModels[i] = ''
             }
           } else {
-            if (this.formModel[this.relation[i].target] === this.relation[i].value) {
-              this.formModel[i] = ''
+            if (newFormModels[this.relation[i].target] === this.relation[i].value) {
+              newFormModels[i] = ''
             }
           }
         }
       }
-      let newFormModels = Object.assign({}, this.formModel)
-      let formModels = Object.assign({}, this.formModel)
-      for (let o of this.newFields) {
-        if (o.type === 'INT' | o.type === 'DOUBLE') {
-          if (newFormModels[o.id] === '') {
-            newFormModels[o.id] = null
-          } else {
-            newFormModels[o.id] = Number(formModels[o.id])
-          }
-        }
-      }
-      this.$refs['formModel'].validate(valid => {
+      // for (let o of this.newFields) {
+      //   if (o.type === 'INT' | o.type === 'DOUBLE') {
+      //     if (newFormModels[o.id] === '') {
+      //       newFormModels[o.id] = null
+      //     } else {
+      //       newFormModels[o.id] = Number(formModels[o.id])
+      //     }
+      //   }
+      // }
+      return newFormModels
+    },
+    notVerifying () {
+      this.$refs['formModel'].validate(async valid => {
         if (valid) {
+          let newFormModels = await this.formatSubmission()
           let idGroup = this.formatData()
+          console.log('truetruetruetruetrue')
           this.$emit('notVerifying', this.mozhuId, newFormModels, this.relation, this.newFields, idGroup, this.errors, this.comments, this.coordinate)
         } else {
           this.$message({
@@ -845,49 +881,9 @@ export default {
       })
     },
     consoleData () {
-      // this.$nextTick(() => {
-      //   if (this.$refs['sxtable']) {
-      //     for (let i of this.$refs['sxtable']) {
-      //       this.formModel[i.tableData['id']] = i.tableValues
-      //     }
-      //   }
-      // })
-      for (let i in this.relation) {
-        if (this.relation[i].ruleType === 'EQUAL') {
-          if (Array.isArray(this.relation[i].value)) {
-            if (!this.relation[i].value.includes(this.formModel[this.relation[i].target])) {
-              this.formModel[i] = ''
-            }
-          } else {
-            if (this.formModel[this.relation[i].target] !== this.relation[i].value) {
-              this.formModel[i] = ''
-            }
-          }
-        } else {
-          if (Array.isArray(this.relation[i].value)) {
-            if (this.relation[i].value.includes(this.formModel[this.relation[i].target])) {
-              this.formModel[i] = ''
-            }
-          } else {
-            if (this.formModel[this.relation[i].target] === this.relation[i].value) {
-              this.formModel[i] = ''
-            }
-          }
-        }
-      }
-      let newFormModels = Object.assign({}, this.formModel)
-      let formModels = Object.assign({}, this.formModel)
-      for (let o of this.newFields) {
-        if (o.type === 'INT' | o.type === 'DOUBLE') {
-          if (newFormModels[o.id] === '') {
-            newFormModels[o.id] = null
-          } else {
-            newFormModels[o.id] = Number(formModels[o.id])
-          }
-        }
-      }
-      this.$refs['formModel'].validate(valid => {
+      this.$refs['formModel'].validate(async valid => {
         if (valid) {
+          let newFormModels = await this.formatSubmission()
           let idGroup = this.formatData()
           console.log('newFormModels', newFormModels, this.formModel)
           this.$emit('consoleData', this.mozhuId, newFormModels, this.relation, this.newFields, idGroup, this.errors, this.comments, this.coordinate)
