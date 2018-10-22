@@ -29,6 +29,45 @@
               <div class="iconErrorClass" @click="deleteError(items)">
                 <i class="el-icon-error"  v-if="iconTf(items)"></i>
               </div>
+              <div
+                style="width: 40px;text-align:center;margin-top: 6px;">
+                <el-popover
+                  v-if="question[items.id]"
+                  placement="right"
+                  title="术语解释"
+                  width="500"
+                  trigger="hover">
+                  {{question[items.id].paraphrase}}
+                  <!-- <div style="display:flex;flex-direction: column">
+                    <img
+                      style="max-width: 500px"
+                      v-for="(imgItem, imgIndex) in question[items.id].images" :src="imgItem" :key="imgIndex">
+                  </div> -->
+                  <div style="width: 100%;position: relative">
+                    <viewer
+                      style="width: 500px"
+                      :options="options" :images="question[items.id].images"
+                      @inited="inited"
+                      class="viewer" ref="viewer" >
+                      <template slot-scope="scope">
+                        <img v-for="src in scope.images" style="width: 100%;display: none" :src="src" :key="src">
+                      </template>
+                    </viewer>
+                    <!-- <viewer
+                      :images="question[items.id].images"
+                      :options="options"
+                      @inited="inited"
+                      class="viewer" ref="viewer">
+                      <template slot-scope="scope">
+                        <div class="image-wrapper" v-for="(item, index) in scope.images" :key="index">
+                          <img style="width: 100%" :src="item" :data-source="item" :alt="item.split('/').pop()">
+                        </div>
+                      </template>
+                    </viewer> -->
+                  </div>
+                  <i class="el-icon-question" slot="reference" style="font-size: 16px"></i>
+                </el-popover>
+              </div>
               <el-form-item
                 v-if="tf(items)"
                 :style="{width: '100%'}"
@@ -201,18 +240,6 @@
                     v-if="!(items.type === 'RADIO' | items.type === 'RADIOTEXT' | items.type === 'CHECKBOXTEXT' | items.type === 'CHECKBOX' | items.type === 'TEXTAREA')">
                     <!--  v-if="items.unit" -->
                     {{items.unit ? items.unit : ''}}
-                  </div>
-                  <div
-                    style="width: 40px;text-align:center">
-                    <el-popover
-                      v-if="question[items.id]"
-                      placement="left"
-                      title="术语解释"
-                      width="200"
-                      trigger="hover">
-                      {{question[items.id]}}
-                      <i class="el-icon-question" slot="reference" style="font-size: 16px"></i>
-                    </el-popover>
                   </div>
                 </div>
               </el-form-item>
@@ -390,7 +417,23 @@ export default {
       whatTF: false,
       calculateData: [],
       comments: this.mozhuComments,
-      formModel: this.value
+      formModel: this.value,
+      options: {
+        inline: true,
+        button: true,
+        navbar: true,
+        title: false,
+        toolbar: true,
+        tooltip: true,
+        movable: true,
+        zoomable: true,
+        rotatable: false,
+        scalable: false,
+        transition: true,
+        fullscreen: true,
+        keyboard: true,
+        url: 'data-source'
+      }
     }
   },
   watch: {
@@ -439,6 +482,9 @@ export default {
     console.log(this.formModel, 'this.formModel')
   },
   methods: {
+    inited (viewer) {
+      this.$viewer = viewer
+    },
     firstShow () {
       let accordWithCalculateData = ['INT', 'DOUBLE', 'RADIO']
       if (this.repositoryData) {
@@ -539,6 +585,7 @@ export default {
                     } else {
                       callback()
                     }
+                    // callback()
                   } else {
                     if (message === '请按规则填写') {
                       callback(new Error('取值范围：' + arr[0] + '-' + arr[1]))
@@ -547,13 +594,8 @@ export default {
                     }
                   }
                 }}
-                // console.log(arr[0], arr[1], 'aaaaaaaaaaaaaaaaaaaa')
-                // await i['validations'].push(a)
                 i['validations'][z] = a
-                // this.$delete(i['validations'], z)
               }
-              // console.log(i['validations'][z]['pattern'])
-              // this.$set(this.fields[j]['validations'][z], 'pattern', new RegExp(this.fields[j]['validations'][z]['pattern']))
             }
           }
         } else {
@@ -578,7 +620,6 @@ export default {
             }}
             i['validations'] = [a]
           }
-          // i['validations'][z]['pattern'] = new RegExp(i['validations'][z]['pattern'], 'g')
         }
         if (required & Array.isArray(i['validations'])) {
           if ((i['validations'].length === 1) & ('required' in i['validations'][0])) {
@@ -770,19 +811,21 @@ export default {
           }
         }
       }
+      let newFormModels = {}
+      let formModels = Object.assign({}, this.formModel)
       for (let o of this.newFields) {
         if (o.type === 'INT' | o.type === 'DOUBLE') {
-          if (this.formModel[o.id] === '') {
-            this.formModel[o.id] = null
+          if (newFormModels[o.id] === '') {
+            newFormModels[o.id] = null
           } else {
-            this.formModel[o.id] = Number(this.formModel[o.id])
+            newFormModels[o.id] = Number(formModels[o.id])
           }
         }
       }
       this.$refs['formModel'].validate(valid => {
         if (valid) {
           let idGroup = this.formatData()
-          this.$emit('notVerifying', this.mozhuId, this.formModel, this.relation, this.newFields, idGroup, this.errors, this.comments, this.coordinate)
+          this.$emit('notVerifying', this.mozhuId, newFormModels, this.relation, this.newFields, idGroup, this.errors, this.comments, this.coordinate)
         } else {
           this.$message({
             showClose: true,
@@ -828,19 +871,21 @@ export default {
           }
         }
       }
+      let newFormModels = {}
+      let formModels = Object.assign({}, this.formModel)
       for (let o of this.newFields) {
         if (o.type === 'INT' | o.type === 'DOUBLE') {
-          if (this.formModel[o.id] === '') {
-            this.formModel[o.id] = null
+          if (newFormModels[o.id] === '') {
+            newFormModels[o.id] = null
           } else {
-            this.formModel[o.id] = Number(this.formModel[o.id])
+            newFormModels[o.id] = Number(formModels[o.id])
           }
         }
       }
       this.$refs['formModel'].validate(valid => {
         if (valid) {
           let idGroup = this.formatData()
-          this.$emit('consoleData', this.mozhuId, this.formModel, this.relation, this.newFields, idGroup, this.errors, this.comments, this.coordinate)
+          this.$emit('consoleData', this.mozhuId, newFormModels, this.relation, this.newFields, idGroup, this.errors, this.comments, this.coordinate)
         } else {
           this.$message({
             showClose: true,
@@ -1098,7 +1143,7 @@ $full: 100%;
       /deep/ .el-form-item__content {
         width: 100%;
       }
-    }    
+    }
   }
 }
 </style>

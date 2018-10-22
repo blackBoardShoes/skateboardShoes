@@ -26,7 +26,7 @@ export default {
   methods: {
     onRead (e, model, index) {
       var file = e.target.files || e.dataTransfer.files
-      if (file) {
+      if (file[0]) {
         if (file[0].size / 1024 / 1024 > 9) {
           this.$emit('onRead', false)
         } else {

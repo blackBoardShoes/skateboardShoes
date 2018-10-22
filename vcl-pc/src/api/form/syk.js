@@ -8,6 +8,10 @@ let config = {
 export const termbaseGetPageTermbases = data => {
   return axios.get(all + '/termbase/getPageTermbases', { params: data })
 }
+// termbase/getPageTermbases 获取all术语列表
+export const termbaseGetAllTermbases = data => {
+  return axios.get(all + '/termbase/getAllTermbases')
+}
 // termbase/addTermbaseImage 添加术语照片
 export const termbaseAddTermbaseImage = data => {
   return axios.post(all + '/termbase/addTermbaseImage', data)

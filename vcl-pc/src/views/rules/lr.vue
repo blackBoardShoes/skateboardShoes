@@ -56,7 +56,7 @@
             <div class="rightContent">
               <div class="rightContentDynamic" v-if="!navArr[activeIndex].isStatic">
                 <sx-min-form
-                  :question="{a: 'cccc', testAA: 'testAAtestAAtestAAtestAA'}"
+                  :question="question"
                   v-if="smf"
                   :disabled="activeIndexNav != patientInfo.phase"
                   v-model="fishData[navArr[activeIndex].id]"
@@ -100,7 +100,7 @@ import sxOperationReport from '../../components/staticForm/operationReport'
 import sxRadiography from '../../components/staticForm/radiography'
 import { fieldAllForms } from '../../api/form/bdk.js'
 import { formdataSave, formdataSubmit, formdataData, userByMyType } from '../../api/rules/lr.js'
-
+import { termbaseGetAllTermbases } from '../../api/form/syk.js'
 export default {
   name: 'rules_index',
   components: {
@@ -111,6 +111,7 @@ export default {
   data () {
     return {
       // 中间数组
+      question: {},
       navArr: [],
       showAllForms: [],
       allArr: {},
@@ -341,6 +342,10 @@ export default {
   },
   methods: {
     async firstShow () {
+      let tgpt = await termbaseGetAllTermbases()
+      if (tgpt) {
+        this.question = tgpt.data.entity
+      }
       let faf = await fieldAllForms()
       if (faf) {
         this.showAllForms = faf.data.entity

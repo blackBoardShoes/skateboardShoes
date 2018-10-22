@@ -63,7 +63,7 @@
       v-if="dialogVisible"
       :visible.sync="dialogVisible">
       <el-form :model="ruleForm" ref="ruleForm" label-width="138px" size="mini" label-position="left" class="ruleForm">
-        <div style="padding-left: 25px;padding-right: 45px;">
+        <div style="padding-left: 60px;padding-right: 39px;">
           <el-form-item label="住院号" prop="patientId" :rules="[
             { required: true, message: '请输入病人住院号', trigger: 'change'},
             { pattern: '^[0-9]{11}$', message: '11位', trigger: 'change' }]">
@@ -675,7 +675,7 @@ export default {
           } else {
             this.ruleForm.header = Object.assign({ patientId: this.ruleForm.patientId }, formModel)
             console.log(this.ruleForm)
-            let r = await formdataSave(this.ruleForm)
+            let r = await formdataSave(Object.assign(this.ruleForm, { whatUser: this.user }))
             console.log(r, 'createFishOrEditFishcreateFishOrEditFishcreateFishOrEditFish')
             this.dialogVisible = false
             await this.firstShow()

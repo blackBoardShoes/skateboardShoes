@@ -179,7 +179,7 @@ export default {
           // require('../../../src/assets/images/xbx.jpg'),
           // 'https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=116399c62434349b6b066885f9eb1521/91ef76c6a7efce1ba958b016a351f3deb58f65fe.jpg'
         ],
-        inputImages: []
+        inputImages: ''
       },
       rules: {
         name: [
@@ -208,7 +208,7 @@ export default {
         inline: true,
         button: true,
         navbar: true,
-        title: true,
+        title: false,
         toolbar: true,
         tooltip: true,
         movable: true,
@@ -302,29 +302,37 @@ export default {
     saveWhat () {
       this.$refs['formModel'].validate(async valid => {
         if (valid) {
+          let formModels = Object.assign({}, this.formModel)
+          let newFormModels = new FormData()
+          let oldImages = []
+          for (let i in Object.assign({}, this.formModel)) {
+            if (i === 'images') {
+              for (let o of formModels[i]) {
+                if (o.length < 300) {
+                  oldImages.push(o)
+                } else {
+                  newFormModels.append('inputImages', o)
+                }
+              }
+            } else {
+              console.log('ccc', formModels[i])
+              newFormModels.append(i, formModels[i])
+            }
+          }
+          newFormModels.append('oldImages', oldImages)
           if (this.addOrEdit) {
             // 新增
             console.log(this.formModel)
-            let formModels = Object.assign(this.formModel, { images: [] })
-            let newFormModels = new FormData()
-            for (let i in formModels) {
-              if (i === 'inputImages') {
-                for (let i of formModels['inputImages']) {
-                  newFormModels.append('inputImages', i)
-                }
-              } else newFormModels.append(i, formModels[i])
-            }
             let tbati = await termbaseAddTermbase(newFormModels)
             console.log(tbati)
             if (tbati) {
               this.$refs['formModel'].resetFields()
-              this.formModel.inputImages = []
+              this.formModel.inputImages = ''
               this.show()
             }
           } else {
             // 编辑
-            let formModels = Object.assign(this.formModel, { images: [] })
-            let udtb = await updateTermbase(formModels)
+            let udtb = await updateTermbase(newFormModels)
             if (udtb) {
               this.addOrEdit = true
               this.$refs['formModel'].resetFields()
@@ -354,18 +362,12 @@ export default {
       return row[property] === value
     },
     deleteImages () {
-      if (this.formModel.inputImages) {
-        this.formModel.inputImages.splice(this.$viewer.index, 1)
-      }
       this.formModel.images.splice(this.$viewer.index, 1)
     },
     onRead (data) {
       if (data) {
-        console.log(this.formModel.images.length)
+        console.log(this.formModel)
         if (parseInt(this.formModel.images.length) < 5) {
-          if (this.formModel.inputImages) {
-            this.formModel.inputImages.push(data.file)
-          }
           this.formModel.images.push(data.result)
         } else {
           this.$message({
