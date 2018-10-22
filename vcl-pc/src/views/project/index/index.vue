@@ -116,6 +116,7 @@
       <!-- 列表分页 -->
       <div class="pagination align-right" v-if="selfBuild === true">
         <el-pagination
+          background
           layout="total, sizes, prev, pager, next, jumper"
           :page-sizes="[5, 10, 15, 20]"
           :total="total"
@@ -128,6 +129,7 @@
       </div>
       <div class="pagination align-right" v-if="selfBuild === false">
         <el-pagination
+          background
           layout="total, sizes, prev, pager, next, jumper"
           :page-sizes="[10, 15, 20]"
           :total="total2"

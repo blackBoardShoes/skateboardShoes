@@ -16,7 +16,6 @@
         size="medium"
         fit
         :row-class-name="forbiddenClass"
-        :default-sort = "{prop: 'status', order: 'encoding'}"
         class="absolute-table">
         <el-table-column
           show-overflow-tooltip
@@ -358,7 +357,27 @@ export default {
       }
       let response = await getAllUser(info)
       if (response.data.mitiStatus === 'SUCCESS') {
-        this.tableData = response.data.entity.data
+        let arr1 = response.data.entity.data
+        let arr2 = []
+        let sort = (type) => {
+          arr1.forEach((item) => {
+            if (item.type === type) {
+              arr2.push(item)
+            }
+          })
+        }
+        let obj = {
+          type1: '医生',
+          type2: '科研护士',
+          type3: '诊疗中心',
+          type4: '临床质控员',
+          type5: '科研管理员',
+          type6: '管理员'
+        }
+        for (let i in obj) {
+          sort(obj[i])
+        }
+        this.tableData = arr2
         this.memoryTable = this.tableData
         // 名字校验
         this.nameArr = []

@@ -5,6 +5,7 @@
         <div class="title">
           <span><i class="ercp-icon-module-patient"></i> <b>基本信息</b></span>
         </div>
+        <!-- 患者基本信息 -->
         <div class="basic-information" >
           <el-form ref="basicForm" :rules="rules" :model="basicInfo" label-position="left" label-width="100px"  :disabled="editable">
             <el-row>
@@ -14,12 +15,12 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="患者姓名:" prop="name">
+                <el-form-item label="姓名:" prop="name">
                   <el-input v-model="basicInfo.name" style="width:217px;" size="small"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="患者性别:" prop="gender">
+                <el-form-item label="性别:" prop="gender">
                   <el-radio-group v-model="basicInfo.gender">
                     <el-radio label="1">男</el-radio>
                     <el-radio label="0">女</el-radio>
@@ -28,14 +29,14 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col :span="16">
-                <el-form-item label="患者民族:" prop="nation" ref="nation">
-                  <text-radio v-model="basicInfo.nation" :message="basicInfo.nation" :options="['汉族','回族','藏族']" :disabled="false"></text-radio>
-                </el-form-item>
-              </el-col>
               <el-col :span="8">
                 <el-form-item label="身份证号:" prop="idCard">
                   <el-input v-model="basicInfo.idCard" style="width:217px;" size="small"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="16">
+                <el-form-item label="民族:" prop="nation" ref="nation">
+                  <text-radio v-model="basicInfo.nation" :message="basicInfo.nation" :options="['汉族','回族','藏族']" :disabled="false"></text-radio>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -50,8 +51,7 @@
                   <el-cascader
                     :options="addressOption"
                     v-model="basicInfo.address"
-                    style="width:217px;"
-                    @change="handleChange">
+                    style="width:217px;">
                   </el-cascader>
                 </el-form-item>
               </el-col>
@@ -76,15 +76,15 @@
           <div class="record-case">
             <div class="records-title" @click="activeIndex = activeIndex === index ? -1 : index ">
               <div class="record-title-head">
-                <span>住</span>
+                <span>住院</span>
               </div>
-              <el-tooltip class="item" effect="dark" placement="top">
+              <!-- <el-tooltip class="item" effect="dark" placement="top">
                 <div slot="content">{{record.operationNum.toString() || ''}}</div>
                 <div class="record-title text-overflow-ellipsis">
                   <span class="light-text">编号：</span>
                   <span>{{record.operationNum || ''}}</span>
                 </div>
-              </el-tooltip>
+              </el-tooltip> -->
               <el-tooltip class="item" effect="dark" placement="top">
                 <div slot="content">{{record.inHospitalDate || ''}}</div>
                 <div class="record-title text-overflow-ellipsis">
@@ -144,7 +144,10 @@
                 <div class="er-card" v-for="(item, index) in record.forms" :key="index">
                   <div class="card-title">
                     {{item.header.phase}}
-                    <span class="ercp-icon-medicine-report primary-text"></span>
+                    <span v-if="item.header.phase === '术前' || item.header.phase === '术中' || item.header.phase === '术后'">
+                      ({{item.header.operationNum}})
+                    </span>
+                    <!-- <span class="ercp-icon-medicine-report primary-text"></span> -->
                   </div>
                   <div class="card-content">
                     <!-- 以下内容每表不一 -->
@@ -159,7 +162,7 @@
                               {{disease}}
                           </span>
                         </div>
-                        <div class="case text-overflow-ellipsis">术前诊断：
+                        <div class="case one-case">术前诊断：
                           <span v-for="(disease, index) in (record.forms.find((n) => n.header.phase === '术前')) === undefined ? '' :valueTransLabel((record.forms.find((n) => n.header.phase === '术前')).data.preoperativeRecord.preoperativeDiagnosis, 'preoperativeRecord', 'preoperativeDiagnosis', 'diseaseName')" :key="index">
                             {{disease}}
                           </span>
@@ -177,7 +180,7 @@
                           {{disease}}
                           </span>
                         </div>
-                        <div class="case text-overflow-ellipsis">
+                        <div class="case one-case">
                           <span>入院诊断：</span>
                           <span v-for="(disease, index) in (record.forms.find((n) => n.header.phase === '术后')) === undefined ? '' :valueTransLabel((record.forms.find((n) => n.header.phase === '术后')).data.postDiagnosisAndExamination.postDiagnosis, 'postDiagnosisAndExamination', 'postDiagnosis', 'diseaseName')" :key="index">
                           {{disease}}
@@ -191,22 +194,26 @@
                     </div>
                     <!-- 以下内容每表皆同 -->
                     <div class="info">
-                      <div class="case">记录情况 : {{item.header.isFinished === 0 ? '未完成' : '已完成'}}</div>
-                      <div class="case">审核情况 : {{item.header.isPassed === 0 ? '未完成' : '已完成'}}</div>
+                      <div class="case">记录情况 : {{item.header.responseName}}</div>
+                      <div class="case">审核情况 : {{item.header.checkerName}}</div>
                       <div class="case">状态 : {{ (item.header.isFinished === 0 ? '未完成' : '已完成') === '未完成' ? '未记录' : ((item.header.isPassed === 0 ? '未完成' : '已完成') === '未完成' ? '未审核' : '已审核' )}}</div>
                     </div>
                     <div class="status">
+                      <!-- 未提交记录 -->
                       <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 0 && userPermission.typein.permission === true" @click="operate('typein', item)">
                         录入
                       </el-button>
-                      <el-button type="primary" size="mini" plain v-if="item.header.isPassed === 0 && item.header.isFinished === 1 && userPermission.check.permission === true" @click="operate('check', item)">
+                      <!-- 已提交记录未通过未驳回 -->
+                      <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 1 && item.header.isPassed === 0 && item.header.isRejected === 0 && userPermission.check.permission === true" @click="operate('check', item)">
                         审核
                       </el-button>
-                      <el-button type="primary" size="mini" plain @click="operate('view', record)">
-                        查看
-                      </el-button>
-                      <el-button type="primary" size="mini" plain v-if="item.header.isRejected === 1 && item.header.isFinished === 1 && userPermission.repair.permission === true" @click="operate('repair', item)">
+                      <!-- 已提交记录未通过已驳回 -->
+                      <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 1 && item.header.isPassed === 0 && item.header.isRejected === 1 && userPermission.repair.permission === true" @click="operate('repair', item)">
                         修正
+                      </el-button>
+                      <!-- 皆可查看，但是和以上按钮无并存需要，css溢出隐藏 -->
+                      <el-button type="primary" size="mini" plain @click="operate('view', record, index)">
+                        查看
                       </el-button>
                     </div>
                   </div>
@@ -317,7 +324,7 @@ export default {
   },
   mounted () {
     this.addressOption = addressData
-    // this.getPatient()
+    this.getPatient()
     this.getPatientRec()
     this.getFormTemplate()
     // console.log(this.$store.state.user)
@@ -374,7 +381,6 @@ export default {
     async changePatientInfo () {
       this.$refs.basicForm.validate(async valid => {
         if (valid) {
-          console.log(this.basicInfo)
           let info = this.basicInfo
           if (this.basicInfo.address.length === 2) {
             info.province = this.basicInfo.address[0]
@@ -390,8 +396,6 @@ export default {
             info.district = ''
           }
           delete info.address
-          console.log(info)
-          // info.id = this.NumInHospital
           let response = await editPatientBasic(info)
           if (response.data.mitiStatus === 'SUCCESS') {
             this.$refs.basicForm.resetFields()
@@ -405,21 +409,6 @@ export default {
           return false
         }
       })
-    },
-    handleChange (data) {
-      // if (data.length === 2) {
-      //   this.basicInfo.address = data[0]
-      //   this.basicInfo.city = data[0]
-      //   this.basicInfo.district = data[1]
-      // } else if (data.length === 3) {
-      //   this.basicInfo.address = data[0]
-      //   this.basicInfo.city = data[1]
-      //   this.basicInfo.district = data[2]
-      // } else {
-      //   this.basicInfo.address = ''
-      //   this.basicInfo.city = ''
-      //   this.basicInfo.district = ''
-      // }
     },
     deletePat () {
       this.$confirm('此操作将删除该患者, 是否继续?', '提示', {
@@ -516,7 +505,7 @@ export default {
                   }
                 })
                 arr.push(text)
-                console.log(arr)
+                // console.log(arr)
               })
             }
             return arr
@@ -526,7 +515,7 @@ export default {
         return ''
       }
     },
-    operate (type, data) {
+    operate (type, data, index) {
       switch (type) {
         // 录入
         case 'typein' :
@@ -549,6 +538,8 @@ export default {
         // 查看
         case 'view' :
           let data4 = data
+          // console.log(data)
+          data4.activeIndexNav = data.forms[index].header.phase
           // data4.id = data.id
           console.log(data4)
           this.$router.push({ name: 'zb', params: { data: JSON.stringify(data4) } })
@@ -622,6 +613,9 @@ export default {
               padding-left:10px;
               }
             }
+            .record-title:nth-of-type(2), .record-title:nth-of-type(4), .record-title:nth-of-type(7){
+              flex: 1.5;
+            }
             .record-title-head{
               font-size: 12px;
               position: absolute;
@@ -654,7 +648,7 @@ export default {
             width: 20px;
             height: 30px;
             line-height: 32px;
-            background-color: rgba($color: #777, $alpha: .55);
+            background-color: rgba($color: #777, $alpha: .25);
             border-radius: 2px;
             cursor: pointer;
             color: #fff;
@@ -663,7 +657,7 @@ export default {
             transition: all .5s ease-in-out;
           }
           .prev:hover, .next:hover{
-            background-color: rgba($color: #777, $alpha: .65);
+            background-color: rgba($color: #777, $alpha: .35);
           }
           .prev{
             left: 10px;
@@ -711,9 +705,6 @@ export default {
                   color: $commonTetxColor;
                   font-weight:900;
                   background-color: $mainBackgroundColor;
-                  display: flex;
-                  flex-direction: row;
-                  justify-content: space-between;
                 }
                 .card-content{
                   padding: 7px 10px;
@@ -724,10 +715,19 @@ export default {
                     line-height: 23px;
                     width: 100%;
                     border-bottom: 1px dotted #D1D1D1;
+                    .one-case{
+                      height:46px;
+                      white-space:normal;
+                      overflow:hidden;
+                      line-height:23px;
+                    }
                   }
                   .status{
                     line-height: 36px;
                     text-align: center;
+                    margin: 0 81px;
+                    overflow: hidden;
+                    box-sizing: border-box;
                   }
                 }
               }

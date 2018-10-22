@@ -34,11 +34,6 @@ export default {
           icon: 'ercp-icon-module-log',
           title: '日志管理',
           path: 'log'
-        },
-        {
-          icon: 'ercp-icon-module-setup',
-          title: '系统设置',
-          path: 'settings'
         }
       ]
     }

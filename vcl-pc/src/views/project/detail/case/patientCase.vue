@@ -56,6 +56,7 @@
     </div>
     <div class="pagination align-right">
       <el-pagination
+        background
         layout="total, sizes, prev, pager, next, jumper"
         :page-sizes="[10, 15, 20]"
         :total="total"
