@@ -43,9 +43,11 @@
                       style="max-width: 500px"
                       v-for="(imgItem, imgIndex) in question[items.id].images" :src="imgItem" :key="imgIndex">
                   </div> -->
-                  <div style="width: 100%;position: relative">
+                  <div
+                    v-if="question[items.id] & question[items.id].images.length"
+                    class="viewerWrapper">
                     <viewer
-                      style="width: 500px"
+                      style="width: 100% !important;height: 150px !important;"
                       :options="options" :images="question[items.id].images"
                       @inited="inited"
                       class="viewer" ref="viewer" >
@@ -53,18 +55,20 @@
                         <img v-for="src in scope.images" style="width: 100%;display: none" :src="src" :key="src">
                       </template>
                     </viewer>
-                    <!-- <viewer
-                      :images="question[items.id].images"
-                      :options="options"
-                      @inited="inited"
-                      class="viewer" ref="viewer">
-                      <template slot-scope="scope">
-                        <div class="image-wrapper" v-for="(item, index) in scope.images" :key="index">
-                          <img style="width: 100%" :src="item" :data-source="item" :alt="item.split('/').pop()">
-                        </div>
-                      </template>
-                    </viewer> -->
                   </div>
+                   <!-- <div class="viewer-wrapper">
+                      <viewer :options="options" :images="images"
+                        @inited="inited"
+                        class="viewer" ref="viewer">
+                        <template slot-scope="scope">
+                          <figure class="images">
+                            <div class="image-wrapper" v-for="{source, thumbnail} in scope.images" :key="source">
+                              <img class="image" :src="thumbnail" :data-source="source" >
+                            </div>
+                          </figure>
+                        </template>
+                      </viewer>
+                    </div> -->
                   <i class="el-icon-question" slot="reference" style="font-size: 16px"></i>
                 </el-popover>
               </div>
@@ -811,7 +815,7 @@ export default {
           }
         }
       }
-      let newFormModels = {}
+      let newFormModels = Object.assign({}, this.formModel)
       let formModels = Object.assign({}, this.formModel)
       for (let o of this.newFields) {
         if (o.type === 'INT' | o.type === 'DOUBLE') {
@@ -871,7 +875,7 @@ export default {
           }
         }
       }
-      let newFormModels = {}
+      let newFormModels = Object.assign({}, this.formModel)
       let formModels = Object.assign({}, this.formModel)
       for (let o of this.newFields) {
         if (o.type === 'INT' | o.type === 'DOUBLE') {
@@ -885,6 +889,7 @@ export default {
       this.$refs['formModel'].validate(valid => {
         if (valid) {
           let idGroup = this.formatData()
+          console.log('newFormModels', newFormModels, this.formModel)
           this.$emit('consoleData', this.mozhuId, newFormModels, this.relation, this.newFields, idGroup, this.errors, this.comments, this.coordinate)
         } else {
           this.$message({
@@ -1145,9 +1150,46 @@ $full: 100%;
       }
     }
   }
+  
+
 }
+
 </style>
 <style lang="scss">
+.el-popover {
+  .viewerWrapper {
+    height: 200px;
+    width: 100%;
+    position: relative;
+    .viewer {
+      height: 100%;
+      width: 100%;
+      .images {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 5px;
+        .image-wrapper {
+          display: inline-block;
+          width: calc(33% - 20px);
+          margin: 5px 5px 0 5px;
+          .image {
+            width: 100%;
+            cursor: pointer;
+            display: inline-block;
+          }
+        }
+      }
+    }
+    .viewer-container, .viewer-backdrop {
+      width: 100% !important;
+      height: 100% !important;
+    }
+  }
+}
 // .formAll {
 //   .formContent {
 //     .el-form-item, .el-form-item--mini {

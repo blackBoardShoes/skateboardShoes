@@ -179,7 +179,7 @@ export default {
           // require('../../../src/assets/images/xbx.jpg'),
           // 'https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=116399c62434349b6b066885f9eb1521/91ef76c6a7efce1ba958b016a351f3deb58f65fe.jpg'
         ],
-        inputImages: ''
+        inputImages: []
       },
       rules: {
         name: [
@@ -302,11 +302,11 @@ export default {
     saveWhat () {
       this.$refs['formModel'].validate(async valid => {
         if (valid) {
-          let formModels = Object.assign({}, this.formModel)
+          let formModels = Object.assign({}, this.formModel, {images: []})
           let newFormModels = new FormData()
           let oldImages = []
           for (let i in Object.assign({}, this.formModel)) {
-            if (i === 'images') {
+            if (i === 'inputImages') {
               for (let o of formModels[i]) {
                 if (o.length < 300) {
                   oldImages.push(o)
@@ -327,7 +327,7 @@ export default {
             console.log(tbati)
             if (tbati) {
               this.$refs['formModel'].resetFields()
-              this.formModel.inputImages = ''
+              this.formModel.inputImages = []
               this.show()
             }
           } else {
@@ -350,7 +350,7 @@ export default {
       if (val) {
         this.addOrEdit = false
         // this.imgLoading = true
-        this.formModel = Object.assign(this.formModel, val)
+        this.formModel = Object.assign(this.formModel, val, { inputImages: [...val['images']] })
         // let tbstb = await termbaseSelectTermbase(this.formModel)
         // if (tbstb) this.formModel = Object.assign(this.formModel, tbstb.data.entity)
         // this.imgLoading = false
@@ -363,12 +363,14 @@ export default {
     },
     deleteImages () {
       this.formModel.images.splice(this.$viewer.index, 1)
+      this.formModel.inputImages.splice(this.$viewer.index, 1)
     },
     onRead (data) {
       if (data) {
         console.log(this.formModel)
         if (parseInt(this.formModel.images.length) < 5) {
           this.formModel.images.push(data.result)
+          this.formModel.inputImages.push(data.file)
         } else {
           this.$message({
             showClose: true,
