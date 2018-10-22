@@ -119,7 +119,7 @@
           @command="handleCommand">
           <span class="el-dropdown-link">
             <i class="ercp-icon-module-user"></i>
-            <span class="primary-text" v-if="user.name">{{user.name}}</span>
+            <span class="primary-text" v-if="user.name"> {{user.name}}</span>
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item style="cursor:default;">{{'账号：' + user.username}}</el-dropdown-item>
@@ -134,8 +134,8 @@
       <div class="between-line float-right"></div>
       <div class="system-operate float-right">
         <span class="ercp-icon-general-previous" @click="locationOperate('back')"></span>
-        <span class="ercp-icon-general-next" @click="locationOperate('forward')" :class="{'no-click': ableForward <= 0}"></span>
         <span class="ercp-icon-general-reflesh"  @click="locationOperate('refresh')"></span>
+        <span class="ercp-icon-general-next" @click="locationOperate('forward')" :class="{'no-click': ableForward <= 0}"></span>
       </div>
     </div>
     <div id="content-wrapper">

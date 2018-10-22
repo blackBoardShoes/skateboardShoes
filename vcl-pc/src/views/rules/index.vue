@@ -645,6 +645,7 @@ export default {
       return false
     },
     async createPatientFish (mozhuId, formModel, relation, newFields, idGroup, errors, comments, coordinate) {
+      console.log(formModel)
       if (formModel['provinceCityDistrict'].length === 2) {
         formModel['province'] = formModel['provinceCityDistrict'][0]
         formModel['city'] = formModel['provinceCityDistrict'][0]

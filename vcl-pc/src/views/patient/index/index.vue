@@ -45,39 +45,45 @@
             height="100%"
             class="absolute-table">
             <el-table-column
+              show-overflow-tooltip
               prop="hospitalId"
               align="center"
               label="住院号"
-              :width="120">
+              :width="110">
             </el-table-column>
             <el-table-column
+              show-overflow-tooltip
               prop="name"
               align="center"
               label="姓名"
-              :width="120">
+              :width="110">
             </el-table-column>
             <el-table-column
+              show-overflow-tooltip
               prop="gender"
               align="center"
               label="性别"
-              :width="120">
+              :width="80">
               <template slot-scope="scope">
                 <span>{{ scope.row.gender === '1' ? '男' : '女' }}</span>
               </template>
             </el-table-column>
             <el-table-column
+              show-overflow-tooltip
               prop="nation"
               align="center"
               label="民族"
-              :width="120">
+              :width="80">
             </el-table-column>
             <el-table-column
+              show-overflow-tooltip
               prop="phoneNum"
               align="center"
               label="联系方式"
               :width="140">
             </el-table-column>
             <el-table-column
+              show-overflow-tooltip
               prop="address"
               align="center"
               label="常住地址">
@@ -97,6 +103,7 @@
         <!-- 列表分页 -->
         <div class="pagination align-right">
           <el-pagination
+            background
             layout="total, sizes, prev, pager, next, jumper"
             :page-sizes="[5, 10, 15, 20]"
             :total="total"
@@ -171,9 +178,7 @@
 import textRadio from '../../../components/textRadio/textRadio'
 import {addressData} from '../../../data/address/addressData'
 import {charts} from '../../../data/chartTemplates/chart'
-// import { getAllPatient, addPatient, searchPatient } from '../../../api/patient/patient.js'
 import { getAllPatient, searchPatient } from '../../../api/patient/patient.js'
-// import { error } from 'util';
 export default {
   name: 'patient_index',
   components: {
@@ -367,8 +372,9 @@ export default {
   top: 16px;
   display: flex;
   flex-direction: column;
+  // 系统概览
   .patient-statistics{
-    flex: 0 0 240px;
+    flex: 0 0 30%;
     display: flex;
     flex-direction: column;
     .el-card_header{
@@ -400,6 +406,7 @@ export default {
       }
     }
   }
+  // 患者列表
   .patient-list{
     flex: 1;
     margin-top: 8px;
@@ -427,13 +434,14 @@ export default {
           position: relative;
         }
         .pagination{
-          margin-top: 10px;
+          margin-top: 12px;
           min-height: 30px;
           line-height: 30px;
         }
       }
     }
   }
+  // 标题
   .card-title{
     height: 10px;
     line-height: 10px;

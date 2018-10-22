@@ -47,88 +47,6 @@ export const appRouter = [
     ]
   },
   {
-    path: '/patient',
-    name: 'patient',
-    redirect: '/patient/index',
-    meta: {
-      title: '患者中心',
-      navigator: true,
-      role: [1, 2, 3, 4, 5, 6],
-      icon: 'module-patient'
-    },
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'patient_index',
-        meta: {
-          title: '患者中心',
-          navigator: true,
-          role: [1, 2, 3, 4, 5, 6]
-        },
-        component: () => import('../../src/views/patient/index/index.vue')
-      },
-      {
-        path: 'detail/:id',
-        name: 'patient_detail',
-        navigator: false,
-        meta: {
-          title: '患者详情',
-          navigator: false,
-          role: [1, 2, 3, 4, 5, 6]
-        },
-        component: () => import('../../src/views/patient/detail/detail.vue')
-      }
-    ]
-  },
-  {
-    path: '/statistics',
-    name: 'statistics',
-    redirect: '/statistics/index',
-    meta: {
-      title: '数据统计',
-      navigator: true,
-      role: [1, 2, 3],
-      icon: 'module-data'
-    },
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'statistics_index',
-        meta: {
-          title: '数据统计',
-          navigator: true,
-          role: [1, 2, 3]
-        },
-        redirect: '/statistics/index/charts',
-        component: () => import('../../src/views/statistics/index/index.vue'),
-        children: [
-          {
-            path: 'charts',
-            name: 'statistics_charts',
-            meta: {
-              title: '统计报表',
-              navigator: true,
-              role: [1, 2, 3]
-            },
-            component: () => import('../../src/views/statistics/detail/charts.vue')
-          },
-          {
-            path: 'export',
-            name: 'statistics_export',
-            meta: {
-              title: '数据导出',
-              navigator: true,
-              role: [1, 2, 3]
-            },
-            component: () => import('../../src/views/statistics/detail/export.vue')
-          }
-        ]
-      }
-    ]
-  },
-  {
     path: '/rules',
     name: 'rules',
     redirect: '/rules/index',
@@ -201,6 +119,185 @@ export const appRouter = [
           role: [1, 2, 3, 4, 5, 6]
         },
         component: () => import('../../src/views/rules/sf.vue')
+      }
+    ]
+  },
+  {
+    path: '/patient',
+    name: 'patient',
+    redirect: '/patient/index',
+    meta: {
+      title: '患者中心',
+      navigator: true,
+      role: [1, 2, 3, 4, 5, 6],
+      icon: 'module-patient'
+    },
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'patient_index',
+        meta: {
+          title: '患者中心',
+          navigator: true,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../../src/views/patient/index/index.vue')
+      },
+      {
+        path: 'detail/:id',
+        name: 'patient_detail',
+        navigator: false,
+        meta: {
+          title: '患者详情',
+          navigator: false,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../../src/views/patient/detail/detail.vue')
+      },
+      {
+        path: 'record/:id',
+        name: 'patient_record',
+        navigator: false,
+        meta: {
+          title: '患者详情报告',
+          navigator: false,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../../src/views/patient/detail/record.vue')
+      }
+    ]
+  },
+  {
+    path: '/statistics',
+    name: 'statistics',
+    redirect: '/statistics/index',
+    meta: {
+      title: '数据统计',
+      navigator: true,
+      role: [1, 2, 3],
+      icon: 'module-data'
+    },
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'statistics_index',
+        meta: {
+          title: '数据统计',
+          navigator: true,
+          role: [1, 2, 3]
+        },
+        redirect: '/statistics/index/charts',
+        component: () => import('../../src/views/statistics/index/index.vue'),
+        children: [
+          {
+            path: 'charts',
+            name: 'statistics_charts',
+            meta: {
+              title: '统计报表',
+              navigator: true,
+              role: [1, 2, 3]
+            },
+            component: () => import('../../src/views/statistics/detail/charts.vue')
+          },
+          {
+            path: 'export',
+            name: 'statistics_export',
+            meta: {
+              title: '数据导出',
+              navigator: true,
+              role: [1, 2, 3]
+            },
+            component: () => import('../../src/views/statistics/detail/export.vue')
+          }
+        ]
+      }
+    ]
+  },
+  {
+    path: '/project',
+    name: 'project',
+    redirect: '/project/index',
+    meta: {
+      title: '项目管理',
+      navigator: true,
+      role: [1, 2, 3],
+      icon: 'module-project'
+    },
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'project_index',
+        meta: {
+          title: '项目管理',
+          navigator: false,
+          role: [1, 2, 3]
+        },
+        component: () => import('../../src/views/project/index/index.vue')
+      },
+      {
+        path: 'detail/:id',
+        name: 'project_detail',
+        meta: {
+          title: '项目详情',
+          navigator: false,
+          role: [1, 2, 3]
+        },
+        component: () => import('../../src/views/project/detail/detail.vue'),
+        children: [
+          {
+            path: 'basic',
+            name: 'project_basic',
+            meta: {
+              title: '基本信息',
+              navigator: false,
+              role: [1, 2, 3]
+            },
+            component: () => import('../../src/views/project/detail/case/basic.vue')
+          },
+          {
+            path: 'member',
+            name: 'project_member',
+            meta: {
+              title: '项目成员',
+              navigator: false,
+              role: [1, 2, 3]
+            },
+            component: () => import('../../src/views/project/detail/case/member.vue')
+          },
+          {
+            path: 'patientCase',
+            name: 'project_patientCase',
+            meta: {
+              title: '入组案例',
+              navigator: false,
+              role: [1, 2, 3]
+            },
+            component: () => import('../../src/views/project/detail/case/patientCase.vue')
+          },
+          {
+            path: 'projectStatistics',
+            name: 'project_projectStatistics',
+            meta: {
+              title: '项目统计',
+              navigator: false,
+              role: [1, 2, 3]
+            },
+            component: () => import('../../src/views/project/detail/case/projectStatistics.vue')
+          },
+          {
+            path: 'projectExport',
+            name: 'project_projectExport',
+            meta: {
+              title: '数据导出',
+              navigator: false,
+              role: [1, 2, 3]
+            },
+            component: () => import('../../src/views/project/detail/case/projectExport.vue')
+          }
+        ]
       }
     ]
   },
@@ -304,102 +401,6 @@ export const appRouter = [
               role: [1, 2]
             },
             component: () => import('../../src/views/systemManage/detail/log.vue')
-          },
-          {
-            path: 'settings',
-            name: 'systemManage_settings',
-            meta: {
-              title: '系统设置',
-              navigator: false,
-              role: [1, 2]
-            },
-            component: () => import('../../src/views/systemManage/detail/settings.vue')
-          }
-        ]
-      }
-    ]
-  },
-  {
-    path: '/project',
-    name: 'project',
-    redirect: '/project/index',
-    meta: {
-      title: '项目管理',
-      navigator: true,
-      role: [1, 2, 3],
-      icon: 'module-project'
-    },
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'project_index',
-        meta: {
-          title: '项目管理',
-          navigator: false,
-          role: [1, 2, 3]
-        },
-        component: () => import('../../src/views/project/index/index.vue')
-      },
-      {
-        path: 'detail/:id',
-        name: 'project_detail',
-        meta: {
-          title: '项目详情',
-          navigator: false,
-          role: [1, 2, 3]
-        },
-        component: () => import('../../src/views/project/detail/detail.vue'),
-        children: [
-          {
-            path: 'basic',
-            name: 'project_basic',
-            meta: {
-              title: '基本信息',
-              navigator: false,
-              role: [1, 2, 3]
-            },
-            component: () => import('../../src/views/project/detail/case/basic.vue')
-          },
-          {
-            path: 'member',
-            name: 'project_member',
-            meta: {
-              title: '项目成员',
-              navigator: false,
-              role: [1, 2, 3]
-            },
-            component: () => import('../../src/views/project/detail/case/member.vue')
-          },
-          {
-            path: 'patientCase',
-            name: 'project_patientCase',
-            meta: {
-              title: '入组案例',
-              navigator: false,
-              role: [1, 2, 3]
-            },
-            component: () => import('../../src/views/project/detail/case/patientCase.vue')
-          },
-          {
-            path: 'projectStatistics',
-            name: 'project_projectStatistics',
-            meta: {
-              title: '项目统计',
-              navigator: false,
-              role: [1, 2, 3]
-            },
-            component: () => import('../../src/views/project/detail/case/projectStatistics.vue')
-          },
-          {
-            path: 'projectExport',
-            name: 'project_projectExport',
-            meta: {
-              title: '数据导出',
-              navigator: false,
-              role: [1, 2, 3]
-            },
-            component: () => import('../../src/views/project/detail/case/projectExport.vue')
           }
         ]
       }

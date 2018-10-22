@@ -21,8 +21,8 @@
           </el-input>
       </div>
       <div class="buttons float-right">
-        <el-button type="primary" @click="exportLog">导出日志</el-button>
-        <el-button type="primary" @click="clearLog">清空日志</el-button>
+        <!-- <el-button type="primary" @click="exportLog">导出日志</el-button> -->
+        <!-- <el-button type="primary" @click="clearLog">清空日志</el-button> -->
       </div>
     </div>
     <div class="system-log">
