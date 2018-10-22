@@ -305,12 +305,11 @@ export default {
           {
             id: 'nation',
             label: '民族',
-            type: 'RADIO',
+            type: 'RADIOTEXT',
             values: [
               {value: '汉族', label: '汉族'},
               {value: '回族', label: '回族'},
-              {value: '藏族', label: '藏族'},
-              {value: '其他', label: '其他'}
+              {value: '藏族', label: '藏族'}
             ],
             validations: [
               { required: true, message: '请选择民族', trigger: 'change' }
