@@ -38,23 +38,12 @@
                   width="500"
                   trigger="hover">
                   {{question[items.id].paraphrase}}
-                  <!-- <div style="display:flex;flex-direction: column">
-                    <img
-                      style="max-width: 500px"
-                      v-for="(imgItem, imgIndex) in question[items.id].images" :src="imgItem" :key="imgIndex">
-                  </div> -->
-                  <div
-                    v-if="question[items.id] & question[items.id].images.length"
-                    class="viewerWrapper">
-                    <viewer
-                      style="width: 100% !important;height: 150px !important;"
-                      :options="options" :images="question[items.id].images"
-                      @inited="inited"
-                      class="viewer" ref="viewer" >
-                      <template slot-scope="scope">
-                        <img v-for="src in scope.images" style="width: 100%;display: none" :src="src" :key="src">
+                  <div class="viewerWrapper" v-if="question[items.id] && question[items.id].images.length" >
+                    <div v-viewer="options" class="images " style="display:flex;flex-direction: column">
+                      <template v-for="(imgItem, imgIndex) in question[items.id].images">
+                        <img :src="imgItem" :key="imgIndex" style="display: none;">
                       </template>
-                    </viewer>
+                    </div>
                   </div>
                    <!-- <div class="viewer-wrapper">
                       <viewer :options="options" :images="images"
@@ -277,6 +266,19 @@
         v-if="evaluateDialogVisible" :mozhu="allEvaluate"
         v-model="evaluateData" @consoleData="createEvaluate"></sx-min-form>
     </el-dialog>
+    <!-- v-if="question[items.id] && question[items.id].images.length" -->
+    <!-- <div
+      class="viewerWrapper">
+      <viewer
+        style="width: 100% !important;height: 150px !important;"
+        :options="options" :images="whatImages"
+        @inited="inited"
+        class="viewer" ref="viewer" >
+        <template slot-scope="scope">
+          <img v-for="src in scope.images" style="width: 100%;display: none" :src="src" :key="src">
+        </template>
+      </viewer>
+    </div> -->
   </div>
 </template>
 
@@ -430,7 +432,7 @@ export default {
         button: true,
         navbar: true,
         title: false,
-        toolbar: true,
+        toolbar: false,
         tooltip: true,
         movable: true,
         zoomable: true,
@@ -441,6 +443,7 @@ export default {
         keyboard: true,
         url: 'data-source'
       }
+      // whatImages: []
     }
   },
   watch: {

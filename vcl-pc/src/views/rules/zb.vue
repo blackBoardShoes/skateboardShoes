@@ -18,7 +18,7 @@
           </template>
         </el-menu>
         <div class="formTopRight">
-          患者: <span style="color: #117FD1;opacity: 0.9">{{patientInfo.patientName}}</span> ({{patientInfo.gender ? '男' : '女'}}) 住院号：{{patientInfo.patientId}}
+          患者: <span style="color: #117FD1;opacity: 0.9">{{patientInfo.patientName}}</span> ({{parseInt(patientInfo.gender) ? '男' : '女'}}) 住院号：{{patientInfo.patientId}}
         </div>
       </div>
       <div class="formContentContent" v-if="Boolean(navArr[activeIndex])">
