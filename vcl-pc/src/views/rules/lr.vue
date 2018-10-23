@@ -356,7 +356,6 @@ export default {
       }
     },
     async show () {
-      this.fishData = {}
       let a = await formdataData(this.patientInfo.id)
       if (a) {
         this.fishData = a.data.entity ? Object.assign({}, a.data.entity.data) : {}

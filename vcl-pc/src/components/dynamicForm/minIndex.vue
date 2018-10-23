@@ -515,14 +515,6 @@ export default {
       for (let i of this.newFields) {
         // this.$set(this.rules, i.id, i.validations)
         switch (i.type) {
-          // case 'INT':
-          // case 'DOUBLE':
-          // if (this.formModel[i.id]) {
-          //   this.$set(this.formModel, i.id, this.formModel[i.id].toString())
-          // } else {
-          //   this.$set(this.formModel, i.id, '')
-          // }
-          // break
           case 'CHECKBOX':
           case 'CHECKBOXTEXT':
           case 'CASCADER':
@@ -1052,6 +1044,7 @@ export default {
       // this.formModel = {}
       this.formModel = {}
       this.init()
+      this.$emit('input', this.formModel)
     },
     againData () {
       this.newFields = this.mozhu['fields']

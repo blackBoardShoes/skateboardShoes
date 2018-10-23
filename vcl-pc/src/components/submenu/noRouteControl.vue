@@ -14,11 +14,11 @@
         @click="emitClick(item, index)"
         :key="index">
         <i :class="item.icon"></i>
-        <span class="menuName" v-if="item.name.length < 6">{{item.name}}</span>
+        <span class="menuName" v-if="item.name.length < 9">{{item.name}}</span>
         <span class="menuName" v-else>
           <el-tooltip class="item" effect="dark" :content="item.name" placement="right">
             <div style="
-              width: 70px;
+              width: 110px;
               overflow: hidden;
               text-overflow: ellipsis;
               white-space: nowrap;">
@@ -86,11 +86,11 @@ export default {
 <style lang="scss" scoped>
 @import '../../assets/css/variable';
 $full: 100%;
-$minW: 180px;
-$W: 16%;
+$minW: 200px;
+// $W: 16%;
 .formControlAll {
   height: $full;
-  width: $W;
+  // width: $W;
   min-width: $minW;
   background-color: white;
   .menuClass {
