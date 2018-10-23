@@ -26,11 +26,17 @@
         <div style="width: 100%;">
           <div class="rightContentControl">
             <div class="rightContentControlName">
-              {{navArr[activeIndex] ? navArr[activeIndex].name : ''}}
-              &nbsp;
+              <div v-if="navArr[activeIndex].name.length < 14">
+                {{navArr[activeIndex] ? navArr[activeIndex].name : ''}}
+              </div>
+              <el-tooltip class="item" effect="dark" placement="top" :content="navArr[activeIndex] ? navArr[activeIndex].name : ''" v-else>
+                <div style="font-weight: bold;width: 210px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                  {{navArr[activeIndex] ? navArr[activeIndex].name : ''}}
+                </div>
+              </el-tooltip>
               <el-tooltip class="item" effect="dark" placement="top" :content="navArr[activeIndex] ? navArr[activeIndex].description : ''">
-                <div style="font-size:13px;font-weight:400;width: 200px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-                  {{navArr[activeIndex] ? navArr[activeIndex].description : ''}}
+                <div style="font-size:13px;font-weight:400;width: 180px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                  {{navArr[activeIndex] ? navArr[activeIndex].description + 'cccccc' : ''}}
                 </div>
               </el-tooltip>
             </div>
@@ -477,6 +483,7 @@ $marginW: 15px;
           margin-left: $marginW;
           height: $marginW;
           display: flex;
+          justify-content: space-between;
           align-items: center;
           border-left: 9px solid $minorTextColor;
           width: 400px;

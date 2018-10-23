@@ -542,6 +542,7 @@ $marginW: 15px;
             margin-left: $marginW;
             height: $marginW;
             display: flex;
+            justify-content: space-between;
             align-items: center;
             border-left: 9px solid $minorTextColor;
             width: 350px;
