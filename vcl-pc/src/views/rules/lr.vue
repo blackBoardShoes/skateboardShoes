@@ -344,7 +344,11 @@ export default {
     async firstShow () {
       let tgpt = await termbaseGetAllTermbases()
       if (tgpt) {
-        this.question = tgpt.data.entity
+        for (let i in tgpt.data.entity) {
+          if (tgpt.data.entity[i].emerge) {
+            this.question = Object.assign(this.question, {i: tgpt.data.entity[i]})
+          }
+        }
       }
       let faf = await fieldAllForms()
       if (faf) {
