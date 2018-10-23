@@ -34,7 +34,7 @@
               </el-tooltip>
               <el-tooltip class="item" effect="dark" placement="top" :content="navArr[activeIndex] ? navArr[activeIndex].description : ''">
                 <div style="font-size:13px;font-weight:400;width: 180px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-                  {{navArr[activeIndex] ? navArr[activeIndex].description + 'cccccc' : ''}}
+                  {{navArr[activeIndex] ? navArr[activeIndex].description : ''}}
                 </div>
               </el-tooltip>
             </div>
