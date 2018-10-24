@@ -36,6 +36,12 @@ export const getPatientRecords = data => {
   return axios.get(api + `/records/patient/${data}`)
 }
 
+// 获取记录的字段模板等
 export const getAllFormTemplates = data => {
   return axios.get(api + `/form/allForms`)
+}
+
+// 根据记录Id获取记录的详情
+export const getRecordById = data => {
+  return axios.get(api + `/record/${data}`)
 }

@@ -75,9 +75,9 @@
         <div class="hospital-record" v-for="(record, index) in patientRecords" :key="index">
           <div class="record-case">
             <div class="records-title" @click="activeIndex = activeIndex === index ? -1 : index ">
-              <div class="record-title-head">
-                <span>住院</span>
-              </div>
+              <!-- <div class="record-title-head"> -->
+                <!-- <span>住院</span> -->
+              <!-- </div> -->
               <!-- <el-tooltip class="item" effect="dark" placement="top">
                 <div slot="content">{{record.operationNum.toString() || ''}}</div>
                 <div class="record-title text-overflow-ellipsis">
@@ -85,6 +85,7 @@
                   <span>{{record.operationNum || ''}}</span>
                 </div>
               </el-tooltip> -->
+              <span class="primary-text ercp-icon-medicine-report" @click="linkToRecord(record)"></span>
               <el-tooltip class="item" effect="dark" placement="top">
                 <div slot="content">{{record.inHospitalDate || ''}}</div>
                 <div class="record-title text-overflow-ellipsis">
@@ -368,7 +369,7 @@ export default {
     },
     // 删除患者
     async deletePatient () {
-      let info = this.NumInHospital
+      let info = this.basicInfo.id
       let response = await deletePatient(info)
       if (response.data.mitiStatus === 'SUCCESS') {
         console.log(response)
@@ -545,6 +546,13 @@ export default {
           this.$router.push({ name: 'zb', params: { data: JSON.stringify(data4) } })
           break
       }
+    },
+    linkToRecord (record) {
+      // console.log(record)
+      let info = {}
+      info.recordId = record.id
+      info.basicInfo = this.basicInfo
+      this.$router.push(`/patient/record/${JSON.stringify(info)}`)
     }
   }
 }
