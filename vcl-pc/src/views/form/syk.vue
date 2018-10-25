@@ -30,10 +30,27 @@
             show-overflow-tooltip
             prop="name"
             align="center"
-            label="名称"
+            label="术语名称"
             width="180">
           </el-table-column>
           <el-table-column
+            show-overflow-tooltip
+            prop="id"
+            align="center"
+            label="术语ID"
+            width="180">
+          </el-table-column>
+          <el-table-column
+            show-overflow-tooltip
+            prop="emerge"
+            align="center"
+            label="是否显示"
+            width="180">
+            <template slot-scope="scope">
+              {{scope.row.emerge ? '是' : '否'}}
+            </template>
+          </el-table-column>
+          <!-- <el-table-column
             show-overflow-tooltip
             align="center"
             prop="type"
@@ -42,13 +59,16 @@
             filter-placement="bottom-end"
             width="110"
             label="类别">
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column
             show-overflow-tooltip
             align="center"
             prop="reference"
-            label="备注"
-            ></el-table-column>
+            label="备注">
+            <template slot-scope="scope">
+              {{scope.row.reference ? scope.row.reference : '/'}}
+            </template>
+            </el-table-column>
           <el-table-column
             show-overflow-tooltip
             align="center"
@@ -73,9 +93,11 @@
           &nbsp;术语详情-道损伤分型
         </div>
         <div slot="append" class="centerCenter">
-          <el-button type="text" @click="deleteWhat" style="padding:0;margin:0;font-size: 17px; color: #FF455B;">删除</el-button>
+          <!-- <el-button type="text" @click="deleteWhat" style="padding:0;margin:0;font-size: 17px; color: #FF455B;">删除</el-button> -->
+          <el-button size="small" plain type="danger" @click="deleteWhat" >删除</el-button>
           &nbsp;&nbsp;
-          <el-button type="text" @click="saveWhat" style="padding:0;margin:0;font-size: 17px;">保存</el-button>
+          <!-- <el-button type="text" @click="saveWhat" style="padding:0;margin:0;font-size: 17px;">保存</el-button> -->
+          <el-button size="small" type="primary" plain @click="saveWhat" >保存</el-button>
         </div>
       </sx-segmenting-line>
       <div class="sykContentBottom">
@@ -84,7 +106,7 @@
           :model="formModel" :rules="rules"
           ref="formModel" size="mini" label-width="100px">
           <el-form-item label="术语ID" prop="id" >
-            <el-select v-model="formModel.id" placeholder="请选择字段id" clearable filterable @change="changeName">
+            <el-select v-model="formModel.id" placeholder="请选择(若无可不选)" clearable filterable @change="changeName">
               <el-option :label="item.label + ' ' + item.id" :value="item.id" v-for="(item, index) in fieldsData" :key="index"></el-option>
             </el-select>
           </el-form-item>
@@ -94,12 +116,12 @@
             <el-form-item label="是否显示" prop="emerge" style="flex-grow: 0.3">
               <el-switch v-model="formModel.emerge"></el-switch>
             </el-form-item>
-          <el-form-item label="术语类别" prop="type" >
+          <!-- <el-form-item label="术语类别" prop="type" >
             <el-select v-model="formModel.type" placeholder="请选择活动区域">
               <el-option label="内科" value="内科"></el-option>
               <el-option label="外科" value="外科"></el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="术语备注" prop="reference"  style="flex-grow: 1">
             <el-input v-model="formModel.reference"></el-input>
           </el-form-item>
@@ -169,6 +191,7 @@ export default {
       imgLoading: false,
       tableData: [],
       formModel: {
+        id: '',
         name: '',
         type: '',
         emerge: false,

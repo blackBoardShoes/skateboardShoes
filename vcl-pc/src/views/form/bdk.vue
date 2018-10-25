@@ -546,8 +546,11 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async _ => {
-        await formDelete(value.id)
-        this.show()
+        let fd = await formDelete(value.id)
+        if (fd) {
+          this.cardArr.splice(index, 1)
+        }
+        // this.show()
       }).catch(_ => {
         // this.$message({
         //   type: 'info',

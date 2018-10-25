@@ -57,6 +57,7 @@
       <!-- <router-link :to="{ name: 'sh', params: { data: JSON.stringify({a: 1}) }}">sh</router-link> -->
     </div>
     <el-dialog
+      title='新增住院记录/手术记录'
       append-to-body
       modal-append-to-body
       :close-on-click-modal="false"
@@ -77,6 +78,7 @@
         @consoleData="createFish" ></sx-min-form>
     </el-dialog>
     <el-dialog
+      title='新增患者'
       width="60%"
       append-to-body
       v-if="patientDialogVisible"
@@ -469,19 +471,27 @@ export default {
     async show () {
       // tableData
       console.log(this.activeRow.key, 'this.activeRow.key')
+      this.tableData = []
       switch (this.activeRow.key) {
         case 'AlltableColumn':
-          this.tableData = this.recordAllRecordTableData
+          for (let i in this.recordAllRecordTableData) {
+            this.$set(this.tableData, i, this.recordAllRecordTableData[i])
+          }
           break
         case 'pendingEntryColumn':
-          this.tableData = this.pendingEntryColumnTableData
+          for (let i in this.pendingEntryColumnTableData) {
+            this.$set(this.tableData, i, this.pendingEntryColumnTableData[i])
+          }
           break
         case 'toBeAuditedColumn':
-          this.tableData = this.toBeAuditedColumnTableData
+          for (let i in this.toBeAuditedColumnTableData) {
+            this.$set(this.tableData, i, this.toBeAuditedColumnTableData[i])
+          }
           break
         case 'toBeAmendedColumn':
-          this.tableData = this.toBeAmendedColumnTableData
-          console.log('toBeAmendedColumn')
+          for (let i in this.toBeAmendedColumnTableData) {
+            this.$set(this.tableData, i, this.toBeAmendedColumnTableData[i])
+          }
           break
         case 'followUpColumn':
           console.log('followUpColumn')

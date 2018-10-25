@@ -104,6 +104,7 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 import sxNoRouteControl from '../../components/submenu/noRouteControl'
 import sxOperationReport from '../../components/staticForm/operationReport'
 import { fieldAllForms } from '../../api/form/bdk.js'
@@ -683,6 +684,9 @@ export default {
       smf: false
     }
   },
+  computed: mapState({
+    user: state => state.user
+  }),
   async created () {
     if (this.$route.params.data) {
       this.patientInfo = JSON.parse(this.$route.params.data)
@@ -765,7 +769,7 @@ export default {
     },
     async generalSave () {
       this.$refs.thatForm.notVerifying()
-      let fds = await formdataSave(Object.assign(this.patientInfo, { data: this.fishData, comments: this.fishDataComments }))
+      let fds = await formdataSave(Object.assign(this.patientInfo, { data: this.fishData, comments: this.fishDataComments, whatUser: this.user }))
       console.log(fds)
     },
     createEvaluate (value) {
