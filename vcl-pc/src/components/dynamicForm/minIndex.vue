@@ -22,49 +22,48 @@
             <div
               v-if="disabled ? true : tf(items)"
               v-for="(items, index) in newFields"
-              :class="(items.type === 'RADIO' & (!items.values)) ? 'abnormal' : noLabel ? 'noLabel' : 'normal'"
+              :class="(items.type === 'RADIO' && (!items.values)) ? 'abnormal' : noLabel ? 'noLabel' : 'normal'"
               :style="{display: 'flex', alignItems: 'flexStart', width: coordinate[items.id] ? coordinate[items.id] + '%' : '100%'}"
               :key="index">
               <!--  v-if="disabled" -->
-              <div class="iconErrorClass" @click="deleteError(items)">
+              <div
+                v-if="leftAndRightShow"
+                class="iconErrorClass" @click="deleteError(items)">
                 <i class="el-icon-error"  v-if="iconTf(items)"></i>
               </div>
               <div
+                v-if="leftAndRightShow"
                 style="width: 40px;text-align:center;margin-top: 6px;">
                 <el-popover
                   v-if="question[items.id]"
                   placement="right"
                   title="术语解释"
                   width="500"
-                  trigger="hover">
-                  {{question[items.id].paraphrase}}
-                  <div class="viewerWrapper" v-if="question[items.id] && question[items.id].images.length" >
+                  trigger="click">
+                  <!-- {{question[items.id].paraphrase}} -->
+                  <el-input
+                    :rows="5"
+                    style="width: 100%;"
+                    type="textarea"
+                    v-model='question[items.id].paraphrase'></el-input>
+                    <br><br>
+                  <!-- <div class="viewerWrapper" v-if="question[items.id] && question[items.id].images.length" >
                     <div v-viewer="options" class="images " style="display:flex;flex-direction: column">
                       <template v-for="(imgItem, imgIndex) in question[items.id].images">
                         <img :src="imgItem" :key="imgIndex" style="display: none;">
                       </template>
                     </div>
+                  </div> -->
+                  <div class="allImages" v-if="question[items.id] && question[items.id].images.length">
+                    <img  class="images" v-for="(imgItem, imgIndex) in question[items.id].images" :src="imgItem" :key="imgIndex">
                   </div>
-                   <!-- <div class="viewer-wrapper">
-                      <viewer :options="options" :images="images"
-                        @inited="inited"
-                        class="viewer" ref="viewer">
-                        <template slot-scope="scope">
-                          <figure class="images">
-                            <div class="image-wrapper" v-for="{source, thumbnail} in scope.images" :key="source">
-                              <img class="image" :src="thumbnail" :data-source="source" >
-                            </div>
-                          </figure>
-                        </template>
-                      </viewer>
-                    </div> -->
-                  <i class="el-icon-question" slot="reference" style="font-size: 16px"></i>
+                  <i class="el-icon-question" slot="reference" style="font-size: 16px;cursor:pointer"></i>
                 </el-popover>
               </div>
               <el-form-item
                 v-if="tf(items)"
                 :style="{width: '100%'}"
-                :rules="items.validations"
+                :rules="closeRules ? [] : items.validations"
                 :prop="items.id"
                 :label="items.label"
                 @dblclick.native="evaluate(items, index)">
@@ -232,7 +231,7 @@
                   <el-button type="danger" @click="deleteFormRow(items, index)">删除当前行</el-button>
                 </el-button-group>
                   <div style="width: 40px;text-align:center"
-                    v-if="!(items.type === 'TEXTAREA')">
+                    v-if="leftAndRightShow && !(items.type === 'TEXTAREA' | items.type === 'RADIO' | items.type === 'CHECKBOX')">
                     <!-- v-if="!(items.type === 'RADIO' | items.type === 'RADIOTEXT' | items.type === 'CHECKBOXTEXT' | items.type === 'CHECKBOX' | items.type === 'TEXTAREA')" -->
                     <!--  v-if="items.unit" -->
                     {{items.unit ? items.unit : ''}}
@@ -260,25 +259,13 @@
         <span style="font-weight: bold">错误原因</span>
       </div>
       <sx-min-form
+        :leftAndRightShow="false"
         :noLabel="true"
         cancel submitTF
         @cancelData="evaluateDialogVisible = false"
         v-if="evaluateDialogVisible" :mozhu="allEvaluate"
         v-model="evaluateData" @consoleData="createEvaluate"></sx-min-form>
     </el-dialog>
-    <!-- v-if="question[items.id] && question[items.id].images.length" -->
-    <!-- <div
-      class="viewerWrapper">
-      <viewer
-        style="width: 100% !important;height: 150px !important;"
-        :options="options" :images="whatImages"
-        @inited="inited"
-        class="viewer" ref="viewer" >
-        <template slot-scope="scope">
-          <img v-for="src in scope.images" style="width: 100%;display: none" :src="src" :key="src">
-        </template>
-      </viewer>
-    </div> -->
   </div>
 </template>
 
@@ -303,7 +290,19 @@ export default {
         return false
       }
     },
+    leftAndRightShow: {
+      type: Boolean,
+      default () {
+        return true
+      }
+    },
     noLabel: {
+      type: Boolean,
+      default () {
+        return false
+      }
+    },
+    closeRules: {
       type: Boolean,
       default () {
         return false
@@ -443,7 +442,6 @@ export default {
         keyboard: true,
         url: 'data-source'
       }
-      // whatImages: []
     }
   },
   watch: {
@@ -566,13 +564,6 @@ export default {
                 }
               }
             }
-            // if (!this.formModel[i.id]) {
-            //   if (this.formModel[i.id] === 0) {
-            //     this.$set(this.formModel, i.id, 0)
-            //   } else {
-            //     this.$set(this.formModel, i.id, '')
-            //   }
-            // }
             break
         }
         // this.$emit('input', this.formModel)
@@ -586,45 +577,34 @@ export default {
                 let arr = i['validations'][z]['pattern'].split('***')
                 let message = i['validations'][z]['message']
                 let a = { validator: (rule, value, callback) => {
-                  // if (required & (Number(arr[0]) <= Number(value)) & (Number(arr[1]) >= Number(value))) {
-                  //   callback()
-                  // } else {
-                  //   if (value) {
-                  //     if (value.toString().includes('.')) {
-                  //       callback(new Error('类型为整数,不可以输入小数'))
-                  //     } else if (!(/^\d*$/.test(value.toString()))) {
-                  //       callback(new Error('类型为整数,只可以为数字。'))
-                  //     } else {
-                  //       callback()
-                  //     }
-                  //   } else {
-                  //     callback()
-                  //   }
-                  // }
-                  // console.log('required', required)
                   if (required) {
-                    if ((Number(arr[0]) <= Number(value)) & (Number(arr[1]) >= Number(value))) {
-                      callback()
+                    if ((Number(arr[0]) <= Number(value)) && (Number(arr[1]) >= Number(value))) {
+                      if ((!(/^[0-9]+([.][0-9]+){0,}$/.test(value)))) {
+                        callback(new Error('取值范围：' + arr[0] + '-' + arr[1] + '，类型为' + (type === 'INT' ? '整型' : '浮点型')))
+                      } else {
+                        callback()
+                      }
                     } else {
                       if (message === '请按规则填写') {
-                        callback(new Error('取值范围：' + arr[0] + '-' + arr[1]))
+                        callback(new Error('取值范围：' + arr[0] + '-' + arr[1] + '，类型为' + (type === 'INT' ? '整型' : '浮点型')))
                       } else {
                         callback(new Error(message))
                       }
                     }
                   } else {
                     // callback()
-                    if (value) {
-                      // callback()
-                      if (value.includes('.')) {
-                        callback(new Error('类型为整数,不可以输入小数'))
-                      } else if (!(/^\d*$/.test(value))) {
-                        callback(new Error('类型为整数,只可以为数字。'))
+                    if (value && (Number(arr[0]) <= Number(value)) && (Number(arr[1]) >= Number(value))) {
+                      if ((!(/^[0-9]+([.][0-9]+){0,}$/.test(value)))) {
+                        callback(new Error('取值范围：' + arr[0] + '-' + arr[1] + '，类型为' + (type === 'INT' ? '整型' : '浮点型')))
                       } else {
                         callback()
                       }
                     } else {
-                      callback()
+                      if (value) {
+                        callback(new Error('取值范围：' + arr[0] + '-' + arr[1] + '，类型为' + (type === 'INT' ? '整型' : '浮点型')))
+                      } else {
+                        callback()
+                      }
                     }
                   }
                 }}
@@ -659,8 +639,8 @@ export default {
             i['validations'] = [a]
           }
         }
-        if (required & Array.isArray(i['validations'])) {
-          if ((i['validations'].length === 1) & ('required' in i['validations'][0])) {
+        if (required && Array.isArray(i['validations'])) {
+          if ((i['validations'].length === 1) && ('required' in i['validations'][0])) {
             if (type === 'INT') {
               let a = { validator: (rule, value, callback) => {
                 if (/^\d{1,}$/.test(value)) {
@@ -758,56 +738,6 @@ export default {
         this.$delete(this.comments, items.id)
         this.$emit('createEvaluate', this.comments)
       }
-    },
-    // form conversion rules
-    // { "type": "INPUT", "id": "", "label": "", "pattern": "", "message": "", "required": "" }
-    conversion (what = {}) {
-      // what['validations'] = []
-      // switch (what.type) {
-      //   case 'INPUT':
-      //   case 'INT':
-      //   case 'DOUBLE':
-      //   case 'SELECT':
-      //   case 'DATE':
-      //   case 'DATETIME':
-      //   case 'RADIO':
-      //   case 'TEXTAREA':
-      //   case 'CHECKBOX':
-      //   case 'CASCADER':
-      //   case 'SELECTMUTIPLE':
-      //     if (what['required']) {
-      //       what['validations'].push(
-      //         { required: (Boolean(what['required'])), message: '请输入或选择' + what['label'], trigger: 'change' }
-      //       )
-      //     }
-      //     if (what.type === 'INPUT' | what.type === 'INT' | what.type === 'DOUBLE' | what.type === 'TEXTAREA') {
-      //       if (what['pattern']) {
-      //         // what['validations'] = []
-      //         // if (what['pattern'].includes('/^') | what['pattern'].includes('$/')) {
-      //         //   what['pattern'].replace('/^', '^')
-      //         // }
-      //         what['validations'].push(
-      //           { pattern: what['pattern'], message: what['message'] ? what['message'] : '请按规则填写', trigger: 'change' }
-      //         )
-      //       }
-      //     }
-      //     break
-      //   case 'CREATETABLE':
-      //     what.type = 'TABLE'
-      //     what['subFields'] = []
-      //     for (let i in what.createTable) {
-      //       for (let j of this.repositoryData) {
-      //         if (what.createTable[i] === j.label) {
-      //           what['subFields'].push(j)
-      //         }
-      //       }
-      //     }
-      //     break
-      //   case 'CREATECALCULATE':
-      //     what.type = 'CALCULATE'
-      //     break
-      // }
-      // return what
     },
     // form element all data  -> fromModel
     formatData () {
@@ -962,7 +892,7 @@ export default {
       /* eslint-disable */
     },
     evaluate (row, index) {
-      if (this.disabled & this.isSh) {
+      if (this.disabled && this.isSh) {
         console.log(row, index)
         this.evaluateRowData = row
         this.evaluateData = this.comments[row.id]
@@ -983,7 +913,7 @@ export default {
       let pattern = /[a-zA-Z][a-zA-Z0-9]*/g
       for (let i in this.formModel) {
         for (let j of this.mozhu.fields) {
-          if (j.id === i & j.type === 'CALCULATE') {
+          if (j.id === i && j.type === 'CALCULATE') {
             let patternAfter = j.calculate.match(pattern) ? j.calculate.match(pattern) : []
             let notHaveLabelArr = []
             let notHaveArr = []
@@ -1097,9 +1027,9 @@ $full: 100%;
     }
     .el-radio, .el-checkbox {
       // min-width: 140px;
-      margin: 5px;
+      margin: 3px;
       // margin-left: 15px;
-      margin-right: 10px;
+      margin-right: 6px;
     }
     /deep/ .el-form-item, /deep/ .el-form-item--mini {
       display: flex !important;
@@ -1149,6 +1079,17 @@ $full: 100%;
 </style>
 <style lang="scss">
 .el-popover {
+  .allImages {
+    height: 200px;
+    width: 100%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    .images {
+      width: 100%;
+      margin-bottom: 13px;
+    }
+  }
   .viewerWrapper {
     height: 200px;
     width: 100%;

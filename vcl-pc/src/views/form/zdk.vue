@@ -14,6 +14,7 @@
           </sx-segmenting-line>
           <div style="padding: 20px;">
             <sx-min-form
+              :leftAndRightShow="false"
               submitTF
               v-model="fishData"
               ref="thatForm"

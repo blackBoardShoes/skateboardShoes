@@ -78,6 +78,7 @@
                   v-if="smf"
                   disabled
                   isSh
+                  closeRules
                   v-model="fishData[navArr[activeIndex].id]"
                   ref="thatForm"
                   :mozhu="navArr[activeIndex]"
@@ -759,12 +760,12 @@ export default {
       this.$refs.thatForm.deleteError(val)
     },
     async generalSave () {
-      this.$refs.thatForm.notVerifying()
-      let fds = await formdataSave(Object.assign(this.patientInfo, { data: this.fishData, comments: this.fishDataComments }))
+      await this.$refs.thatForm.notVerifying()
+      let fds = await formdataSave(Object.assign(this.patientInfo, { data: this.fishData, comments: this.fishDataComments, whatUser: this.user }))
       console.log(fds)
     },
     async generalReject () {
-      this.$refs.thatForm.notVerifying()
+      await this.$refs.thatForm.notVerifying()
       let fdr = await formdataReject(Object.assign(this.patientInfo, { data: this.fishData, comments: this.fishDataComments }))
       console.log(fdr)
       if (fdr) {
@@ -772,7 +773,7 @@ export default {
       }
     },
     async generalPass () {
-      this.$refs.thatForm.consoleData()
+      await this.$refs.thatForm.consoleData()
       let fdp = await formdataPass(Object.assign(this.patientInfo, {data: this.fishData}, { whatUser: this.user }))
       console.log(fdp)
       if (fdp) {

@@ -446,7 +446,6 @@ export default {
       }
       console.log('truetruetruetruetrue123123123')
       if (this.notVerifyingTF) {
-        console.log('ccccccccccccccccccccccccc')
         let fds = await formdataSave(Object.assign(this.patientInfo, {data: this.fishData}, { whatUser: this.user }))
         if (fds) {
           if (this.activeIndex < this.navArr.length - 1) {

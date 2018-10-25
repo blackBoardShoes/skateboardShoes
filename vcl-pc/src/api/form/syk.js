@@ -28,7 +28,7 @@ export const termbaseAddTermbase = data => {
 // }
 // termbase/removeTermbase 删除术语
 export const termbaseRemoveTermbase = data => {
-  return axios.delete(all + '/termbase/removeTermbase', { params: data })
+  return axios.delete(all + '/termbase/removeTermbase', { params: {id: data.id} })
 }
 // updateTermbase 更新接口
 export const updateTermbase = data => {

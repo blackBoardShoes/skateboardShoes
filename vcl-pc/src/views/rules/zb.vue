@@ -12,7 +12,7 @@
                   <el-menu-item v-for="(z, zi) in x.submenu" :index="z.label" :key="zi">{{z.label}}</el-menu-item>
                 </el-submenu>
               </el-menu-item>
-              <el-menu-item :key="index" :index="x.label" v-else>{{x.label}}</el-menu-item>
+              <el-menu-item  :index="x.label" v-else>{{x.label}}</el-menu-item>
             </el-submenu>
             <el-menu-item :key="index" :index="item.label" v-else>{{item.label}}</el-menu-item>
           </template>
@@ -62,6 +62,7 @@
             <div class="rightContent">
               <div class="rightContentDynamic" v-if="!(navArr[activeIndex] ? navArr[activeIndex].isStatic : false)">
                 <sx-min-form
+                  closeRules
                   disabled
                   v-if="smf"
                   v-model="fishData[navArr[activeIndex].id]"
@@ -102,22 +103,7 @@ export default {
       // 中间数组
       navArr: [],
       showAllForms: [],
-      subNavData: [
-        { label: '住院基本情况' },
-        {
-          label: '手术记录',
-          submenu: [
-            {
-              label: '术前',
-              submenu: [
-                {
-                  label: '术前11212'
-                }
-              ]
-            }
-          ]
-        }
-      ],
+      subNavData: [],
       fishData: {},
       fishAllData: [],
       allFish: {

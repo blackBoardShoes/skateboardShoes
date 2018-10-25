@@ -33,7 +33,9 @@
           @click="editClick(scope.row, scope.$index, subFields)">
           {{disabled ? '查看' : '编辑'}}
           </div>
-          <el-button @click="deleteClick(scope.row, scope.$index, subFields)" size="small"
+          <el-button
+          v-if="!disabled"
+            @click="deleteClick(scope.row, scope.$index, subFields)" size="small"
             style="border: none;background:transparent;padding:0; color: #FF455B">删除</el-button>
         </template>
       </el-table-column>
@@ -46,7 +48,7 @@
       modal-append-to-body
       :visible.sync="dialogVisible">
       <!-- :mozhu="mozhu" -->
-      <sx-min-form submitTF v-if="dialogVisible" :mozhu="mozhu"  v-model="formModel" @consoleData="consoleData"></sx-min-form>
+      <sx-min-form :disabled="disabled" submitTF v-if="dialogVisible" :mozhu="mozhu"  v-model="formModel" @consoleData="consoleData"></sx-min-form>
     </el-dialog>
   </div>
 </template>
