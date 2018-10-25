@@ -1,7 +1,7 @@
 <template>
   <div id="patient-record">
     <!-- 患者详情报告 -->
-    <div class="basic-title light-text" v-if="formData.patientName">
+    <div class="basic-title light-text" v-if="mixForms.length > 0">
       患者：
       <span class="primary-text">{{formData.patientName}}</span>
       <span>（{{formData.gender === 1 ? '男' : '女'}}）</span>
@@ -10,18 +10,10 @@
         <el-button type="primary" @click="printRecord" plain size="small">打印</el-button>
       </div>
     </div>
-    <sync-slider :contentBox="contentBox" v-on:changeActiveIndex="changeActiveIndex" ref="child" v-if="formData.patientName">
+    <sync-slider :contentBox="contentBox" v-on:changeActiveIndex="changeActiveIndex" ref="child" v-if="mixForms.length > 0">
       <!-- 左側導航 -->
       <div slot="nav" class="nav">
         <div class="navi">
-          <!-- <div class="cover"
-            :class="{active: activeIndex === 0}"
-            @click="scroll('0')">
-            封面
-            background-color="#fff"
-            text-color="#9DA0A3"
-            active-text-color="#117FD1"
-          </div> -->
           <el-menu
             :unique-opened=true
             :default-active="activeIndex.toString()"
@@ -38,7 +30,7 @@
                 <div
                   class="text-overflow-ellipsis"
                   @click="scroll((smallNavi.indexOf (formData.recordCover)).toString())">
-                  {{basicInfo.name}}
+                  {{basicInfo.name}}的详情报告
                 </div>
               </el-menu-item>
             </el-submenu>
@@ -51,8 +43,11 @@
               </template>
               <el-menu-item-group :unique-opened=true>
                 <el-menu-item v-for="(subMenu, index2) in objIntoArr(item.data)" :key="index2" :index="(smallNavi.indexOf (subMenu)).toString()">
+                  <div class="menu-icon">
+                    <i :class="subMenu.moduleIcon"></i>
+                  </div>
                   <div
-                    class="text-overflow-ellipsis"
+                    class="text-overflow-ellipsis menu-text"
                     @click="scroll((smallNavi.indexOf (subMenu)).toString())">
                     {{subMenu.moduleName}}
                   </div>
@@ -81,7 +76,7 @@
               </div>
               <div class="top-text">
                 <div class="bolder-text">患者详情报告</div>
-                <div class="">PATIENT RECORD</div>
+                <div class="">PATIENT DETAILS RECORD</div>
                 <div class="system"> <span>ERCP</span>信息录入管理系统</div>
               </div>
             </div>
@@ -91,39 +86,45 @@
               </div>
               <div class="info-content">
                 <div class="info-case">
-                  <div class="info-head">姓名：</div>
-                  <div class="info-detail">{{basicInfo.name}}</div>
+                  <div class="info-head letter-space">
+                    <div>姓</div>
+                    <div>名</div>
+                  </div>
+                  <div class="info-detail text-overflow-ellipsis">：{{basicInfo.name}}</div>
                 </div>
                 <div class="info-case">
-                  <div class="info-head">性别：</div>
-                  <div class="info-detail">{{basicInfo.gender === '1' ? '男' : '女'}}</div>
+                  <div class="info-head letter-space">
+                    <div>性</div>
+                    <div>别</div>
+                  </div>
+                  <div class="info-detail text-overflow-ellipsis">：{{basicInfo.gender === '1' ? '男' : '女'}}</div>
                 </div>
                 <div class="info-case">
-                  <div class="info-head">民族：</div>
-                  <div class="info-detail">{{basicInfo.nation}}</div>
+                  <div class="info-head">患者民族</div>
+                  <div class="info-detail text-overflow-ellipsis">：{{basicInfo.nation}}</div>
                 </div>
                 <div class="info-case">
-                  <div class="info-head">住院编号：</div>
-                  <div class="info-detail">{{basicInfo.hospitalId}}</div>
+                  <div class="info-head">住院编号</div>
+                  <div class="info-detail text-overflow-ellipsis">：{{basicInfo.hospitalId}}</div>
                 </div>
                 <div class="info-case">
-                  <div class="info-head">身份证号：</div>
-                  <div class="info-detail">{{basicInfo.idCard}}</div>
+                  <div class="info-head">身份证号</div>
+                  <div class="info-detail text-overflow-ellipsis">：{{basicInfo.idCard}}</div>
                 </div>
                 <div class="info-case">
-                  <div class="info-head">联系方式：</div>
-                  <div class="info-detail">{{basicInfo.phoneNum}}</div>
+                  <div class="info-head">联系方式</div>
+                  <div class="info-detail text-overflow-ellipsis">：{{basicInfo.phoneNum}}</div>
                 </div>
                 <div class="info-case">
-                  <div class="info-head">常居住地：</div>
-                  <div class="info-detail">{{basicInfo.province !== basicInfo.city ? basicInfo.city : ''}}{{basicInfo.city}}{{basicInfo.district}}{{basicInfo.staAddress}}</div>
+                  <div class="info-head">常居住地</div>
+                  <div class="info-detail text-overflow-ellipsis">：{{basicInfo.province !== basicInfo.city ? basicInfo.city : ''}}{{basicInfo.city}}{{basicInfo.district}}{{basicInfo.staAddress}}</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
         <!-- 具体表单内容 -->
-        <div class="forms" v-for="(record, index) in formData.forms" :key="index">
+        <div class="forms" v-for="(record, index) in mixForms" :key="index">
           <div class="reord-header">
             <i class="ercp-icon-general-stage"></i>
             【{{record.header.phase}}】
@@ -139,12 +140,19 @@
               <span>审核时间：{{record.header.checkerName}}</span>
             </div>
           </div>
-          <div class="detail" v-for="(module, index) in record.data" :key="index">
+          <div class="detail" v-for="(module, index) in record._template" :key="index">
             <div class="module-title">
               <div class="module-title-main">
-                {{module}}
+                <i :class="module.icon"></i>
+                {{module.name}}
               </div>
               <div class="right-rounds"></div>
+            </div>
+            <div class="module-content">
+              <!-- {{module.fields}} -->
+              <p v-for="(question, index) in module.fields" :key="index">
+                {{question.label}}：（{{question.real_value}}）（{{question.unit}}）({{question.type}})
+              </p>
             </div>
           </div>
         </div>
@@ -156,6 +164,7 @@
 // import textRadio from '../../../components/textRadio/textRadio'
 // import {addressData} from '../../../data/address/addressData'
 import {getRecordById, getAllFormTemplates} from '../../../api/patient/patient.js'
+import { Loading } from 'element-ui'
 let syncSlider = () => import('../../../components/syncSlider/syncSlider.vue')
 export default {
   name: 'patient_record',
@@ -170,10 +179,12 @@ export default {
         detail: 'detail'
       },
       activeIndex: 0,
-      formData: {},
+      formData: [],
       smallNavi: [],
       basicInfo: {},
-      templates: {}
+      templates: [],
+      mixForms: [],
+      loadingInstance: ''
     }
   },
   mounted () {
@@ -183,6 +194,14 @@ export default {
     console.log(this.basicInfo)
     this.getRecord(id)
     this.getFormTemplate()
+    this.loadingInstance = Loading.service({
+      lock: true,
+      target: document.getElementById('patient-record'),
+      text: '患者详情报告模板生成中',
+      spinner: 'el-icon-loading',
+      background: '#fff',
+      fullscreen: false
+    })
   },
   created () {
     // this.NumInHospital = this.$route.params.id
@@ -197,6 +216,7 @@ export default {
     },
     // 打印、导出
     printRecord () {
+      // console.log(this.fullScream)
       let subOutputRankPrint = document.getElementById('sync-content')
       let newContent = subOutputRankPrint.innerHTML
       let oldContent = document.body.innerHTML
@@ -209,7 +229,12 @@ export default {
     objIntoArr (obj) {
       let arr = []
       for (let i in obj) {
-        obj[i].moduleName = i
+        this.templates.forEach((item) => {
+          if (item.id === i) {
+            obj[i].moduleName = item.name
+            obj[i].moduleIcon = item.icon
+          }
+        })
         arr.push(obj[i])
         if (this.smallNavi.indexOf(obj[i]) < 0) {
           this.smallNavi.push(obj[i])
@@ -223,7 +248,7 @@ export default {
       // let info = this.NumInHospital
       let response = await getRecordById(info)
       if (response.data.mitiStatus === 'SUCCESS') {
-        console.log(response.data.entity)
+        // console.log(response.data.entity)
         this.formData = response.data.entity
         let recordCover = {}
         for (let i in this.formData) {
@@ -234,43 +259,77 @@ export default {
         }
         this.formData.recordCover = recordCover
         this.smallNavi.push(recordCover)
-        this.mixOptions()
         // this.basic = response.data.entity
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
     },
     mixOptions () {
-      let data = this.formData.forms
+      let forms = this.formData.forms
       let template = this.templates
-      console.log(data)
-      console.log(template)
+      forms.forEach((item) => {
+        item._template = []
+      })
+      forms.forEach((form, formIndex) => {
+        for (let module in form.data) {
+          let moduleTemplate = template.find((n) => n.id === module)
+          // 将form.forms.data
+          for (let field in moduleTemplate.fields) {
+            // 填充模板内的值
+            for (let key in form.data[module]) {
+              if (key === moduleTemplate.fields[field].id) {
+                moduleTemplate.fields[field].real_value = form.data[module][key]
+                continue
+              }
+            }
+          }
+          // 将模板推入form._template
+          form._template.push(moduleTemplate)
+        }
+      })
+      this.mixForms = forms
+      // this.$nextTick(() => {
+      this.loadingInstance.close()
+      // })
     },
     // 获取表单模板
     async getFormTemplate () {
-      // let info = this.NumInHospital
       let response = await getAllFormTemplates()
       if (response.data.mitiStatus === 'SUCCESS') {
         console.log(response.data.entity)
-        this.templates = response.data.emtity
-        // this.allTemplates = response.data.entity
+        this.templates = response.data.entity
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
+    }
+  },
+  watch: {
+    'templates': {
+      handler: function (newVal) {
+        console.log(newVal)
+        if (newVal && newVal !== []) {
+          if (this.formData && this.formData !== []) {
+            this.mixOptions()
+          }
+        }
+      },
+      deep: true
+    },
+    'activeIndex': {
+      handler: function (newVal) {
+        // console.log(newVal)
+      },
+      deep: true
     }
   }
 }
 </script>
 <style lang="scss" scoped>
   @import '../../../assets/css/variable';
-  @media print {
-  }
   #patient-record{
     overflow: hidden;
     width: 100%;
     height: 100%;
-    // min-height: 100%;
-    // padding: 16px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -327,136 +386,8 @@ export default {
         background-color: #fff;
         padding: 16px;
         border-left: 1px solid #e6e6e6;
-        .detail{
-          min-height: 200px;
-          box-sizing: border-box;
-          padding: 8px 16px;
-          // background-color: teal;
-          .module-title{
-            overflow: hidden;
-            height: 40px;
-            line-height: 40px;
-            display: flex;
-            flex-direction: row;
-            .module-title-main{
-            }
-            .right-rounds{
-              flex: 1;
-              border-bottom: 2px dotted #dfdfdf;
-              position: relative;
-              bottom: 20px;
-              left: 10px;
-            }
-          }
-        }
-        .forms{
-          .reord-header{
-            font-weight: 900;
-            padding:0 16px;
-            height: 48px;
-            line-height: 48px;
-            font-size: 16px;
-          }
-          .bottom-bg{
-            margin:0 16px;
-            height: 4px;
-            background: repeating-linear-gradient(45deg, #ddd 0%,#ddd 0.2%, #fff 0.2%, #fff 0.5%, #ddd 0.5%,#ddd 0.6%);
-          }
-          .form-recorder{
-            padding: 2px 16px;
-            height: 30px;
-            line-height: 30px;
-            .recorder, .checker{
-              span{
-                margin-left: 10px;
-              }
-            }
-          }
-        }
-        .detail:nth-of-type(1){
-          // margin-top: 50px;
-          .basic-cover{
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-            text-align: center;
-            .top{
-              // height: 400px;
-              .top-logo{
-                .hospital{
-                  .top-text{
-                    margin-top: 50px;
-                    line-height: 1.5;
-                    div:nth-of-type(1){
-                      font-size: 36px;
-                    }
-                    div:nth-of-type(2){
-                      font-size: 16px;
-                    }
-                  }
-                  .logo{
-                    margin: 20px;
-                  }
-                }
-              }
-              .top-text{
-                margin-top: 20px;
-                line-height: 1.5;
-                div:nth-of-type(1){
-                  font-size: 26px;
-                }
-                div:nth-of-type(2){
-                  font-size: 16px;
-                }
-                .system{
-                  margin-top: 10px;
-                  span{
-                    font-weight: 900;
-                  }
-                  font-size: 22px;
-                }
-              }
-            }
-            .basic-info{
-              margin-top: 20px;
-              flex: 1;
-              .info-title{
-                font-size: 22px;
-              }
-              .info-content{
-                font-size: 16px;
-                margin: 20px auto;
-                .info-case{
-                  width: auto;
-                  margin: 0px auto;
-                  // margin-left: 150px;
-                  line-height: 2;
-                  // text-align: center;
-                  // width: 40%;
-                  display: flex;
-                  flex-direction: row;
-                  justify-content: center;
-                  // font-size: 18px;
-                  .info-head{
-                    // width: 100px;
-                    text-align: justify;
-                  }
-                  .info-detail{
-                    text-align: left;
-                    // flex: 1;
-                    // width: 200px;
-                  }
-                }
-              }
-            }
-            // height: 250px;
-          }
-        }
-        .bottom{
-          height: 400px;
-        }
+        position: relative;
+        z-index: 2;
       }
     }
   }
@@ -475,7 +406,18 @@ export default {
         .el-menu{
           border: none;
           .el-menu-item{
+            // padding: 0 30px;
+            // padding-left: 30px !important;
             border-bottom: 1px dotted rgba($color: $groupColor, $alpha: 1);
+            display: flex;
+            flex-direction: row;
+            .menu-icon{
+              width: 40px;
+            }
+            .menu-text{
+              flex: 1;
+              text-align: left;
+            }
           }
           .el-menu-item-group__title{
             display: none;
@@ -483,5 +425,151 @@ export default {
         }
       }
     }
+  }
+  .detail{
+    // min-height: 200px;
+    box-sizing: border-box;
+    padding: 8px 16px;
+    // background-color: teal;
+    .module-title{
+      overflow: hidden;
+      height: 40px;
+      line-height: 40px;
+      display: flex;
+      flex-direction: row;
+      .module-title-main{
+        min-width: 80px;
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .right-rounds{
+        flex: 1;
+        border-bottom: 2px dotted #ddd;
+        position: relative;
+        bottom: 20px;
+        left: 10px;
+      }
+    }
+    .module-content{
+      font-size: 15px;
+    }
+  }
+  .forms{
+    .reord-header{
+      font-weight: 900;
+      padding:0 16px;
+      height: 48px;
+      line-height: 48px;
+      font-size: 16px;
+    }
+    .bottom-bg{
+      margin:0 16px;
+      height: 3px;
+      background: repeating-linear-gradient(45deg, #9DA0A3 0%,#9DA0A3 0.1%, #fff 0.1%, #fff 0.2%, #9DA0A3 0.2%, #9DA0A3 0.3%, #fff 0.3%, #fff 0.4%);
+    }
+    .form-recorder{
+      padding: 2px 16px;
+      height: 30px;
+      line-height: 30px;
+      font-size: 15px;
+      .recorder, .checker{
+        min-width: 220px;
+        span{
+          margin-left: 10px;
+        }
+      }
+    }
+  }
+  // 封面
+  .detail:nth-of-type(1){
+    // margin-top: 50px;
+    .basic-cover{
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: center;
+      .top{
+        // height: 400px;
+        .top-logo{
+          .hospital{
+            .top-text{
+              margin-top: 50px;
+              line-height: 1.5;
+              div:nth-of-type(1){
+                font-size: 36px;
+              }
+              div:nth-of-type(2){
+                font-size: 16px;
+              }
+            }
+            .logo{
+              margin: 20px;
+            }
+          }
+        }
+        .top-text{
+          margin-top: 20px;
+          line-height: 1.5;
+          div:nth-of-type(1){
+            font-size: 26px;
+          }
+          div:nth-of-type(2){
+            font-size: 16px;
+          }
+          .system{
+            margin-top: 10px;
+            span{
+              font-weight: 900;
+            }
+            font-size: 22px;
+          }
+        }
+      }
+      .basic-info{
+        margin-top: 20px;
+        flex: 1;
+        .info-title{
+          font-size: 24px;
+        }
+        .info-content{
+          font-size: 16px;
+          margin: 20px auto;
+          .info-case{
+            width: auto;
+            margin: 0px auto;
+            // margin-left: 50px;
+            line-height: 2;
+            // text-align: center;
+            // width: 40%;
+            width: 400px;
+            display: flex;
+            flex-direction: row;
+            // justify-content: center;
+            // font-size: 18px;
+            .info-head{
+              width: 4em;
+              margin-left: 8em;
+            }
+            .letter-space{
+              display: flex;
+              flex-direction: row;
+              justify-content: space-between;
+            }
+            .info-detail{
+              text-align: left;
+              // width: 200px;
+              flex: 1;
+              margin-left: 3px;
+            }
+          }
+        }
+      }
+      // height: 250px;
+    }
+  }
+  .bottom{
+    height: 400px;
   }
 </style>
