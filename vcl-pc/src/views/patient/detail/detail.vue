@@ -171,8 +171,8 @@
                       </el-tooltip>
                     </div>
                     <div class="info"  v-if="item.header.phase === '术中'">
-                      <div class="case">手术日期：{{item.data.intraoperativeDiagnosisAndEvaluation.surgeryDate}}</div>
-                      <div class="case">操作者：{{item.data.intraoperativeDiagnosisAndEvaluation.operationOperator}}</div>
+                      <!-- <div class="case">手术日期：{{item.data.intraoperativeDiagnosisAndEvaluation.surgeryDate === undefined ? '' : item.data.intraoperativeDiagnosisAndEvaluation.surgeryDate}}</div> -->
+                      <!-- <div class="case">操作者：{{item.data.intraoperativeDiagnosisAndEvaluation.operationOperator}}</div> -->
                     </div>
                     <div class="info"  v-if="item.header.phase === '术后'">
                       <el-tooltip class="item" effect="dark" placement="top">

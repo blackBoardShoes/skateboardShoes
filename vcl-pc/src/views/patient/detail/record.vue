@@ -150,9 +150,33 @@
             </div>
             <div class="module-content">
               <!-- {{module.fields}} -->
-              <p v-for="(question, index) in module.fields" :key="index">
-                {{question.label}}：（{{question.real_value}}）（{{question.unit}}）({{question.type}})
-              </p>
+              <div class="question-case" v-for="(question, index) in module.fields" :key="index">
+                <div class="text-question" v-if="question.type !== 'TABLE'">
+                  <span :class="{'success-text': question.type === 'TITLE'}">{{question.label}}：</span>
+                  <span>{{question.label_value || question.real_value}}</span>
+                  <span>{{question.unit || ''}}</span>
+                </div>
+                <div class="table-question" v-else>
+                  <div class="one-record" v-for="(item, index) in question.real_value" :key="index">
+                    <div v-for="(item2, index2) in item" :key="index2">
+                      <span :class="{'success-text': item2.type === 'TITLE'}">{{item2.label}}：</span>
+                      <span>{{item2.label_value || item2.real_value}}</span>
+                      <span>{{item2.unit || ''}}</span>
+                    </div>
+                  </div>
+                  <!-- <el-table
+                    :data="tableTransform(question.real_value)"
+                    border
+                    style="width: 100%">
+                    <el-table-column
+                      v-for="(item, index3) in question.real_value[0].length"
+                      :key="index3"
+                      :prop="tableTransform2(question.real_value)[index3].prop"
+                      :label="tableTransform2(question.real_value)[index3].label">
+                    </el-table-column>
+                  </el-table> -->
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -197,7 +221,7 @@ export default {
     this.loadingInstance = Loading.service({
       lock: true,
       target: document.getElementById('patient-record'),
-      text: '患者详情报告模板生成中',
+      text: '患者详情报告生成中',
       spinner: 'el-icon-loading',
       background: '#fff',
       fullscreen: false
@@ -264,34 +288,6 @@ export default {
         this.$message.error('ERROR: ' + response.data.message)
       }
     },
-    mixOptions () {
-      let forms = this.formData.forms
-      let template = this.templates
-      forms.forEach((item) => {
-        item._template = []
-      })
-      forms.forEach((form, formIndex) => {
-        for (let module in form.data) {
-          let moduleTemplate = template.find((n) => n.id === module)
-          // 将form.forms.data
-          for (let field in moduleTemplate.fields) {
-            // 填充模板内的值
-            for (let key in form.data[module]) {
-              if (key === moduleTemplate.fields[field].id) {
-                moduleTemplate.fields[field].real_value = form.data[module][key]
-                continue
-              }
-            }
-          }
-          // 将模板推入form._template
-          form._template.push(moduleTemplate)
-        }
-      })
-      this.mixForms = forms
-      // this.$nextTick(() => {
-      this.loadingInstance.close()
-      // })
-    },
     // 获取表单模板
     async getFormTemplate () {
       let response = await getAllFormTemplates()
@@ -300,6 +296,180 @@ export default {
         this.templates = response.data.entity
       } else {
         this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    // 转化表格数据
+    tableTransform (tableValue) {
+      let arr = []
+      tableValue.forEach((item) => {
+        let obj = {}
+        item.forEach((item2) => {
+          obj[item2.id] = item2.label_value || item2.real_value
+        })
+        arr.push(obj)
+      })
+      // console.log(arr)
+      return arr
+    },
+    // 转化表格数据
+    tableTransform2 (tableValue) {
+      let arr = []
+      // tableValue.forEach((item) => {
+      tableValue[0].forEach((item2) => {
+        let obj = {}
+        obj.prop = item2.id
+        obj.label = item2.label
+        arr.push(obj)
+      })
+      // })
+      // console.log(arr)
+      return arr
+    },
+    // 混合选项和值
+    mixOptions () {
+      let forms = this.formData.forms
+      let template = this.templates
+      forms.forEach((item) => {
+        item._template = []
+      })
+      forms.forEach((form, formIndex) => {
+        for (let module in form.data) {
+          let moduleTemplate = template.find((n) => n.id === module && n.phase === form.header.phase)
+          // 将form.forms.data
+          if (moduleTemplate) {
+            for (let field in moduleTemplate.fields) {
+              // 填充模板内的值
+              // values: [
+              //   {label: '单选框', value: 'RADIO'},2
+              //   {label: '文本单选框', value: 'RADIOTEXT'},1
+              //   {label: '文本标签', value: 'TEXTAREA'},1
+              //   {label: '多选选择器', value: 'SELECTMUTIPLE'},?
+              //   {label: '日期时间选择器', value: 'DATETIME'},1
+              //   {label: '计算', value: 'CREATECALCULATE'},1
+              //   {label: '选择器', value: 'SELECT'},2
+              //   {label: '创建表格', value: 'CREATETABLE'},?
+              //   {label: '日期选择器', value: 'DATE'},1
+              //   {label: '整数类型输入框', value: 'INT'},1
+              //   {label: '多选框', value: 'CHECKBOX'},?
+              //   {label: '文本多选框', value: 'CHECKBOXTEXT'},1
+              //   {label: '输入框', value: 'INPUT'},1
+              //   {label: '级联选择器', value: 'CASCADER'},?
+              //   {label: '浮点类型输入框', value: 'DOUBLE'}1
+              // ]
+              let fieldId = moduleTemplate.fields[field].id === undefined ? '' : moduleTemplate.fields[field].id
+              for (let key in form.data[module]) {
+                if (moduleTemplate.fields[field].type === 'RADIO' && moduleTemplate.fields[field].values === undefined) {
+                  moduleTemplate.fields[field].type = 'TITLE'
+                  this.matchValue(moduleTemplate.fields[field])
+                } else if (moduleTemplate.fields[field].type === 'TABLE' && key === fieldId) {
+                  moduleTemplate.fields[field].real_value_first = form.data[module][key]
+                  this.matchValue(moduleTemplate.fields[field])
+                  continue
+                } else if (key === fieldId) {
+                  moduleTemplate.fields[field].real_value = form.data[module][key]
+                  this.matchValue(moduleTemplate.fields[field])
+                  continue
+                }
+              }
+            }
+            // 将模板推入form._template
+            form._template.push(moduleTemplate)
+          } else {
+            this.$message.warning('未找到' + module + '的模板')
+          }
+        }
+      })
+      this.mixForms = forms
+      console.log(this.mixForms)
+      this.loadingInstance.close()
+    },
+    // 分离表格题型
+    separate (tableItem) {
+      let records = tableItem.real_value_first
+      let arr = []
+      records.forEach((record) => {
+        let arr2 = []
+        for (let key in record) {
+          let fieldTemplate = tableItem.subFields.find((n) => n.id === key)
+          fieldTemplate.real_value = record[key]
+          // item[key]
+          this.matchValue(fieldTemplate)
+          arr2.push(fieldTemplate)
+        }
+        arr.push(arr2)
+      })
+      return arr
+    },
+    transformValue (value, options) {
+      if (options && value) {
+        return (options.find((n) => n.value === value) === undefined ? '' : options.find((n) => n.value === value).label)
+      } else {
+        return null
+      }
+    },
+    // 匹配真实的value
+    matchValue (caseItem, num) {
+      // {label: '输入框', value: 'INPUT'},
+      // {label: '整数类型输入框', value: 'INT'},
+      // {label: '浮点数类型输入框', value: 'DOUBLE'},
+      // {label: '文本标签', value: 'TEXTAREA'},
+      // {label: '选择器', value: 'SELECT'},
+      // {label: '多选选择器', value: 'SELECTMUTIPLE'},
+      // {label: '日期选择器', value: 'DATE'},
+      // {label: '日期时间选择器', value: 'DATETIME'},
+      // {label: '单选框', value: 'RADIO'},
+      // {label: '多选框', value: 'CHECKBOX'},
+      // {label: '级联选择器', value: 'CASCADER'},
+      // {label: '创建表格', value: 'CREATETABLE'},
+      // {label: '计算', value: 'CREATECALCULATE'}
+      if (caseItem.type === ('INPUT' | 'TEXTAREA' || 'DATETIME' || 'CREATECALCULATE' || 'DATE' || 'INT' || 'DOUBLE' || 'RADIOTEXT')) {
+        // 以文本形式存的值 9
+        caseItem.label_value = caseItem.real_value
+      } else if (caseItem.type === ('RADIO')) {
+        // 单选选项
+        caseItem.label_value = this.transformValue(caseItem.real_value, caseItem.values)
+      } else if (caseItem.type === 'CHECKBOX' || caseItem.type === 'SELECTMUTIPLE') {
+        // 多选
+        let arr = []
+        caseItem.real_value.forEach((small) => {
+          arr.push(this.transformValue(small, caseItem.values))
+        })
+        let text = ''
+        arr.forEach((item, index) => {
+          text += (index + 1).toString() + '、' + (item === null ? '' : item)
+        })
+        caseItem.label_value = text
+      } else if (caseItem.type === ('CHECKBOXTEXT')) {
+        let text = ''
+        caseItem.real_value.forEach((item, index) => {
+          if (item === null) {
+            caseItem.real_value.splice(index, 1)
+          }
+        })
+        caseItem.real_value.forEach((item, index) => {
+          text += (index + 1).toString() + '、' + (item === null ? '' : item)
+        })
+        caseItem.label_value = text
+      } else if (caseItem.type === ('TABLE')) {
+        caseItem.real_value = this.separate(caseItem)
+      } else if (caseItem.type === ('CASCADER')) {
+        let arr = []
+        let index2
+        caseItem.real_value.forEach((item, index) => {
+          let text = ''
+          if (index === 0) {
+            text += this.transformValue(item, caseItem.children)
+            index2 = caseItem.children.find((n) => n.value === item)
+          } else {
+            text += '-' + this.transformValue(item, index2.children)
+          }
+          arr.push(text)
+        })
+        let text = ''
+        arr.forEach((item, index) => {
+          text += (item === null ? '' : item)
+        })
+        caseItem.label_value = text
       }
     }
   },
@@ -380,7 +550,7 @@ export default {
       }
       // 内容区域
       #sync-content{
-        margin-top: 50px;
+        margin-top: 56px;
         flex:1;
         overflow: auto;
         background-color: #fff;
@@ -452,6 +622,23 @@ export default {
     }
     .module-content{
       font-size: 15px;
+      line-height: 1.5;
+      .question-case{
+        // margin: 5px
+        .text-question{
+          padding: 8px;
+        }
+        .table-question{
+          padding: 8px;
+          border: 1px dotted #333;
+          border-radius: 4px;
+          margin-top: 4px;
+        }
+        .table-question:hover{
+          // padding: 4px;
+          background-color: #dfdfdf;
+        }
+      }
     }
   }
   .forms{

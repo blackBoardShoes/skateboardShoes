@@ -12,9 +12,9 @@
                   <el-menu-item v-for="(z, zi) in x.submenu" :index="z.label" :key="zi">{{z.label}}</el-menu-item>
                 </el-submenu>
               </el-menu-item>
-              <el-menu-item :key="index" :index="x.label" v-else>{{x.label}}</el-menu-item>
+              <el-menu-item :key="index + 222" :index="x.label" v-else>{{x.label}}</el-menu-item>
             </el-submenu>
-            <el-menu-item :key="index" :index="item.label" v-else>{{item.label}}</el-menu-item>
+            <el-menu-item :key="index + 111" :index="item.label" v-else>{{item.label}}</el-menu-item>
           </template>
         </el-menu>
         <div class="formTopRight">

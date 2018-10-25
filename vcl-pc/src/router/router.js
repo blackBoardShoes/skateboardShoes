@@ -53,8 +53,8 @@ export const appRouter = [
     meta: {
       title: '任务中心',
       navigator: true,
-      // role: [2, 3, 4, 5, 6],
-      role: [1, 2, 3, 4, 5, 6],
+      role: [2, 3, 4, 5, 6],
+      // role: [1, 2, 3, 4, 5, 6],
       icon: 'module-task'
     },
     component: Layout,
@@ -65,8 +65,8 @@ export const appRouter = [
         meta: {
           title: '任务中心',
           navigator: true,
-          // role: [2, 3, 4, 5, 6]
-          role: [1, 2, 3, 4, 5, 6]
+          role: [2, 3, 4, 5, 6]
+          // role: [1, 2, 3, 4, 5, 6]
         },
         component: () => import('../../src/views/rules/index.vue')
       },
@@ -76,7 +76,7 @@ export const appRouter = [
         meta: {
           title: '总表',
           navigator: false,
-          role: [1, 2, 3, 4, 5, 6]
+          role: [2, 3, 4, 5, 6]
         },
         component: () => import('../../src/views/rules/zb.vue')
       },
@@ -86,7 +86,7 @@ export const appRouter = [
         meta: {
           title: '数据录入',
           navigator: false,
-          role: [1, 2, 3, 4, 5, 6]
+          role: [2, 3, 4, 5, 6]
         },
         component: () => import('../../src/views/rules/lr.vue')
       },
@@ -96,7 +96,7 @@ export const appRouter = [
         meta: {
           title: '数据审核',
           navigator: false,
-          role: [1, 2, 3, 4, 5, 6]
+          role: [2, 3, 4, 5, 6]
         },
         component: () => import('../../src/views/rules/sh.vue')
       },
@@ -106,7 +106,7 @@ export const appRouter = [
         meta: {
           title: '数据修正',
           navigator: false,
-          role: [1, 2, 3, 4, 5, 6]
+          role: [2, 3, 4, 5, 6]
         },
         component: () => import('../../src/views/rules/xz.vue')
       },
@@ -116,7 +116,7 @@ export const appRouter = [
         meta: {
           title: '随访',
           navigator: false,
-          role: [1, 2, 3, 4, 5, 6]
+          role: [2, 3, 4, 5, 6]
         },
         component: () => import('../../src/views/rules/sf.vue')
       }
