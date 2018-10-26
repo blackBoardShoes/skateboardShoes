@@ -96,7 +96,7 @@
 <script>
 import { mapState } from 'vuex'
 import sxMinTable from '../../components/dynamicForm/minTable'
-import { record, formdataDelete, recordAllRecord, formdataRejectedFilledForm, formdataFinishedFilledForm, formdataUndoneFilledForm, patientGetPatientCount, patientAddPatient } from '../../api/rules/index.js'
+import { record, formdataDelete, recordAllRecord, formdataRejectedFilledForm, formdataFinishedFilledForm, formdataUndoneFilledForm, formdataFollowUpFilledForm, patientGetPatientCount, patientAddPatient } from '../../api/rules/index.js'
 import { addressData } from '../../data/address/addressData.js'
 import { formdataSave } from '../../api/rules/lr.js'
 export default {
@@ -258,10 +258,10 @@ export default {
         ],
         // 待随访 ---> 住院号 编号 姓名 性别 主管医生 术后诊断 出院日期 记录者 状态（待问询、已失联、待复查） 操作（编辑）
         followUpColumn: [
-          { prop: 'zyh', label: '住院号' },
-          { prop: 'bh', label: '编号' },
-          { prop: 'name', label: '姓名' },
-          { prop: 'sex', label: '性别', sortable: true },
+          { prop: 'patientId', label: '住院号' },
+          // { prop: 'operationNum', label: '编号' },
+          { prop: 'patientName', label: '姓名' },
+          { prop: 'gender', label: '性别', sortable: true },
           { prop: 'name', label: '主管医生' },
           { prop: 'name', label: '术后诊断' },
           { prop: 'name', label: '出院日期' },
@@ -364,7 +364,8 @@ export default {
       recordAllRecordTableData: [],
       pendingEntryColumnTableData: [],
       toBeAuditedColumnTableData: [],
-      toBeAmendedColumnTableData: []
+      toBeAmendedColumnTableData: [],
+      followUpColumnTableData: []
     }
   },
   computed: mapState({
@@ -458,6 +459,7 @@ export default {
         case '科研护士':
           await this.formdataUndoneFilledFormShowData()
           await this.formdataRejectedFilledFormShowData()
+          await this.formdataFollowUpFilledFormShowData()
           // 总表, 待录入, 待修正, 待随访
           break
       }
@@ -494,6 +496,9 @@ export default {
           }
           break
         case 'followUpColumn':
+          for (let i in this.followUpColumnTableData) {
+            this.$set(this.tableData, i, this.followUpColumnTableData[i])
+          }
           console.log('followUpColumn')
           break
       }
@@ -587,6 +592,22 @@ export default {
       }
       return false
     },
+    // 待随访
+    async formdataFollowUpFilledFormShowData () {
+      let z = await formdataFollowUpFilledForm(Object.assign({currentPage: this.currentPage, perPage: this.perPage, searchPattern: this.lookupFormInputData}, this.user))
+      if (z ? z.data.entity : false) {
+        this.followUpColumnTableData = []
+        for (let i of z.data.entity.data) {
+          this.followUpColumnTableData.push(Object.assign(i, i.header))
+          if (i.gender) i.gender = '男'
+          else i.gender = '女'
+        }
+        // this.total = z.data.entity.total
+        this.$set(this.rulesContainTopModel, 'followUpColumn', z.data.entity.total)
+        return true
+      }
+      return false
+    },
     async lookupFormInput () {
       let successOrFail = false
       switch (this.activeRow.key) {
@@ -603,7 +624,7 @@ export default {
           successOrFail = await this.formdataRejectedFilledFormShowData()
           break
         case 'followUpColumn':
-          console.log('followUpColumn')
+          successOrFail = await this.formdataFollowUpFilledFormShowData()
           break
       }
       this.show()

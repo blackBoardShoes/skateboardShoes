@@ -27,6 +27,10 @@ export const formdataFinishedFilledForm = data => {
 export const formdataRejectedFilledForm = data => {
   return axios.get(api + '/formdata/rejectedFilledForm', { params: data })
 }
+// 待随访 /formdata/followUpFilledForm
+export const formdataFollowUpFilledForm = data => {
+  return axios.get(api + '/formdata/followUpFilledForm', { params: data })
+}
 // 获取患者信息
 var CancelToken = axios.CancelToken
 var cancel

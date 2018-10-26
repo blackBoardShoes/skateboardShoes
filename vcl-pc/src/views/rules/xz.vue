@@ -15,7 +15,8 @@
           <el-menu-item :index="activeIndexNav">{{activeIndexNav}}</el-menu-item>
         </el-menu>
         <div class="formTopRight">
-          患者: <span style="color: #117FD1;opacity: 0.9">{{patientInfo.patientName}}</span>&nbsp;({{parseInt(patientInfo.gender) ? '男' : '女'}})&nbsp;&nbsp;&nbsp;&nbsp;
+          患者: <span style="color: #117FD1;opacity: 0.9">{{patientInfo.patientName}}</span>
+          &nbsp;({{(patientInfo.gender === '男' | patientInfo.gender === '1') ? '男' : (patientInfo.gender === '女' | patientInfo.gender === '0') ? '女' : '无'}})&nbsp;&nbsp;&nbsp;&nbsp;
           住院号: {{patientInfo.patientId}}
         </div>
       </div>
