@@ -42,7 +42,7 @@ export default {
         },
         {
           icon: 'ercp-icon-module-patient',
-          title: '入组病案',
+          title: '入组记录',
           path: 'patientCase'
         },
         {

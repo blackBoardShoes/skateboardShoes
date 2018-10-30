@@ -45,3 +45,13 @@ export const getAllFormTemplates = data => {
 export const getRecordById = data => {
   return axios.get(api + `/record/${data}`)
 }
+
+// 性别统计
+export const getDataByGender = data => {
+  return axios.get(dali + `/patient/getPatientCountByGender`)
+}
+
+// 地区
+export const getDataByArea = data => {
+  return axios.get(dali + `/patient/getPatientCountByAddress`)
+}

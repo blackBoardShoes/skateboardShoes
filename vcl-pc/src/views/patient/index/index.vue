@@ -178,7 +178,7 @@
 import textRadio from '../../../components/textRadio/textRadio'
 import {addressData} from '../../../data/address/addressData'
 import {charts} from '../../../data/chartTemplates/chart'
-import { getAllPatient, searchPatient } from '../../../api/patient/patient.js'
+import { getAllPatient, searchPatient, getDataByGender, getDataByArea } from '../../../api/patient/patient.js'
 export default {
   name: 'patient_index',
   components: {
@@ -186,7 +186,7 @@ export default {
   },
   data () {
     return {
-      patientAccount: 9527,
+      patientAccount: 0,
       tableData: [
       ],
       searchText: '',
@@ -264,11 +264,49 @@ export default {
       // addressOption: []
     }
   },
+  mounted () {
+    this.addressOption = addressData
+    this.getPatient(10, 1)
+    this.initCharts()
+  },
   methods: {
     // 初始化图表信息
     initCharts () {
       this.optionA = charts[1]
       this.optionB = charts[2]
+      this.dataByGender()
+      this.dataByArea()
+    },
+    async dataByGender () {
+      // 获取和同步根据性别统计
+      let response = await getDataByGender()
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response.data.entity)
+        let data = response.data.entity
+        this.optionA.title.text = data.title || ''
+        this.optionA.title.subtext = '共计' + data.total + '人' || ''
+        this.patientAccount = data.total
+        this.optionA.series[0].data = data.data || []
+        this.optionA.series[0].name = data.title || ''
+        this.optionA.legend.data = data.types
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    async dataByArea () {
+      let response = await getDataByArea()
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response.data.entity)
+        let data = response.data.entity
+        this.optionB.title.text = data.title || ''
+        this.optionB.title.subtext = '共计' + data.total + '人' || ''
+        // this.patientAccount = data.total
+        this.optionB.xAxis[0].data = data.types || []
+        this.optionB.series[0].name = data.title || ''
+        this.optionB.series[0].data = data.data
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
     },
     // 搜索患者
     async search () {
@@ -289,6 +327,28 @@ export default {
     refresh () {
       this.$message.success('从医院的his系统更新患者')
     },
+    // 列表页码信息
+    SizeChange (size) {
+      this.pageSize = size
+      this.getPatient(size, this.currentPage)
+    },
+    changePage (page) {
+      this.currentPage = page
+      this.getPatient(this.pageSize, page)
+    },
+    async getPatient (pageSize, currentPage) {
+      let info = {
+        currentPage: currentPage,
+        pageSize: pageSize
+      }
+      let response = await getAllPatient(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        this.tableData = response.data.entity.data
+        this.total = response.data.entity.total
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    }
     // 地区
     // handleChange (data) {
     //   if (data.length === 2) {
@@ -332,34 +392,7 @@ export default {
     //       return false
     //     }
     //   })
-    // },
-    // 列表页码信息
-    SizeChange (size) {
-      this.pageSize = size
-      this.getPatient(size, this.currentPage)
-    },
-    changePage (page) {
-      this.currentPage = page
-      this.getPatient(this.pageSize, page)
-    },
-    async getPatient (pageSize, currentPage) {
-      let info = {
-        currentPage: currentPage,
-        pageSize: pageSize
-      }
-      let response = await getAllPatient(info)
-      if (response.data.mitiStatus === 'SUCCESS') {
-        this.tableData = response.data.entity.data
-        this.total = response.data.entity.total
-      } else {
-        this.$message.error('ERROR: ' + response.data.message)
-      }
-    }
-  },
-  mounted () {
-    this.addressOption = addressData
-    this.getPatient(10, 1)
-    this.initCharts()
+    // }
   }
 }
 </script>

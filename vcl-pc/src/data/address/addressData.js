@@ -11526,5 +11526,9 @@ export const addressData = [{
   }]
 }, {
   value: '海外',
-  label: '海外'
+  label: '海外',
+  children: [{
+    value: '海外',
+    label: '海外'
+  }]
 }]

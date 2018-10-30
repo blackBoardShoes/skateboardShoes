@@ -151,15 +151,17 @@
             <div class="module-content">
               <!-- {{module.fields}} -->
               <div class="question-case" v-for="(question, index) in module.fields" :key="index">
-                <div class="text-question" v-if="question.type !== 'TABLE'">
-                  <span :class="{'success-text': question.type === 'TITLE'}">{{question.label}}：</span>
+                <div class="text-question" v-if="question.type !== 'TABLE' && question.label_value !== null">
+                  <span :class="{'success-text': question.type === 'TITLE', 'bolder-text': question.type === 'TITLE'}">{{question.label}}：</span>
                   <span>{{question.label_value || question.real_value}}</span>
                   <span>{{question.unit || ''}}</span>
                 </div>
-                <div class="table-question" v-else>
+                <div class="table-question" v-if="question.type === 'TABLE'">
+                  <p class="success-text bolder-text">{{question.label}}</p>
                   <div class="one-record" v-for="(item, index) in question.real_value" :key="index">
+                    <!-- <div class="table-index">{{index + 1}}</div> -->
                     <div v-for="(item2, index2) in item" :key="index2">
-                      <span :class="{'success-text': item2.type === 'TITLE'}">{{item2.label}}：</span>
+                      <span :class="{'success-text': item2.type === 'TITLE', 'bolder-text': item2.type === 'TITLE'}">{{item2.label}}：</span>
                       <span>{{item2.label_value || item2.real_value}}</span>
                       <span>{{item2.unit || ''}}</span>
                     </div>
@@ -308,21 +310,17 @@ export default {
         })
         arr.push(obj)
       })
-      // console.log(arr)
       return arr
     },
     // 转化表格数据
     tableTransform2 (tableValue) {
       let arr = []
-      // tableValue.forEach((item) => {
       tableValue[0].forEach((item2) => {
         let obj = {}
         obj.prop = item2.id
         obj.label = item2.label
         arr.push(obj)
       })
-      // })
-      // console.log(arr)
       return arr
     },
     // 混合选项和值
@@ -339,23 +337,6 @@ export default {
           if (moduleTemplate) {
             for (let field in moduleTemplate.fields) {
               // 填充模板内的值
-              // values: [
-              //   {label: '单选框', value: 'RADIO'},2
-              //   {label: '文本单选框', value: 'RADIOTEXT'},1
-              //   {label: '文本标签', value: 'TEXTAREA'},1
-              //   {label: '多选选择器', value: 'SELECTMUTIPLE'},?
-              //   {label: '日期时间选择器', value: 'DATETIME'},1
-              //   {label: '计算', value: 'CREATECALCULATE'},1
-              //   {label: '选择器', value: 'SELECT'},2
-              //   {label: '创建表格', value: 'CREATETABLE'},?
-              //   {label: '日期选择器', value: 'DATE'},1
-              //   {label: '整数类型输入框', value: 'INT'},1
-              //   {label: '多选框', value: 'CHECKBOX'},?
-              //   {label: '文本多选框', value: 'CHECKBOXTEXT'},1
-              //   {label: '输入框', value: 'INPUT'},1
-              //   {label: '级联选择器', value: 'CASCADER'},?
-              //   {label: '浮点类型输入框', value: 'DOUBLE'}1
-              // ]
               let fieldId = moduleTemplate.fields[field].id === undefined ? '' : moduleTemplate.fields[field].id
               for (let key in form.data[module]) {
                 if (moduleTemplate.fields[field].type === 'RADIO' && moduleTemplate.fields[field].values === undefined) {
@@ -387,17 +368,19 @@ export default {
     separate (tableItem) {
       let records = tableItem.real_value_first
       let arr = []
-      records.forEach((record) => {
-        let arr2 = []
-        for (let key in record) {
-          let fieldTemplate = tableItem.subFields.find((n) => n.id === key)
-          fieldTemplate.real_value = record[key]
-          // item[key]
-          this.matchValue(fieldTemplate)
-          arr2.push(fieldTemplate)
-        }
-        arr.push(arr2)
-      })
+      if (records.length > 0) {
+        records.forEach((record) => {
+          let arr2 = []
+          for (let key in record) {
+            let fieldTemplate = tableItem.subFields.find((n) => n.id === key)
+            fieldTemplate.real_value = record[key]
+            // item[key]
+            this.matchValue(fieldTemplate)
+            arr2.push(fieldTemplate)
+          }
+          arr.push(arr2)
+        })
+      }
       return arr
     },
     transformValue (value, options) {
@@ -421,56 +404,81 @@ export default {
       // {label: '多选框', value: 'CHECKBOX'},
       // {label: '级联选择器', value: 'CASCADER'},
       // {label: '创建表格', value: 'CREATETABLE'},
-      // {label: '计算', value: 'CREATECALCULATE'}
-      if (caseItem.type === ('INPUT' | 'TEXTAREA' || 'DATETIME' || 'CREATECALCULATE' || 'DATE' || 'INT' || 'DOUBLE' || 'RADIOTEXT')) {
+      // {label: '计算', value: 'CALCULATE'}
+      let textValue = ['INPUT', 'TEXTAREA', 'DATETIME', 'CALCULATE', 'DATE', 'INT', 'DOUBLE', 'RADIOTEXT']
+      if (textValue.includes(caseItem.type)) {
         // 以文本形式存的值 9
-        caseItem.label_value = caseItem.real_value
-      } else if (caseItem.type === ('RADIO')) {
+        caseItem.label_value = caseItem.real_value === '' ? null : caseItem.real_value
+      } else if (caseItem.type === 'RADIO' || caseItem.type === 'SELECT') {
         // 单选选项
         caseItem.label_value = this.transformValue(caseItem.real_value, caseItem.values)
       } else if (caseItem.type === 'CHECKBOX' || caseItem.type === 'SELECTMUTIPLE') {
         // 多选
-        let arr = []
-        caseItem.real_value.forEach((small) => {
-          arr.push(this.transformValue(small, caseItem.values))
-        })
-        let text = ''
-        arr.forEach((item, index) => {
-          text += (index + 1).toString() + '、' + (item === null ? '' : item)
-        })
-        caseItem.label_value = text
+        if (caseItem.real_value.length > 0) {
+          let arr = []
+          caseItem.real_value.forEach((small) => {
+            arr.push(this.transformValue(small, caseItem.values))
+          })
+          let text = ''
+          arr.forEach((item, index) => {
+            text += (index + 1).toString() + '、' + (item === null ? '' : item)
+          })
+          caseItem.label_value = text
+        } else {
+          caseItem.label_value = null
+        }
       } else if (caseItem.type === ('CHECKBOXTEXT')) {
+        // 多选 ['Tom', 'Jerry', null, null, 'Jackie']格式
         let text = ''
         caseItem.real_value.forEach((item, index) => {
           if (item === null) {
             caseItem.real_value.splice(index, 1)
           }
         })
-        caseItem.real_value.forEach((item, index) => {
-          text += (index + 1).toString() + '、' + (item === null ? '' : item)
-        })
-        caseItem.label_value = text
+        // 判断是否存在值，不存在则为null
+        if (caseItem.real_value.length > 0) {
+          caseItem.real_value.forEach((item, index) => {
+            text += (index + 1).toString() + '、' + (item === null ? '' : item)
+          })
+          caseItem.label_value = text
+        } else {
+          caseItem.label_value = null
+        }
       } else if (caseItem.type === ('TABLE')) {
         caseItem.real_value = this.separate(caseItem)
       } else if (caseItem.type === ('CASCADER')) {
         let arr = []
         let index2
-        caseItem.real_value.forEach((item, index) => {
+        if (caseItem.real_value.length > 0) {
+          caseItem.real_value.forEach((item, index) => {
+            let text = ''
+            if (index === 0) {
+              text += this.transformValue(item, caseItem.children)
+              index2 = caseItem.children.find((n) => n.value === item)
+            } else {
+              text += '-' + this.transformValue(item, index2.children)
+            }
+            arr.push(text)
+          })
           let text = ''
-          if (index === 0) {
-            text += this.transformValue(item, caseItem.children)
-            index2 = caseItem.children.find((n) => n.value === item)
-          } else {
-            text += '-' + this.transformValue(item, index2.children)
-          }
-          arr.push(text)
-        })
-        let text = ''
-        arr.forEach((item, index) => {
-          text += (item === null ? '' : item)
-        })
-        caseItem.label_value = text
+          arr.forEach((item, index) => {
+            text += (item === null ? '' : item)
+          })
+          caseItem.label_value = text
+        } else {
+          caseItem.label_value = null
+        }
+      } else {
+        // 其他未检索到的类型赋值为其real_value
+        caseItem.label_value = caseItem.real_value
       }
+      // if (caseItem.label_value === null) {
+      //   console.log(caseItem.type)
+      //   console.log(caseItem.real_value)
+      // }
+      // console.log(caseItem.type)
+      // console.log(caseItem.label_value)
+      // console.log(caseItem.real_value)
     }
   },
   watch: {
@@ -630,13 +638,60 @@ export default {
         }
         .table-question{
           padding: 8px;
-          border: 1px dotted #333;
           border-radius: 4px;
           margin-top: 4px;
+          .one-record{
+            margin-top: 8px;
+            padding: 8px;
+            position: relative;
+            // .table-index{
+            //   position: absolute;
+            //   width: 100px;
+            //   left: 50%;
+            //   margin-left: -50px;
+            //   // margin: 0px auto;
+            //   // left: 100px;
+            //   // right: 100px;
+            //   font-weight: 100;
+            //   top: 5px;
+            //   bottom: 5px;
+            //   font-size: 30px;
+            //   display: flex;
+            //   justify-content: center;
+            //   align-items: center;
+            //   z-index: -1;
+            //   // filter: blur(3px);
+            //   color: #666;
+            // }
+          }
+          .one-record::before{
+            content: "";
+            width: 100%;
+            height: 2px;
+            position: absolute;
+            left: 0;
+            top: -2px;
+            background: -webkit-gradient(linear,left top,left bottom,from(#999),to(#eee));
+            background: linear-gradient(180deg,#999,#eee);
+            border-radius: 50%/100% 100% 0 0;
+            transform: rotate(180deg);
+          }
+          .one-record::after{
+            content: "";
+            width: 100%;
+            height: 2px;
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            background: -webkit-gradient(linear,left top,left bottom,from(#999),to(#eee));
+            background: linear-gradient(180deg,#999,#eee);
+            border-radius: 50%/100% 100% 0 0;
+            // transform: rotate(180deg);
+          }
         }
         .table-question:hover{
           // padding: 4px;
-          background-color: #dfdfdf;
+          // background-color: #dfdfdf;
         }
       }
     }

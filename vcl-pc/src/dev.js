@@ -4,11 +4,11 @@
 // ------------
 // 服务主要地址
 // 启敏
-let host = 'http://192.168.10.249:8089'
-host = 'http://192.168.10.196:8089'
+// let host = 'http://192.168.10.249:8089'
+let host = 'http://192.168.10.196:8089'
 // let host = 'http://192.168.2.105:8089'
 // 大力
-let host2 = 'http://192.168.10.13:8090'
+// let host2 = 'http://192.168.10.13:8090'
 // yt
 // let host3 = 'http://192.168.10.216:8085'
 // fwq
@@ -50,7 +50,7 @@ let proxyTable = {
     }
   },
   '/yt': {
-    target: host2,
+    target: all,
     changeOrigin: true,
     pathRewrite: {
       '^/yt': '/'

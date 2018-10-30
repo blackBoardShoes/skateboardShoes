@@ -7,9 +7,15 @@ import store from '../store/index'
 import { Message } from 'element-ui'
 
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+// var loadingInstance
 axios.defaults.timeout = 120000
 axios.interceptors.request.use(
   config => {
+    // loadingInstance = Loading.service({
+    //   fullscreen: true,
+    //   lock: true,
+    //   text: '正在请求数据...'
+    // })
     if (store.user !== null) {
       config.headers.token = store.state.token
     } else {
@@ -30,6 +36,7 @@ axios.interceptors.request.use(
 )
 axios.interceptors.response.use(
   response => {
+    // loadingInstance.close()
     if (response.data) {
       if ('mitiStatus' in response.data) {
         console.log(response.data)
@@ -73,6 +80,7 @@ axios.interceptors.response.use(
     }
   },
   err => {
+    // loadingInstance.close()
     if (err.response) {
       switch (err.response.status) {
         case 401:

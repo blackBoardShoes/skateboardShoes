@@ -85,7 +85,10 @@
                   <span>{{record.operationNum || ''}}</span>
                 </div>
               </el-tooltip> -->
-              <span class="primary-text ercp-icon-medicine-report" @click="linkToRecord(record)"></span>
+              <span
+                :class="{'primary-text':  record.forms.find((n) => n.header.isPassed === 0) === undefined ,'light-text': record.forms.find((n) => n.header.isPassed === 0) !== undefined ,'ercp-icon-medicine-hospital':true}"
+                @click="linkToRecord(record)">
+              </span>
               <el-tooltip class="item" effect="dark" placement="top">
                 <div slot="content">{{record.inHospitalDate || ''}}</div>
                 <div class="record-title text-overflow-ellipsis">
@@ -171,8 +174,8 @@
                       </el-tooltip>
                     </div>
                     <div class="info"  v-if="item.header.phase === '术中'">
-                      <!-- <div class="case">手术日期：{{item.data.intraoperativeDiagnosisAndEvaluation.surgeryDate === undefined ? '' : item.data.intraoperativeDiagnosisAndEvaluation.surgeryDate}}</div> -->
-                      <!-- <div class="case">操作者：{{item.data.intraoperativeDiagnosisAndEvaluation.operationOperator}}</div> -->
+                      <div class="case">手术日期：{{item.data.intraoperativeDiagnosisAndEvaluation.surgeryDate === undefined ? '' : item.data.intraoperativeDiagnosisAndEvaluation.surgeryDate}}</div>
+                      <div class="case">操作者：{{item.data.intraoperativeDiagnosisAndEvaluation.operationOperator}}</div>
                     </div>
                     <div class="info"  v-if="item.header.phase === '术后'">
                       <el-tooltip class="item" effect="dark" placement="top">
@@ -195,20 +198,35 @@
                     </div>
                     <!-- 以下内容每表皆同 -->
                     <div class="info">
-                      <div class="case">记录情况 : {{item.header.responseName}}</div>
+                      <div class="case">录入情况 : {{item.header.responseName}}</div>
                       <div class="case">审核情况 : {{item.header.checkerName}}</div>
-                      <div class="case">状态 : {{ (item.header.isFinished === 0 ? '未完成' : '已完成') === '未完成' ? '未记录' : ((item.header.isPassed === 0 ? '未完成' : '已完成') === '未完成' ? '未审核' : '已审核' )}}</div>
+                      <!-- <div class="case">状态 : {{ (item.header.isFinished === 0 ? '未完成' : '已完成') === '未完成' ? '未录入' : ((item.header.isPassed === 0 ? '未完成' : '已完成') === '未完成' ? '未审核' : '已审核' )}}</div> -->
+                      <div class="case" v-if="item.header.isFinished === 0">
+                        状态：待录入
+                      </div>
+                      <!-- 已提交录入未通过未驳回 -->
+                      <div class="case" v-if="item.header.isFinished === 1 && item.header.isPassed === 0 && item.header.isRejected === 0">
+                        状态：待审核
+                      </div>
+                      <!-- 已提交录入未通过已驳回 -->
+                      <div class="case" v-if="item.header.isFinished === 1 && item.header.isPassed === 0 && item.header.isRejected === 1">
+                        状态：待修正
+                      </div>
+                      <!-- 皆可查看，但是和以上按钮无并存需要，css溢出隐藏 -->
+                      <div class="case" v-if="item.header.isFinished === 1 && item.header.isPassed === 1 && item.header.isRejected === 0">
+                        状态：已完成
+                      </div>
                     </div>
                     <div class="status">
-                      <!-- 未提交记录 -->
+                      <!-- 未提交录入 -->
                       <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 0 && userPermission.typein.permission === true" @click="operate('typein', item)">
                         录入
                       </el-button>
-                      <!-- 已提交记录未通过未驳回 -->
+                      <!-- 已提交录入未通过未驳回 -->
                       <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 1 && item.header.isPassed === 0 && item.header.isRejected === 0 && userPermission.check.permission === true" @click="operate('check', item)">
                         审核
                       </el-button>
-                      <!-- 已提交记录未通过已驳回 -->
+                      <!-- 已提交录入未通过已驳回 -->
                       <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 1 && item.header.isPassed === 0 && item.header.isRejected === 1 && userPermission.repair.permission === true" @click="operate('repair', item)">
                         修正
                       </el-button>
@@ -548,11 +566,15 @@ export default {
       }
     },
     linkToRecord (record) {
-      // console.log(record)
-      let info = {}
-      info.recordId = record.id
-      info.basicInfo = this.basicInfo
-      this.$router.push(`/patient/record/${JSON.stringify(info)}`)
+      if (record.forms.find((n) => n.header.isPassed === 0) === undefined) {
+        // console.log(record)
+        let info = {}
+        info.recordId = record.id
+        info.basicInfo = this.basicInfo
+        this.$router.push(`/patient/record/${JSON.stringify(info)}`)
+      } else {
+        this.$message.info('部分记录尚未审核通过，详情报告请在审核通过之后再查看')
+      }
     }
   }
 }
@@ -615,6 +637,7 @@ export default {
             box-sizing: border-box;
             .record-title{
               flex: 1;
+              // min-width: 120px;
               font-size: 15px;
               margin: 0 15px;
               b{
