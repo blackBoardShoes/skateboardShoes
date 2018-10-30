@@ -10,6 +10,14 @@ export const record = data => {
 export const formdataDelete = data => {
   return axios.delete(api + '/formdata/delete', { data: data })
 }
+// /record/followingup/{id} 删除
+export const formdataDeleteId = data => {
+  return axios.delete(`${api}/formdata/followingup/${data.id}`)
+}
+// 失访 /formdata/followingup/lostcontact/{id}
+export const formdataFollowingupLostcontact = data => {
+  return axios.post(`${api}/formdata/followingup/lostcontact/${data.id}`)
+}
 // TABLE
 // 总表
 export const recordAllRecord = data => {
@@ -26,6 +34,10 @@ export const formdataFinishedFilledForm = data => {
 // 待修正 rejectedFilledForm
 export const formdataRejectedFilledForm = data => {
   return axios.get(api + '/formdata/rejectedFilledForm', { params: data })
+}
+// 待随访 /formdata/followUpFilledForm
+export const formdataFollowUpFilledForm = data => {
+  return axios.get(api + '/formdata/followUpFilledForm', { params: data })
 }
 // 获取患者信息
 var CancelToken = axios.CancelToken

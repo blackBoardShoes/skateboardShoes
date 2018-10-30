@@ -96,7 +96,7 @@
 <script>
 import { mapState } from 'vuex'
 import sxMinTable from '../../components/dynamicForm/minTable'
-import { record, formdataDelete, recordAllRecord, formdataRejectedFilledForm, formdataFinishedFilledForm, formdataUndoneFilledForm, patientGetPatientCount, patientAddPatient } from '../../api/rules/index.js'
+import { formdataDeleteId, formdataFollowingupLostcontact, record, formdataDelete, recordAllRecord, formdataRejectedFilledForm, formdataFinishedFilledForm, formdataUndoneFilledForm, formdataFollowUpFilledForm, patientGetPatientCount, patientAddPatient } from '../../api/rules/index.js'
 import { addressData } from '../../data/address/addressData.js'
 import { formdataSave } from '../../api/rules/lr.js'
 export default {
@@ -224,10 +224,10 @@ export default {
           { prop: 'gender', label: '性别', sortable: true },
           { prop: 'dept', label: '科室' },
           { prop: 'bedNum', label: '床号' },
-          { prop: 'inHospitalDate', label: '入院日期' },
-          { prop: 'operationDate', label: '手术日期' },
-          { prop: 'phase', label: '数据阶段', sortable: true, width: '122' },
-          { prop: 'responseName', label: '记录者', width: '122', sortable: true },
+          { prop: 'inHospitalDate', label: '入院日期', width: 80 },
+          { prop: 'operationDate', label: '手术日期', width: 80 },
+          { prop: 'phase', label: '数据阶段', sortable: true, width: '115' },
+          { prop: 'responseName', label: '记录者', width: 100, sortable: true },
           { option: true, label: '操作', width: '130', contain: [{label: '编辑', hidden: true}, {label: '录入'}, {label: '删除', style: 'color: #FF455B'}] }
         ],
         // 待审核 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (审核
@@ -239,8 +239,8 @@ export default {
           { prop: 'dept', label: '科室' },
           { prop: 'bedNum', label: '床号' },
           { prop: 'operationDate', label: '手术日期' },
-          { prop: 'phase', label: '数据阶段', sortable: true, width: '122' },
-          { prop: 'responseName', label: '记录者', sortable: true, width: '122' },
+          { prop: 'phase', label: '数据阶段', sortable: true, width: 115 },
+          { prop: 'responseName', label: '记录者', sortable: true, width: 100 },
           { option: true, label: '操作', contain: [{label: '审核'}] }
         ],
         // 待修正 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (编辑
@@ -252,22 +252,22 @@ export default {
           { prop: 'dept', label: '科室' },
           { prop: 'bedNum', label: '床号' },
           { prop: 'operationDate', label: '手术日期' },
-          { prop: 'phase', label: '数据阶段', sortable: true },
+          { prop: 'phase', label: '数据阶段', sortable: true, width: 115 },
           { prop: 'responseName', label: '记录者', sortable: true },
           { option: true, label: '操作', contain: [{label: '编辑'}] }
         ],
-        // 待随访 ---> 住院号 编号 姓名 性别 主管医生 术后诊断 出院日期 记录者 状态（待问询、已失联、待复查） 操作（编辑）
+        // 待随访 ---> 住院号 编号 姓名 性别 主管医生 术后诊断 出院日期 记录者 状态（待问询、已失访、待复查） 操作（编辑）
         followUpColumn: [
-          { prop: 'zyh', label: '住院号' },
-          { prop: 'bh', label: '编号' },
-          { prop: 'name', label: '姓名' },
-          { prop: 'sex', label: '性别', sortable: true },
-          { prop: 'name', label: '主管医生' },
-          { prop: 'name', label: '术后诊断' },
-          { prop: 'name', label: '出院日期' },
-          { prop: 'name', label: '记录者', sortable: true },
-          { prop: 'name', label: '状态 (待问询、已失联、待复查)', sortable: true, width: 250 },
-          { option: true, label: '操作', contain: [{label: '编辑'}] }
+          { prop: 'patientId', label: '住院号' },
+          // { prop: 'operationNum', label: '编号' },
+          { prop: 'patientName', label: '姓名' },
+          { prop: 'gender', label: '性别', sortable: true },
+          { prop: 'doctor', label: '主管医生' },
+          // { prop: 'name', label: '术后诊断' },
+          { prop: 'dischargeDate', label: '出院日期' },
+          { prop: 'responseName', label: '记录者' },
+          { prop: 'isLostContact', label: '状态' },
+          { option: true, label: '操作', contain: [{label: '失访', style: 'color: #878A8D'}, {label: '编辑'}, {label: '删除', style: 'color: #FF455B'}], width: 130 }
         ]
       },
       dialogVisible: false,
@@ -364,7 +364,8 @@ export default {
       recordAllRecordTableData: [],
       pendingEntryColumnTableData: [],
       toBeAuditedColumnTableData: [],
-      toBeAmendedColumnTableData: []
+      toBeAmendedColumnTableData: [],
+      followUpColumnTableData: []
     }
   },
   computed: mapState({
@@ -458,6 +459,7 @@ export default {
         case '科研护士':
           await this.formdataUndoneFilledFormShowData()
           await this.formdataRejectedFilledFormShowData()
+          await this.formdataFollowUpFilledFormShowData()
           // 总表, 待录入, 待修正, 待随访
           break
       }
@@ -494,6 +496,9 @@ export default {
           }
           break
         case 'followUpColumn':
+          for (let i in this.followUpColumnTableData) {
+            this.$set(this.tableData, i, this.followUpColumnTableData[i])
+          }
           console.log('followUpColumn')
           break
       }
@@ -587,6 +592,34 @@ export default {
       }
       return false
     },
+    // 待随访
+    async formdataFollowUpFilledFormShowData () {
+      let z = await formdataFollowUpFilledForm(Object.assign({currentPage: this.currentPage, perPage: this.perPage, searchPattern: this.lookupFormInputData}, this.user))
+      if (z ? z.data.entity : false) {
+        this.followUpColumnTableData = []
+        for (let i of z.data.entity.data) {
+          let isLostContact = ''
+          if (i.header.isLostContact) {
+            isLostContact = '已失访'
+          }
+          this.followUpColumnTableData.push(
+            Object.assign(
+              i,
+              i.header,
+              {doctor: i.information.record ? i.information.record.forms[0].data.generalCondition.doctor : null},
+              {dischargeDate: i.information.record ? i.information.record.forms[4].data.comprehensiveAssessment.dischargeDate : null},
+              {isLostContact: isLostContact}
+            )
+          )
+          if (i.gender) i.gender = '男'
+          else i.gender = '女'
+        }
+        // this.total = z.data.entity.total
+        this.$set(this.rulesContainTopModel, 'followUpColumn', z.data.entity.total)
+        return true
+      }
+      return false
+    },
     async lookupFormInput () {
       let successOrFail = false
       switch (this.activeRow.key) {
@@ -603,7 +636,7 @@ export default {
           successOrFail = await this.formdataRejectedFilledFormShowData()
           break
         case 'followUpColumn':
-          console.log('followUpColumn')
+          successOrFail = await this.formdataFollowUpFilledFormShowData()
           break
       }
       this.show()
@@ -704,7 +737,6 @@ export default {
       return row.phase === '术中'
     },
     async operateClick (row, index, x) {
-      console.log(this.activeRow)
       let deleteBtn = true
       switch (x.label) {
         case '查看':
@@ -719,19 +751,43 @@ export default {
         case '审核':
           console.log('审核')
           break
-        default:
-          deleteBtn = false
-          this.$confirm('此操作将删除该数据', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(async _ => {
-            let fd = await formdataDelete(row)
-            if (fd) {
+        case '失访':
+          if (this.activeRow.title === '待随访') {
+            deleteBtn = false
+            let a = await formdataFollowingupLostcontact(row)
+            if (a) {
               await this.firstShow()
               this.show()
             }
-          }).catch(_ => {})
+          }
+          break
+        default:
+          deleteBtn = false
+          if (this.activeRow.title === '待随访') {
+            this.$confirm('此操作将删除该数据', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(async _ => {
+              let fd = await formdataDeleteId(row)
+              if (fd) {
+                await this.firstShow()
+                this.show()
+              }
+            }).catch(_ => {})
+          } else {
+            this.$confirm('此操作将删除该数据', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(async _ => {
+              let fd = await formdataDelete(row)
+              if (fd) {
+                await this.firstShow()
+                this.show()
+              }
+            }).catch(_ => {})
+          }
           break
       }
       if (deleteBtn) {

@@ -17,7 +17,8 @@
           <el-menu-item :index="activeIndexNav">{{activeIndexNav}}</el-menu-item>
         </el-menu>
         <div class="formTopRight">
-          患者: <span style="color: #117FD1;opacity: 0.9">{{patientInfo.patientName}}</span>&nbsp;({{parseInt(patientInfo.gender) ? '男' : '女'}})&nbsp;&nbsp;&nbsp;&nbsp;
+          患者: <span style="color: #117FD1;opacity: 0.9">{{patientInfo.patientName}}</span>
+          &nbsp;({{(patientInfo.gender === '男' | patientInfo.gender === '1') ? '男' : (patientInfo.gender === '女' | patientInfo.gender === '0') ? '女' : '无'}})&nbsp;&nbsp;&nbsp;&nbsp;
           住院号: {{patientInfo.patientId}}
         </div>
       </div>
@@ -444,7 +445,7 @@ export default {
       } else {
         console.log(this.fishData, 'this.fishData')
       }
-      console.log('truetruetruetruetrue123123123')
+      console.log(this.user, 'truetruetruetruetrue123123123')
       if (this.notVerifyingTF) {
         let fds = await formdataSave(Object.assign(this.patientInfo, {data: this.fishData}, { whatUser: this.user }))
         if (fds) {
@@ -481,7 +482,7 @@ export default {
         if (this.user.type === '科研护士') {
           for (let i of this.ubmtData.data.entity) {
             if (i.value === formModel['responseName']) {
-              this.patientInfo.header = Object.assign(this.patientInfo.header, { responseId: i.value, responseName: i.label })
+              this.patientInfo.header = Object.assign(this.patientInfo.header, { responseId: i.uuid, responseName: i.label })
             }
           }
           // this.undoneFilledFormDataMozhu
