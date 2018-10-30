@@ -10,6 +10,14 @@ export const record = data => {
 export const formdataDelete = data => {
   return axios.delete(api + '/formdata/delete', { data: data })
 }
+// /record/followingup/{id} 删除
+export const formdataDeleteId = data => {
+  return axios.delete(`${api}/formdata/followingup/${data.id}`)
+}
+// 失访 /formdata/followingup/lostcontact/{id}
+export const formdataFollowingupLostcontact = data => {
+  return axios.post(`${api}/formdata/followingup/lostcontact/${data.id}`)
+}
 // TABLE
 // 总表
 export const recordAllRecord = data => {
