@@ -79,7 +79,7 @@
                 <sx-radiography
                   ref="zyModel"
                   v-model="fishData[navArr[activeIndex].id]"
-                  v-if="navArr[activeIndex].name === '造影'"></sx-radiography>
+                  v-if="navArr[activeIndex].name === '鼻胆/胰管造影'"></sx-radiography>
               </div>
             </div>
           </div>
@@ -456,6 +456,7 @@ export default {
         if (this.$refs['zyModel']) {
           this.$refs.zyModel.saveData()
         }
+        this.notVerifyingTF = true
         console.log(this.fishData, 'this.fishData')
       }
       console.log(this.user, 'truetruetruetruetrue123123123')
@@ -576,6 +577,7 @@ $marginW: 15px;
             padding: 50px 25px;
           }
           .rightContentStatic {
+            padding: 50px 25px;
             width: $full;
           }
         }

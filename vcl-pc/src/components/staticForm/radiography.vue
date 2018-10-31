@@ -97,7 +97,7 @@
         <el-input v-model="contentModel.removeTime"></el-input>
       </el-form-item>
     </el-form>
-    {{contentModel}}
+    <!-- {{contentModel}} -->
   </div>
 </template>
 

@@ -96,7 +96,7 @@
                 <sx-radiography
                   ref="zyModel"
                   v-model="fishData[navArr[activeIndex].id]"
-                  v-if="navArr[activeIndex].name === '造影'"></sx-radiography>
+                  v-if="navArr[activeIndex].name === '鼻胆/胰管造影'"></sx-radiography>
               </div>
             </div>
           </div>

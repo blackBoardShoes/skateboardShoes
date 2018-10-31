@@ -5,8 +5,8 @@
         tubiao
       </div>
       <div class="controlContent">
-        <el-button type="primary" @click="openCreateFish">新增</el-button>
-        <el-button type="primary" @click="updateFish">更新</el-button>
+        <el-button type="primary" @click="openCreateFish" v-if="[5, 6].includes(user.codetype)">新增</el-button>
+        <!-- <el-button type="primary" @click="updateFish">更新</el-button> -->
       </div>
       <div class="rulesContain">
         <div class="rulesContainTop">
