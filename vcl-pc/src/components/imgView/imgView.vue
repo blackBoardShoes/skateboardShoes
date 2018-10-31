@@ -1,9 +1,9 @@
 <template>
   <div id="img-view">
-    <div class="title-header">
+    <!-- <div class="title-header">
       <div class="float-left"> <i class="el-icon-picture-outline"></i> 请挑选镜检照片</div>
       <div class="close" @click="closeAndCancel"><i class="el-icon-close"></i></div>
-    </div>
+    </div> -->
     <div class="img-group">
       <div class="img-choosen">
         <div class="img-choose" v-for="(img, index) in newImgArr" :key="index"  :class="{active: activeIndex === index}" @click="changeImg(img, index)">

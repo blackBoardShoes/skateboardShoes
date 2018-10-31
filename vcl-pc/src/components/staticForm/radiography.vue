@@ -234,6 +234,9 @@ export default {
       }
       console.log(this.contentModel)
       console.log(this.content)
+    },
+    clearData () {
+      this.$refs['contentModel'].resetFields()
     }
   }
 }
