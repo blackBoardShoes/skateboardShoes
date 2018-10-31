@@ -42,12 +42,12 @@
               </el-tooltip>
             </div>
             <div class="rightContentControlBtn">
-              <!-- <el-button @click="generalSubmit"
+              <el-button @click="generalSubmit"
                 v-if="navArr.length - 1 === activeIndex"
                 :disabled="activeIndexNav != patientInfo.phase">
                 <i class="ercp-icon-general-submit"></i>&nbsp;
-                阶段提交</el-button> -->
-              <div style="width: 120px;"></div>
+                完成</el-button>
+              <div style="width: 120px;" v-else></div>
               <el-button @click="generalDelete" style="color: #FF455B;" :disabled="activeIndexNav != patientInfo.phase">
                 <i class="ercp-icon-general-delete"></i>&nbsp;
                 删除</el-button>
@@ -106,8 +106,9 @@ import sxNoRouteControl from '../../components/submenu/noRouteControl'
 import sxOperationReport from '../../components/staticForm/operationReport'
 import sxRadiography from '../../components/staticForm/radiography'
 import { fieldAllForms } from '../../api/form/bdk.js'
-import { formdataSave, formdataSubmit, formdataData, userByMyType } from '../../api/rules/lr.js'
+import { formdataSave, formdataData, userByMyType } from '../../api/rules/lr.js'
 import { termbaseGetAllTermbases } from '../../api/form/syk.js'
+import { formdataFollowupPass } from '../../api/rules/sf.js'
 export default {
   name: 'rules_index',
   components: {
@@ -123,6 +124,7 @@ export default {
       showAllForms: [],
       allArr: {},
       fishData: {},
+      fishDataHeader: {},
       allFish: {
         relation: {
           pattern: {
@@ -367,6 +369,7 @@ export default {
       let a = await formdataData(this.patientInfo.id)
       if (a) {
         this.fishData = a.data.entity ? Object.assign({}, a.data.entity.data) : {}
+        this.fishDataHeader = a.data.entity ? Object.assign({}, a.data.entity.header) : {}
       }
       console.log(this.fishData, 'firstShow')
     },
@@ -425,7 +428,7 @@ export default {
       console.log(this.activeIndex)
       console.log(this.activeIndexNav)
       this.undoneFilledFormData = {}
-      if (this.user.type === '科研护士') {
+      if (this.user.type === '科研护士' || this.user.type === '科研管理员') {
         this.ubmtData = await userByMyType()
         console.log(this.ubmtData.entity)
         this.undoneFilledFormDataMozhu['科研护士'].fields[0].values = [...this.ubmtData.data.entity]
@@ -447,7 +450,8 @@ export default {
       }
       console.log(this.user, 'truetruetruetruetrue123123123')
       if (this.notVerifyingTF) {
-        let fds = await formdataSave(Object.assign(this.patientInfo, {data: this.fishData}, { whatUser: this.user }))
+        // this.patientInfo,
+        let fds = await formdataSave(Object.assign({header: this.fishDataHeader, id: this.patientInfo.id}, {data: this.fishData}, { whatUser: this.user }))
         if (fds) {
           if (this.activeIndex < this.navArr.length - 1) {
             this.smf = false
@@ -479,17 +483,17 @@ export default {
         console.log(this.fishData, 'this.fishData')
       }
       if (this.consoleDataTF) {
-        if (this.user.type === '科研护士') {
+        if (this.user.type === '科研护士' || this.user.type === '科研管理员') {
           for (let i of this.ubmtData.data.entity) {
             if (i.value === formModel['responseName']) {
-              this.patientInfo.header = Object.assign(this.patientInfo.header, { responseId: i.uuid, responseName: i.label })
+              this.fishDataHeader = Object.assign(this.fishDataHeader, { responseId: i.uuid, responseName: i.label })
             }
           }
           // this.undoneFilledFormDataMozhu
         } else {
-          this.patientInfo.header = Object.assign(this.patientInfo.header, formModel, { responseId: this.user.username })
+          this.fishDataHeader = Object.assign(this.fishDataHeader, formModel, { responseId: this.user.username })
         }
-        let fds = await formdataSubmit(Object.assign(this.patientInfo, {data: this.fishData}))
+        let fds = await formdataFollowupPass(Object.assign({header: this.fishDataHeader, id: this.patientInfo.id}, {data: this.fishData}, { whatUser: this.user }))
         console.log(fds)
         if (fds) {
           this.generalBack()

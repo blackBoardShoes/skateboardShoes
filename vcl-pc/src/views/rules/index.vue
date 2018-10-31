@@ -184,7 +184,7 @@ export default {
         { title: '待录入', key: 'pendingEntryColumn', icon: 'el-icon-delete', codetype: [1, 5, 6] },
         { title: '待审核', key: 'toBeAuditedColumn', icon: 'el-icon-delete', codetype: [1, 2, 4] },
         { title: '待修正', key: 'toBeAmendedColumn', icon: 'el-icon-delete', codetype: [1, 5, 6] },
-        { title: '待随访', key: 'followUpColumn', icon: 'el-icon-delete', codetype: [1, 6] }
+        { title: '待随访', key: 'followUpColumn', icon: 'el-icon-delete', codetype: [1, 2, 6] }
       ],
       rulesContainTopModel: {
         AlltableColumn: 0,
@@ -449,6 +449,7 @@ export default {
         case '科研管理员':
         case '临床质控员':
           await this.formdataFinishedFilledFormShowData()
+          await this.formdataFollowUpFilledFormShowData()
           // 总表, 待审核
           break
         case '诊疗中心':

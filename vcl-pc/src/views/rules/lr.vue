@@ -77,6 +77,7 @@
                 <sx-operation-report v-model="fishData[navArr[activeIndex].id]"
                   ref="ssbgModel" v-if="navArr[activeIndex].name === '手术报告'"></sx-operation-report>
                 <sx-radiography
+                  ref="zyModel"
                   v-model="fishData[navArr[activeIndex].id]"
                   v-if="navArr[activeIndex].name === '造影'"></sx-radiography>
               </div>
@@ -337,11 +338,11 @@ export default {
     user: state => state.user
   }),
   async created () {
-    console.log(this.user, 'useruseruser')
     if (this.$route.params.data) {
       this.patientInfo = JSON.parse(this.$route.params.data)
       this.activeIndexNav = this.patientInfo.phase
     }
+    console.log(this.patientInfo, 'patientInfopatientInfopatientInfo')
     await this.firstShow()
     await this.init()
     this.show()
@@ -437,7 +438,16 @@ export default {
       this.undoneFilledFormDialogVisible = true
     },
     generalDelete () {
-      this.$refs.thatForm.clearData()
+      if (!this.navArr[this.activeIndex].isStatic) {
+        this.$refs.thatForm.clearData()
+      } else {
+        if (this.$refs['ssbgModel']) {
+          this.$refs.ssbgModel.clearData()
+        }
+        if (this.$refs['zyModel']) {
+          this.$refs.zyModel.clearData()
+        }
+      }
     },
     async generalSave () {
       if (!this.navArr[this.activeIndex].isStatic) {
