@@ -453,6 +453,9 @@ export default {
       if (!this.navArr[this.activeIndex].isStatic) {
         await this.$refs.thatForm.notVerifying()
       } else {
+        if (this.$refs['zyModel']) {
+          this.$refs.zyModel.saveData()
+        }
         console.log(this.fishData, 'this.fishData')
       }
       console.log(this.user, 'truetruetruetruetrue123123123')
@@ -486,6 +489,9 @@ export default {
       if (!this.navArr[this.activeIndex].isStatic) {
         await this.$refs.thatForm.consoleData()
       } else {
+        if (this.$refs['zyModel']) {
+          await this.$refs.zyModel.saveData()
+        }
         this.consoleDataTF = true
         console.log(this.fishData, 'this.fishData')
       }

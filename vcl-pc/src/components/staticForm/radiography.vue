@@ -161,14 +161,14 @@ export default {
         。胆总管内
         {{"id":"choledocholithiasis","type": "SELECT","values":[{"label": "可", "value": "可"},{"label": "未", "value": "未"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
         见结石负影，
-        {{"vIf": {"id":"choledocholithiasis", "value": "可"},"label":"结石数目","labelWidth": "70px","unit": "枚，","id": "calculusAmount","type": "INPUT","validations": [{ "required": true, "message": "请输入", "trigger": "change" },{ "pattern": "^[1-9]{0,1}$|^10$", "message": "小数或整数" }]}}
-        {{"vIf": {"id":"choledocholithiasis", "value": "可"},"label":"最大结石直径","labelWidth": "100px","unit": "mm，","id": "maxCalculusDia","type": "INPUT","validations": [{ "required": true, "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]{0,2}([.]{1}[0-9]+){0,1}$|^[1-2][0-9]{0,2}([.]{1}[0-9]+){0,1}$|^300$", "message": "小数或整数0-300" }]}}
+        {{"vIf": {"id":"choledocholithiasis", "value": "可"},"label":"结石数目","labelWidth": "70px","unit": "枚，","id": "calculusAmount1","type": "INPUT","validations": [{ "required": true, "message": "请输入", "trigger": "change" },{ "pattern": "^[1-9]{0,1}$|^10$", "message": "小数或整数" }]}}
+        {{"vIf": {"id":"choledocholithiasis", "value": "可"},"label":"最大结石直径","labelWidth": "100px","unit": "mm，","id": "maxCalculusDia1","type": "INPUT","validations": [{ "required": true, "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]{0,2}([.]{1}[0-9]+){0,1}$|^[1-2][0-9]{0,2}([.]{1}[0-9]+){0,1}$|^300$", "message": "小数或整数0-300" }]}}
         肝内胆管
         {{"id":"hepatolithiasis","type": "SELECT","values":[{"label": "可", "value": "可"},{"label": "未", "value": "未"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
         见结石负影，
         {{"vIf": {"id":"hepatolithiasis", "value": "可"},"label":"结石位于","labelWidth": "70px","id":"calculusLocation","type": "SELECT","values":[{"label": "左", "value": "左"},{"label": "右", "value": "右"},{"label": "全肝内", "value": "全肝内"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
-        {{"vIf": {"id":"hepatolithiasis", "value": "可"},"label":"结石数目","labelWidth": "70px","id": "calculusAmount","type": "INPUT","validations": [{ "required": true, "message": "请输入", "trigger": "change" },{ "pattern": "^[1-9]{0,1}$|^10$", "message": "小数或整数" }]}}
-        {{"vIf": {"id":"hepatolithiasis", "value": "可"},"labelWidth": "130px","unit": "mm，","label": "枚，最大结石直径","id": "maxCalculusDia","type": "INPUT","validations": [{ "required": true, "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]{0,2}([.]{1}[0-9]+){0,1}$|^[1-2][0-9]{0,2}([.]{1}[0-9]+){0,1}$|^300$", "message": "小数或整数0-300" }]}}
+        {{"vIf": {"id":"hepatolithiasis", "value": "可"},"label":"结石数目","labelWidth": "70px","id": "calculusAmount2","type": "INPUT","validations": [{ "required": true, "message": "请输入", "trigger": "change" },{ "pattern": "^[1-9]{0,1}$|^10$", "message": "小数或整数" }]}}
+        {{"vIf": {"id":"hepatolithiasis", "value": "可"},"labelWidth": "130px","unit": "mm，","label": "枚，最大结石直径","id": "maxCalculusDia2","type": "INPUT","validations": [{ "required": true, "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]{0,2}([.]{1}[0-9]+){0,1}$|^[1-2][0-9]{0,2}([.]{1}[0-9]+){0,1}$|^300$", "message": "小数或整数0-300" }]}}
         {{"id":"contrastMediaLeakage","type": "SELECT","values":[{"label": "有", "value": "有"},{"label": "无", "value": "无"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
         造影剂外漏
         {{"vIf": {"id":"contrastMediaLeakage", "value": "有"},"label":"，部位","labelWidth": "55px","unit": "胆管。","id":"leakageLocation","type": "SELECT","values":[{"label": "肝内", "value": "肝内"},{"label": "上段", "value": "上段"},{"label": "中段", "value": "中段"},{"label": "下段", "value": "下段"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
@@ -188,12 +188,52 @@ export default {
         胰管内
         {{"id":"pancreatolithiasis","type": "SELECT","values":[{"label": "可", "value": "可"},{"label": "未", "value": "未"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
         见结石负影，
-        {{"vIf": {"id":"pancreatolithiasis", "value": "可"},"label":"结石数目","unit": "枚，","labelWidth": "70px","id": "calculusAmount","type": "INPUT","validations": [{ "required": "true", "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]+([.]{1}[0-9]+){0,1}$", "message": "小数或整数" }]}}
-        {{"vIf": {"id":"pancreatolithiasis", "value": "可"},"label":"最大结石直径","labelWidth": "100px","unit": "mm，","id": "maxCalculusDia","type": "INPUT","validations": [{ "required": "true", "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]{0,2}([.]{1}[0-9]+){0,1}$|^[1-2][0-9]{0,2}([.]{1}[0-9]+){0,1}$|^300$", "message": "小数或整数0-300" }]}}
+        {{"vIf": {"id":"pancreatolithiasis", "value": "可"},"label":"结石数目","unit": "枚，","labelWidth": "70px","id": "calculusAmount3","type": "INPUT","validations": [{ "required": "true", "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]+([.]{1}[0-9]+){0,1}$", "message": "小数或整数" }]}}
+        {{"vIf": {"id":"pancreatolithiasis", "value": "可"},"label":"最大结石直径","labelWidth": "100px","unit": "mm，","id": "maxCalculusDia3","type": "INPUT","validations": [{ "required": "true", "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]{0,2}([.]{1}[0-9]+){0,1}$|^[1-2][0-9]{0,2}([.]{1}[0-9]+){0,1}$|^300$", "message": "小数或整数0-300" }]}}
         {{"id":"contrastMediaLeakage","type": "SELECT","values":[{"label": "有", "value": "有"},{"label": "无", "value": "无"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
         造影剂外漏
         {{"vIf": {"id":"contrastMediaLeakage", "value": "有"},"labelWidth": "55px","label":"，部位","unit": "胰管。","id":"nasopancreaticTubeleakageLocation","type": "SELECT","values":[{"label": "头", "value": "头"},{"label": "颈", "value": "颈"},{"label": "体", "value": "体"},{"label": "体", "value": "尾"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
       `,
+      relation: {
+        // a
+        calculusAmount1: {
+          target: 'choledocholithiasis',
+          value: '可'
+        },
+        maxCalculusDia1: {
+          target: 'choledocholithiasis',
+          value: '可'
+        },
+        calculusLocation: {
+          target: 'hepatolithiasis',
+          value: '可'
+        },
+        calculusAmount2: {
+          target: 'hepatolithiasis',
+          value: '可'
+        },
+        maxCalculusDia2: {
+          target: 'hepatolithiasis',
+          value: '可'
+        },
+        leakageLocation: {
+          target: 'contrastMediaLeakage',
+          value: '有'
+        },
+        // b
+        calculusAmount3: {
+          target: 'pancreatolithiasis',
+          value: '可'
+        },
+        maxCalculusDia3: {
+          target: 'pancreatolithiasis',
+          value: '可'
+        },
+        nasopancreaticTubeleakageLocation: {
+          target: 'contrastMediaLeakage',
+          value: '有'
+        }
+      },
       content: [],
       contentModel: Object.assign({}, this.value),
       rules: {
@@ -237,6 +277,16 @@ export default {
     },
     clearData () {
       this.$refs['contentModel'].resetFields()
+    },
+    saveData () {
+      let newFormModels = Object.assign({}, this.contentModel)
+      // let formModels = Object.assign({}, this.formModel)
+      for (let i in this.relation) {
+        if (newFormModels[this.relation[i].target] !== this.relation[i].value) {
+          newFormModels[i] = ''
+        }
+      }
+      this.$emit('input', newFormModels)
     }
   }
 }

@@ -224,8 +224,8 @@ export default {
           { prop: 'gender', label: '性别', sortable: true },
           { prop: 'dept', label: '科室' },
           { prop: 'bedNum', label: '床号' },
-          { prop: 'inHospitalDate', label: '入院日期', width: 80 },
-          { prop: 'operationDate', label: '手术日期', width: 80 },
+          { prop: 'inHospitalDate', label: '入院日期' },
+          { prop: 'operationDate', label: '手术日期' },
           { prop: 'phase', label: '数据阶段', sortable: true, width: '115' },
           { prop: 'responseName', label: '记录者', width: 100, sortable: true },
           { option: true, label: '操作', width: '130', contain: [{label: '编辑', hidden: true}, {label: '录入'}, {label: '删除', style: 'color: #FF455B'}] }

@@ -440,12 +440,25 @@ export default {
       this.undoneFilledFormDialogVisible = true
     },
     generalDelete () {
-      this.$refs.thatForm.clearData()
+      if (!this.navArr[this.activeIndex].isStatic) {
+        this.$refs.thatForm.clearData()
+      } else {
+        if (this.$refs['ssbgModel']) {
+          this.$refs.ssbgModel.clearData()
+        }
+        if (this.$refs['zyModel']) {
+          this.$refs.zyModel.clearData()
+        }
+      }
     },
     async generalSave () {
       if (!this.navArr[this.activeIndex].isStatic) {
         await this.$refs.thatForm.notVerifying()
       } else {
+        this.notVerifyingTF = true
+        if (this.$refs['zyModel']) {
+          await this.$refs.zyModel.saveData()
+        }
         console.log(this.fishData, 'this.fishData')
       }
       console.log(this.user, 'truetruetruetruetrue123123123')
@@ -481,6 +494,9 @@ export default {
         await this.$refs.thatForm.consoleData()
       } else {
         this.consoleDataTF = true
+        if (this.$refs['zyModel']) {
+          await this.$refs.zyModel.saveData()
+        }
         console.log(this.fishData, 'this.fishData')
       }
       if (this.consoleDataTF) {

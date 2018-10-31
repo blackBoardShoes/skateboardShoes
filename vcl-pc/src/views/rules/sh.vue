@@ -89,7 +89,10 @@
                   @consoleData="consoleData"></sx-min-form>
               </div>
               <div class="rightContentStatic">
-                <sx-operation-report v-model="ssbgModel" ref="ssbgModel" v-if="navArr[activeIndex] ? navArr[activeIndex].isStatic === 'ssbg' : false"></sx-operation-report>
+                <sx-radiography
+                  ref="zyModel"
+                  v-model="fishData[navArr[activeIndex].id]"
+                  v-if="navArr[activeIndex].name === '造影'"></sx-radiography>
               </div>
             </div>
           </div>
@@ -105,7 +108,7 @@
 <script>
 import { mapState } from 'vuex'
 import sxNoRouteControl from '../../components/submenu/noRouteControl'
-import sxOperationReport from '../../components/staticForm/operationReport'
+import sxRadiography from '../../components/staticForm/radiography'
 import { fieldAllForms } from '../../api/form/bdk.js'
 import { formdataSave, formdataData } from '../../api/rules/lr.js'
 import { formdataPass, formdataReject } from '../../api/rules/sh.js'
@@ -114,7 +117,7 @@ export default {
   name: 'rules_index',
   components: {
     sxNoRouteControl,
-    sxOperationReport
+    sxRadiography
   },
   data () {
     return {

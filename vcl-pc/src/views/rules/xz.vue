@@ -91,7 +91,12 @@
                   @consoleData="consoleData"></sx-min-form>
               </div>
               <div class="rightContentStatic">
-                <sx-operation-report v-model="ssbgModel" ref="ssbgModel" v-if="navArr[activeIndex] ? navArr[activeIndex].isStatic === 'ssbg' : false"></sx-operation-report>
+                <sx-operation-report v-model="fishData[navArr[activeIndex].id]"
+                  ref="ssbgModel" v-if="navArr[activeIndex].name === '手术报告'"></sx-operation-report>
+                <sx-radiography
+                  ref="zyModel"
+                  v-model="fishData[navArr[activeIndex].id]"
+                  v-if="navArr[activeIndex].name === '造影'"></sx-radiography>
               </div>
             </div>
           </div>
@@ -108,6 +113,7 @@
 import { mapState } from 'vuex'
 import sxNoRouteControl from '../../components/submenu/noRouteControl'
 import sxOperationReport from '../../components/staticForm/operationReport'
+import sxRadiography from '../../components/staticForm/radiography'
 import { fieldAllForms } from '../../api/form/bdk.js'
 import { formdataSave, formdataData, formdataSubmit } from '../../api/rules/lr.js'
 
@@ -115,7 +121,8 @@ export default {
   name: 'rules_index',
   components: {
     sxNoRouteControl,
-    sxOperationReport
+    sxOperationReport,
+    sxRadiography
   },
   data () {
     return {
@@ -761,7 +768,10 @@ export default {
       this.$refs.thatForm.deleteError(val)
     },
     async generalSubmit () {
-      this.$refs.thatForm.consoleData()
+      await this.$refs.thatForm.consoleData()
+      if (this.$refs['zyModel']) {
+        await this.$refs.zyModel.saveData()
+      }
       let fds = await formdataSubmit(Object.assign(this.patientInfo, {data: this.fishData}))
       console.log(fds)
       if (fds) {
@@ -769,7 +779,10 @@ export default {
       }
     },
     async generalSave () {
-      this.$refs.thatForm.notVerifying()
+      await this.$refs.thatForm.notVerifying()
+      if (this.$refs['zyModel']) {
+        await this.$refs.zyModel.saveData()
+      }
       let fds = await formdataSave(Object.assign(this.patientInfo, { data: this.fishData, comments: this.fishDataComments, whatUser: this.user }))
       console.log(fds)
     },
