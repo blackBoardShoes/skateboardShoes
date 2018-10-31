@@ -7,7 +7,7 @@
         </div>
         <!-- 患者基本信息 -->
         <div class="basic-information" >
-          <el-form ref="basicForm" :rules="rules" :model="basicInfo" label-position="left" label-width="100px"  :disabled="editable">
+          <el-form ref="basicForm" :rules="rules" :model="basicInfo" label-position="left" label-width="80px"  :disabled="editable">
             <el-row>
               <el-col :span="8">
                 <el-form-item label="住院号:" prop="hospitalId">
@@ -241,6 +241,113 @@
             </div>
           </div>
         </div>
+        <div class="hospital-record" v-for="(record, index) in patientRecords" :key="index">
+          <div class="record-case">
+            <div class="records-title" @click="activeIndex = activeIndex === index ? -1 : index ">
+              <div :class="{'record-icon-up': true, 'record-icon-down': activeIndex === index}">
+                <span class="ercp-icon-general-next light-text"></span>
+              </div>
+            </div>
+            <div class="follow-record"  :class="{'active-class': activeIndex === index + patientRecords.length}">
+              <div v-if="activeIndex === index + patientRecords.length" class="prev" @click="next('content' + record.id)"><i class="el-icon-arrow-left"></i></div>
+              <div v-if="activeIndex === index + patientRecords.length" class="next" @click="prev('content' + record.id)"><i class="el-icon-arrow-right"></i></div>
+              <div class="content" :ref="'content' + record.id">
+                <div class="er-card" v-for="(item, index) in record.forms" :key="index">
+                  <div class="card-title">
+                    {{item.header.phase}}
+                    <span v-if="item.header.phase === '术前' || item.header.phase === '术中' || item.header.phase === '术后'">
+                      ({{item.header.operationNum}})
+                    </span>
+                    <!-- <span class="ercp-icon-medicine-report primary-text"></span> -->
+                  </div>
+                  <div class="card-content">
+                    <!-- 以下内容每表不一 -->
+                    <div class="info"  v-if="item.header.phase === '住院基本情况'">
+                      <div class="case">有无胆囊：{{valueTransLabel(item.data.previousHistory.cholecystectomy, 'previousHistory', 'cholecystectomy')}}</div>
+                      <div class="case">无ERCP相关操作史：{{valueTransLabel(item.data.previousHistory.oph, 'previousHistory', 'oph')}}</div>
+                    </div>
+                    <div class="info"  v-if="item.header.phase === '术前'">
+                      <el-tooltip class="item" effect="dark" placement="top">
+                        <div slot="content">
+                          <span v-for="(disease, index) in (record.forms.find((n) => n.header.phase === '术前')) === undefined ? '' :valueTransLabel((record.forms.find((n) => n.header.phase === '术前')).data.preoperativeRecord.preoperativeDiagnosis, 'preoperativeRecord', 'preoperativeDiagnosis', 'diseaseName')" :key="index">
+                              {{disease}}
+                          </span>
+                        </div>
+                        <div class="case one-case">术前诊断：
+                          <span v-for="(disease, index) in (record.forms.find((n) => n.header.phase === '术前')) === undefined ? '' :valueTransLabel((record.forms.find((n) => n.header.phase === '术前')).data.preoperativeRecord.preoperativeDiagnosis, 'preoperativeRecord', 'preoperativeDiagnosis', 'diseaseName')" :key="index">
+                            {{disease}}
+                          </span>
+                        </div>
+                      </el-tooltip>
+                    </div>
+                    <div class="info"  v-if="item.header.phase === '术中'">
+                      <div class="case">手术日期：{{item.data.intraoperativeDiagnosisAndEvaluation.surgeryDate === undefined ? '' : item.data.intraoperativeDiagnosisAndEvaluation.surgeryDate}}</div>
+                      <div class="case">操作者：{{item.data.intraoperativeDiagnosisAndEvaluation.operationOperator}}</div>
+                    </div>
+                    <div class="info"  v-if="item.header.phase === '术后'">
+                      <el-tooltip class="item" effect="dark" placement="top">
+                        <div slot="content">
+                          <span v-for="(disease, index) in (record.forms.find((n) => n.header.phase === '术后')) === undefined ? '' :valueTransLabel((record.forms.find((n) => n.header.phase === '术后')).data.postDiagnosisAndExamination.postDiagnosis, 'postDiagnosisAndExamination', 'postDiagnosis', 'diseaseName')" :key="index">
+                          {{disease}}
+                          </span>
+                        </div>
+                        <div class="case one-case">
+                          <span>入院诊断：</span>
+                          <span v-for="(disease, index) in (record.forms.find((n) => n.header.phase === '术后')) === undefined ? '' :valueTransLabel((record.forms.find((n) => n.header.phase === '术后')).data.postDiagnosisAndExamination.postDiagnosis, 'postDiagnosisAndExamination', 'postDiagnosis', 'diseaseName')" :key="index">
+                          {{disease}}
+                          </span>
+                        </div>
+                      </el-tooltip>
+                    </div>
+                    <div class="info"  v-if="item.header.phase === '出院综合评估'">
+                      <div class="case">术后住院天数：{{item.data.comprehensiveAssessment.postHospitalDays}}</div>
+                      <div class="case">总住院天数：{{item.data.comprehensiveAssessment.totalHospitalizationDays}}</div>
+                    </div>
+                    <!-- 以下内容每表皆同 -->
+                    <div class="info">
+                      <div class="case">录入情况 : {{item.header.responseName}}</div>
+                      <div class="case">审核情况 : {{item.header.checkerName}}</div>
+                      <!-- <div class="case">状态 : {{ (item.header.isFinished === 0 ? '未完成' : '已完成') === '未完成' ? '未录入' : ((item.header.isPassed === 0 ? '未完成' : '已完成') === '未完成' ? '未审核' : '已审核' )}}</div> -->
+                      <div class="case" v-if="item.header.isFinished === 0">
+                        状态：待录入
+                      </div>
+                      <!-- 已提交录入未通过未驳回 -->
+                      <div class="case" v-if="item.header.isFinished === 1 && item.header.isPassed === 0 && item.header.isRejected === 0">
+                        状态：待审核
+                      </div>
+                      <!-- 已提交录入未通过已驳回 -->
+                      <div class="case" v-if="item.header.isFinished === 1 && item.header.isPassed === 0 && item.header.isRejected === 1">
+                        状态：待修正
+                      </div>
+                      <!-- 皆可查看，但是和以上按钮无并存需要，css溢出隐藏 -->
+                      <div class="case" v-if="item.header.isFinished === 1 && item.header.isPassed === 1 && item.header.isRejected === 0">
+                        状态：已完成
+                      </div>
+                    </div>
+                    <div class="status">
+                      <!-- 未提交录入 -->
+                      <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 0 && userPermission.typein.permission === true" @click="operate('typein', item)">
+                        录入
+                      </el-button>
+                      <!-- 已提交录入未通过未驳回 -->
+                      <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 1 && item.header.isPassed === 0 && item.header.isRejected === 0 && userPermission.check.permission === true" @click="operate('check', item)">
+                        审核
+                      </el-button>
+                      <!-- 已提交录入未通过已驳回 -->
+                      <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 1 && item.header.isPassed === 0 && item.header.isRejected === 1 && userPermission.repair.permission === true" @click="operate('repair', item)">
+                        修正
+                      </el-button>
+                      <!-- 皆可查看，但是和以上按钮无并存需要，css溢出隐藏 -->
+                      <el-button type="primary" size="mini" plain @click="operate('view', record, index)">
+                        查看
+                      </el-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -248,7 +355,7 @@
 <script>
 import textRadio from '../../../components/textRadio/textRadio'
 import {addressData} from '../../../data/address/addressData'
-import {getPatientBasic, deletePatient, editPatientBasic, getPatientRecords, getAllFormTemplates} from '../../../api/patient/patient.js'
+import {getPatientBasic, deletePatient, editPatientBasic, getPatientRecords, getPatientFollows, getAllFormTemplates} from '../../../api/patient/patient.js'
 export default {
   name: 'patient_detail',
   components: {
@@ -338,13 +445,15 @@ export default {
       // 患者的表单记录
       patientRecords: [],
       // 所有表单的模板
-      allTemplates: []
+      allTemplates: [],
+      followRecords: []
     }
   },
   mounted () {
     this.addressOption = addressData
     this.getPatient()
     this.getPatientRec()
+    this.getPatientFollow()
     this.getFormTemplate()
     // console.log(this.$store.state.user)
     this.initPermission(this.$store.state.user.codetype)
@@ -475,6 +584,16 @@ export default {
         this.$message.error('ERROR: ' + response.data.message)
       }
     },
+    async getPatientFollow () {
+      let info = this.NumInHospital
+      let response = await getPatientFollows(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response.data.entity)
+        this.followRecords = response.data.entity
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
     // 获取表单模板字段等
     async getFormTemplate () {
       // let info = this.NumInHospital
@@ -574,6 +693,10 @@ export default {
         this.$router.push(`/patient/record/${JSON.stringify(info)}`)
       } else {
         this.$message.info('部分记录尚未审核通过，详情报告请在审核通过之后再查看')
+        let info = {}
+        info.recordId = record.id
+        info.basicInfo = this.basicInfo
+        this.$router.push(`/patient/record/${JSON.stringify(info)}`)
       }
     }
   }

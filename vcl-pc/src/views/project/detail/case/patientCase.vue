@@ -68,32 +68,163 @@
       </el-pagination>
     </div>
     <div :class="{'filter': true, 'filter-disapper': !addCase}">
-      <div class="filter-head"><span class="ercp-icon-module-patient primary-text"></span> -  设置入组条件 <span class="ercp-icon-general-next" @click="addCase = false"></span> </div>
+      <div class="filter-head">设置入组条件 <span class="ercp-icon-general-next" @click="addCase = false"></span> </div>
       <div class="filter-condition">
-        <div class="basic-info-filter" v-for="(info, index) in basicList" :key="index + 111" style="background-color:teal;">
-          {{index}}
-          <div class="case" v-for="(value, key ,index2) in info" :key="index2 + key">
-            {{key}}
+        <div class="basic-info-filter" v-for="(info, index) in hospitalRecords" :key="index + 111">
+          <!-- 第一步：选择字段 -->
+          <div class="case">
+            <el-cascader
+              placeholder="请选择住院信息字段"
+              style="width:100%;"
+              :options="recordSelectOptions"
+              v-model="info.field.value"
+              @change="changeRelaAndTarget(info.field, index)">
+            </el-cascader>
+          </div>
+          <!-- 第二步：选择关系（等于大于小于包含不包含） -->
+          <div class="case">
+            <el-select
+              v-model="info.relation.value"
+              placeholder="请选择住院信息筛选"
+              v-if="info.relation.type !== ''">
+              <el-option
+                v-for="item in (relationOptions.find((n) => n.type.includes(info.relation.type))).typeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+          <!-- 第三步：选择目标值 -->
+          <div class="case">
+            <!-- 文本 -->
+            <el-input
+              placeholder="请填写住院信息目标值"
+              style="width:95%;"
+              v-if="relationOptions[0].type.includes(info.target.type)"
+              v-model="info.target.value">
+            </el-input>
+            <!-- 单选 -->
+            <el-select
+              v-model="info.target.value"
+              placeholder="请选择住院信息目标值"
+              v-if="relationOptions[1].type.includes(info.target.type)">
+              <el-option
+                v-for="item in info.target.options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <!-- 级联 -->
+            <el-cascader
+              v-if="relationOptions[3].type.includes(info.target.type)"
+              :options="info.target.options"
+              placeholder="请选择住院信息目标值"
+              v-model="info.target.value">
+            </el-cascader>
+            <!-- 时间 -->
+            <el-date-picker
+              value-format="yyyy-MM-dd"
+              style="width:100%;"
+              v-if="relationOptions[4].type.includes(info.target.type)"
+              v-model="info.target.value"
+              type="date"
+              placeholder="选择日期">
+            </el-date-picker>
+            <!-- 时间日期 -->
+            <el-date-picker
+              value-format="yyyy-MM-dd HH:mm:ss"
+              style="width:100%;"
+              v-if="relationOptions[5].type.includes(info.target.type)"
+              v-model="info.target.value"
+              type="datetime"
+              placeholder="选择日期时间">
+            </el-date-picker>
           </div>
           <div class="add-case">
-            <el-button type="text" size="mini" class="el-icon-plus" @click="addOne(1)"></el-button>
-            <el-button type="text" size="mini" class="el-icon-minus" @click="deleteOne(1, index)"></el-button>
+            <el-button type="text" size="mini" class="ercp-icon-general-decrease" @click="deleteOne(1, index)"></el-button>
+            <el-button type="text" size="mini" class="ercp-icon-general-append" @click="addOne(1)"></el-button>
           </div>
         </div>
-        <div class="record-info-filter" v-for="(record, index) in recordList" :key="index + 222" style="background-color:orange;">
-          {{index}}
-          <div class="case" v-for="(value, key ,index2) in record" :key="index2 + key">
-            {{key}}
+        <div class="record-info-filter" v-for="(record, index) in basicInfomations" :key="index + 222">
+                    <!-- 第一步：选择字段 -->
+          <div class="case">
+            <el-cascader
+              placeholder="请选择基本信息字段"
+              style="width:100%;"
+              :options="record.field.options"
+              v-model="record.field.value"
+              @change="changeRelaAndTarget2(record.field, index)">
+            </el-cascader>
+          </div>
+          <!-- 第二步：选择关系（等于大于小于包含不包含） -->
+          <div class="case">
+            <el-select
+              v-model="record.relation.value"
+              v-if="record.field.value.length > 0"
+              placeholder="请选择基本信息筛选">
+              <el-option
+                v-for="item in record.relation.options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+          <!-- 第三步：选择目标值 -->
+          <div class="case">
+            <el-select
+              v-if="record.field.value[1] === 'gender' || record.field.value[1] === 'nation'"
+              :allow-create="record.field.value[1] === 'nation'"
+              :filterable="record.field.value[1] === 'nation'"
+              v-model="record.target.value"
+              :placeholder="record.field.value[1] === 'nation' ? '请选择或填写民族' : '请选择性别'">
+              <el-option
+                v-for="item in record.target.options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <el-cascader
+              v-if="record.field.value[1] === 'dizhi'"
+              :options="addressOption"
+              placeholder="请选择常住地址"
+              v-model="record.target.value">
+            </el-cascader>
           </div>
           <div class="add-case">
-            <el-button type="text" size="mini" class="el-icon-plus" @click="addOne(2)"></el-button>
-            <el-button type="text" size="mini" class="el-icon-minus" @click="deleteOne(2, index)"></el-button>
+            <el-button type="text" size="mini" class="ercp-icon-general-decrease" @click="deleteOne(2, index)"></el-button>
+            <el-button type="text" size="mini" class="ercp-icon-general-append" @click="addOne(2)"></el-button>
           </div>
         </div>
-        <div class="other-info-filter"  style="background-color:pink;">
-          时间筛选
+        <div class="other-info-filter">
+          <div class="case1">
+            <span class="light-text">手术日期</span>
+            <el-date-picker
+              v-model="operateTime"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期">
+            </el-date-picker>
+          </div>
+          <div class="case2">
+            <span class="light-text">出院日期</span>
+            <el-date-picker
+              v-model="leaveTime"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期">
+            </el-date-picker>
+          </div>
         </div>
-        <div class="operate-space"  style="background-color:skyblue;">操作区域</div>
+        <div class="operate-space">
+          <el-button type="primary" size="medium">开始检索</el-button>
+          <el-button type="primary" size="medium">全部入组</el-button>
+        </div>
       </div>
       <div class="filter-cases">
         <el-table
@@ -104,10 +235,6 @@
           size="medium"
           border
           fit>
-          <el-table-column
-            type="selection"
-            width="55">
-          </el-table-column>
           <el-table-column
             prop="hospNum"
             align="center"
@@ -167,6 +294,7 @@
   </div>
 </template>
 <script>
+import {addressData} from '../../../../data/address/addressData'
 import {getAllFormTemplates} from '../../../../api/patient/patient.js'
 export default {
   name: 'Project_detail_member',
@@ -212,59 +340,120 @@ export default {
       currentPage: 1,
       total: 40,
       addCase: true,
-      basicList: [],
-      basicItem: {
-        module: {
-          value: '',
-          options: []
-        },
+      hospitalRecords: [],
+      hospitalExample: {
         field: {
-          value: '',
+          value: [],
           options: []
         },
         relation: {
           value: '',
-          options: []
+          options: [],
+          type: ''
         },
         target: {
           value: '',
-          options: []
-        },
-        andOr: {
-          value: '',
-          options: []
+          options: [],
+          type: ''
         }
       },
-      recordList: [],
-      recordItem: {
-        module: {
-          value: '',
-          options: []
-        },
+      basicInfomations: [],
+      basicExample: {
         field: {
-          value: '',
-          options: []
+          value: [],
+          options: [
+            {
+              label: '基本信息',
+              value: 'basic',
+              children: [
+                {label: '性别', value: 'gender'},
+                {label: '民族', value: 'nation'},
+                {label: '常住地址', value: 'dizhi'}
+              ]
+            }
+          ],
+          type: ''
         },
         relation: {
           value: '',
-          options: []
+          options: [
+            {label: '等于', value: 'equal'},
+            {label: '不等于', value: 'unequal'}
+          ],
+          type: ''
         },
         target: {
-          value: '',
-          options: []
-        },
-        andOr: {
-          value: '',
-          options: []
+          value: [],
+          options: [],
+          type: ''
         }
       },
-      recordTemplates: []
+      addressOption: [],
+      recordTemplates: [],
+      recordSelectOptions: [],
+      relationOptions: [
+        // 文本单选
+        {
+          type: ['INPUT', 'TEXTAREA', 'CALCULATE', 'INT', 'DOUBLE', 'RADIOTEXT'],
+          typeOptions: [
+            {label: '等于', value: 'equal'},
+            {label: '不等于', value: 'unequal'},
+            {label: '大于', value: 'morethan'},
+            {label: '小于', value: 'lessthan'}
+          ]
+        },
+        // 选项
+        {
+          type: ['RADIO', 'SELECT'],
+          typeOptions: [
+            {label: '等于', value: 'equal'},
+            {label: '不等于', value: 'unequal'}
+          ]
+        },
+        // 多选系列，值为文本
+        {
+          type: ['CHECKBOX', 'SELECTMUTIPLE', 'CHECKBOXTEXT'],
+          typeOptions: [
+            {label: '等于', value: 'equal'}
+          ]
+        },
+        // 级联
+        {
+          type: ['CASCADER'],
+          typeOptions: [
+            {label: '等于', value: 'equal'}
+          ]
+        },
+        // 日期
+        {
+          type: ['DATE'],
+          typeOptions: [
+            {label: '等于', value: 'equal'},
+            {label: '不等于', value: 'unequal'},
+            {label: '大于', value: 'morethan'},
+            {label: '小于', value: 'lessthan'}
+          ]
+        },
+        // 日期时间
+        {
+          type: ['DATETIME'],
+          typeOptions: [
+            {label: '等于', value: 'equal'},
+            {label: '不等于', value: 'unequal'},
+            {label: '大于', value: 'morethan'},
+            {label: '小于', value: 'lessthan'}
+          ]
+        }
+      ],
+      leaveTime: [],
+      operateTime: []
     }
   },
   mounted () {
+    this.addressOption = addressData
     this.getFormTemplate()
-    this.initComponent(this.basicList, this.basicItem)
-    this.initComponent(this.recordList, this.recordItem)
+    this.initComponent(this.hospitalRecords, this.hospitalExample)
+    this.initComponent(this.basicInfomations, this.basicExample)
   },
   methods: {
     viewCase (value) {
@@ -279,6 +468,12 @@ export default {
       console.log(page)
       // this.getProject(this.pageSize, page)
     },
+    add () {
+      this.addCase = true
+    },
+    clear () {
+      this.$message.warning('清空案例')
+    },
     // 以下为筛选条件的代码区域
     // 获取表单模板
     async getFormTemplate () {
@@ -286,15 +481,92 @@ export default {
       if (response.data.mitiStatus === 'SUCCESS') {
         console.log(response.data.entity)
         this.recordTemplates = response.data.entity
+        this.initFieldOptions()
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
     },
-    add () {
-      this.addCase = true
+    initFieldOptions () {
+      let arr = this.recordTemplates
+      let arr2 = [
+        {value: '住院基本情况', label: '住院基本情况', children: []},
+        {value: '术前', label: '术前', children: []},
+        {value: '术中', label: '术中', children: []},
+        {value: '术后', label: '术后', children: []},
+        {value: '出院综合评估', label: '出院综合评估', children: []}
+      ]
+      arr.forEach((module) => {
+        module.label = module.name
+        module.value = module.id
+        if (module.fields) {
+          module.children = module.fields
+          module.children.forEach((field) => {
+            field.value = field.id
+            field.reference = field.values === undefined ? [] : field.values
+            if (field.subFields.length > 0) {
+              field.children = field.subFields
+              field.children.forEach((subField) => {
+                subField.value = subField.id
+                subField.reference = subField.values === undefined ? [] : subField.values
+                subField.children = null
+              })
+            } else {
+              field.children = null
+            }
+          })
+        }
+        arr2.forEach((item) => {
+          if (item.value === module.phase) {
+            item.children.push(module)
+          }
+        })
+      })
+      this.recordSelectOptions = arr2
     },
-    clear () {
-      this.$message.warning('清空案例')
+    changeRelaAndTarget (arr, index) {
+      let arrLen = arr.value
+      if (arrLen.length === 0) {
+        this.hospitalRecords[index].relation = {value: '', options: [], type: ''}
+        this.hospitalRecords[index].target.type = {value: '', options: [], type: ''}
+      } else {
+        let module = this.recordTemplates.find((n) => n.id === arrLen[1])
+        if (module) {
+          let field = module.fields.find((n) => n.id === arrLen[2])
+          this.hospitalRecords[index].relation = {value: '', options: [], type: field.type}
+          this.hospitalRecords[index].target = {value: '', options: field.values || field.children, type: field.type}
+          if (this.relationOptions[3].type.includes(field.type)) {
+            this.hospitalRecords[index].target.value = []
+          }
+          if (field.children) {
+            let subField = field.children.find((n) => n.id === arrLen[3])
+            this.hospitalRecords[index].relation = {value: '', options: [], type: subField.type}
+            this.hospitalRecords[index].target = {value: '', options: subField.values || subField.children, type: subField.type}
+            if (this.relationOptions[3].type.includes(subField.type)) {
+              this.hospitalRecords[index].target.value = []
+            }
+          }
+        }
+      }
+    },
+    changeRelaAndTarget2 (arr, index) {
+      this.basicInfomations[index].target.value = ''
+      this.basicInfomations[index].relation.value = ''
+      let field = arr.value[1]
+      if (field === 'gender') {
+        this.basicInfomations[index].target.options = [
+          {label: '男', value: 1},
+          {label: '女', value: 0}
+        ]
+      } else if (field === 'dizhi') {
+        this.basicInfomations[index].target.value = []
+        this.basicInfomations[index].target.options = addressData
+      } else if (field === 'nation') {
+        this.basicInfomations[index].target.options = [
+          {label: '汉族', value: '汉族'},
+          {label: '回族', value: '回族'},
+          {label: '藏族', value: '藏族'}
+        ]
+      }
     },
     initComponent (array, item) {
       let obj = Object.assign({}, item)
@@ -302,86 +574,112 @@ export default {
     },
     addOne (index) {
       if (index === 1) {
-        this.initComponent(this.basicList, this.basicItem)
+        if (this.hospitalRecordsAble) {
+          this.initComponent(this.hospitalRecords, this.hospitalExample)
+        } else {
+          this.$message.info('请先填写完毕当前一组住院记录筛选条件再新增')
+        }
       } else {
-        this.initComponent(this.recordList, this.recordItem)
+        if (this.basicInfoAble) {
+          this.initComponent(this.basicInfomations, this.basicExample)
+        } else {
+          this.$message.info('请先填写完毕当前一组基本信息筛选条件再新增')
+        }
       }
     },
     deleteOne (index, rowIndex) {
       if (index === 1) {
-        if (this.basicList.length > 1) {
-          this.basicList.splice(rowIndex, 1)
+        if (this.hospitalRecords.length > 1) {
+          this.hospitalRecords.splice(rowIndex, 1)
         } else {
-          this.$message.info('不能删除了')
+          this.$message.info('不能再删除了')
         }
       } else {
-        if (this.recordList.length > 1) {
-          this.recordList.splice(rowIndex, 1)
+        if (this.basicInfomations.length > 1) {
+          this.basicInfomations.splice(rowIndex, 1)
         } else {
-          this.$message.info('不能删除了')
+          this.$message.info('不能再删除了')
         }
       }
     }
-    // 初始化条件:
-    // initialComponent1 () {
-    //   this.item = {
-    //     selectedConditions: '',
-    //     relationship: '',
-    //     target: '',
-    //     type: '',
-    //     andOr: ''
-    //   }
-    //   this.rowOption = {
-    //     fieldOptions: [],
-    //     options1: [],
-    //     options2: [],
-    //     options3: [],
-    //     options5: []
-    //   }
-    //   let obj = Object.assign({}, this.item)
-    //   this.list.push(obj)
-    //   let obj2 = Object.assign({}, this.rowOption)
-    //   this.rowsOptions.push(obj2)
-    // },
-    // // 添加条件栏
-    // addItem1 (item) {
-    //   let flag = true;
-    //   for (let key in item) {
-    //     if (item[key] === '') {
-    //       flag = false;
-    //       this.$message({
-    //         message: '请将当前筛选条件填写完整之后，再添加新条件',
-    //         type: 'warning'
-    //       });
-    //     }
-    //   }
-    //   if (flag) {
-    //     let obj = Object.assign({}, this.item)
-    //     this.list.push(obj)
-    //     let obj2 = Object.assign({}, this.rowOption)
-    //     this.rowsOptions.push(obj2)
-    //   }
-    // },
-    // // 删除条件栏
-    // deleteItem1 (item, index) {
-    //   this.$confirm('此操作将删除当前条件 ，是否继续?', '提示', {
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'
-    //   }).then(() => {
-    //     this.list.splice(index, 1)
-    //     this.rowsOptions.splice(index, 1)
-    //     this.$message({
-    //       type: 'success',
-    //       message: '删除成功!'
-    //     })
-    //   }).catch(() => {
-    //     this.$message({
-    //       type: 'info',
-    //       message: '已取消删除'
-    //     })
-    //   })
-    // }
+  },
+  watch: {
+    hospitalRecords: {
+      handler: function (list) {
+        console.log(list)
+        this.hospitalExample = {
+          field: {
+            value: [],
+            options: []
+          },
+          relation: {
+            value: '',
+            options: [],
+            type: ''
+          },
+          target: {
+            value: '',
+            options: [],
+            type: ''
+          }
+        }
+        let flag = true
+        list.forEach((item) => {
+          for (let key in item) {
+            if (item[key].value === '' || item[key].value === []) {
+              flag = false
+            }
+          }
+        })
+        this.hospitalRecordsAble = flag
+      },
+      deep: true
+    },
+    basicInfomations: {
+      handler: function (list) {
+        console.log(list)
+        this.basicExample = {
+          field: {
+            value: [],
+            options: [
+              {
+                label: '基本信息',
+                value: 'basic',
+                children: [
+                  {label: '性别', value: 'gender'},
+                  {label: '民族', value: 'nation'},
+                  {label: '常住地址', value: 'dizhi'}
+                ]
+              }
+            ],
+            type: ''
+          },
+          relation: {
+            value: '',
+            options: [
+              {label: '等于', value: 'equal'},
+              {label: '不等于', value: 'unequal'}
+            ],
+            type: ''
+          },
+          target: {
+            value: [],
+            options: [],
+            type: ''
+          }
+        }
+        let flag = true
+        list.forEach((item) => {
+          for (let key in item) {
+            if (item[key].value === '' || item[key].value === []) {
+              flag = false
+            }
+          }
+        })
+        this.basicInfoAble = flag
+      },
+      deep: true
+    }
   }
 }
 </script>
@@ -466,16 +764,42 @@ export default {
         .basic-info-filter, .record-info-filter, .other-info-filter, .operate-space{
           min-height: 50px;
           line-height: 50px;
-          // border: 1px dotted #dfdfdf;
           padding: 0 8px;
           box-sizing: border-box;
           margin: 8px;
           display: flex;
           flex-direction: row;
+          align-items: center;
           border-radius: 3px;
+          justify-content: center;
+          .light-text{
+            margin: 0 10px;
+          }
           .case{
             flex: 1;
+            margin-left: 10px;
+            // text-align: center;
+            div{
+              width: 100%;
+            }
           }
+          .case:nth-of-type(1){
+            flex: 2;
+            margin-left: 0;
+          }
+          .add-case{
+            width: 80px;
+            text-align: center;
+          }
+        }
+        .basic-info-filter:hover, .record-info-filter:hover, .other-info-filter:hover{
+          background-color: #F3F4F5;
+        }
+        .other-info-filter{
+          display: block;
+        }
+        .operate-space{
+          text-align: center;
         }
       }
       .filter-cases{
