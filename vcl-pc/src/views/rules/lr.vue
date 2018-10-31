@@ -486,6 +486,7 @@ export default {
       if (!this.navArr[this.activeIndex].isStatic) {
         await this.$refs.thatForm.consoleData()
       } else {
+        this.consoleDataTF = true
         console.log(this.fishData, 'this.fishData')
       }
       if (this.consoleDataTF) {
@@ -500,7 +501,7 @@ export default {
           this.patientInfo.header = Object.assign(this.patientInfo.header, formModel, { responseId: this.user.username })
         }
         let fds = await formdataSubmit(Object.assign(this.patientInfo, {data: this.fishData}))
-        console.log(fds)
+        console.log(fds, 'fdsfdsfdsfdsfdsfdsfdsfdsfdsfdsfds')
         if (fds) {
           this.generalBack()
         }

@@ -480,6 +480,7 @@ export default {
       if (!this.navArr[this.activeIndex].isStatic) {
         await this.$refs.thatForm.consoleData()
       } else {
+        this.consoleDataTF = true
         console.log(this.fishData, 'this.fishData')
       }
       if (this.consoleDataTF) {
