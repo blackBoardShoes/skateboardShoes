@@ -321,7 +321,8 @@ export default {
     },
     // 查看具体患者
     viewPatient (value) {
-      this.$router.push(`/patient/detail/${value.hospitalId}`)
+      let data = JSON.stringify(value)
+      this.$router.push(`/patient/detail/${data}`)
     },
     // 更新患者列表
     refresh () {
