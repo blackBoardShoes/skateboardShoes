@@ -65,7 +65,7 @@
                 <sx-min-form
                   :question="question"
                   v-if="smf"
-                  :disabled="activeIndexNav != patientInfo.phase"
+                  :disabled="patientInfo.isFinished"
                   v-model="fishData[navArr[activeIndex].id]"
                   ref="thatForm"
                   :mozhu="navArr[activeIndex]"
