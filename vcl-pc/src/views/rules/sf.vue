@@ -41,7 +41,7 @@
                 </div>
               </el-tooltip>
             </div>
-            <div class="rightContentControlBtn">
+            <div class="rightContentControlBtn" v-if="!patientInfo.isFinished">
               <el-button @click="generalSubmit"
                 v-if="navArr.length - 1 === activeIndex"
                 :disabled="activeIndexNav != patientInfo.phase">
@@ -78,7 +78,7 @@
                   ref="ssbgModel" v-if="navArr[activeIndex].name === '手术报告'"></sx-operation-report>
                 <sx-radiography
                   v-model="fishData[navArr[activeIndex].id]"
-                  v-if="navArr[activeIndex].name === '造影'"></sx-radiography>
+                  v-if="navArr[activeIndex].name === '鼻胆/胰管造影'"></sx-radiography>
               </div>
             </div>
           </div>
@@ -342,8 +342,9 @@ export default {
     console.log(this.user, 'useruseruser')
     if (this.$route.params.data) {
       this.patientInfo = JSON.parse(this.$route.params.data)
-      this.activeIndexNav = this.patientInfo.phase
+      this.activeIndexNav = this.patientInfo.header.phase
     }
+    console.log(this.patientInfo, 'this.patientInfothis.patientInfothis.patientInfo')
     await this.firstShow()
     await this.init()
     this.show()
@@ -440,12 +441,25 @@ export default {
       this.undoneFilledFormDialogVisible = true
     },
     generalDelete () {
-      this.$refs.thatForm.clearData()
+      if (!this.navArr[this.activeIndex].isStatic) {
+        this.$refs.thatForm.clearData()
+      } else {
+        if (this.$refs['ssbgModel']) {
+          this.$refs.ssbgModel.clearData()
+        }
+        if (this.$refs['zyModel']) {
+          this.$refs.zyModel.clearData()
+        }
+      }
     },
     async generalSave () {
       if (!this.navArr[this.activeIndex].isStatic) {
         await this.$refs.thatForm.notVerifying()
       } else {
+        this.notVerifyingTF = true
+        if (this.$refs['zyModel']) {
+          await this.$refs.zyModel.saveData()
+        }
         console.log(this.fishData, 'this.fishData')
       }
       console.log(this.user, 'truetruetruetruetrue123123123')
@@ -481,6 +495,9 @@ export default {
         await this.$refs.thatForm.consoleData()
       } else {
         this.consoleDataTF = true
+        if (this.$refs['zyModel']) {
+          await this.$refs.zyModel.saveData()
+        }
         console.log(this.fishData, 'this.fishData')
       }
       if (this.consoleDataTF) {

@@ -39,11 +39,11 @@
               </el-form-item>
             </div> -->
             <div>
-              <el-button type="primary" size="small" @click="openDialogVisible">获取图像</el-button>
-              <el-button type="primary" size="small" @click="printAndBrowse">报告预览</el-button>
-              <el-button type="primary" size="small">打印报告</el-button>
+              <el-button type="primary" size="small" @click="openDialogVisible" :loading="loadingImages">获取图像</el-button>
+              <el-button type="primary" size="small" @click="printAndBrowse" :loading="loadingReport">报告预览</el-button>
             </div>
           </div>
+          <br>
           <div class="twoContentContain">
             <div class="twoContentContainEdit">
               <!-- {{contentModel}} -->
@@ -127,6 +127,58 @@
           </div> -->
         </el-collapse-item>
       </el-collapse>
+      <div ref="printAndBrowse" v-show="true">
+        <div v-for="(row, i) in contentModel.operationCheckBox" :key="i" class="showContain">
+          <div v-for="(item, index) in content[row]" :key="index">
+            <!--  && contentModel[item.id] -->
+            <div v-if="item['type']" style="height: 26px;margin-left: 1px">
+              <el-form-item
+                style="display:flex;height: 26px;width:100%"
+                v-if="item.vIf ? (Array.isArray(item.vIf.value) ? item.vIf.value.includes(contentModel[item.vIf.id]) : contentModel[item.vIf.id] === item.vIf.value) : true"
+                :label-width="item.labelWidth ? item.labelWidth : '0px'"
+                :label="item.label"
+                :prop="item.id"
+                :rules="item.validations">
+                <div style="display: flex">
+                  <el-select
+                    :style="{ width: 40 + contentModel[item.id].toString().length * 10 + 'px !important', height: '100%' }" v-if="item['type'] === 'SELECT'" v-model="contentModel[item.id]" placeholder="">
+                    <el-option
+                      v-for="option in item.values"
+                      :key="option.value"
+                      :label="option.label"
+                      :value="option.value">
+                    </el-option>
+                  </el-select>
+                  <el-input :style="{ width: 40 + contentModel[item.id].toString().length * 6 + 'px !important', height: '100%' }"
+                    v-if="item['type'] === 'INPUT'" v-model="contentModel[item.id]"></el-input>
+                  <div style="max-width: 200px;text-align:center" v-if="item.unit">
+                    {{item.unit}}
+                  </div>
+                </div>
+                <el-date-picker
+                  :style="{ width: 40 + contentModel[item.id].toString().length * 6 + 'px !important', height: '100%' }"
+                  v-if="item['type'] === 'DATE'"
+                  v-model="contentModel[item.id]"
+                  type="date"
+                  format="yyyy/MM/dd"
+                  value-format="yyyy/MM/dd"
+                  placeholder="">
+                </el-date-picker>
+                <el-radio-group
+                  style="min-width: 100px"
+                  v-if="item['type'] === 'RADIO'"
+                  v-model="contentModel[item.id]">
+                  <el-radio
+                    v-for="option in item.values"
+                    :key="option.value"
+                    :label="option.label"></el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </div>
+            <span v-else>{{item}}</span>
+          </div>
+        </div>
+      </div>
     </el-form>
     <el-dialog
       title="请挑选镜检照片"
@@ -137,22 +189,12 @@
       width="80%">
       <imgView :imgArr="imgArr" @confirmData="confirmData"></imgView>
     </el-dialog>
-    <el-dialog
-      title="请挑选镜检照片"
-      append-to-body
-      modal-append-to-body
-      v-if="dialogVisiblePrintAndBrowse"
-      :visible.sync="dialogVisiblePrintAndBrowse"
-      width="80%">
-      <div id="printAndBrowse">
-        aaaa<div style="color: red">5555</div>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import imgView from '../../components/imgView/imgView.vue'
+import { formdataGetPeroperative } from '../../api/rules/lr.js'
 export default {
   components: {
     imgView
@@ -340,7 +382,8 @@ export default {
       },
       content: {},
       dialogVisible: false,
-      dialogVisiblePrintAndBrowse: false
+      loadingImages: false,
+      loadingReport: false
     }
   },
   watch: {
@@ -352,6 +395,9 @@ export default {
     }
   },
   async created () {
+    if (this.$route.params.data) {
+      this.patientInfo = JSON.parse(this.$route.params.data)
+    }
     this.$set(this.contentModel, 'operationCheckBox', [])
     await this.init()
     this.contentModel = Object.assign(this.contentModel, this.value)
@@ -402,17 +448,20 @@ export default {
     clearData () {
       this.$refs['contentModel'].resetFields()
     },
-    printAndBrowse () {
-      this.dialogVisiblePrintAndBrowse = true
+    async printAndBrowse () {
       // console.log(this.fullScream)
-      let subOutputRankPrint = document.getElementById('printAndBrowse')
-      let newContent = subOutputRankPrint.innerHTML
-      let oldContent = document.body.innerHTML
-      document.body.innerHTML = newContent
-      window.print()
-      window.location.reload()
-      document.body.innerHTML = oldContent
-      return false
+      // this.$nextTick(_ => {
+      //   let newContent = this.$refs.printAndBrowse.innerHTML
+      //   let oldContent = document.body.innerHTML
+      //   document.body.innerHTML = newContent
+      //   window.print()
+      //   window.location.reload()
+      //   document.body.innerHTML = oldContent
+      // })
+      this.loadingReport = true
+      let a = await formdataGetPeroperative(this.patientInfo.recordId)
+      console.log(a, this.patientInfo, 'this.patientInfo.id')
+      this.loadingReport = false
     },
     handleChange (val) {
       // console.log(val)
@@ -526,4 +575,44 @@ $marginContentW: 25px;
     }
   }
 }
+.showContain {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    line-height: 40px;
+    /deep/ .el-form-item__label {
+      color: black;
+      margin-right: 0px !important;
+    }
+    /deep/ .el-form-item__label:before{
+      content: '';
+      margin-right: 0px;
+    }
+    /deep/ .el-form-item__content {
+      margin:0px !important;
+    }
+    /deep/ .el-input__inner {
+      background-color: transparent;
+      border-radius: 0;
+      font-size: 14px;
+      padding: 0px !important;
+      margin:0px !important;
+      border: none;
+      width:100%;
+      height:100% !important;
+      // color: #117FD1;
+      // border-bottom:1px solid #117FD1;
+      text-align: center;
+      // &:hover{
+      //   border-color: #b4bccc;
+      // }
+      // &:focus{
+      //   border-color: #409EFF;
+      //   outline: 0;
+      // }
+    }
+    /deep/ .el-select__caret{
+      display:none;
+    }
+  }
 </style>
