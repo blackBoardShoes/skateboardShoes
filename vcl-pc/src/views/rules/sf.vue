@@ -342,9 +342,9 @@ export default {
     console.log(this.user, 'useruseruser')
     if (this.$route.params.data) {
       this.patientInfo = JSON.parse(this.$route.params.data)
-      this.activeIndexNav = this.patientInfo.phase
+      this.activeIndexNav = this.patientInfo.header.phase
     }
-    console.log(this.patientInfo)
+    console.log(this.patientInfo, 'this.patientInfothis.patientInfothis.patientInfo')
     await this.firstShow()
     await this.init()
     this.show()

@@ -194,8 +194,7 @@
 
 <script>
 import imgView from '../../components/imgView/imgView.vue'
-import { recordData } from '../../api/rules/zb.js'
-
+import { formdataGetPeroperative } from '../../api/rules/lr.js'
 export default {
   components: {
     imgView
@@ -460,8 +459,8 @@ export default {
       //   document.body.innerHTML = oldContent
       // })
       this.loadingReport = true
-      let a = await recordData(this.patientInfo.id)
-      console.log(a, this.patientInfo.id, 'this.patientInfo.id')
+      let a = await formdataGetPeroperative(this.patientInfo.recordId)
+      console.log(a, this.patientInfo, 'this.patientInfo.id')
       this.loadingReport = false
     },
     handleChange (val) {

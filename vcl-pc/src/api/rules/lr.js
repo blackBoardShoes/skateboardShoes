@@ -18,3 +18,7 @@ export const formdataData = data => {
 export const userByMyType = data => {
   return axios.get(`${all}/user/userByMyType`, { params: data })
 }
+// formdata/getPeroperative/{id} 术前表
+export const formdataGetPeroperative = data => {
+  return axios.get(`${api}/formdata/getPeroperative/${data}`)
+}
