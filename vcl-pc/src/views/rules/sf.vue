@@ -41,7 +41,7 @@
                 </div>
               </el-tooltip>
             </div>
-            <div class="rightContentControlBtn">
+            <div class="rightContentControlBtn" v-if="!patientInfo.isFinished">
               <el-button @click="generalSubmit"
                 v-if="navArr.length - 1 === activeIndex"
                 :disabled="activeIndexNav != patientInfo.phase">
@@ -344,6 +344,7 @@ export default {
       this.patientInfo = JSON.parse(this.$route.params.data)
       this.activeIndexNav = this.patientInfo.phase
     }
+    console.log(this.patientInfo)
     await this.firstShow()
     await this.init()
     this.show()

@@ -39,8 +39,8 @@
               </el-form-item>
             </div> -->
             <div>
-              <el-button type="primary" size="small" @click="openDialogVisible">获取图像</el-button>
-              <el-button type="primary" size="small" @click="printAndBrowse">报告预览</el-button>
+              <el-button type="primary" size="small" @click="openDialogVisible" :loading="loadingImages">获取图像</el-button>
+              <el-button type="primary" size="small" @click="printAndBrowse" :loading="loadingReport">报告预览</el-button>
             </div>
           </div>
           <br>
@@ -127,7 +127,7 @@
           </div> -->
         </el-collapse-item>
       </el-collapse>
-      <div ref="printAndBrowse" v-show="false">
+      <div ref="printAndBrowse" v-show="true">
         <div v-for="(row, i) in contentModel.operationCheckBox" :key="i" class="showContain">
           <div v-for="(item, index) in content[row]" :key="index">
             <!--  && contentModel[item.id] -->
@@ -194,6 +194,8 @@
 
 <script>
 import imgView from '../../components/imgView/imgView.vue'
+import { recordData } from '../../api/rules/zb.js'
+
 export default {
   components: {
     imgView
@@ -380,7 +382,9 @@ export default {
         `
       },
       content: {},
-      dialogVisible: false
+      dialogVisible: false,
+      loadingImages: false,
+      loadingReport: false
     }
   },
   watch: {
@@ -392,6 +396,9 @@ export default {
     }
   },
   async created () {
+    if (this.$route.params.data) {
+      this.patientInfo = JSON.parse(this.$route.params.data)
+    }
     this.$set(this.contentModel, 'operationCheckBox', [])
     await this.init()
     this.contentModel = Object.assign(this.contentModel, this.value)
@@ -442,17 +449,20 @@ export default {
     clearData () {
       this.$refs['contentModel'].resetFields()
     },
-    printAndBrowse () {
+    async printAndBrowse () {
       // console.log(this.fullScream)
-      this.$nextTick(_ => {
-        let newContent = this.$refs.printAndBrowse.innerHTML
-        let oldContent = document.body.innerHTML
-        document.body.innerHTML = newContent
-        window.print()
-        window.location.reload()
-        document.body.innerHTML = oldContent
-      })
-      return false
+      // this.$nextTick(_ => {
+      //   let newContent = this.$refs.printAndBrowse.innerHTML
+      //   let oldContent = document.body.innerHTML
+      //   document.body.innerHTML = newContent
+      //   window.print()
+      //   window.location.reload()
+      //   document.body.innerHTML = oldContent
+      // })
+      this.loadingReport = true
+      let a = await recordData(this.patientInfo.id)
+      console.log(a, this.patientInfo.id, 'this.patientInfo.id')
+      this.loadingReport = false
     },
     handleChange (val) {
       // console.log(val)

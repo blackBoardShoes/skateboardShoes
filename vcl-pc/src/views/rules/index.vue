@@ -57,18 +57,29 @@
       <!-- <router-link :to="{ name: 'sh', params: { data: JSON.stringify({a: 1}) }}">sh</router-link> -->
     </div>
     <el-dialog
-      title='新增住院记录/手术记录'
+      title='住院记录/手术记录'
       append-to-body
       modal-append-to-body
       :close-on-click-modal="false"
       v-if="dialogVisible"
       :visible.sync="dialogVisible">
-      <el-form :model="ruleForm" ref="ruleForm" label-width="138px" size="mini" label-position="left" class="ruleForm">
+      <el-form :model="ruleForm" ref="ruleForm" :disabled="ruleFormTF" label-width="138px" size="mini" label-position="left" class="ruleForm">
         <div style="padding-left: 60px;padding-right: 39px;">
           <el-form-item label="住院号" prop="patientId" :rules="[
             { required: true, message: '请输入病人住院号', trigger: 'change'},
             { pattern: '^[0-9]{11}$', message: '11位', trigger: 'change' }]">
             <el-input v-model="ruleForm.patientId" @blur="patientIdCheckUp" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="姓名" prop="patientName" :rules="[
+            { required: true, message: '请输入组件标签名', trigger: 'change' }]">
+            <el-input v-model="ruleForm.patientName" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="性别" prop="gender" :rules="[
+            { required: true, message: '请选择性别', trigger: 'change' }]">
+            <el-select v-model="ruleForm.gender" style="width:100%">
+              <el-option label="男" :value="1"></el-option>
+              <el-option label="女" :value="0"></el-option>
+            </el-select>
           </el-form-item>
         </div>
       </el-form>
@@ -117,26 +128,26 @@ export default {
           //     { pattern: '^[0-9]{11}$', message: '11位', trigger: 'change' }
           //   ]
           // },
-          {
-            id: 'patientName',
-            label: '姓名',
-            type: 'INPUT',
-            validations: [
-              { required: true, message: '请输入组件标签名', trigger: 'change' }
-            ]
-          },
-          {
-            id: 'gender',
-            label: '性别',
-            type: 'RADIO',
-            values: [
-              {value: 1, label: '男'},
-              {value: 0, label: '女'}
-            ],
-            validations: [
-              { required: true, message: '请选择性别', trigger: 'change' }
-            ]
-          },
+          // {
+          //   id: 'patientName',
+          //   label: '姓名',
+          //   type: 'INPUT',
+          //   validations: [
+          //     { required: true, message: '请输入组件标签名', trigger: 'change' }
+          //   ]
+          // },
+          // {
+          //   id: 'gender',
+          //   label: '性别',
+          //   type: 'RADIO',
+          //   values: [
+          //     {value: 1, label: '男'},
+          //     {value: 0, label: '女'}
+          //   ],
+          //   validations: [
+          //     { required: true, message: '请选择性别', trigger: 'change' }
+          //   ]
+          // },
           {
             id: 'dept',
             label: '科室',
@@ -177,14 +188,17 @@ export default {
         ]
       },
       ruleForm: {
-        patientId: ''
+        patientId: '',
+        patientName: '',
+        gender: ''
       },
+      ruleFormTF: false,
       rulesContainTop: [
-        { title: '总表', key: 'AlltableColumn', icon: 'el-icon-delete', codetype: [1, 2, 4, 5, 6] },
-        { title: '待录入', key: 'pendingEntryColumn', icon: 'el-icon-delete', codetype: [1, 5, 6] },
-        { title: '待审核', key: 'toBeAuditedColumn', icon: 'el-icon-delete', codetype: [1, 2, 4] },
-        { title: '待修正', key: 'toBeAmendedColumn', icon: 'el-icon-delete', codetype: [1, 5, 6] },
-        { title: '待随访', key: 'followUpColumn', icon: 'el-icon-delete', codetype: [1, 2, 6] }
+        { title: '总表', key: 'AlltableColumn', icon: 'ercp-icon-module-task', codetype: [1, 2, 4, 5, 6] },
+        { title: '待录入', key: 'pendingEntryColumn', icon: 'ercp-icon-general-edit', codetype: [1, 5, 6] },
+        { title: '待审核', key: 'toBeAuditedColumn', icon: 'ercp-icon-general-audit', codetype: [1, 2, 4] },
+        { title: '待修正', key: 'toBeAmendedColumn', icon: 'ercp-icon-general-correct', codetype: [1, 5, 6] },
+        { title: '随访', key: 'followUpColumn', icon: 'ercp-icon-medicine-followup', codetype: [1, 2, 6] }
       ],
       rulesContainTopModel: {
         AlltableColumn: 0,
@@ -256,7 +270,7 @@ export default {
           { prop: 'responseName', label: '记录者', sortable: true },
           { option: true, label: '操作', contain: [{label: '编辑'}] }
         ],
-        // 待随访 ---> 住院号 编号 姓名 性别 主管医生 术后诊断 出院日期 记录者 状态（待问询、已失访、待复查） 操作（编辑）
+        // 随访 ---> 住院号 编号 姓名 性别 主管医生 术后诊断 出院日期 记录者 状态（待问询、已失访、待复查） 操作（编辑）
         followUpColumn: [
           { prop: 'patientId', label: '住院号' },
           // { prop: 'operationNum', label: '编号' },
@@ -267,7 +281,7 @@ export default {
           { prop: 'dischargeDate', label: '出院日期' },
           { prop: 'responseName', label: '记录者' },
           { prop: 'isLostContact', label: '状态' },
-          { option: true, label: '操作', contain: [{label: '失访', style: 'color: #878A8D'}, {label: '编辑'}, {label: '删除', style: 'color: #FF455B'}], width: 130 }
+          { option: true, label: '操作', contain: [{label: '查看', hidden: true, reverse: true}, {label: '失访', style: 'color: #878A8D', hidden: true}, {label: '编辑', hidden: true}, {label: '删除', hidden: true, style: 'color: #FF455B'}], width: 130 }
         ]
       },
       dialogVisible: false,
@@ -376,7 +390,7 @@ export default {
     let a = {
       // 管理员 医生 无页面
       // 科研管理员 临床质控员 诊疗中心 科研护士
-      // 1 - 6 codetype 总表 待录入 待审核 待修正 待随访
+      // 1 - 6 codetype 总表 待录入 待审核 待修正 随访
 
       // 科研管理员 2（总表, 待审核）---> 1.任务概览：工作量统计 2.总表：查看 3.待审核 4.列表：分页及计数
       // 1.工作量统计：按日（最近10天）、按周（最近8周）、按月（最近一年）（手术、审核）
@@ -393,11 +407,11 @@ export default {
       // 4.删除：弹框确认
       // 5.提交后回到列表页"
 
-      // 科研护士 6（总表, 待录入, 待修正, 待随访） ---> 1.任务概览：工作量统计 2.总表：查看 3.待录入：编辑、删除 4.待修正：编辑 5.待随访：编辑、删除 6.列表：分页及计数
+      // 科研护士 6（总表, 待录入, 待修正, 随访） ---> 1.任务概览：工作量统计 2.总表：查看 3.待录入：编辑、删除 4.待修正：编辑 5.随访：编辑、删除 6.列表：分页及计数
       // "1.工作量统计：按日（最近10天）、按周（最近8周）、按月（最近一年）（录入、修正、随访）
       // 2.总表查看：已审核、待审核状态的为不可编辑状态，待录入、待修正部分为可编辑状态
       // 3.待录入/待修正编辑：跳转至对应位置，其他部分不可编辑状态
-      // 4.待随访编辑：跳转至对应页面
+      // 4.随访编辑：跳转至对应页面
       // 5.删除：弹框确认
       // 6.提交后回到列表页"
     }
@@ -461,7 +475,7 @@ export default {
           await this.formdataUndoneFilledFormShowData()
           await this.formdataRejectedFilledFormShowData()
           await this.formdataFollowUpFilledFormShowData()
-          // 总表, 待录入, 待修正, 待随访
+          // 总表, 待录入, 待修正, 随访
           break
       }
       // let a = {
@@ -593,13 +607,18 @@ export default {
       }
       return false
     },
-    // 待随访
+    // 随访
     async formdataFollowUpFilledFormShowData () {
       let z = await formdataFollowUpFilledForm(Object.assign({currentPage: this.currentPage, perPage: this.perPage, searchPattern: this.lookupFormInputData}, this.user))
       if (z ? z.data.entity : false) {
         this.followUpColumnTableData = []
         for (let i of z.data.entity.data) {
           let isLostContact = ''
+          if (i.header.isFinished) {
+            isLostContact = '已完成'
+          } else {
+            isLostContact = '未完成'
+          }
           if (i.header.isLostContact) {
             isLostContact = '已失访'
           }
@@ -660,8 +679,11 @@ export default {
       return row[property] === value
     },
     openCreateFish () {
+      this.ruleFormTF = false
       this.thatFishData = {}
       this.$set(this.ruleForm, 'patientId', '')
+      this.$set(this.ruleForm, 'patientName', '')
+      this.$set(this.ruleForm, 'gender', '')
       if (this.$refs['ruleForm']) {
         this.$refs['ruleForm'].resetFields()
       }
@@ -674,6 +696,7 @@ export default {
       if (pgp) {
         this.thatFishData = Object.assign(this.ruleForm, this.thatFishData)
         for (let i in pgp.data.entity) {
+          this.$set(this.ruleForm, i, pgp.data.entity[i])
           this.$set(this.thatFishData, i, pgp.data.entity[i])
         }
         return true
@@ -734,7 +757,23 @@ export default {
       })
     },
     async updateFish () {},
-    filterBtn (row) {
+    filterBtn (row, x) {
+      console.log(row, x, 'rowrowrowrowrowrowrow')
+      if (row.phase === '随访') {
+        if (row.isFinished) {
+          if (x.reverse) {
+            return true
+          } else {
+            return false
+          }
+        } else {
+          if (x.reverse) {
+            return false
+          } else {
+            return true
+          }
+        }
+      }
       return row.phase === '术中'
     },
     async operateClick (row, index, x) {
@@ -753,7 +792,7 @@ export default {
           console.log('审核')
           break
         case '失访':
-          if (this.activeRow.title === '待随访') {
+          if (this.activeRow.title === '随访') {
             deleteBtn = false
             let a = await formdataFollowingupLostcontact(row)
             if (a) {
@@ -764,7 +803,7 @@ export default {
           break
         default:
           deleteBtn = false
-          if (this.activeRow.title === '待随访') {
+          if (this.activeRow.title === '随访') {
             this.$confirm('此操作将删除该数据', '提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
@@ -805,6 +844,7 @@ export default {
               if (r.gender === '男') r.gender = 1
               else r.gender = 0
               this.ruleForm = this.thatFishData = r
+              this.ruleFormTF = true
               this.dialogVisible = true
               console.log('bianji', 'row', row)
             }
@@ -815,7 +855,7 @@ export default {
           case '待修正':
             this.$router.push({ name: 'xz', params: { data: JSON.stringify(row) } })
             break
-          case '待随访':
+          case '随访':
             this.$router.push({ name: 'sf', params: { data: JSON.stringify(row) } })
             break
         }
