@@ -583,27 +583,16 @@ export default {
           value1: this.leaveTime[0],
           value2: this.leaveTime[1]
         }
-        // obj['出院综合评估']['comprehensiveAssessment.dischargeDate'] = {
-        //   type: 'less_than_or_eq',
-        //   value: this.leaveTime[1]
-        // }
       }
       if (this.operateTime && this.operateTime.length > 0) {
-        obj['术前']['header.operationDate'] = {
+        let obj2 = {
           type: 'between',
           value1: this.operateTime[0],
           value2: this.operateTime[1]
         }
-        obj['术中']['header.operationDate'] = {
-          type: 'between',
-          value1: this.operateTime[0],
-          value2: this.operateTime[1]
-        }
-        obj['术后']['header.operationDate'] = {
-          type: 'between',
-          value1: this.operateTime[0],
-          value2: this.operateTime[1]
-        }
+        obj['术前']['header.operationDate'] = obj2
+        obj['术中']['header.operationDate'] = obj2
+        obj['术后']['header.operationDate'] = obj2
       }
       let text = ''
       basicArr.forEach((basic) => {
