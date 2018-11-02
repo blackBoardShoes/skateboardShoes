@@ -213,7 +213,7 @@ export default {
       activeRow: {},
       lookupFormInputData: '',
       currentPage: 1,
-      perPage: 5,
+      perPage: 10,
       total: 0,
       mozhu: [],
       whatObj: {
