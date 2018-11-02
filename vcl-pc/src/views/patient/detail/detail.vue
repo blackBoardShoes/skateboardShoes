@@ -71,220 +71,6 @@
           </div>
         </div>
       </div>
-      <div class="records hospital er-card" v-if="patientRecords.length > 10">
-         <div class="title">
-          <span><i class="ercp-icon-general-card"></i> <b>住院记录、随访记录</b></span>
-        </div>
-        <div class="hospital-record" v-for="(record, index) in patientRecords" :key="index">
-          <div class="record-case">
-            <div class="records-title" @click="activeIndex = activeIndex === index ? -1 : index ">
-              <span
-                :class="{'primary-text':  record.forms.find((n) => n.header.isPassed === 0) === undefined ,'light-text': record.forms.find((n) => n.header.isPassed === 0) !== undefined ,'ercp-icon-medicine-hospital':true}"
-                @click="linkToRecord(record)">
-              </span>
-              <el-tooltip class="item" effect="dark" placement="top">
-                <div slot="content">{{record.inHospitalDate || ''}}</div>
-                <div class="record-title text-overflow-ellipsis">
-                  <span class="light-text">入院日期：</span>
-                  <span>{{record.inHospitalDate || ''}}</span>
-                </div>
-              </el-tooltip>
-              <el-tooltip class="item" effect="dark" placement="top">
-                <div slot="content">{{record.dept || ''}}</div>
-                <div class="record-title text-overflow-ellipsis">
-                  <span class="light-text">科室：</span>
-                  <span>{{record.dept || ''}}</span>
-                </div>
-              </el-tooltip>
-              <el-tooltip class="item" effect="dark" placement="top">
-                <div slot="content">
-                  <span v-for="(disease, index) in (record.forms.find((n) => n.header.phase === '住院基本情况')) === undefined ? '' :valueTransLabel((record.forms.find((n) => n.header.phase === '住院基本情况')).data.generalCondition.admissionDiagnosis, 'generalCondition', 'admissionDiagnosis', 'diseaseName')" :key="index">
-                    {{disease}}
-                  </span>
-                </div>
-                <div class="record-title text-overflow-ellipsis">
-                  <span class="light-text">入院诊断：</span>
-                  <span v-for="(disease, index) in (record.forms.find((n) => n.header.phase === '住院基本情况')) === undefined ? '' :valueTransLabel((record.forms.find((n) => n.header.phase === '住院基本情况')).data.generalCondition.admissionDiagnosis, 'generalCondition', 'admissionDiagnosis', 'diseaseName')" :key="index">
-                    {{disease}}
-                  </span>
-                </div>
-              </el-tooltip>
-              <el-tooltip class="item" effect="dark" placement="top">
-                <div slot="content">{{(record.forms.find((n) => n.header.phase === "住院基本情况")) === undefined ? '' : (record.forms.find((n) => n.header.phase === "住院基本情况")).data.generalCondition.doctor}}</div>
-                <div class="record-title text-overflow-ellipsis">
-                  <span class="light-text">主管医生：</span>
-                  <span>{{(record.forms.find((n) => n.header.phase === "住院基本情况")) === undefined ? '' : (record.forms.find((n) => n.header.phase === "住院基本情况")).data.generalCondition.doctor}}</span>
-                </div>
-              </el-tooltip>
-              <el-tooltip class="item" effect="dark" placement="top">
-                <div slot="content"><span>{{(record.forms.find((n) => n.header.phase === "出院综合评估")) === undefined ? '' :valueTransLabel((record.forms.find((n) => n.header.phase === "出院综合评估")).data.comprehensiveAssessment.dischargeState, 'comprehensiveAssessment', 'dischargeState')}}</span></div>
-                <div class="record-title text-overflow-ellipsis">
-                  <span class="light-text">出院状态：</span>
-                  <span>{{(record.forms.find((n) => n.header.phase === "出院综合评估")) === undefined ? '' :valueTransLabel((record.forms.find((n) => n.header.phase === "出院综合评估")).data.comprehensiveAssessment.dischargeState, 'comprehensiveAssessment', 'dischargeState')}}</span>
-                </div>
-              </el-tooltip>
-              <el-tooltip class="item" effect="dark" placement="top">
-                <div slot="content">{{(record.forms.find((n) => n.header.phase === "出院综合评估")) === undefined ? '' : (record.forms.find((n) => n.header.phase === "出院综合评估")).data.comprehensiveAssessment.dischargeDate}}</div>
-                <div class="record-title text-overflow-ellipsis">
-                  <span class="light-text">出院日期：</span>
-                  <span>{{(record.forms.find((n) => n.header.phase === "出院综合评估")) === undefined ? '' : (record.forms.find((n) => n.header.phase === "出院综合评估")).data.comprehensiveAssessment.dischargeDate}}</span>
-                </div>
-              </el-tooltip>
-              <div :class="{'record-icon-up': true, 'record-icon-down': activeIndex === index}">
-                <span class="ercp-icon-general-next light-text"></span>
-              </div>
-            </div>
-            <div class="follow-record"  :class="{'active-class': activeIndex === index}">
-              <div v-if="activeIndex === index" class="prev" @click="next('content' + record.id)"><i class="el-icon-arrow-left"></i></div>
-              <div v-if="activeIndex === index" class="next" @click="prev('content' + record.id)"><i class="el-icon-arrow-right"></i></div>
-              <div class="content" :ref="'content' + record.id">
-                <div class="er-card" v-for="(item, index) in record.forms" :key="index">
-                  <div class="card-title">
-                    {{item.header.phase}}
-                    <span v-if="item.header.phase === '术前' || item.header.phase === '术中' || item.header.phase === '术后'">
-                      ({{item.header.operationNum}})
-                    </span>
-                    <!-- <span class="ercp-icon-medicine-report primary-text"></span> -->
-                  </div>
-                  <div class="card-content">
-                    <!-- 以下内容每表不一 -->
-                    <div class="info"  v-if="item.header.phase === '住院基本情况'">
-                      <div class="case">有无胆囊：{{valueTransLabel(item.data.previousHistory.cholecystectomy, 'previousHistory', 'cholecystectomy')}}</div>
-                      <div class="case">无ERCP相关操作史：{{valueTransLabel(item.data.previousHistory.oph, 'previousHistory', 'oph')}}</div>
-                    </div>
-                    <div class="info"  v-if="item.header.phase === '术前'">
-                      <el-tooltip class="item" effect="dark" placement="top">
-                        <div slot="content">
-                          <span v-for="(disease, index) in (record.forms.find((n) => n.header.phase === '术前')) === undefined ? '' :valueTransLabel((record.forms.find((n) => n.header.phase === '术前')).data.preoperativeRecord.preoperativeDiagnosis, 'preoperativeRecord', 'preoperativeDiagnosis', 'diseaseName')" :key="index">
-                              {{disease}}
-                          </span>
-                        </div>
-                        <div class="case one-case">术前诊断：
-                          <span v-for="(disease, index) in (record.forms.find((n) => n.header.phase === '术前')) === undefined ? '' :valueTransLabel((record.forms.find((n) => n.header.phase === '术前')).data.preoperativeRecord.preoperativeDiagnosis, 'preoperativeRecord', 'preoperativeDiagnosis', 'diseaseName')" :key="index">
-                            {{disease}}
-                          </span>
-                        </div>
-                      </el-tooltip>
-                    </div>
-                    <div class="info"  v-if="item.header.phase === '术中'">
-                      <div class="case">手术日期：{{item.data.intraoperativeDiagnosisAndEvaluation.surgeryDate === undefined ? '' : item.data.intraoperativeDiagnosisAndEvaluation.surgeryDate}}</div>
-                      <div class="case">操作者：{{item.data.intraoperativeDiagnosisAndEvaluation.operationOperator}}</div>
-                    </div>
-                    <div class="info"  v-if="item.header.phase === '术后'">
-                      <el-tooltip class="item" effect="dark" placement="top">
-                        <div slot="content">
-                          <span v-for="(disease, index) in (record.forms.find((n) => n.header.phase === '术后')) === undefined ? '' :valueTransLabel((record.forms.find((n) => n.header.phase === '术后')).data.postDiagnosisAndExamination.postDiagnosis, 'postDiagnosisAndExamination', 'postDiagnosis', 'diseaseName')" :key="index">
-                          {{disease}}
-                          </span>
-                        </div>
-                        <div class="case one-case">
-                          <span>入院诊断：</span>
-                          <span v-for="(disease, index) in (record.forms.find((n) => n.header.phase === '术后')) === undefined ? '' :valueTransLabel((record.forms.find((n) => n.header.phase === '术后')).data.postDiagnosisAndExamination.postDiagnosis, 'postDiagnosisAndExamination', 'postDiagnosis', 'diseaseName')" :key="index">
-                          {{disease}}
-                          </span>
-                        </div>
-                      </el-tooltip>
-                    </div>
-                    <div class="info"  v-if="item.header.phase === '出院综合评估'">
-                      <div class="case">术后住院天数：{{item.data.comprehensiveAssessment.postHospitalDays}}</div>
-                      <div class="case">总住院天数：{{item.data.comprehensiveAssessment.totalHospitalizationDays}}</div>
-                    </div>
-                    <!-- 以下内容每表皆同 -->
-                    <div class="info">
-                      <div class="case">录入情况 : {{item.header.responseName}}</div>
-                      <div class="case">审核情况 : {{item.header.checkerName}}</div>
-                      <!-- <div class="case">状态 : {{ (item.header.isFinished === 0 ? '未完成' : '已完成') === '未完成' ? '未录入' : ((item.header.isPassed === 0 ? '未完成' : '已完成') === '未完成' ? '未审核' : '已审核' )}}</div> -->
-                      <div class="case" v-if="item.header.isFinished === 0">
-                        状态：待录入
-                      </div>
-                      <!-- 已提交录入未通过未驳回 -->
-                      <div class="case" v-if="item.header.isFinished === 1 && item.header.isPassed === 0 && item.header.isRejected === 0">
-                        状态：待审核
-                      </div>
-                      <!-- 已提交录入未通过已驳回 -->
-                      <div class="case" v-if="item.header.isFinished === 1 && item.header.isPassed === 0 && item.header.isRejected === 1">
-                        状态：待修正
-                      </div>
-                      <!-- 皆可查看，但是和以上按钮无并存需要，css溢出隐藏 -->
-                      <div class="case" v-if="item.header.isFinished === 1 && item.header.isPassed === 1 && item.header.isRejected === 0">
-                        状态：已完成
-                      </div>
-                    </div>
-                    <div class="status">
-                      <!-- 未提交录入 -->
-                      <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 0 && userPermission.typein.permission === true" @click="operate('typein', item)">
-                        录入
-                      </el-button>
-                      <!-- 已提交录入未通过未驳回 -->
-                      <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 1 && item.header.isPassed === 0 && item.header.isRejected === 0 && userPermission.check.permission === true" @click="operate('check', item)">
-                        审核
-                      </el-button>
-                      <!-- 已提交录入未通过已驳回 -->
-                      <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 1 && item.header.isPassed === 0 && item.header.isRejected === 1 && userPermission.repair.permission === true" @click="operate('repair', item)">
-                        修正
-                      </el-button>
-                      <!-- 皆可查看，但是和以上按钮无并存需要，css溢出隐藏 -->
-                      <el-button type="primary" size="mini" plain @click="operate('view', record, index)">
-                        查看
-                      </el-button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="hospital-record">
-          <div class="record-case">
-            <div class="records-title" @click="activeIndex = activeIndex === 1 + patientRecords.length ? -1 : 1 + patientRecords.length ">
-              <div class="suifang"> <span class="ercp-icon-medicine-followup light-text" style="margin-right:15px;"></span><span class="light-text">随访记录：</span></div>
-              <div :class="{'record-icon-up': true, 'record-icon-down': activeIndex === 1 + patientRecords.length}">
-                <span class="ercp-icon-general-next light-text"></span>
-              </div>
-            </div>
-            <div class="follow-record"  :class="{'active-class': activeIndex === 1 + patientRecords.length}">
-              <div v-if="activeIndex === 1 + patientRecords.length" class="prev" @click="next('contentFollow')"><i class="el-icon-arrow-left"></i></div>
-              <div v-if="activeIndex === 1 + patientRecords.length" class="next" @click="prev('contentFollow')"><i class="el-icon-arrow-right"></i></div>
-              <div class="content" :ref="'contentFollow'">
-                <div class="er-card"  v-for="(record, index) in followRecords" :key="index + patientRecords.length">
-                  <div class="card-title">
-                    {{record.header.phase}}记录{{index + 1}}
-                  </div>
-                  <div class="card-content er-card">
-                    <!-- 以下内容每表不一 -->
-                    <div class="info">
-                      <div class="case">
-                        <!-- ???? -->
-                        问询日期：{{record.header.updatedTime}}
-                      </div>
-                      <div class="case">
-                        终点事件：{{record.data.endpointEventRecord.primaryEndpointEvent !== undefined &&record.data.endpointEventRecord.primaryEndpointEvent.length > 0 ? record.data.endpointEventRecord.primaryEndpointEvent[record.data.endpointEventRecord.primaryEndpointEvent.length - 1].primaryEndpointName : ''}}
-                      </div>
-                      <div class="case">
-                        终点事件记录日期：{{record.data.endpointEventRecord.primaryEndpointEvent !== undefined &&record.data.endpointEventRecord.primaryEndpointEvent.length > 0 ? record.data.endpointEventRecord.primaryEndpointEvent[record.data.endpointEventRecord.primaryEndpointEvent.length - 1].endDate : ''}}
-                      </div>
-                    </div>
-                    <div class="info">
-                      <div class="case">
-                        记录情况：{{record.header.responseName}}
-                      </div>
-                      <div class="case">
-                        状态：{{record.information.state}}
-                      </div>
-                    </div>
-                    <div class="status">
-                      <el-button type="primary" size="mini" plain @click="operate2('view', record)">
-                        查看
-                      </el-button>
-                    </div>
-                    <!-- 以下内容每表皆同 -->
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <el-tabs type="border-card">
         <el-tab-pane :label="'住院记录-' + (index + 1)" v-for="(record, index) in patientRecords" :key="index">
           <div class="record-info er-card">
@@ -340,24 +126,20 @@
               </div>
             </el-tooltip>
             <div class="report">
-              <el-button type="primary" size="small" plain @click="linkToRecord(record)">查看报告</el-button>
+              <el-button type="primary" size="small" plain @click="linkToRecord(record)" >查看报告</el-button>
             </div>
           </div>
           <el-carousel :interval="4000" type="card"  style="height:100%;" :autoplay=false>
             <el-carousel-item v-for="(item, index) in record.forms" :key="index" :label="item.header.phase">
               <div class="card-content">
-                <!-- <div class="wrapper"></div> -->
                 <div class="card-title">
-                  {{item.header.phase}}
+                  <el-tooltip class="item" effect="dark" placement="top" :disabled="true">
+                    <span v-if="item.header.phase === '术中'" class="ercp-icon-medicine-report primary-text"></span>
+                    <span slot="content">查看术中报告</span>
+                  </el-tooltip>
+                    {{item.header.phase}}
                   <span v-if="item.header.operationNum">（{{item.header.operationNum}}）</span>
                 </div>
-                <!-- <div class="wrapper">
-                  <span v-if="item.header.phase === '住院基本情况'">住院</span>
-                  <span v-if="item.header.phase === '术前'">术前</span>
-                  <span v-if="item.header.phase === '术中'">术中</span>
-                  <span v-if="item.header.phase === '术后'">术后</span>
-                  <span v-if="item.header.phase === '出院综合评估'">出院</span>
-                </div> -->
                 <!-- 以下内容每表不一 -->
                 <div class="info"  v-if="item.header.phase === '住院基本情况'">
                   <div class="case">有无胆囊：{{valueTransLabel(item.data.previousHistory.cholecystectomy, 'previousHistory', 'cholecystectomy')}}</div>
@@ -404,7 +186,6 @@
                 <div class="info-operator">
                   <div class="case">录入情况 : {{item.header.responseName}}</div>
                   <div class="case">审核情况 : {{item.header.checkerName}}</div>
-                  <!-- <div class="case">状态 : {{ (item.header.isFinished === 0 ? '未完成' : '已完成') === '未完成' ? '未录入' : ((item.header.isPassed === 0 ? '未完成' : '已完成') === '未完成' ? '未审核' : '已审核' )}}</div> -->
                   <div class="case" v-if="item.header.isFinished === 0">
                     状态：待录入
                   </div>
@@ -850,7 +631,9 @@ export default {
     },
     operate2 (data) {
       let data4 = data
-      console.log(data4)
+      for (let i in data4.header) {
+        data[i] = data4.header[i]
+      }
       this.$router.push({ name: 'sf', params: { data: JSON.stringify(data4) } })
     },
     // 查看住院记录

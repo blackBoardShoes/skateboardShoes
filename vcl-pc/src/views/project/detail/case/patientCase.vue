@@ -68,7 +68,9 @@
       </el-pagination>
     </div>
     <div :class="{'filter': true, 'filter-disapper': !addCase}">
-      <div class="filter-head">设置入组条件 <span class="ercp-icon-general-next" @click="addCase = false"></span> </div>
+      <div class="filter-head">数据筛选
+        <!-- <span class="ercp-icon-general-next" @click="addCase = false"></span> -->
+      </div>
       <div class="filter-condition">
         <div class="basic-info-filter" v-for="(info, index) in hospitalRecords" :key="index + 111">
           <!-- 第一步：选择字段 -->
@@ -222,8 +224,8 @@
           </div>
         </div>
         <div class="operate-space">
-          <el-button type="primary" size="medium">开始检索</el-button>
-          <el-button type="primary" size="medium">全部入组</el-button>
+          <el-button type="primary" size="medium" @click="searchCase">开始检索</el-button>
+          <!-- <el-button type="primary" size="medium" @click="">全部入组</el-button> -->
         </div>
       </div>
       <div class="filter-cases">
@@ -289,6 +291,9 @@
           @current-change = "changePage"
         >
         </el-pagination>
+      </div>
+      <div class="filter-conditions er-card" v-if="showConditions" @dblclick="showConditions = false">
+        {{filterCondition}}
       </div>
     </div>
   </div>
@@ -446,7 +451,9 @@ export default {
         }
       ],
       leaveTime: [],
-      operateTime: []
+      operateTime: [],
+      showConditions: false,
+      filterCondition: {}
     }
   },
   mounted () {
@@ -601,6 +608,22 @@ export default {
           this.$message.info('不能再删除了')
         }
       }
+    },
+    searchCase () {
+      this.showConditions = true
+      let obj = {
+        '住院基本情况': {},
+        '术前': {},
+        '术中': {},
+        '术后': {},
+        '出院综合评估': {},
+        '随访': {}
+      }
+      console.log(obj)
+      console.log(this.basicInfomations)
+      console.log(this.hospitalRecords)
+      console.log(this.leaveTime)
+      console.log(this.operateTime)
     }
   },
   watch: {
@@ -734,6 +757,15 @@ export default {
       transition: all .5s linear;
       background-color: #fff;
       overflow: hidden;
+      .filter-conditions{
+        position: absolute;
+        height: 400px;
+        width: 600px;
+        top: 50%;
+        margin-top: -200px;
+        left: 50%;
+        margin-left: -300px;
+      }
       .filter-head{
         height: 48px;
         // width: 100%;

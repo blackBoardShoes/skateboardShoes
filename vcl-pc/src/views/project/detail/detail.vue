@@ -1,10 +1,10 @@
 <template>
   <keep-alive>
     <div id="project-detail">
-      <div class="left-nav">
+      <!-- <div class="left-nav">
         <div class="page-title">
-          <h4>项目详情</h4>
-          <h5 class="light-text">Project Detail</h5>
+          <h4>数据详情</h4>
+          <h5 class="light-text">Data Detail</h5>
         </div>
         <div :class="{'project-name': true, 'text-overflow-ellipsis': true, 'self-build': selfBuild}">
           {{projectInfo.name}}
@@ -16,7 +16,7 @@
             {{item.title}}
           </span>
         </div>
-      </div>
+      </div> -->
       <div class="right-content">
         <router-view :selfBuild="selfBuild" :projectInfo="projectInfo" :projectId="projectId" v-on:refreshInfo="getInfo"></router-view>
       </div>
@@ -24,37 +24,37 @@
   </keep-alive>
 </template>
 <script>
-import { getProjectInfo } from '../../../api/project/project'
+// import { getProjectInfo } from '../../../api/project/project'
 export default {
   name: 'Project_detail',
   data () {
     return {
       navOptions: [
-        {
-          icon: 'ercp-icon-module-create',
-          title: '基本信息',
-          path: 'basic'
-        },
-        {
-          icon: 'ercp-icon-module-user',
-          title: '项目成员',
-          path: 'member'
-        },
+        // {
+        //   icon: 'ercp-icon-module-create',
+        //   title: '基本信息',
+        //   path: 'basic'
+        // },
+        // {
+        //   icon: 'ercp-icon-module-user',
+        //   title: '项目成员',
+        //   path: 'member'
+        // },
         {
           icon: 'ercp-icon-module-patient',
-          title: '入组记录',
-          path: 'patientCase'
-        },
-        {
-          icon: 'ercp-icon-module-data',
-          title: '项目统计',
-          path: 'projectStatistics'
-        },
-        {
-          icon: 'ercp-icon-module-export',
           title: '数据导出',
-          path: 'projectExport'
+          path: 'patientCase'
         }
+        // {
+        //   icon: 'ercp-icon-module-data',
+        //   title: '项目统计',
+        //   path: 'projectStatistics'
+        // }
+        // {
+        //   icon: 'ercp-icon-module-export',
+        //   title: '数据导出',
+        //   path: 'projectExport'
+        // }
       ],
       creator: '',
       projectInfo: {}
@@ -64,23 +64,23 @@ export default {
     changeIndex (item, index) {
       this.$router.push(item.path)
     },
-    async getProject (projectId) {
-      let info = projectId
-      let response = await getProjectInfo(info)
-      if (response.data.mitiStatus === 'SUCCESS') {
-        this.projectInfo = response.data.entity
-        this.navOptions[0].icon = this.selfBuild ? 'ercp-icon-module-create' : 'ercp-icon-module-join'
-      } else {
-        this.$message.error('ERROR: ' + response.data.message)
-      }
-    },
+    // async getProject (projectId) {
+    //   let info = projectId
+    //   let response = await getProjectInfo(info)
+    //   if (response.data.mitiStatus === 'SUCCESS') {
+    //     this.projectInfo = response.data.entity
+    //     this.navOptions[0].icon = this.selfBuild ? 'ercp-icon-module-create' : 'ercp-icon-module-join'
+    //   } else {
+    //     this.$message.error('ERROR: ' + response.data.message)
+    //   }
+    // },
     getInfo () {
       this.getProject(this.projectId)
     }
   },
   mounted () {
     this.creator = this.$store.state.user.id
-    this.getProject(this.projectId)
+    // this.getProject(this.projectId)
     console.log(this.creator)
     console.log(this.projectInfo)
   },
