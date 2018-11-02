@@ -22,30 +22,30 @@ export const loginRouter = {
 
 // 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
 export const appRouter = [
-  // {
-  //   path: '/home',
-  //   name: 'home',
-  //   redirect: '/home/index',
-  //   meta: {
-  //     navigator: true,
-  //     title: '系统首页',
-  //     role: [1, 2, 3, 4, 5, 6],
-  //     icon: 'module-home'
-  //   },
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'home_index',
-  //       meta: {
-  //         title: '系统首页',
-  //         navigator: true,
-  //         role: [1, 2, 3, 4, 5, 6]
-  //       },
-  //       component: () => import('../../src/views/home/index/index.vue')
-  //     }
-  //   ]
-  // },
+  {
+    path: '/home',
+    name: 'home',
+    redirect: '/home/index',
+    meta: {
+      navigator: true,
+      title: '系统首页',
+      role: [1, 2, 3, 4, 5, 6],
+      icon: 'module-home'
+    },
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'home_index',
+        meta: {
+          title: '系统首页',
+          navigator: true,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../../src/views/home/index/index.vue')
+      }
+    ]
+  },
   {
     path: '/rules',
     name: 'rules',
@@ -173,7 +173,7 @@ export const appRouter = [
     name: 'statistics',
     redirect: '/statistics/index',
     meta: {
-      title: '数据管理',
+      title: '数据统计',
       navigator: true,
       role: [1, 2, 3],
       icon: 'module-data'
@@ -184,7 +184,7 @@ export const appRouter = [
         path: 'index',
         name: 'statistics_index',
         meta: {
-          title: '数据管理',
+          title: '数据统计',
           navigator: true,
           role: [1, 2, 3]
         },
@@ -195,7 +195,7 @@ export const appRouter = [
             path: 'charts',
             name: 'statistics_charts',
             meta: {
-              title: '数据统计',
+              title: '统计报表',
               navigator: true,
               role: [1, 2, 3]
             },
@@ -216,71 +216,12 @@ export const appRouter = [
     ]
   },
   {
-    path: '/form',
-    name: 'form',
-    redirect: '/form/index',
-    meta: {
-      title: '表单管理',
-      navigator: true,
-      role: [1, 2, 3, 4, 5, 6],
-      icon: 'module-form'
-    },
-    component: Layout,
-    children: [
-      {
-        redirect: '/form/index/syk',
-        path: 'index',
-        name: 'form_index',
-        meta: {
-          requireAuth: true,
-          title: '表单详情',
-          navigator: true,
-          role: [1, 2, 3, 4, 5, 6]
-        },
-        component: () => import('../../src/views/form/index.vue'),
-        children: [
-          {
-            path: 'bdk',
-            name: 'bdk',
-            meta: {
-              title: '表单库',
-              navigator: true,
-              role: [1]
-            },
-            component: () => import('../../src/views/form/bdk.vue')
-          },
-          {
-            path: 'zdk',
-            name: 'zdk',
-            meta: {
-              title: '字段库',
-              navigator: true,
-              role: [1]
-            },
-            component: () => import('../../src/views/form/zdk.vue')
-          },
-          {
-            path: 'syk',
-            name: 'syk',
-            meta: {
-              title: '术语库',
-              navigator: true,
-              role: [1, 2, 3, 4, 5, 6]
-            },
-            component: () => import('../../src/views/form/syk.vue')
-          }
-        ]
-      }
-    ]
-  },
-  {
     path: '/project',
     name: 'project',
     redirect: '/project/index',
     meta: {
       title: '项目管理',
-      // 暂时隐藏
-      navigator: false,
+      navigator: true,
       role: [1, 2, 3],
       icon: 'module-project'
     },
@@ -361,6 +302,64 @@ export const appRouter = [
     ]
   },
   {
+    path: '/form',
+    name: 'form',
+    redirect: '/form/index',
+    meta: {
+      title: '表单管理',
+      navigator: true,
+      role: [1],
+      icon: 'module-form'
+    },
+    component: Layout,
+    children: [
+      {
+        redirect: '/form/index/syk',
+        path: 'index',
+        name: 'form_index',
+        meta: {
+          requireAuth: true,
+          title: '表单详情',
+          navigator: true,
+          role: [1]
+        },
+        component: () => import('../../src/views/form/index.vue'),
+        children: [
+          {
+            path: 'bdk',
+            name: 'bdk',
+            meta: {
+              title: '表单库',
+              navigator: true,
+              role: [1]
+            },
+            component: () => import('../../src/views/form/bdk.vue')
+          },
+          {
+            path: 'zdk',
+            name: 'zdk',
+            meta: {
+              title: '字段库',
+              navigator: true,
+              role: [1]
+            },
+            component: () => import('../../src/views/form/zdk.vue')
+          },
+          {
+            path: 'syk',
+            name: 'syk',
+            meta: {
+              title: '术语库',
+              navigator: true,
+              role: [1]
+            },
+            component: () => import('../../src/views/form/syk.vue')
+          }
+        ]
+      }
+    ]
+  },
+  {
     path: '/systemManage',
     name: 'systemManage',
     redirect: '/systemManage/index',
@@ -399,7 +398,7 @@ export const appRouter = [
             meta: {
               title: '日志管理',
               navigator: false,
-              role: [1]
+              role: [1, 2]
             },
             component: () => import('../../src/views/systemManage/detail/log.vue')
           }
@@ -470,8 +469,7 @@ export const appRouter = [
     redirect: '/helpCenter/index',
     meta: {
       title: '帮助中心',
-      // 暂时隐藏
-      navigator: false,
+      navigator: true,
       role: [1, 2, 3, 4, 5, 6]
     },
     component: Layout,
@@ -488,100 +486,100 @@ export const appRouter = [
       }
     ]
   },
-  // {
-  //   path: '/test',
-  //   name: 'test',
-  //   meta: {
-  //     title: '开发测试',
-  //     navigator: true,
-  //     role: [1, 2, 3, 4, 5, 6],
-  //     icon: 'general-relation'
-  //   },
-  //   component: Layout,
-  //   redirect: '/test/index',
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'test_index',
-  //       meta: {
-  //         title: '开发测试-导航列表同步滑动',
-  //         navigator: false,
-  //         role: [1, 2, 3, 4, 5, 6]
-  //       },
-  //       component: () => import('../../src/views/test/index.vue')
-  //     },
-  //     {
-  //       path: '/test/editInput',
-  //       name: 'editInput',
-  //       meta: {
-  //         title: '可编辑文本域',
-  //         navigator: true,
-  //         role: [1, 2, 3, 4, 5, 6]
-  //       },
-  //       component: () => import('../components/editInput/editInput.vue')
-  //     },
-  //     {
-  //       path: '/test/print',
-  //       name: 'print',
-  //       meta: {
-  //         title: '打印',
-  //         navigator: true,
-  //         role: [1, 2, 3, 4, 5, 6]
-  //       },
-  //       component: () => import('../components/print/print.vue')
-  //     },
-  //     {
-  //       path: '/test/imgView',
-  //       name: 'imgView',
-  //       meta: {
-  //         title: '图片预览',
-  //         navigator: true,
-  //         role: [1, 2, 3, 4, 5, 6]
-  //       },
-  //       component: () => import('../components/imgView/imgView.vue')
-  //     },
-  //     {
-  //       path: '/test/c1',
-  //       name: 'start',
-  //       meta: {
-  //         title: '表单1',
-  //         navigator: true,
-  //         role: [1, 2, 3, 4, 5, 6]
-  //       },
-  //       component: () => import('../views/content.vue')
-  //     },
-  //     {
-  //       path: '/test/c2',
-  //       name: 'c',
-  //       meta: {
-  //         title: '表单2',
-  //         navigator: true,
-  //         role: [1, 2, 3, 4, 5, 6]
-  //       },
-  //       component: () => import('../views/gc.vue')
-  //     },
-  //     {
-  //       path: '/test/cartogram',
-  //       name: 'cartogram',
-  //       meta: {
-  //         title: '统计图测试',
-  //         navigator: true,
-  //         role: [1, 2, 3, 4, 5, 6]
-  //       },
-  //       component: () => import('../components/cartogram/scalingChart.vue')
-  //     },
-  //     {
-  //       path: '/test/ccc',
-  //       name: 'ccc',
-  //       meta: {
-  //         title: 'cccc',
-  //         navigator: true,
-  //         role: [1, 2, 3, 4, 5, 6]
-  //       },
-  //       component: () => import('../components/staticForm/radiography.vue')
-  //     }
-  //   ]
-  // },
+  {
+    path: '/test',
+    name: 'test',
+    meta: {
+      title: '开发测试',
+      navigator: true,
+      role: [1, 2, 3, 4, 5, 6],
+      icon: 'general-relation'
+    },
+    component: Layout,
+    redirect: '/test/index',
+    children: [
+      {
+        path: 'index',
+        name: 'test_index',
+        meta: {
+          title: '开发测试-导航列表同步滑动',
+          navigator: false,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../../src/views/test/index.vue')
+      },
+      {
+        path: '/test/editInput',
+        name: 'editInput',
+        meta: {
+          title: '可编辑文本域',
+          navigator: true,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../components/editInput/editInput.vue')
+      },
+      {
+        path: '/test/print',
+        name: 'print',
+        meta: {
+          title: '打印',
+          navigator: true,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../components/print/print.vue')
+      },
+      {
+        path: '/test/imgView',
+        name: 'imgView',
+        meta: {
+          title: '图片预览',
+          navigator: true,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../components/imgView/imgView.vue')
+      },
+      {
+        path: '/test/c1',
+        name: 'start',
+        meta: {
+          title: '表单1',
+          navigator: true,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../views/content.vue')
+      },
+      {
+        path: '/test/c2',
+        name: 'c',
+        meta: {
+          title: '表单2',
+          navigator: true,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../views/gc.vue')
+      },
+      {
+        path: '/test/cartogram',
+        name: 'cartogram',
+        meta: {
+          title: '统计图测试',
+          navigator: true,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../components/cartogram/scalingChart.vue')
+      },
+      {
+        path: '/test/ccc',
+        name: 'ccc',
+        meta: {
+          title: 'cccc',
+          navigator: true,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../components/staticForm/radiography.vue')
+      }
+    ]
+  },
   {
     path: '/error/:code',
     name: 'error',

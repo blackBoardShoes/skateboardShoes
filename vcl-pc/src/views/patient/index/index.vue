@@ -272,8 +272,9 @@ export default {
   methods: {
     // 初始化图表信息
     initCharts () {
-      this.optionA = charts[1]
-      this.optionB = charts[2]
+      let info = charts
+      this.optionA = Object.assign({}, info[1])
+      this.optionB = Object.assign({}, info[2])
       this.dataByGender()
       this.dataByArea()
     },
@@ -321,7 +322,8 @@ export default {
     },
     // 查看具体患者
     viewPatient (value) {
-      this.$router.push(`/patient/detail/${value.hospitalId}`)
+      let data = JSON.stringify(value)
+      this.$router.push(`/patient/detail/${data}`)
     },
     // 更新患者列表
     refresh () {

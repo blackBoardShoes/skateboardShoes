@@ -11,7 +11,7 @@ host = 'http://192.168.10.13:8089'
 // 大力
 // let host2 = 'http://192.168.10.13:8090'
 // yt
-// let host3 = 'http://192.168.10.216:8085'
+let host3 = 'http://192.168.10.217:8089'
 // fwq
 // let host3 = 'http://192.168.10.104:8085'
 
@@ -52,6 +52,13 @@ let proxyTable = {
   },
   '/yt': {
     target: all,
+    changeOrigin: true,
+    pathRewrite: {
+      '^/yt': '/'
+    }
+  },
+  '/yt2': {
+    target: host3,
     changeOrigin: true,
     pathRewrite: {
       '^/yt': '/'

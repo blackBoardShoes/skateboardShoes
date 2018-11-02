@@ -3,8 +3,8 @@
     <div id="project-detail">
       <div class="left-nav">
         <div class="page-title">
-          <h4>项目详情</h4>
-          <h5 class="light-text">Project Detail</h5>
+          <h4>数据详情</h4>
+          <h5 class="light-text">Data Detail</h5>
         </div>
         <div :class="{'project-name': true, 'text-overflow-ellipsis': true, 'self-build': selfBuild}">
           {{projectInfo.name}}
@@ -42,7 +42,7 @@ export default {
         },
         {
           icon: 'ercp-icon-module-patient',
-          title: '入组记录',
+          title: '数据导出',
           path: 'patientCase'
         },
         {

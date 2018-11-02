@@ -276,6 +276,11 @@ export default {
       if (response.data.mitiStatus === 'SUCCESS') {
         // console.log(response.data.entity)
         this.formData = response.data.entity
+        if (this.formData.forms.length > 0) {
+          let last = this.formData.forms[4]
+          this.formData.forms.splice(4, 1)
+          this.formData.forms.push(last)
+        }
         let recordCover = {}
         for (let i in this.formData) {
           if (i !== 'forms') {

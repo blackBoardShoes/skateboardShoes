@@ -1,5 +1,5 @@
 import axios from '../index'
-const { dali, qiji } = require('@/dev').proxyTableApi
+const { dali, qiji, yt2 } = require('@/dev').proxyTableApi
 
 // 获取项目列表(join/create)
 export const getAllProject = data => {
@@ -52,3 +52,7 @@ export const removeProjectMember = data => {
 // export const getProjectMembers = data => {
 //   return axios.post(dali + `/mix/getProjectMembers?projectId=${data}`)
 // }
+// 筛选患者
+export const filterPaient = data => {
+  return axios.post(yt2 + `inclusion?currentPage=1&perPage=50${data.gender}${data.ethnic}${data.dizhi}`, data.body)
+}

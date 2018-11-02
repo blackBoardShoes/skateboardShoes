@@ -105,6 +105,7 @@
 </template>
 
 <script>
+import { charts } from '../../data/chartTemplates/chart'
 import { mapState } from 'vuex'
 import sxMinTable from '../../components/dynamicForm/minTable'
 import { formdataDeleteId, formdataFollowingupLostcontact, record, formdataDelete, recordAllRecord, formdataRejectedFilledForm, formdataFinishedFilledForm, formdataUndoneFilledForm, formdataFollowUpFilledForm, patientGetPatientCount, patientAddPatient } from '../../api/rules/index.js'
@@ -116,6 +117,7 @@ export default {
   },
   data () {
     return {
+      optionA: [],
       thatFishData: {},
       thatFish: {
         fields: [
@@ -387,6 +389,7 @@ export default {
     user: state => state.user
   }),
   async created () {
+    this.optionYY = charts[2]
     // 规则 a
     let a = {
       // 管理员 医生 无页面
@@ -887,6 +890,12 @@ $contentW: 95%;
       background: white;
       border: $lightBorderColor 1px solid;
       margin-bottom: 10px;
+      height: 260px;
+      width: 100%;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .rulesContain {
       background: white;

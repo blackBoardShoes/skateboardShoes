@@ -27,7 +27,7 @@ export default {
       navOptions: [
         {
           icon: 'ercp-icon-module-report',
-          title: '统计报表',
+          title: '数据统计',
           path: 'charts'
         },
         {

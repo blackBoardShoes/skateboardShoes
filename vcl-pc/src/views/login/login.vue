@@ -152,7 +152,7 @@ export default {
             let token = response.data.entity.Token.token
             this.$store.commit('SET_TOKEN', token)
             this.$store.commit('SET_USER', user)
-            this.$router.push('/home')
+            this.$router.push('/patient')
             this.env = process.env.NODE_ENV
             if (this.env === 'production') {
               let ipc = this.$electron.ipcRenderer
