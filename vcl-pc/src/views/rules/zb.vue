@@ -331,6 +331,13 @@ export default {
       for (let i of this.showAllForms) {
         if (this.activeIndexNav.includes(i.phase)) {
           await z.push(i)
+          // if (i.name === '手术报告') {
+          //   console.log('已过滤手术报告')
+          // } else {
+          //   if (i.phase === this.activeIndexNav) {
+          //     await z.push(i)
+          //   }
+          // }
         }
       }
       this.navArr = [...z]

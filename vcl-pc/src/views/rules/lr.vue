@@ -75,6 +75,7 @@
               <div class="rightContentStatic" v-else>
                 <!-- v-model="ssbgModel" -->
                 <sx-operation-report v-model="fishData[navArr[activeIndex].id]"
+                  :fishData="fishData"
                   ref="ssbgModel" v-if="navArr[activeIndex].name === '手术报告'"></sx-operation-report>
                 <sx-radiography
                   ref="zyModel"

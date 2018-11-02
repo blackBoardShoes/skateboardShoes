@@ -195,6 +195,7 @@
 <script>
 import imgView from '../../components/imgView/imgView.vue'
 import { formdataGetPeroperative } from '../../api/rules/lr.js'
+import { fieldAllFields } from '../../api/form/zdk.js'
 export default {
   components: {
     imgView
@@ -204,6 +205,12 @@ export default {
       type: Boolean
     },
     value: {
+      type: Object,
+      default () {
+        return {}
+      }
+    },
+    fishData: {
       type: Object,
       default () {
         return {}
@@ -383,7 +390,9 @@ export default {
       content: {},
       dialogVisible: false,
       loadingImages: false,
-      loadingReport: false
+      loadingReport: false,
+      reportData: {},
+      filedsObject: {}
     }
   },
   watch: {
@@ -401,6 +410,12 @@ export default {
     this.$set(this.contentModel, 'operationCheckBox', [])
     await this.init()
     this.contentModel = Object.assign(this.contentModel, this.value)
+    let faf = await fieldAllFields()
+    if (faf) {
+      for (let i of faf.data.entity) {
+        this.$set(this.filedsObject, i.id, i)
+      }
+    }
   },
   methods: {
     async init () {
@@ -458,10 +473,112 @@ export default {
       //   window.location.reload()
       //   document.body.innerHTML = oldContent
       // })
+      if (!Object.values(this.filedsObject).length) {
+        let faf = await fieldAllFields()
+        if (faf) {
+          for (let i of faf.data.entity) {
+            this.$set(this.filedsObject, i.id, i)
+          }
+        }
+      }
       this.loadingReport = true
-      let a = await formdataGetPeroperative(this.patientInfo.recordId)
-      console.log(a, this.patientInfo, 'this.patientInfo.id')
+      await Promise.all([formdataGetPeroperative(this.patientInfo.recordId)])
+      // let anaType = 'anaType' in a[0].data.entity.data.preoperativeRecord ? a[0].data.entity.data.preoperativeRecord['anaType'] : ''
+      // 麻醉方式=术前-麻醉方式（ANAtype）（radio）；
+      // 检查诊断=术中诊断
+      console.log(this.fishData['intraoperativeDiagnosisAndEvaluation'].intraoperativeDiagnosis, this.fishData['intraoperativeDiagnosisAndEvaluation'].operationOperator, 'this.fishDatathis.fishData')
+      let intraoperativeDiagnosis = this.fishData['intraoperativeDiagnosisAndEvaluation'].intraoperativeDiagnosis
+      // console.log(intraoperativeDiagnosis)
+      // // 报告医师=术中-手术操作者（operationOperator
+      let operationOperator = this.fishData['intraoperativeDiagnosisAndEvaluation'].operationOperator
+      // console.log(intraoperativeDiagnosis)
+      // // 活检器官及部位=术中-术中手术方式-活检-器官及部位 organAndPosition
+      // let operationOperator = this.fishData['intraoperativeProcedure'].biopsyTable
+      // console.log(intraoperativeDiagnosis)
+      // // 切开  incisionExpansionAndDrainage
+      // let est = this.fishData['intraoperativeProcedure'].est
+      // console.log(est)
+      // // 切开长度 incisionLength
+      // let incisionLength = this.fishData['intraoperativeProcedure'].incisionLength
+      // console.log(incisionLength)
+      // let filedsObject = {}
+      // for (let i of a[1].data.entity) {
+      //   filedsObject[i.id] = i
+      // }
+      let dc = this.filedsDataConversion(this.filedsObject, {
+        'intraoperativeDiagnosis': intraoperativeDiagnosis,
+        'operationOperator': operationOperator
+      })
+      console.log(dc, 'dcdcdcdcdcdc')
+      // console.log(this.reportData)
       this.loadingReport = false
+    },
+    filedsDataConversion (filedsObject, filedsData) {
+      let dc = {}
+      for (let i in filedsData) {
+        switch (filedsObject[i].type) {
+          case 'TABLE':
+            this.$set(dc, i, this.tableDataConversion(filedsObject, filedsData[i]))
+            break
+          case 'CHECKBOX':
+          case 'SELECTMUTIPLE':
+            let arr = ''
+            for (let o in filedsObject[i].values) {
+              if (filedsData[i].includes(filedsObject[i].values[o].value)) {
+                arr = arr + o + '、' + filedsObject[i].values[o].label
+              }
+            }
+            this.$set(dc, i, arr)
+            break
+          case 'CASCADER':
+            let z = ''
+            var forFn = arr => {
+              for (let w of filedsData[i]) {
+                for (let j in arr) {
+                  if (arr[j].value === w) {
+                    if ('children' in arr[j]) {
+                      z = z + arr[j].label + '/'
+                      forFn(arr[j].children)
+                    } else {
+                      z = z + arr[j].label
+                    }
+                  }
+                }
+              }
+            }
+            forFn(filedsObject[i].children)
+            this.$set(dc, i, z)
+            break
+          case 'SELECT':
+          case 'RADIO':
+            for (let o of filedsObject[i].values) {
+              if (o.value === filedsData[i]) {
+                this.$set(dc, i, o.label)
+              }
+            }
+            break
+          case 'CHECKBOXTEXT':
+            let text = ''
+            for (let o in filedsObject[i].values) {
+              if (filedsData[i].includes(filedsObject[i].values[o].label)) {
+                text = text + o + '、' + filedsObject[i].values[o].label
+              }
+            }
+            this.$set(dc, i, text)
+            break
+          default:
+            this.$set(dc, i, filedsData[i])
+            break
+        }
+      }
+      return dc
+    },
+    tableDataConversion (filedsObject, tableData) {
+      let arr = []
+      for (let i of tableData) {
+        arr.push(this.filedsDataConversion(filedsObject, i))
+      }
+      return arr
     },
     handleChange (val) {
       // console.log(val)
