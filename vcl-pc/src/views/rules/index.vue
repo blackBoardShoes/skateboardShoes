@@ -16,7 +16,7 @@
             v-for="(item, index) in rulesContainTop"
             :key="index">
             <div style="font-weight: bold;">
-              <i :class="item.icon"></i>
+              <i :class="item.icon"></i>&nbsp;
               {{item.title}}
             </div>
             <div>
