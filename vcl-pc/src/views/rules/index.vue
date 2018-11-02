@@ -1,9 +1,9 @@
 <template>
   <div class="rulesAll">
     <div class="rulesContent">
-      <div class="rulesTop">
+      <!-- <div class="rulesTop">
         tubiao
-      </div>
+      </div> -->
       <div class="controlContent">
         <el-button type="primary" @click="openCreateFish" v-if="[5, 6].includes(user.codetype)">新增</el-button>
         <!-- <el-button type="primary" @click="updateFish">更新</el-button> -->
@@ -25,7 +25,7 @@
           </div>
         </div>
         <div class="rulesContainContent">
-          <el-row>
+          <el-row style="margin-bottom: 8px;">
             <el-col :span="6">
               <el-input
                 @keyup.enter.native="lookupFormInput"
@@ -877,9 +877,11 @@ $contentW: 95%;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 16px;
+  box-sizing: border-box;
   .rulesContent {
-    width: $contentW;
-    height: $contentW;
+    width: 100%;
+    height: 100%;
     .rulesTop {
       background: white;
       border: $lightBorderColor 1px solid;

@@ -54,7 +54,7 @@ export default {
     height: {
       type: null,
       default () {
-        return 325
+        return 650
       }
     },
     hasIndex: {
