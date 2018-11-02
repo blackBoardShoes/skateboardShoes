@@ -190,6 +190,7 @@
               </el-option>
             </el-select>
             <el-cascader
+              :change-on-select="true"
               v-if="record.field.value[1] === 'dizhi'"
               :options="addressOption"
               placeholder="请选择常住地址"
@@ -301,6 +302,7 @@
 <script>
 import {addressData} from '../../../../data/address/addressData'
 import {getAllFormTemplates} from '../../../../api/patient/patient.js'
+import {filterPaient} from '../../../../api/project/project.js'
 export default {
   name: 'Project_detail_member',
   data () {
@@ -382,8 +384,8 @@ export default {
         relation: {
           value: '',
           options: [
-            {label: '等于', value: 'equal'},
-            {label: '不等于', value: 'unequal'}
+            {label: '等于', value: 'equal'}
+            // {label: '不等于', value: 'unequal'}
           ],
           type: ''
         },
@@ -609,8 +611,18 @@ export default {
         }
       }
     },
+    async filterPaients (value) {
+      let data = value
+      // console.log(data)
+      let response = await filterPaient(data)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response.data.entity)
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
     searchCase () {
-      this.showConditions = true
+      // this.showConditions = true
       let obj = {
         '住院基本情况': {},
         '术前': {},
@@ -619,7 +631,32 @@ export default {
         '出院综合评估': {},
         '随访': {}
       }
+      let data = {
+        gender: '&gender=' + 1,
+        ethnic: '&ethnic=' + '汉',
+        dizhi: '',
+        body: {
+          '住院基本情况': {
+            'generalCondition.height': {
+              type: 'equal',
+              value: '188'
+            }
+          },
+          '术前': {},
+          '术中': {},
+          '术后': {},
+          '出院综合评估': {},
+          '随访': {}
+        }
+      }
+      this.basicInfomations.forEach((item) => {
+        if (item) {
+          console.log(item)
+        }
+      })
+      // this.filterPaients(data)
       console.log(obj)
+      console.log(data)
       console.log(this.basicInfomations)
       console.log(this.hospitalRecords)
       console.log(this.leaveTime)

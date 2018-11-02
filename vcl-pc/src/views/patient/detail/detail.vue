@@ -776,6 +776,7 @@ export default {
     }
     .el-tabs__content{
       flex: 1;
+      align-self: center;
       .el-tab-pane{
         background-color: rgba($color: #d3dce6, $alpha: .7);
         height: 100%;
@@ -795,6 +796,7 @@ export default {
         position: relative;
         padding: 48px 8px 8px 8px;
         box-sizing: border-box;
+        // border-radius: 5px;
         .report{
           text-align: center;
         }
