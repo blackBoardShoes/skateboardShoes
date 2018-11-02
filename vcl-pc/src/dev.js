@@ -56,11 +56,11 @@ let proxyTable = {
       '^/yt': '/'
     }
   },
-  '/yt2': {
+  '/boss': {
     target: host3,
     changeOrigin: true,
     pathRewrite: {
-      '^/yt': '/'
+      '^/boss': '/'
     }
   },
   '/dx': {

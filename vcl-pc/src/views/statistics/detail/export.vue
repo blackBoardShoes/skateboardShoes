@@ -2,86 +2,8 @@
   <div id="project-member">
     <div class="filter">
       <div class="filter-head">数据筛选
-        <!-- <span class="ercp-icon-general-next" @click="addCase = false"></span> -->
       </div>
       <div class="filter-condition">
-        <div class="basic-info-filter" v-for="(info, index) in hospitalRecords" :key="index + 111">
-          <!-- 第一步：选择字段 -->
-          <div class="case">
-            <el-cascader
-              placeholder="请选择住院信息字段"
-              style="width:100%;"
-              :options="recordSelectOptions"
-              v-model="info.field.value"
-              @change="changeRelaAndTarget(info.field, index)">
-            </el-cascader>
-          </div>
-          <!-- 第二步：选择关系（等于大于小于包含不包含） -->
-          <div class="case">
-            <el-select
-              v-model="info.relation.value"
-              placeholder="请选择住院信息筛选"
-              v-if="info.relation.type !== ''">
-              <el-option
-                v-for="item in (relationOptions.find((n) => n.type.includes(info.relation.type))).typeOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </div>
-          <!-- 第三步：选择目标值 -->
-          <div class="case">
-            <!-- 文本 -->
-            <el-input
-              placeholder="请填写住院信息目标值"
-              style="width:95%;"
-              v-if="relationOptions[0].type.includes(info.target.type)"
-              v-model="info.target.value">
-            </el-input>
-            <!-- 单选 -->
-            <el-select
-              v-model="info.target.value"
-              placeholder="请选择住院信息目标值"
-              v-if="relationOptions[1].type.includes(info.target.type)">
-              <el-option
-                v-for="item in info.target.options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-            <!-- 级联 -->
-            <el-cascader
-              v-if="relationOptions[3].type.includes(info.target.type)"
-              :options="info.target.options"
-              placeholder="请选择住院信息目标值"
-              v-model="info.target.value">
-            </el-cascader>
-            <!-- 时间 -->
-            <el-date-picker
-              value-format="yyyy-MM-dd"
-              style="width:100%;"
-              v-if="relationOptions[4].type.includes(info.target.type)"
-              v-model="info.target.value"
-              type="date"
-              placeholder="选择日期">
-            </el-date-picker>
-            <!-- 时间日期 -->
-            <el-date-picker
-              value-format="yyyy-MM-dd HH:mm:ss"
-              style="width:100%;"
-              v-if="relationOptions[5].type.includes(info.target.type)"
-              v-model="info.target.value"
-              type="datetime"
-              placeholder="选择日期时间">
-            </el-date-picker>
-          </div>
-          <div class="add-case">
-            <el-button type="text" size="mini" class="ercp-icon-general-decrease" @click="deleteOne(1, index)"></el-button>
-            <el-button type="text" size="mini" class="ercp-icon-general-append" @click="addOne(1)"></el-button>
-          </div>
-        </div>
         <div class="record-info-filter" v-for="(record, index) in basicInfomations" :key="index + 222">
                     <!-- 第一步：选择字段 -->
           <div class="case">
@@ -135,6 +57,83 @@
             <el-button type="text" size="mini" class="ercp-icon-general-append" @click="addOne(2)"></el-button>
           </div>
         </div>
+        <div class="basic-info-filter" v-for="(info, index) in hospitalRecords" :key="index + 111">
+          <!-- 第一步：选择字段 -->
+          <div class="case">
+            <el-cascader
+              placeholder="请选择住院信息字段"
+              style="width:100%;"
+              :options="recordSelectOptions"
+              v-model="info.field.value"
+              @change="changeRelaAndTarget(info.field, index)">
+            </el-cascader>
+          </div>
+          <!-- 第二步：选择关系（等于大于小于包含不包含） -->
+          <div class="case">
+            <el-select
+              v-model="info.relation.value"
+              placeholder="请选择住院信息筛选"
+              v-if="info.relation.type !== ''">
+              <el-option
+                v-for="item in (relationOptions.find((n) => n.type.includes(info.relation.type))).typeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+          <!-- 第三步：选择目标值 -->
+          <div class="case">
+            <!-- 文本 -->
+            <el-input
+              placeholder="请填写住院信息目标值"
+              style="width:95%;"
+              v-if="relationOptions[0].type.includes(info.target.type)"
+              v-model="info.target.value">
+            </el-input>
+            <!-- 单选 -->
+            <el-select
+              v-model="info.target.value"
+              placeholder="请选择住院信息目标值"
+              v-if="relationOptions[1].type.includes(info.target.type) || relationOptions[2].type.includes(info.target.type)">
+              <el-option
+                v-for="item in info.target.options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <!-- 级联 -->
+            <el-cascader
+              v-if="relationOptions[3].type.includes(info.target.type)"
+              :options="info.target.options"
+              placeholder="请选择住院信息目标值"
+              v-model="info.target.value">
+            </el-cascader>
+            <!-- 时间 -->
+            <el-date-picker
+              value-format="yyyy-MM-dd"
+              style="width:100%;"
+              v-if="relationOptions[4].type.includes(info.target.type)"
+              v-model="info.target.value"
+              type="date"
+              placeholder="选择日期">
+            </el-date-picker>
+            <!-- 时间日期 -->
+            <el-date-picker
+              value-format="yyyy-MM-dd HH:mm:ss"
+              style="width:100%;"
+              v-if="relationOptions[5].type.includes(info.target.type)"
+              v-model="info.target.value"
+              type="datetime"
+              placeholder="选择日期时间">
+            </el-date-picker>
+          </div>
+          <div class="add-case">
+            <el-button type="text" size="mini" class="ercp-icon-general-decrease" @click="deleteOne(1, index)"></el-button>
+            <el-button type="text" size="mini" class="ercp-icon-general-append" @click="addOne(1)"></el-button>
+          </div>
+        </div>
         <div class="other-info-filter">
           <div class="case1">
             <span class="light-text">手术日期</span>
@@ -142,6 +141,8 @@
               v-model="operateTime"
               type="daterange"
               range-separator="至"
+              format="yyyy/MM/dd"
+              value-format="yyyy/MM/dd"
               start-placeholder="开始日期"
               end-placeholder="结束日期">
             </el-date-picker>
@@ -151,6 +152,8 @@
             <el-date-picker
               v-model="leaveTime"
               type="daterange"
+              format="yyyy/MM/dd"
+              value-format="yyyy/MM/dd"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期">
@@ -159,13 +162,12 @@
         </div>
         <div class="operate-space">
           <el-button type="primary" size="medium" @click="searchCase">开始检索</el-button>
-          <!-- <el-button type="primary" size="medium" @click="">全部入组</el-button> -->
         </div>
       </div>
-      <div class="filter-cases">
+      <div class="filter-cases" v-if="filterCases.length > 0">
         <el-table
           class="absolute-table"
-          :data="tableData2"
+          :data="filterCases"
           height="100%"
           style="width: 100%"
           size="medium"
@@ -213,7 +215,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <div class="pagination align-right">
+      <div class="pagination align-right" v-if="filterCases.length > 0">
         <el-pagination
           background
           layout="total, sizes, prev, pager, next, jumper"
@@ -226,9 +228,9 @@
         >
         </el-pagination>
       </div>
-      <div class="filter-conditions er-card" v-if="showConditions" @dblclick="showConditions = false">
+      <!-- <div class="filter-conditions er-card" v-if="showConditions" @dblclick="showConditions = false">
         {{filterCondition}}
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -240,12 +242,13 @@ export default {
   name: 'Project_detail_member',
   data () {
     return {
-      tableData2: [],
+      // tableData2: [],
       // 分页信息
       pageSize: 10,
       currentPage: 1,
-      total: 40,
-      addCase: true,
+      total: 0,
+      // addCase: true,
+      // 住院记录以及自增模板
       hospitalRecords: [],
       hospitalExample: {
         field: {
@@ -263,6 +266,7 @@ export default {
           type: ''
         }
       },
+      // 基本信息以及自增模板
       basicInfomations: [],
       basicExample: {
         field: {
@@ -295,6 +299,7 @@ export default {
         }
       },
       addressOption: [],
+      // 表单的所有字段的模板
       recordTemplates: [],
       recordSelectOptions: [],
       relationOptions: [
@@ -303,9 +308,11 @@ export default {
           type: ['INPUT', 'TEXTAREA', 'CALCULATE', 'INT', 'DOUBLE', 'RADIOTEXT'],
           typeOptions: [
             {label: '等于', value: 'equal'},
-            {label: '不等于', value: 'unequal'},
-            {label: '大于', value: 'morethan'},
-            {label: '小于', value: 'lessthan'}
+            {label: '不等于', value: 'not_equal'},
+            {label: '大于', value: 'greater_than'},
+            {label: '小于', value: 'less_than'},
+            {label: '小于等于', value: 'less_than_or_eq'},
+            {label: '大于等于', value: 'greater_than_or_eq'}
           ]
         },
         // 选项
@@ -313,21 +320,23 @@ export default {
           type: ['RADIO', 'SELECT'],
           typeOptions: [
             {label: '等于', value: 'equal'},
-            {label: '不等于', value: 'unequal'}
+            {label: '不等于', value: 'not_equal'}
           ]
         },
         // 多选系列，值为文本
         {
           type: ['CHECKBOX', 'SELECTMUTIPLE', 'CHECKBOXTEXT'],
           typeOptions: [
-            {label: '等于', value: 'equal'}
+            {label: '包含', value: 'has_all_of'},
+            {label: '不包含', value: 'hase_none_of'}
           ]
         },
         // 级联
         {
           type: ['CASCADER'],
           typeOptions: [
-            {label: '等于', value: 'equal'}
+            {label: '等于', value: 'equal'},
+            {label: '不等于', value: 'not_equal'}
           ]
         },
         // 日期
@@ -335,9 +344,11 @@ export default {
           type: ['DATE'],
           typeOptions: [
             {label: '等于', value: 'equal'},
-            {label: '不等于', value: 'unequal'},
-            {label: '大于', value: 'morethan'},
-            {label: '小于', value: 'lessthan'}
+            {label: '不等于', value: 'not_equal'},
+            {label: '大于', value: 'greater_than'},
+            {label: '小于', value: 'less_than'},
+            {label: '小于等于', value: 'less_than_or_eq'},
+            {label: '大于等于', value: 'greater_than_or_eq'}
           ]
         },
         // 日期时间
@@ -345,16 +356,20 @@ export default {
           type: ['DATETIME'],
           typeOptions: [
             {label: '等于', value: 'equal'},
-            {label: '不等于', value: 'unequal'},
-            {label: '大于', value: 'morethan'},
-            {label: '小于', value: 'lessthan'}
+            {label: '不等于', value: 'not_equal'},
+            {label: '大于', value: 'greater_than'},
+            {label: '小于', value: 'less_than'},
+            {label: '小于等于', value: 'less_than_or_eq'},
+            {label: '大于等于', value: 'greater_than_or_eq'}
           ]
         }
       ],
+      // 手术日期以及出院日期
       leaveTime: [],
       operateTime: [],
       showConditions: false,
-      filterCondition: {}
+      // filterCondition: {},
+      filterCases: []
     }
   },
   mounted () {
@@ -372,12 +387,6 @@ export default {
     changePage (page) {
       console.log(page)
       // this.getProject(this.pageSize, page)
-    },
-    add () {
-      this.addCase = true
-    },
-    clear () {
-      this.$message.warning('清空案例')
     },
     // 以下为筛选条件的代码区域
     // 获取表单模板
@@ -398,7 +407,8 @@ export default {
         {value: '术前', label: '术前', children: []},
         {value: '术中', label: '术中', children: []},
         {value: '术后', label: '术后', children: []},
-        {value: '出院综合评估', label: '出院综合评估', children: []}
+        {value: '出院综合评估', label: '出院综合评估', children: []},
+        {value: '随访', label: '随访', children: []}
       ]
       arr.forEach((module) => {
         module.label = module.name
@@ -507,10 +517,8 @@ export default {
         }
       }
     },
-    async filterPaients (value) {
-      let data = value
-      // console.log(data)
-      let response = await filterPaient(data)
+    async filterPaients (info) {
+      let response = await filterPaient(info)
       if (response.data.mitiStatus === 'SUCCESS') {
         console.log(response.data.entity)
       } else {
@@ -518,7 +526,38 @@ export default {
       }
     },
     searchCase () {
-      // this.showConditions = true
+      let basicArr = []
+      // 筛选完整的有效的信息
+      this.basicInfomations.forEach((item) => {
+        let flag = true
+        for (let key in item) {
+          console.log(item[key])
+          if (item[key].value === '' || item[key].value === []) {
+            flag = false
+          } else {
+          }
+        }
+        if (flag) {
+          basicArr.push(item)
+        } else {
+        }
+      })
+      console.log(basicArr)
+      let recordArr = []
+      // 筛选完整的有效的信息
+      this.hospitalRecords.forEach((item) => {
+        let flag = true
+        for (let key in item) {
+          if (item[key].value === '' || item[key].value === []) {
+            flag = false
+          } else {
+          }
+        }
+        if (flag) {
+          recordArr.push(item)
+        }
+      })
+      console.log(recordArr)
       let obj = {
         '住院基本情况': {},
         '术前': {},
@@ -527,36 +566,62 @@ export default {
         '出院综合评估': {},
         '随访': {}
       }
-      let data = {
-        gender: '&gender=' + 1,
-        ethnic: '&ethnic=' + '汉',
-        dizhi: '',
-        body: {
-          '住院基本情况': {
-            'generalCondition.height': {
-              type: 'equal',
-              value: '188'
+      recordArr.forEach((record) => {
+        for (let key in obj) {
+          if (record.field.value[0] === key) {
+            let key2 = record.field.value[1] + '.' + record.field.value[record.field.value.length - 1]
+            obj[key][key2] = {
+              type: record.relation.value,
+              value: record.target.value
             }
-          },
-          '术前': {},
-          '术中': {},
-          '术后': {},
-          '出院综合评估': {},
-          '随访': {}
-        }
-      }
-      this.basicInfomations.forEach((item) => {
-        if (item) {
-          console.log(item)
+          }
         }
       })
-      // this.filterPaients(data)
+      if (this.leaveTime && this.leaveTime.length > 0) {
+        obj['出院综合评估']['comprehensiveAssessment.dischargeDate'] = {
+          type: 'between',
+          value1: this.leaveTime[0],
+          value2: this.leaveTime[1]
+        }
+        // obj['出院综合评估']['comprehensiveAssessment.dischargeDate'] = {
+        //   type: 'less_than_or_eq',
+        //   value: this.leaveTime[1]
+        // }
+      }
+      if (this.operateTime && this.operateTime.length > 0) {
+        obj['术前']['header.operationDate'] = {
+          type: 'between',
+          value1: this.operateTime[0],
+          value2: this.operateTime[1]
+        }
+        obj['术中']['header.operationDate'] = {
+          type: 'between',
+          value1: this.operateTime[0],
+          value2: this.operateTime[1]
+        }
+        obj['术后']['header.operationDate'] = {
+          type: 'between',
+          value1: this.operateTime[0],
+          value2: this.operateTime[1]
+        }
+      }
+      let text = ''
+      basicArr.forEach((basic) => {
+        if (basic.field.value[1] === 'gender' && text.indexOf('gender') < 0) {
+          text += '&gender=' + basic.target.value
+        } else if (basic.field.value[1] === 'nation' && text.indexOf('nation') < 0) {
+          text += '&ethnic=' + basic.target.value
+        } else if (basic.field.value[1] === 'dizhi' && text.indexOf('dizhi') < 0) {
+          text += '&address=' + basic.target.value[basic.target.value.length - 1]
+        }
+      })
+      console.log(text)
       console.log(obj)
-      console.log(data)
-      console.log(this.basicInfomations)
-      console.log(this.hospitalRecords)
-      console.log(this.leaveTime)
-      console.log(this.operateTime)
+      let info = {
+        basic: text,
+        record: obj
+      }
+      this.filterPaients(info)
     }
   },
   watch: {
@@ -613,8 +678,7 @@ export default {
           relation: {
             value: '',
             options: [
-              {label: '等于', value: 'equal'},
-              {label: '不等于', value: 'unequal'}
+              {label: '等于', value: 'equal'}
             ],
             type: ''
           },

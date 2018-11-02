@@ -102,17 +102,50 @@
         <el-col :span="1">
           <div class="tips">
             <el-popover
-              placement="bottom"
+              placement="bottom-start"
               width="800"
               trigger="hover">
               <el-table :data="permissionData" border stripe>
-                <el-table-column align="center"  property="page" label="页面/用户"></el-table-column>
-                <el-table-column align="center"  property="administrator" label="管理员"></el-table-column>
-                <el-table-column align="center"  property="doctor" label="医生"></el-table-column>
-                <el-table-column align="center"  property="scientificManager" label="科研管理员"></el-table-column>
-                <el-table-column align="center"  property="controller" label="临床质控员"></el-table-column>
-                <el-table-column align="center"  property="dtenter" label="诊疗中心"></el-table-column>
-                <el-table-column align="center"  property="nurse" label="科研护士"></el-table-column>
+                <el-table-column align="center" label="用户/页面" property="page0"></el-table-column>
+                <el-table-column align="center" label="患者中心">
+                  <el-table-column align="center"  property="page1" label="删除">
+                  </el-table-column>
+                  <el-table-column align="center"  property="page2" label="编辑">
+                  </el-table-column>
+                  <el-table-column align="center"  property="page3" label="查看">
+                  </el-table-column>
+                </el-table-column>
+                <el-table-column align="center" label="任务中心">
+                  <el-table-column align="center"  property="page4" label="新增">
+                  </el-table-column>
+                  <el-table-column align="center"  property="page5" label="编辑">
+                  </el-table-column>
+                  <el-table-column align="center"  property="page6" label="录入">
+                  </el-table-column>
+                  <el-table-column align="center"  property="page7" label="审核">
+                  </el-table-column>
+                  <el-table-column align="center"  property="page8" label="修正">
+                  </el-table-column>
+                  <el-table-column align="center"  property="page9" label="随访">
+                  </el-table-column>
+                </el-table-column>
+                <el-table-column align="center"  property="page10" label="数据管理"></el-table-column>
+                <el-table-column align="center" label="表单管理">
+                  <el-table-column align="center"  property="page11" label="表单库">
+                  </el-table-column>
+                  <el-table-column align="center"  property="page12" label="字段库">
+                  </el-table-column>
+                  <el-table-column align="center"  property="page13" label="术语库（查看、查询）">
+                  </el-table-column>
+                  <el-table-column align="center"  property="page14" label="术语库（新增、编辑）">
+                  </el-table-column>
+                </el-table-column>
+                <el-table-column align="center" label="系统管理">
+                  <el-table-column align="center"  property="pag15" label="用户管理">
+                  </el-table-column>
+                  <el-table-column align="center"  property="page16" label="日志管理">
+                  </el-table-column>
+                </el-table-column>
               </el-table>
             <span class="el-icon-question" slot="reference"></span>
             </el-popover>
@@ -192,76 +225,118 @@ export default {
       // 权限列表
       permissionData: [
         {
-          page: '系统首页',
-          administrator: '√',
-          doctor: '√',
-          scientificManager: '√',
-          controller: '√',
-          dtenter: '√',
-          nurse: '√'
+          page0: '管理员',
+          page1: '×',
+          page2: '×',
+          page3: '√',
+          page4: '×',
+          page5: '×',
+          page6: '×',
+          page7: '×',
+          page8: '×',
+          page9: '×',
+          page10: '√',
+          page11: '√',
+          page12: '√',
+          page13: '√',
+          page14: '√',
+          pag15: '√',
+          page16: '√'
         },
         {
-          page: '患者中心',
-          administrator: '√',
-          doctor: '√',
-          scientificManager: '√',
-          controller: '√',
-          dtenter: '√',
-          nurse: '√'
+          page0: '科研管理员',
+          page1: '×',
+          page2: '×',
+          page3: '√',
+          page4: '×',
+          page5: '×',
+          page6: '×',
+          page7: '×',
+          page8: '×',
+          page9: '√',
+          page10: '√',
+          page11: '×',
+          page12: '×',
+          page13: '√',
+          page14: '×',
+          pag15: '√',
+          page16: '×'
         },
         {
-          page: '任务中心',
-          administrator: '×',
-          doctor: '×',
-          scientificManager: '√',
-          controller: '√',
-          dtenter: '√',
-          nurse: '√'
+          page0: '医生',
+          page1: '×',
+          page2: '×',
+          page3: '√',
+          page4: '×',
+          page5: '×',
+          page6: '×',
+          page7: '√',
+          page8: '×',
+          page9: '×',
+          page10: '√',
+          page11: '×',
+          page12: '×',
+          page13: '√',
+          page14: '×',
+          pag15: '×',
+          page16: '×'
         },
         {
-          page: '数据统计',
-          administrator: '√',
-          doctor: '√',
-          scientificManager: '√',
-          controller: '×',
-          dtenter: '×',
-          nurse: '×'
+          page0: '临床质控员',
+          page1: '×',
+          page2: '×',
+          page3: '√',
+          page4: '×',
+          page5: '×',
+          page6: '×',
+          page7: '√',
+          page8: '×',
+          page9: '×',
+          page10: '×',
+          page11: '×',
+          page12: '√',
+          page13: '×',
+          page14: '×',
+          pag15: '×',
+          page16: '×'
         },
         {
-          page: '项目管理',
-          administrator: '√',
-          doctor: '√',
-          scientificManager: '√',
-          controller: '×',
-          dtenter: '×',
-          nurse: '×'
+          page0: '诊疗中心',
+          page1: '√',
+          page2: '√',
+          page3: '√',
+          page4: '√',
+          page5: '√',
+          page6: '√',
+          page7: '×',
+          page8: '×',
+          page9: '×',
+          page10: '×',
+          page11: '×',
+          page12: '×',
+          page13: '√',
+          page14: '×',
+          pag15: '×',
+          page16: '×'
         },
         {
-          page: '表单管理',
-          administrator: '√',
-          doctor: '×',
-          scientificManager: '×',
-          controller: '×',
-          dtenter: '×',
-          nurse: '×'
-        },
-        {
-          page: '系统管理',
-          administrator: '√',
-          doctor: '×',
-          scientificManager: '√',
-          controller: '×',
-          dtenter: '×',
-          nurse: '×'
-        },
-        {
-          page: '帮助中心',
-          administrator: '√',
-          doctor: '√',
-          scientificManager: '√',
-          controller: '√',
-          dtenter: '√',
-          nurse: '√'
+          page0: '科研护士',
+          page1: '√',
+          page2: '√',
+          page3: '√',
+          page4: '√',
+          page5: '×',
+          page6: '√',
+          page7: '×',
+          page8: '√',
+          page9: '√',
+          page10: '×',
+          page11: '×',
+          page12: '×',
+          page13: '√',
+          page14: '×',
+          pag15: '×',
+          page16: '×'
         }
       ],
       rules: {
@@ -303,7 +378,7 @@ export default {
           info.institution_name = info.institution
           let response = await addUser(info)
           if (response.data.mitiStatus === 'SUCCESS') {
-            this.getAllUser()
+            this.getAllUser(1)
             this.$refs.newUserForm.resetFields()
             this.dialogTableVisible = false
           } else {
@@ -350,7 +425,7 @@ export default {
       return row.status === value
     },
     // 获取所有的用户
-    async getAllUser () {
+    async getAllUser (add) {
       let info = {
         currentPage: 1,
         pageSize: 500
@@ -384,6 +459,13 @@ export default {
         this.tableData.forEach((item) => {
           this.nameArr.push(item.name)
         })
+        if (add === 1) {
+          this.$message.success('新增用户成功')
+        } else if (add === 2) {
+          this.$message.success('禁用用户成功')
+        } else if (add === 3) {
+          // this.$message.success('重置用户密码成功')
+        }
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
@@ -397,7 +479,7 @@ export default {
       }).then(async () => {
         let response = await forbiddenUser(value.id)
         if (response.data.mitiStatus === 'SUCCESS') {
-          this.getAllUser()
+          this.getAllUser(2)
         } else {
           console.log(response.data)
         }
@@ -415,7 +497,7 @@ export default {
         let response = await resetUser(value.id)
         if (response.data.mitiStatus === 'SUCCESS') {
           console.log(response)
-          this.getAllUser()
+          this.getAllUser(3)
         } else {
           console.log(response.data)
         }

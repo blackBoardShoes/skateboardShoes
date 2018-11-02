@@ -687,6 +687,7 @@ export default {
 
     .card-content{
       height: 95%;
+      width: 300px;
       margin-top: 8px;
       box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
       border-radius: 2px;

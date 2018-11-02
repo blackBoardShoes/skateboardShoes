@@ -1,11 +1,11 @@
 <template>
   <div id="data-charts">
-    <div class="settings-part">
+    <!-- <div class="settings-part">
       <el-button type="primary" @click="showAdjust = !showAdjust">调整</el-button>
       <el-button type="primary" plain @click="saveChange">保存</el-button>
-    </div>
+    </div> -->
     <div class="chart-part er-card">
-      <div class="chart er-card"  :style="transformData(item.style)" v-for="(item, index) in options" :key="index">
+      <div class="chart"  :style="transformData(item.style)" v-for="(item, index) in options" :key="index">
         <transition name="fade">
           <div class="top" v-if="showAdjust">
             <div class="block">

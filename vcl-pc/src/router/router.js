@@ -174,7 +174,7 @@ export const appRouter = [
     redirect: '/statistics/index',
     meta: {
       title: '数据管理',
-      navigator: true,
+      navigator: false,
       role: [1, 2, 3],
       icon: 'module-data'
     },
@@ -185,7 +185,7 @@ export const appRouter = [
         name: 'statistics_index',
         meta: {
           title: '数据管理',
-          navigator: true,
+          navigator: false,
           role: [1, 2, 3]
         },
         redirect: '/statistics/index/charts',
