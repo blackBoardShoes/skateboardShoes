@@ -60,9 +60,9 @@
               </el-tooltip>
               <el-button @click.stop="openRelation(item)" v-if="item.type === 'TABLE'"
                 circle type="primary" size="mini" icon="el-icon-setting"></el-button>
-              <el-button
+              <!-- <el-button
                 @click.stop="deleteFish(item, index)"
-                circle type="danger" size="mini" icon="el-icon-delete"></el-button>
+                circle type="danger" size="mini" icon="el-icon-delete"></el-button> -->
             </div>
           </div>
         </div>
@@ -306,7 +306,8 @@ $bottomH: 200px;
               white-space: nowrap;
               text-overflow: ellipsis;
               overflow: hidden;
-              width: 70px;
+              // width: 70px;
+              width: 100px;
             }
             display: flex;
             align-items: center;

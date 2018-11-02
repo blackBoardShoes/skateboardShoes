@@ -76,6 +76,7 @@
                 <!-- v-model="ssbgModel" -->
                 <sx-operation-report v-model="fishData[navArr[activeIndex].id]"
                   :fishData="fishData"
+                  :mozhu="navArr"
                   ref="ssbgModel" v-if="navArr[activeIndex].name === '手术报告'"></sx-operation-report>
                 <sx-radiography
                   ref="zyModel"
@@ -381,6 +382,7 @@ export default {
         }
       }
       this.navArr = [...z]
+      console.log(this.navArr, 'this.navArrthis.navArrthis.navArr')
       this.smf = true
     },
     navArrAssignment () {

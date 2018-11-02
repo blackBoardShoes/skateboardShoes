@@ -178,6 +178,17 @@
             <span v-else>{{item}}</span>
           </div>
         </div>
+        <div class="title" v-for="(item, key) in reportData" :key="key">
+          <div
+            v-if="whatFormWhereObject[key]"
+            style="font-size: 18px;
+              height: 36px;
+              display: flex;
+              align-items: center;">
+              {{whatFormWhereObject[key].name}}
+          </div>
+          <sx-show-min :whatFiledsWhere="filedsObject" :whatFileds="item"></sx-show-min>
+        </div>
       </div>
     </el-form>
     <el-dialog
@@ -214,6 +225,12 @@ export default {
       type: Object,
       default () {
         return {}
+      }
+    },
+    mozhu: {
+      type: Array,
+      default () {
+        return []
       }
     }
   },
@@ -392,7 +409,8 @@ export default {
       loadingImages: false,
       loadingReport: false,
       reportData: {},
-      filedsObject: {}
+      filedsObject: {},
+      whatFormWhereObject: {}
     }
   },
   watch: {
@@ -404,18 +422,13 @@ export default {
     }
   },
   async created () {
+    console.log(this.mozhu)
     if (this.$route.params.data) {
       this.patientInfo = JSON.parse(this.$route.params.data)
     }
     this.$set(this.contentModel, 'operationCheckBox', [])
     await this.init()
     this.contentModel = Object.assign(this.contentModel, this.value)
-    let faf = await fieldAllFields()
-    if (faf) {
-      for (let i of faf.data.entity) {
-        this.$set(this.filedsObject, i.id, i)
-      }
-    }
   },
   methods: {
     async init () {
@@ -426,6 +439,12 @@ export default {
           this.$set(this.contentModel, z, contentModel[z])
         }
       }
+      // let faf = await fieldAllFields()
+      // if (faf) {
+      //   for (let i of faf.data.entity) {
+      //     this.$set(this.filedsObject, i.id, i)
+      //   }
+      // }
       console.log(this.contentModel, 'this.contentModel')
     },
     returnTextarea (string) {
@@ -473,43 +492,79 @@ export default {
       //   window.location.reload()
       //   document.body.innerHTML = oldContent
       // })
+      this.loadingReport = true
       if (!Object.values(this.filedsObject).length) {
         let faf = await fieldAllFields()
         if (faf) {
           for (let i of faf.data.entity) {
             this.$set(this.filedsObject, i.id, i)
           }
+        } else {
+          return
         }
       }
-      this.loadingReport = true
       await Promise.all([formdataGetPeroperative(this.patientInfo.recordId)])
       // let anaType = 'anaType' in a[0].data.entity.data.preoperativeRecord ? a[0].data.entity.data.preoperativeRecord['anaType'] : ''
       // 麻醉方式=术前-麻醉方式（ANAtype）（radio）；
       // 检查诊断=术中诊断
-      console.log(this.fishData['intraoperativeDiagnosisAndEvaluation'].intraoperativeDiagnosis, this.fishData['intraoperativeDiagnosisAndEvaluation'].operationOperator, 'this.fishDatathis.fishData')
-      let intraoperativeDiagnosis = this.fishData['intraoperativeDiagnosisAndEvaluation'].intraoperativeDiagnosis
+      // console.log(this.fishData['intraoperativeDiagnosisAndEvaluation'].intraoperativeDiagnosis, this.fishData['intraoperativeDiagnosisAndEvaluation'].operationOperator, 'this.fishDatathis.fishData')
+      // let intraoperativeDiagnosis = this.fishData['intraoperativeDiagnosisAndEvaluation'].intraoperativeDiagnosis
       // console.log(intraoperativeDiagnosis)
       // // 报告医师=术中-手术操作者（operationOperator
-      let operationOperator = this.fishData['intraoperativeDiagnosisAndEvaluation'].operationOperator
-      // console.log(intraoperativeDiagnosis)
-      // // 活检器官及部位=术中-术中手术方式-活检-器官及部位 organAndPosition
-      // let operationOperator = this.fishData['intraoperativeProcedure'].biopsyTable
-      // console.log(intraoperativeDiagnosis)
-      // // 切开  incisionExpansionAndDrainage
-      // let est = this.fishData['intraoperativeProcedure'].est
-      // console.log(est)
-      // // 切开长度 incisionLength
-      // let incisionLength = this.fishData['intraoperativeProcedure'].incisionLength
-      // console.log(incisionLength)
-      // let filedsObject = {}
-      // for (let i of a[1].data.entity) {
-      //   filedsObject[i.id] = i
-      // }
-      let dc = this.filedsDataConversion(this.filedsObject, {
-        'intraoperativeDiagnosis': intraoperativeDiagnosis,
-        'operationOperator': operationOperator
-      })
-      console.log(dc, 'dcdcdcdcdcdc')
+      // let operationOperator = this.fishData['intraoperativeDiagnosisAndEvaluation'].operationOperator
+
+      let ohShit = {
+        incisionExpansionAndDrainage: [
+          'est',
+          'incisionLength',
+          'incisionDirection',
+          'incisionMethod',
+          'preIncision',
+          'preIncisiondirection',
+          'preIncisionPower',
+          'dilatationPart',
+          'balloonDilatationDiameter',
+          'spreadingPressure',
+          'durationOfExpansion',
+          'expansionTimes',
+          'haemorrhageAssessment',
+          'haemorrhageMode',
+          'posthemorrhagicTreatment',
+          'drainageTable'
+        ],
+        diverticulumBiliaryTractAndDuodenumCalculus: [
+          'padAmount',
+          'padDia',
+          'padType',
+          'padIntlType',
+          'calculusTable'
+        ]
+      }
+      let ohShitObj = {}
+      const isHas = (what, _) => {
+        if (_) {
+          if (_[what]) return _[what]
+        }
+        return ''
+      }
+      for (let os in ohShit) {
+        this.$set(ohShitObj, os, {})
+        for (let osItem of ohShit[os]) {
+          this.$set(ohShitObj[os], osItem, isHas(osItem, this.fishData[os]))
+        }
+      }
+      console.log(ohShitObj, 'ohShitObjohShitObjohShitObj')
+      for (let end in ohShitObj) {
+        this.$set(this.reportData, end, this.filedsDataConversion(this.filedsObject, ohShitObj[end]))
+      }
+      for (let i of this.mozhu) {
+        this.$set(this.whatFormWhereObject, i.id, i)
+      }
+      // let dc = this.filedsDataConversion(this.filedsObject, {
+      //   'intraoperativeDiagnosis': intraoperativeDiagnosis,
+      //   'operationOperator': operationOperator
+      // })
+      console.log(this.reportData, 'dcdcdcdcdcdc')
       // console.log(this.reportData)
       this.loadingReport = false
     },
