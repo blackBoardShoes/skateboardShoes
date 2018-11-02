@@ -217,25 +217,25 @@ export default {
       whatObj: {
         // 总表 ---> 住院号 编号 姓名 性别 入院日期 术前记录 术中记录 术后记录 是否纳入随访记录
         AlltableColumn: [
-          { prop: 'patientId', label: '住院号' },
+          { prop: 'patientId', label: '住院号', width: '90' },
           // { prop: 'operationNum', label: '编号' },
-          { prop: 'patientName', label: '姓名' },
-          { prop: 'gender', label: '性别', sortable: true },
+          { prop: 'patientName', label: '姓名', width: '90' },
+          { prop: 'gender', label: '性别', width: '80', sortable: true },
           { prop: 'inHospitalDate', label: '入院日期' },
           { prop: '住院基本情况', label: '住院基本情况', width: '122' },
-          { prop: '术前', label: '术前记录', width: '122' },
-          { prop: '术中', label: '术中记录', width: '122' },
-          { prop: '术后', label: '术后记录', width: '122' },
+          { prop: '术前', label: '术前记录' },
+          { prop: '术中', label: '术中记录' },
+          { prop: '术后', label: '术后记录' },
           { prop: '出院综合评估', label: '出院综合评估', width: '122' },
           { option: true, label: '操作', contain: [{label: '查看'}], fixed: 'right' }
           // { prop: 'name', label: '是否纳入随访记录', width: '180', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] }
         ],
         // 待录入 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (编辑、删除)
         pendingEntryColumn: [
-          { prop: 'patientId', label: '住院号' },
-          { prop: 'operationNum', label: '编号' },
-          { prop: 'patientName', label: '姓名' },
-          { prop: 'gender', label: '性别', sortable: true },
+          { prop: 'patientId', label: '住院号', width: '90' },
+          { prop: 'operationNum', label: '编号', width: '90' },
+          { prop: 'patientName', label: '姓名', width: '90' },
+          { prop: 'gender', label: '性别', width: '80', sortable: true },
           { prop: 'dept', label: '科室' },
           { prop: 'bedNum', label: '床号' },
           { prop: 'inHospitalDate', label: '入院日期' },
@@ -246,10 +246,10 @@ export default {
         ],
         // 待审核 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (审核
         toBeAuditedColumn: [
-          { prop: 'patientId', label: '住院号' },
-          { prop: 'operationNum', label: '编号' },
-          { prop: 'patientName', label: '姓名' },
-          { prop: 'gender', label: '性别', sortable: true },
+          { prop: 'patientId', label: '住院号', width: '90' },
+          { prop: 'operationNum', label: '编号', width: '90' },
+          { prop: 'patientName', label: '姓名', width: '90' },
+          { prop: 'gender', label: '性别', width: '80', sortable: true },
           { prop: 'dept', label: '科室' },
           { prop: 'bedNum', label: '床号' },
           { prop: 'operationDate', label: '手术日期' },
@@ -259,10 +259,10 @@ export default {
         ],
         // 待修正 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (编辑
         toBeAmendedColumn: [
-          { prop: 'patientId', label: '住院号' },
-          { prop: 'operationNum', label: '编号' },
-          { prop: 'patientName', label: '姓名' },
-          { prop: 'gender', label: '性别', sortable: true },
+          { prop: 'patientId', label: '住院号', width: '90' },
+          { prop: 'operationNum', label: '编号', width: '90' },
+          { prop: 'patientName', label: '姓名', width: '90' },
+          { prop: 'gender', label: '性别', width: '80', sortable: true },
           { prop: 'dept', label: '科室' },
           { prop: 'bedNum', label: '床号' },
           { prop: 'operationDate', label: '手术日期' },
@@ -272,13 +272,14 @@ export default {
         ],
         // 随访 ---> 住院号 编号 姓名 性别 主管医生 术后诊断 出院日期 记录者 状态（待问询、已失访、待复查） 操作（编辑）
         followUpColumn: [
-          { prop: 'patientId', label: '住院号' },
+          { prop: 'patientId', label: '住院号', width: '90' },
           // { prop: 'operationNum', label: '编号' },
-          { prop: 'patientName', label: '姓名' },
-          { prop: 'gender', label: '性别', sortable: true },
+          { prop: 'patientName', label: '姓名', width: '90' },
+          { prop: 'gender', label: '性别', width: '80', sortable: true },
           { prop: 'doctor', label: '主管医生' },
           // { prop: 'name', label: '术后诊断' },
           { prop: 'dischargeDate', label: '出院日期' },
+          { prop: 'followUpDate', label: '随访日期' },
           { prop: 'responseName', label: '记录者' },
           { prop: 'isLostContact', label: '状态' },
           { option: true, label: '操作', contain: [{label: '查看', hidden: true, reverse: true}, {label: '失访', style: 'color: #878A8D', hidden: true}, {label: '编辑', hidden: true}, {label: '删除', hidden: true, style: 'color: #FF455B'}], width: 130 }
@@ -446,19 +447,19 @@ export default {
       // this.tableData = []
       // this.$router.push({name: 'sh', params: { data: JSON.stringify({a: 1}) }})
     },
-    pageSize (val) {
+    async pageSize (val) {
       this.perPage = val
+      await this.firstShow()
       this.show()
     },
     async changePage (val) {
       this.currentPage = val
       await this.firstShow()
       this.show()
-      console.log(val, this.perPage)
     },
     async firstShow () {
       // table
-      this.recordAllRecordShowData()
+      await this.recordAllRecordShowData()
       switch (this.user.type) {
         case '科研管理员':
         case '临床质控员':
@@ -628,7 +629,8 @@ export default {
               i.header,
               {doctor: i.information.record ? i.information.record.forms[0].data.generalCondition.doctor : null},
               {dischargeDate: i.information.record ? i.information.record.forms[4].data.comprehensiveAssessment.dischargeDate : null},
-              {isLostContact: isLostContact}
+              {isLostContact: isLostContact},
+              {followUpDate: i.data.endpointEventRecord ? i.data.endpointEventRecord.followUpDate : '/'}
             )
           )
           if (i.gender) i.gender = '男'
@@ -758,7 +760,6 @@ export default {
     },
     async updateFish () {},
     filterBtn (row, x) {
-      console.log(row, x, 'rowrowrowrowrowrowrow')
       if (row.phase === '随访') {
         if (row.isFinished) {
           if (x.reverse) {

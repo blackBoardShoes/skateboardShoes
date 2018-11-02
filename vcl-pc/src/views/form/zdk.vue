@@ -121,20 +121,20 @@ export default {
             type: 'RADIO',
             values: [
               {label: '单选框', value: 'RADIO'},
+              {label: '单选选择器', value: 'SELECT'},
               {label: '文本单选框', value: 'RADIOTEXT'},
-              {label: '文本标签', value: 'TEXTAREA'},
-              {label: '多选选择器', value: 'SELECTMUTIPLE'},
-              {label: '日期时间选择器', value: 'DATETIME'},
-              {label: '计算', value: 'CREATECALCULATE'},
-              {label: '选择器', value: 'SELECT'},
-              {label: '创建表格', value: 'CREATETABLE'},
-              {label: '日期选择器', value: 'DATE'},
-              {label: '整数类型输入框', value: 'INT'},
               {label: '多选框', value: 'CHECKBOX'},
+              {label: '多选选择器', value: 'SELECTMUTIPLE'},
               {label: '文本多选框', value: 'CHECKBOXTEXT'},
-              {label: '输入框', value: 'INPUT'},
               {label: '级联选择器', value: 'CASCADER'},
-              {label: '浮点类型输入框', value: 'DOUBLE'}
+              {label: '日期选择器', value: 'DATE'},
+              {label: '日期时间选择器', value: 'DATETIME'},
+              {label: '整数类型输入框', value: 'INT'},
+              {label: '浮点类型输入框', value: 'DOUBLE'},
+              {label: '文本标签', value: 'TEXTAREA'},
+              {label: '输入框', value: 'INPUT'},
+              {label: '计算', value: 'CREATECALCULATE'},
+              {label: '创建表格', value: 'CREATETABLE'}
             ],
             validations: [
               { required: true, message: '请选择类型', trigger: 'change' }

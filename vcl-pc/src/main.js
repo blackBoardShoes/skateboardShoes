@@ -12,6 +12,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import router from './router'
 
 import sxForm from './components/dynamicForm'
+import sxShowMin from './components/dynamicForm/showMin.vue'
 import sxMinForm from './components/dynamicForm/minIndex'
 import Viewer from 'v-viewer'
 import 'viewerjs/dist/viewer.css'
@@ -43,6 +44,7 @@ import 'echarts/lib/component/visualMap'
 import 'echarts/lib/component/dataZoom'
 // 全局注册icon-svg
 Vue.component('iconSvg', iconSvg)
+Vue.component('sx-show-min', sxShowMin)
 Vue.component('sx-form', sxForm)
 Vue.component('sx-min-form', sxMinForm)
 if (process.env.NODE_ENV === 'production') {

@@ -73,8 +73,11 @@
             show-overflow-tooltip
             align="center"
             prop="paraphrase"
-            label="释义"
-            ></el-table-column>
+            label="释义">
+            <template slot-scope="scope">
+              {{scope.row.paraphrase ? scope.row.paraphrase : '/'}}
+            </template>
+            </el-table-column>
         </el-table>
         <div style="text-align: right;margin-top:15px;">
           <el-pagination
