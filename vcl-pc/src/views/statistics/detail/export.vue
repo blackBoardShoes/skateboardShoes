@@ -164,7 +164,20 @@
           <el-button type="primary" size="medium" @click="searchCase">开始检索</el-button>
         </div>
       </div>
-      <div class="filter-cases" v-if="filterCases.length > 0">
+      <div class="filter-tree filter-cases">
+        <el-tree
+          :data="fieldsData"
+          @check-change="getCheckNodes"
+          show-checkbox
+          :default-expand-all=false
+          node-key="id"
+          ref="tree"
+          highlight-current
+          :props="defaultProps"
+          empty-text="字段正在加载中">
+        </el-tree>
+      </div>
+      <!-- <div class="filter-cases" v-if="filterCases.length > 0">
         <el-table
           class="absolute-table"
           :data="filterCases"
@@ -227,7 +240,7 @@
           @current-change = "changePage"
         >
         </el-pagination>
-      </div>
+      </div> -->
       <!-- <div class="filter-conditions er-card" v-if="showConditions" @dblclick="showConditions = false">
         {{filterCondition}}
       </div> -->
@@ -369,7 +382,14 @@ export default {
       operateTime: [],
       showConditions: false,
       // filterCondition: {},
-      filterCases: []
+      filterCases: [],
+      // 选择要导出的字段
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
+      fieldsData: [],
+      choosenData: []
     }
   },
   mounted () {
@@ -414,20 +434,29 @@ export default {
         module.label = module.name
         module.value = module.id
         if (module.fields) {
-          module.children = module.fields
-          module.children.forEach((field) => {
+          // module.children = module.fields
+          module.fields.forEach((field, index2, arr) => {
             field.value = field.id
+            field.phase = module.phase
             field.reference = field.values === undefined ? [] : field.values
             if (field.subFields.length > 0) {
               field.children = field.subFields
               field.children.forEach((subField) => {
+                subField.phase = module.phase
                 subField.value = subField.id
                 subField.reference = subField.values === undefined ? [] : subField.values
                 subField.children = null
               })
             } else {
+              console.log(field)
               field.children = null
             }
+            if (field.type === 'RADIO' && field.values === undefined) {
+              arr.splice(index2, 1)
+            }
+          })
+          this.$nextTick(() => {
+            module.children = module.fields
           })
         }
         arr2.forEach((item) => {
@@ -437,6 +466,8 @@ export default {
         })
       })
       this.recordSelectOptions = arr2
+      this.fieldsData = arr2
+      console.log(arr2)
     },
     changeRelaAndTarget (arr, index) {
       let arrLen = arr.value
@@ -611,6 +642,24 @@ export default {
         record: obj
       }
       this.filterPaients(info)
+    },
+    getCheckNodes () {
+      this.choosenData = this.$refs.tree.getCheckedNodes(true)
+      // console.log(this.choosenData)
+      let phases = []
+      let fieldArr = []
+      this.choosenData.forEach((item, index) => {
+        if (item.phase === undefined) {
+          console.log(item)
+        }
+        if (phases.indexOf(item.phase) < 0) {
+          phases.push(item.phase)
+        }
+        fieldArr.push(item.id)
+      })
+      console.log(phases)
+      console.log(fieldArr)
+      // this.fieldsCount = this.choosenData.length
     }
   },
   watch: {
@@ -791,12 +840,18 @@ export default {
         }
       }
       .filter-cases{
-        flex: 1;
+        // flex: 1;
+        border-radius: 2px;
+        background-color: #eee;
         box-sizing: border-box;
-        margin: 0 8px;
+        margin: 0 16px;
+        max-height: calc(100% - 356px);
         overflow-x: hidden;
         overflow-y: auto;
         position: relative;
+        .el-tree{
+          background-color: #eee;
+        }
       }
     }
   }

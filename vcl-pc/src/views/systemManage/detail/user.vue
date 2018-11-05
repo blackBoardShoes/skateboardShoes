@@ -104,9 +104,9 @@
             <el-popover
               placement="bottom-start"
               width="800"
-              trigger="hover">
+              trigger="click">
               <el-table :data="permissionData" border stripe>
-                <el-table-column align="center" label="用户/页面" property="page0"></el-table-column>
+                <el-table-column align="center" label="用户/页面" property="page0" width="120"></el-table-column>
                 <el-table-column align="center" label="患者中心">
                   <el-table-column align="center"  property="page1" label="删除">
                   </el-table-column>
@@ -135,9 +135,9 @@
                   </el-table-column>
                   <el-table-column align="center"  property="page12" label="字段库">
                   </el-table-column>
-                  <el-table-column align="center"  property="page13" label="术语库（查看、查询）">
+                  <el-table-column align="center"  property="page13" label="术语库（查看、查询）" width="180">
                   </el-table-column>
-                  <el-table-column align="center"  property="page14" label="术语库（新增、编辑）">
+                  <el-table-column align="center"  property="page14" label="术语库（新增、编辑）" width="180">
                   </el-table-column>
                 </el-table-column>
                 <el-table-column align="center" label="系统管理">
@@ -197,10 +197,10 @@ export default {
     // 新增用户姓名验证
     var validateName = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('必填项不能为空'))
+        callback(new Error('请填写用户姓名'))
       } else {
         if (this.nameArr.indexOf(value) > -1) {
-          callback(new Error('该用户名已存在'))
+          callback(new Error('该用户姓名已存在'))
         }
         callback()
       }
@@ -340,7 +340,7 @@ export default {
         }
       ],
       rules: {
-        name: [{validator: validateName, trigger: 'blur'}, {required: true}],
+        name: [{validator: validateName, trigger: 'blur'}],
         institution: [{required: true, message: '必填项不能为空', trigger: 'change'}],
         type: [{required: true, message: '必填项不能为空', trigger: 'change'}]
       }
@@ -497,7 +497,7 @@ export default {
         let response = await resetUser(value.id)
         if (response.data.mitiStatus === 'SUCCESS') {
           console.log(response)
-          this.getAllUser(3)
+          // this.getAllUser(3)
         } else {
           console.log(response.data)
         }
