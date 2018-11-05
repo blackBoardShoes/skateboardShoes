@@ -6,7 +6,7 @@
 // 启敏
 // let host = 'http://192.168.10.249:8089'
 let host = 'http://192.168.10.196:8089'
-host = 'http://192.168.10.13:8089'
+host = 'http://192.168.10.104:8089'
 // let host = 'http://192.168.2.105:8089'
 // 大力
 // let host2 = 'http://192.168.10.13:8090'
@@ -20,7 +20,7 @@ let host4 = 'http://192.168.10.144:8089'
 
 // let host5 = 'http://192.168.10.13:8090'
 
-let all = 'http://192.168.10.13:8090'
+let all = 'http://192.168.10.104:8090'
 // Is your service nginx  和 npm run dev 都是代理方式
 let nginx = false
 nginx = true

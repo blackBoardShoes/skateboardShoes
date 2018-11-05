@@ -77,6 +77,7 @@
                 <sx-operation-report v-model="fishData[navArr[activeIndex].id]"
                   ref="ssbgModel" v-if="navArr[activeIndex].name === '手术报告'"></sx-operation-report>
                 <sx-radiography
+                  ref="zyModel"
                   v-model="fishData[navArr[activeIndex].id]"
                   v-if="navArr[activeIndex].name === '鼻胆/胰管造影'"></sx-radiography>
               </div>
@@ -460,6 +461,9 @@ export default {
         if (this.$refs['zyModel']) {
           await this.$refs.zyModel.saveData()
         }
+        if (this.$refs['ssbgModel']) {
+          await this.$refs.ssbgModel.consoleData()
+        }
         console.log(this.fishData, 'this.fishData')
       }
       console.log(this.user, 'truetruetruetruetrue123123123')
@@ -497,6 +501,9 @@ export default {
         this.consoleDataTF = true
         if (this.$refs['zyModel']) {
           await this.$refs.zyModel.saveData()
+        }
+        if (this.$refs['ssbgModel']) {
+          await this.$refs.ssbgModel.consoleData()
         }
         console.log(this.fishData, 'this.fishData')
       }

@@ -1,18 +1,17 @@
 <template>
   <div class="showMinAll">
-    <div class="showMinContent">
-      <div v-for="(v, k) in whatFileds" :key="k">
-        <div v-if="Array.isArray(v)" style="display:flex;flex-wrap:wrap">
-          <div v-for="(item, index) in v" :key="index" style="margin-right:13px">
-            <div style="display:flex;">
-              {{!index ? whatFiledsWhere[k].label + '：' : ''}}
-              <sx-show-min :whatFileds="item" :whatFiledsWhere="whatFiledsWhere"></sx-show-min>
-            </div>
-            <br>
+    <div v-for="(v, k) in whatFileds" :key="k"  style="display: flex;">
+      <div v-if="Array.isArray(v)" style="display: flex;">
+        <div v-for="(item, index) in v" :key="index">
+          <div>
+            {{!index ? whatFiledsWhere[k].label + '：' : ''}}
+            <sx-show-min :whatFileds="item" :whatFiledsWhere="whatFiledsWhere"></sx-show-min>
           </div>
         </div>
-        <div v-else>
-          {{whatFiledsWhere[k].label}}: {{v}}
+      </div>
+      <div v-else>
+        <div v-if="v">
+          {{whatFiledsWhere[k].label}}: {{v}} &nbsp;
         </div>
       </div>
     </div>
@@ -43,13 +42,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 .showMinAll {
-  .showMinContent{
-    .title {
-      font-size: 18px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-    }
-  }
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 14px;
 }
 </style>

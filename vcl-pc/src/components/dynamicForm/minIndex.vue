@@ -805,6 +805,51 @@ export default {
       //     }
       //   }
       // }
+      switch (newFormModels.type) {
+        case 'SELECT':
+        case 'SELECTMUTIPLE':
+        case 'RADIO':
+        case 'RADIOTEXT':
+        case 'CHECKBOX':
+        case 'CHECKBOXTEXT':
+          // values
+          if ('children' in newFormModels) {
+            this.$delete(newFormModels, 'children')
+          }
+          if ('subFields' in newFormModels) {
+            this.$delete(newFormModels, 'subFields')
+          }
+          break
+        case 'CASCADER':
+          // children
+          if ('values' in newFormModels) {
+            this.$delete(newFormModels, 'values')
+          }
+          if ('subFields' in newFormModels) {
+            this.$delete(newFormModels, 'subFields')
+          }
+          break
+        case 'TABLE':
+          // subFields
+          if ('values' in newFormModels) {
+            this.$delete(newFormModels, 'values')
+          }
+          if ('children' in newFormModels) {
+            this.$delete(newFormModels, 'children')
+          }
+          break
+        default:
+          if ('children' in newFormModels) {
+            this.$delete(newFormModels, 'children')
+          }
+          if ('subFields' in newFormModels) {
+            this.$delete(newFormModels, 'subFields')
+          }
+          if ('values' in newFormModels) {
+            this.$delete(newFormModels, 'values')
+          }
+          break
+      }
       return newFormModels
     },
     notVerifying () {

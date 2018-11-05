@@ -74,14 +74,15 @@
               </div>
               <div class="rightContentStatic" v-else>
                 <!-- v-model="ssbgModel" -->
-                <sx-operation-report v-model="fishData[navArr[activeIndex].id]"
+                <sx-operation-report
+                  v-model="fishData[navArr[activeIndex].id]"
                   :fishData="fishData"
                   :mozhu="navArr"
-                  ref="ssbgModel" v-if="navArr[activeIndex].name === '手术报告'"></sx-operation-report>
+                  ref="ssbgModel" v-if="smf && (navArr[activeIndex].name === '手术报告')"></sx-operation-report>
                 <sx-radiography
                   ref="zyModel"
                   v-model="fishData[navArr[activeIndex].id]"
-                  v-if="navArr[activeIndex].name === '鼻胆/胰管造影'"></sx-radiography>
+                  v-if="smf && (navArr[activeIndex].name === '鼻胆/胰管造影')"></sx-radiography>
               </div>
             </div>
           </div>
@@ -457,7 +458,10 @@ export default {
         await this.$refs.thatForm.notVerifying()
       } else {
         if (this.$refs['zyModel']) {
-          this.$refs.zyModel.saveData()
+          await this.$refs.zyModel.saveData()
+        }
+        if (this.$refs['ssbgModel']) {
+          await this.$refs.ssbgModel.consoleData()
         }
         this.notVerifyingTF = true
         console.log(this.fishData, 'this.fishData')
@@ -495,6 +499,9 @@ export default {
       } else {
         if (this.$refs['zyModel']) {
           await this.$refs.zyModel.saveData()
+        }
+        if (this.$refs['ssbgModel']) {
+          await this.$refs.ssbgModel.consoleData()
         }
         this.consoleDataTF = true
         console.log(this.fishData, 'this.fishData')
