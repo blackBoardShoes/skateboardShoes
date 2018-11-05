@@ -47,9 +47,9 @@ Vue.component('iconSvg', iconSvg)
 Vue.component('sx-show-min', sxShowMin)
 Vue.component('sx-form', sxForm)
 Vue.component('sx-min-form', sxMinForm)
-if (process.env.NODE_ENV === 'production') {
-  Vue.use(window.require('vue-electron'))
-}
+// if (process.env.NODE_ENV === 'production') {
+//   Vue.use(window.require('vue-electron'))
+// }
 // Vue.component(VeLine.name, VeLine)
 Vue.use(ElementUI)
 Vue.use(Viewer)
