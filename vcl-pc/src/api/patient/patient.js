@@ -37,7 +37,7 @@ export const getPatientRecords = data => {
 }
 
 export const getPatientFollows = data => {
-  return axios.get(api + `/formdata/followUpFilledForm/${data}`)
+  return axios.get(api + `/followUpFilledForm/${data}`)
 }
 
 // 获取记录的字段模板等
