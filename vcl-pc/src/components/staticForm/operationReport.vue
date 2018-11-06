@@ -183,7 +183,7 @@
                   <div style="display: flex">
                     <el-select
                       :disabled="true"
-                      :style="{ width: 40 + contentModel[item.id].toString().length * 10 + 'px !important', height: '100%' }" v-if="item['type'] === 'SELECT'" v-model="contentModel[item.id]" placeholder="">
+                      :style="{ width: contentModel[item.id].toString().length * 14 + 'px !important', height: '100%' }" v-if="item['type'] === 'SELECT'" v-model="contentModel[item.id]" placeholder="">
                       <el-option
                         v-for="option in item.values"
                         :key="option.value"
@@ -191,7 +191,7 @@
                         :value="option.value">
                       </el-option>
                     </el-select>
-                    <el-input :disabled="true" :style="{ width: 40 + contentModel[item.id].toString().length * 6 + 'px !important', height: '100%' }"
+                    <el-input :disabled="true" :style="{ width: contentModel[item.id].toString().length * 14 + 'px !important', height: '100%' }"
                       v-if="item['type'] === 'INPUT'" v-model="contentModel[item.id]"></el-input>
                     <div style="max-width: 200px;" v-if="item.unit">
                       {{item.unit}}
@@ -683,14 +683,15 @@ export default {
       console.log(ohShitObj, 'ohShitObjohShitObjohShitObj')
       // 格式数据的值 最终赋给 reportData 对象   end
       for (let end in ohShitObj) {
-        this.$set(this.reportData, end, this.filedsDataConversion(this.filedsObject, ohShitObj[end]))
+        await this.$set(this.reportData, end, this.filedsDataConversion(this.filedsObject, ohShitObj[end]))
       }
       let reportDynamicData = {}
       // reportDynamicData = Object.assign({}, this.reportData)
       for (let er in this.reportData) {
         for (let rr in this.reportData[er]) {
+          console.log(rr, '----')
           if (!(['modusOperandi', 'anaType', 'intraoperativeDiagnosis', 'biopsyTable', 'operationOperator'].includes(rr))) {
-            this.$set(reportDynamicData[er], rr, this.reportData[er][rr])
+            this.$set(reportDynamicData, er, this.reportData[er])
           }
         }
       }

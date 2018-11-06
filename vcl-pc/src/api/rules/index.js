@@ -21,7 +21,7 @@ export const formdataFollowingupLostcontact = data => {
 // TABLE
 // 总表
 export const recordAllRecord = data => {
-  return axios.get(api + '/record/allRecord', { params: data })
+  return axios.get(api + '/formdata/record/allRecord', { params: data })
 }
 // 待录入
 export const formdataUndoneFilledForm = data => {

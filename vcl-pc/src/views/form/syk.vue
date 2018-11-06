@@ -12,7 +12,7 @@
               prefix-icon="el-icon-search"></el-input>
           </el-col>
           <el-col :span="2">
-            <el-button type="primary" @click="addWhat" >新增术语</el-button>
+            <el-button type="primary" @click="addWhat" v-if="user.codetype === 1">新增术语</el-button>
           </el-col>
         </el-row>
         <br>
@@ -97,14 +97,15 @@
         </div>
         <div slot="append" class="centerCenter">
           <!-- <el-button type="text" @click="deleteWhat" style="padding:0;margin:0;font-size: 17px; color: #FF455B;">删除</el-button> -->
-          <el-button size="small" plain type="danger" @click="deleteWhat" >删除</el-button>
+          <el-button size="small" plain type="danger" @click="deleteWhat"  v-if="user.codetype === 1">删除</el-button>
           &nbsp;&nbsp;
           <!-- <el-button type="text" @click="saveWhat" style="padding:0;margin:0;font-size: 17px;">保存</el-button> -->
-          <el-button size="small" type="primary" plain @click="saveWhat" >保存</el-button>
+          <el-button size="small" type="primary" plain @click="saveWhat"  v-if="user.codetype === 1">保存</el-button>
         </div>
       </sx-segmenting-line>
       <div class="sykContentBottom">
         <el-form
+          :disabled="user.codetype != 1"
           class="formModelClass"
           :model="formModel" :rules="rules"
           ref="formModel" size="mini" label-width="100px">
@@ -133,7 +134,7 @@
           </el-form-item>
           <el-form-item label="示例图像" style="width: 100%" prop="images" >
             <div class="exampleImg" v-loading="imgLoading">
-              <div class="exampleImgBtn">
+              <div class="exampleImgBtn"  v-if="user.codetype === 1">
                 <el-tooltip effect="dark" content="删除当前图片" placement="top">
                   <i class="el-icon-close"  @click="deleteImages"></i>
                 </el-tooltip>
@@ -180,6 +181,7 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 import sxSegmentingLine from '@/components/segmentingLine'
 import sxFile from '@/components/dynamicForm/file'
 import { fieldAllFields } from '@/api/form/zdk.js'
@@ -254,6 +256,9 @@ export default {
     this.firstShow()
     this.show()
   },
+  computed: mapState({
+    user: state => state.user
+  }),
   methods: {
     inited (viewer) {
       this.$viewer = viewer
