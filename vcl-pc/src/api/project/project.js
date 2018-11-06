@@ -54,20 +54,20 @@ export const removeProjectMember = data => {
 // }
 // 筛选患者
 export const filterPaient = data => {
-  return axios.post(boss + `inclusion?currentPage=1&perPage=50${data.basic}`, data.record)
+  return axios.post(boss + `formdata/inclusion?currentPage=1&perPage=50${data.basic}`, data.record)
 }
 
 // 生成文件
 export const createFile = data => {
-  return axios.post(boss + `export?fileName=${data.name}`, data.body)
+  return axios.post(boss + `formdata/export?fileName=${data.name}`, data.body)
 }
 
 // 获取患者列表
 export const fileLists = data => {
-  return axios.get(boss + `export_files`)
+  return axios.get(boss + `formdata/export_files`)
 }
 
 // 下载文件
 export const downFile = data => {
-  return axios.get(boss + `download/${data.fileId}/${data.fileName}`)
+  return axios.get(boss + `formdata/download/${data.fileId}/${data.fileName}`)
 }
