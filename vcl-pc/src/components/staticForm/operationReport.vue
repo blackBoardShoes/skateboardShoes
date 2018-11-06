@@ -155,79 +155,126 @@
           </el-col>
         </el-row>
         <grayTitle>镜检照片</grayTitle>
-        <div class="imgGroup">
+        <div class="imgGroup" v-if="contentModel.choiceResults ? contentModel.choiceResults.length : false">
           <img :src="img.source" v-for="(img, o) in contentModel.choiceResults" :key="o">
         </div>
         <grayTitle>检查所见</grayTitle>
-        <div v-for="(row, i) in contentModel.operationCheckBox" :key="i" class="showContain">
-          <div v-for="(item, index) in content[row]" :key="index">
-            <!--  && contentModel[item.id] -->
-            <div v-if="item['type']">
-              <el-form-item
-                style="display:flex;height: 10px;width:100%"
-                v-if="contentModel[item.id] ? (item.vIf ? (Array.isArray(item.vIf.value) ? item.vIf.value.includes(contentModel[item.vIf.id]) : contentModel[item.vIf.id] === item.vIf.value) : true) : false"
-                :label-width="item.labelWidth ? item.labelWidth : '0px'"
-                :label="item.label"
-                :prop="item.id"
-                :rules="item.validations">
-                <div style="display: flex">
-                  <el-select
+        <div class="reportOhterContain">
+          <el-row type="flex">
+            <el-col :span="12">
+              <sx-show-min :whatFiledsWhere="{modusOperandi: {label: '手术方式'}}"
+              :whatFileds="{modusOperandi: reportData['intraoperativeProcedure'] ? reportData['intraoperativeProcedure']['modusOperandi'] : ''}"></sx-show-min>
+            </el-col>
+            <el-col :span="12">
+              <sx-show-min :whatFiledsWhere="{anaType: {label: '麻醉方式'}}" :whatFileds="reportData['preoperativeRecord']"></sx-show-min>
+            </el-col>
+          </el-row>
+          <div v-for="(row, i) in contentModel.operationCheckBox" :key="i" class="showContain">
+            <div v-for="(item, index) in content[row]" :key="index">
+              <!--  && contentModel[item.id] -->
+              <div v-if="item['type']">
+                <el-form-item
+                  style="display:flex;height: 10px;width:100%"
+                  v-if="contentModel[item.id] ? (item.vIf ? (Array.isArray(item.vIf.value) ? item.vIf.value.includes(contentModel[item.vIf.id]) : contentModel[item.vIf.id] === item.vIf.value) : true) : false"
+                  :label-width="item.labelWidth ? item.labelWidth : '0px'"
+                  :label="item.label"
+                  :prop="item.id"
+                  :rules="item.validations">
+                  <div style="display: flex">
+                    <el-select
+                      :disabled="true"
+                      :style="{ width: 40 + contentModel[item.id].toString().length * 10 + 'px !important', height: '100%' }" v-if="item['type'] === 'SELECT'" v-model="contentModel[item.id]" placeholder="">
+                      <el-option
+                        v-for="option in item.values"
+                        :key="option.value"
+                        :label="option.label"
+                        :value="option.value">
+                      </el-option>
+                    </el-select>
+                    <el-input :disabled="true" :style="{ width: 40 + contentModel[item.id].toString().length * 6 + 'px !important', height: '100%' }"
+                      v-if="item['type'] === 'INPUT'" v-model="contentModel[item.id]"></el-input>
+                    <div style="max-width: 200px;" v-if="item.unit">
+                      {{item.unit}}
+                    </div>
+                  </div>
+                  <el-date-picker
                     :disabled="true"
-                    :style="{ width: 40 + contentModel[item.id].toString().length * 10 + 'px !important', height: '100%' }" v-if="item['type'] === 'SELECT'" v-model="contentModel[item.id]" placeholder="">
-                    <el-option
+                    :style="{ width: 40 + contentModel[item.id].toString().length * 6 + 'px !important', height: '100%' }"
+                    v-if="item['type'] === 'DATE'"
+                    v-model="contentModel[item.id]"
+                    type="date"
+                    format="yyyy/MM/dd"
+                    value-format="yyyy/MM/dd"
+                    placeholder="">
+                  </el-date-picker>
+                  <el-radio-group
+                    :disabled="true"
+                    style="min-width: 100px"
+                    v-if="item['type'] === 'RADIO'"
+                    v-model="contentModel[item.id]">
+                    <el-radio
                       v-for="option in item.values"
                       :key="option.value"
-                      :label="option.label"
-                      :value="option.value">
-                    </el-option>
-                  </el-select>
-                  <el-input :disabled="true" :style="{ width: 40 + contentModel[item.id].toString().length * 6 + 'px !important', height: '100%' }"
-                    v-if="item['type'] === 'INPUT'" v-model="contentModel[item.id]"></el-input>
-                  <div style="max-width: 200px;" v-if="item.unit">
-                    {{item.unit}}
-                  </div>
-                </div>
-                <el-date-picker
-                  :disabled="true"
-                  :style="{ width: 40 + contentModel[item.id].toString().length * 6 + 'px !important', height: '100%' }"
-                  v-if="item['type'] === 'DATE'"
-                  v-model="contentModel[item.id]"
-                  type="date"
-                  format="yyyy/MM/dd"
-                  value-format="yyyy/MM/dd"
-                  placeholder="">
-                </el-date-picker>
-                <el-radio-group
-                  :disabled="true"
-                  style="min-width: 100px"
-                  v-if="item['type'] === 'RADIO'"
-                  v-model="contentModel[item.id]">
-                  <el-radio
-                    v-for="option in item.values"
-                    :key="option.value"
-                    :label="option.label"></el-radio>
-                </el-radio-group>
-              </el-form-item>
+                      :label="option.label"></el-radio>
+                  </el-radio-group>
+                </el-form-item>
+              </div>
+              <span v-else>{{item}}</span>
             </div>
-            <span v-else>{{item}}</span>
           </div>
-        </div>
-        <br>
-        <div class="reportOhter">
+          <br>
+
+        <!-- <div class="reportOhter">
           <div class="reportOhterItem" v-for="(item, key) in reportData" :key="key">
-            <!-- <div
+            <div
               v-if="whatFormWhereObject[key]"
               style="font-size: 16px;
                 height: 30px;
                 display: flex;
                 align-items: center;">
                 {{whatFormWhereObject[key].name}}
-            </div> -->
+            </div>
+            {{key}}
+            {{item}}
             <sx-show-min :whatFiledsWhere="filedsObject" :whatFileds="item"></sx-show-min>
           </div>
+        </div> -->
+          <div class="reportOhter">
+            <div class="reportOhterItem"
+              v-for="(item, key) in reportDynamicData" :key="key">
+              <sx-show-min :whatFiledsWhere="filedsObject" :whatFileds="item"></sx-show-min>
+            </div>
+          </div>
+          <br>
+          <el-row type="flex">
+            <el-col :span="12">
+              <sx-show-min :whatFiledsWhere="filedsObject" :whatFileds="{intraoperativeDiagnosis: reportData['intraoperativeDiagnosisAndEvaluation'] ? reportData['intraoperativeDiagnosisAndEvaluation']['intraoperativeDiagnosis'] : ''}"></sx-show-min>
+            </el-col>
+            <el-col :span="12">
+              <sx-show-min :whatFiledsWhere="filedsObject" :whatFileds="{biopsyTable: reportData['intraoperativeProcedure'] ? reportData['intraoperativeProcedure']['biopsyTable'] : ''}"></sx-show-min>
+            </el-col>
+          </el-row>
+          <!-- <div class="reportOhterItem" v-for="(item, key) in reportData" :key="key">
+            <sx-show-min :whatFiledsWhere="filedsObject" :whatFileds="item"></sx-show-min>
+          </div> -->
         </div>
+        <br><br>
+        <br><br><br>
+        <hr>
+        <el-row type="flex" style="margin-top: 12px">
+          <el-col :span="12">
+          </el-col>
+          <el-col :span="12" style="display: flex;justify-content: space-between">
+            <sx-show-min :whatFiledsWhere="{operationOperator: {label: '报告医师'}}" :whatFileds="{operationOperator: reportData['intraoperativeDiagnosisAndEvaluation'] ? reportData['intraoperativeDiagnosisAndEvaluation']['operationOperator'] : ''}"></sx-show-min>
+            <div style="display: flex;width: 300px;justify-content: space-between;font-size:15px;">
+              <span style="font-weight:bold">报告日期:</span>
+               {{patientInfo['header']['operationDate']}}
+            </div>
+          </el-col>
+        </el-row>
       </div>
     </el-form>
+
     <el-dialog
       title="请挑选镜检照片"
       append-to-body
@@ -450,6 +497,7 @@ export default {
       loadingImages: false,
       loadingReport: false,
       reportData: {},
+      reportDynamicData: {},
       filedsObject: {},
       whatFormWhereObject: {},
       patientInfo: {},
@@ -471,15 +519,6 @@ export default {
     }
   },
   async created () {
-    // { prop: 'patientId', label: '住院号', width: '90' },
-    //       { prop: 'operationNum', label: '编号', width: '90' },
-    //       { prop: 'patientName', label: '姓名', width: '90' },
-    //       { prop: 'gender', label: '性别', width: '80', sortable: true },
-    //       { prop: 'dept', label: '科室' },
-    //       { prop: 'bedNum', label: '床号' },
-    //       { prop: 'inHospitalDate', label: '入院日期' },
-    //       { prop: 'operationDate', label: '手术日期' },
-    //       { prop: 'phase', label: '数据阶段', sortable: true, width: '115' },
     if (this.$route.params.data) {
       this.patientInfo = JSON.parse(this.$route.params.data)
     }
@@ -593,8 +632,13 @@ export default {
         preoperativeRecord: [
           'anaType'
         ],
+        intraoperativeProcedure: [
+          'modusOperandi',
+          'biopsyTable'
+        ],
         intraoperativeDiagnosisAndEvaluation: [
-          'operationOperator'
+          'operationOperator',
+          'intraoperativeDiagnosis'
         ],
         incisionExpansionAndDrainage: [
           'est',
@@ -641,6 +685,17 @@ export default {
       for (let end in ohShitObj) {
         this.$set(this.reportData, end, this.filedsDataConversion(this.filedsObject, ohShitObj[end]))
       }
+      let reportDynamicData = {}
+      // reportDynamicData = Object.assign({}, this.reportData)
+      for (let er in this.reportData) {
+        for (let rr in this.reportData[er]) {
+          if (!(['modusOperandi', 'anaType', 'intraoperativeDiagnosis', 'biopsyTable', 'operationOperator'].includes(rr))) {
+            this.$set(reportDynamicData[er], rr, this.reportData[er][rr])
+          }
+        }
+      }
+      this.reportDynamicData = reportDynamicData
+      console.log(reportDynamicData, 'reportDynamicDatareportDynamicData')
       for (let i of this.mozhu) {
         this.$set(this.whatFormWhereObject, i.id, i)
       }
@@ -710,10 +765,10 @@ export default {
             let text = ''
             for (let o in filedsObject[i].values) {
               if (filedsData[i].includes(filedsObject[i].values[o].label)) {
-                text = text + o + '、' + filedsObject[i].values[o].label
+                text = text + '、' + filedsObject[i].values[o].label
               }
             }
-            this.$set(dc, i, text)
+            this.$set(dc, i, text.substr(1))
             break
           default:
             this.$set(dc, i, filedsData[i])

@@ -360,7 +360,6 @@ export default {
             this.question[i] = tgpt.data.entity[i]
           }
         }
-        console.log(this.question)
       }
       let faf = await fieldAllForms()
       if (faf) {
