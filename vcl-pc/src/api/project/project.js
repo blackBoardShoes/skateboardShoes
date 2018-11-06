@@ -56,3 +56,18 @@ export const removeProjectMember = data => {
 export const filterPaient = data => {
   return axios.post(boss + `inclusion?currentPage=1&perPage=50${data.basic}`, data.record)
 }
+
+// 生成文件
+export const createFile = data => {
+  return axios.post(boss + `export?fileName=${data.name}`, data.body)
+}
+
+// 获取患者列表
+export const fileLists = data => {
+  return axios.get(boss + `export_files`)
+}
+
+// 下载文件
+export const downFile = data => {
+  return axios.get(boss + `download/${data.fileId}/${data.fileName}`)
+}

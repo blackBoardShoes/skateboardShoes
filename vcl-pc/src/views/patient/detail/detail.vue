@@ -129,7 +129,7 @@
               <el-button type="primary" size="small" plain @click="linkToRecord(record)" >查看报告</el-button>
             </div>
           </div>
-          <el-carousel :interval="4000" type="card"  style="height:100%;" :autoplay=false>
+          <el-carousel :interval="4000" type="card"  style="height:100%;width:600px;" :autoplay=false>
             <el-carousel-item v-for="(item, index) in record.forms" :key="index" :label="item.header.phase">
               <div class="card-content">
                 <div class="card-title">
@@ -225,7 +225,7 @@
           </el-carousel>
         </el-tab-pane>
         <el-tab-pane label="随访记录" v-if="followRecords.length > 0">
-          <el-carousel :interval="4000" type="card" style="height:100%;min-width:640px;" :autoplay=false>
+          <el-carousel :interval="4000" type="card" style="height:100%;;width:600px;" :autoplay=false>
             <el-carousel-item v-for="(record, index) in followRecords" :key="index" :label="'随访记录' + (index + 1)">
               <div class="card-content">
                 <div class="card-title">

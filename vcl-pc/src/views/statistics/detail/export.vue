@@ -162,9 +162,18 @@
         </div>
         <div class="operate-space">
           <el-button type="primary" size="medium" @click="searchCase">开始检索</el-button>
+          <span class="match-cases-len" v-if="afterFilter">经检索,共有
+            <span class="primary-text">{{Object.keys(matchCases).length}}</span>
+            条符合筛选条件的记录
+          </span>
         </div>
       </div>
       <div class="filter-tree filter-cases">
+        <div class="choosen-wrapper" v-if="fieldsData.length > 0">
+          <!-- 已选中{{choosenPhase.length}}个阶段
+          <br> -->
+          已选中{{choosenField.length}}个字段
+        </div>
         <el-tree
           :data="fieldsData"
           @check-change="getCheckNodes"
@@ -174,10 +183,30 @@
           ref="tree"
           highlight-current
           :props="defaultProps"
-          empty-text="字段正在加载中">
+          empty-text="loading">
         </el-tree>
       </div>
-      <!-- <div class="filter-cases" v-if="filterCases.length > 0">
+      <div class="operate-space">
+        <el-input type="text" size="medium" style="width: 203px;" v-model="exportName" placeholder="输入文件名"></el-input>
+        <el-button type="primary" size="medium" @click="makeFile"
+          :disabled="exportName === '' || Object.keys(matchCases).length < 1 || choosenField.length < 1">
+          生成文件
+        </el-button>
+      </div>
+      <div class="operate-space">
+        <el-select v-model="thisFile" placeholder="请选择">
+          <el-option
+            v-for="item in fileLists"
+            :key="item.file_id"
+            :label="item.file_name"
+            :value="item.file_id">
+          </el-option>
+        </el-select>
+        <el-button type="primary" size="medium" @click="downLoadFile">
+          导出文件
+        </el-button>
+      </div>
+      <div class="filter-cases">
         <el-table
           class="absolute-table"
           :data="filterCases"
@@ -228,29 +257,13 @@
           </el-table-column>
         </el-table>
       </div>
-      <div class="pagination align-right" v-if="filterCases.length > 0">
-        <el-pagination
-          background
-          layout="total, sizes, prev, pager, next, jumper"
-          :page-sizes="[10, 15, 20]"
-          :total="total"
-          :current-page="currentPage"
-          :page-size="pageSize"
-          @size-change= "SizeChange"
-          @current-change = "changePage"
-        >
-        </el-pagination>
-      </div> -->
-      <!-- <div class="filter-conditions er-card" v-if="showConditions" @dblclick="showConditions = false">
-        {{filterCondition}}
-      </div> -->
     </div>
   </div>
 </template>
 <script>
 import {addressData} from '../../../data/address/addressData'
 import {getAllFormTemplates} from '../../../api/patient/patient.js'
-import {filterPaient} from '../../../api/project/project.js'
+import {filterPaient, createFile, fileLists, downFile} from '../../../api/project/project.js'
 export default {
   name: 'Project_detail_member',
   data () {
@@ -388,8 +401,20 @@ export default {
         children: 'children',
         label: 'label'
       },
+      // 字段(住院记录+随访+基本情况)
       fieldsData: [],
-      choosenData: []
+      // 选中
+      choosenData: [],
+      // 选中字段和phase
+      choosenField: [],
+      choosenPhase: [],
+      // 检索后符合条件的记录
+      matchCases: [],
+      afterFilter: false,
+      exportName: '',
+      // 文件列表
+      fileLists: [],
+      thisFile: ''
     }
   },
   mounted () {
@@ -397,6 +422,7 @@ export default {
     this.getFormTemplate()
     this.initComponent(this.hospitalRecords, this.hospitalExample)
     this.initComponent(this.basicInfomations, this.basicExample)
+    this.getFileLists()
   },
   methods: {
     // 列表页码信息
@@ -421,25 +447,25 @@ export default {
       }
     },
     initFieldOptions () {
-      let arr = this.recordTemplates
+      let arr = [...this.recordTemplates]
       let arr2 = [
-        {value: '住院基本情况', label: '住院基本情况', children: []},
-        {value: '术前', label: '术前', children: []},
-        {value: '术中', label: '术中', children: []},
-        {value: '术后', label: '术后', children: []},
-        {value: '出院综合评估', label: '出院综合评估', children: []},
-        {value: '随访', label: '随访', children: []}
+        {value: '住院基本情况', label: '住院基本情况', phase: '住院基本情况', children: []},
+        {value: '术前', label: '术前', phase: '术前', children: []},
+        {value: '术中', label: '术中', phase: '术中', children: []},
+        {value: '术后', label: '术后', phase: '术后', children: []},
+        {value: '出院综合评估', label: '出院综合评估', phase: '出院综合评估', children: []},
+        {value: '随访', label: '随访', phase: '随访', children: []}
       ]
       arr.forEach((module) => {
         module.label = module.name
         module.value = module.id
-        if (module.fields) {
-          // module.children = module.fields
-          module.fields.forEach((field, index2, arr) => {
-            field.value = field.id
+        if (module.fields.length > 0) {
+          module.children = module.fields
+          module.children.forEach((field, index2, arr) => {
             field.phase = module.phase
-            field.reference = field.values === undefined ? [] : field.values
-            if (field.subFields.length > 0) {
+            field.value = field.id
+            field.reference = field.values
+            if (field.subFields && field.subFields.length > 0) {
               field.children = field.subFields
               field.children.forEach((subField) => {
                 subField.phase = module.phase
@@ -448,15 +474,9 @@ export default {
                 subField.children = null
               })
             } else {
-              console.log(field)
+              field.phase = module.phase
               field.children = null
             }
-            if (field.type === 'RADIO' && field.values === undefined) {
-              arr.splice(index2, 1)
-            }
-          })
-          this.$nextTick(() => {
-            module.children = module.fields
           })
         }
         arr2.forEach((item) => {
@@ -465,8 +485,9 @@ export default {
           }
         })
       })
-      this.recordSelectOptions = arr2
-      this.fieldsData = arr2
+      this.recordSelectOptions = [...arr2]
+      this.fieldsData = [...arr2]
+      this.fieldsData.unshift(this.basicExample.field.options[0])
       console.log(arr2)
     },
     changeRelaAndTarget (arr, index) {
@@ -552,10 +573,14 @@ export default {
       let response = await filterPaient(info)
       if (response.data.mitiStatus === 'SUCCESS') {
         console.log(response.data.entity)
+        let inclusion = response.data.entity
+        this.matchCases = Object.assign({}, inclusion)
+        this.afterFilter = true
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
     },
+    // 检索案例
     searchCase () {
       let basicArr = []
       // 筛选完整的有效的信息
@@ -643,9 +668,9 @@ export default {
       }
       this.filterPaients(info)
     },
+    // 获取选中的节点
     getCheckNodes () {
       this.choosenData = this.$refs.tree.getCheckedNodes(true)
-      // console.log(this.choosenData)
       let phases = []
       let fieldArr = []
       this.choosenData.forEach((item, index) => {
@@ -659,7 +684,61 @@ export default {
       })
       console.log(phases)
       console.log(fieldArr)
-      // this.fieldsCount = this.choosenData.length
+      this.choosenPhase = [...phases]
+      this.choosenField = [...fieldArr]
+    },
+    async beginCreate (data) {
+      let response = await createFile(data)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response.data.entity)
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    async getFileLists () {
+      let response = await fileLists()
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response.data.entity)
+        this.fileLists = response.data.entity.reverse()
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    async downLoadFile () {
+      let info = {}
+      this.fileLists.forEach((file) => {
+        if (file.file_id === this.thisFile) {
+          info = Object.assign({}, {
+            fileId: file.file_id,
+            fileName: file.file_name
+          })
+        }
+      })
+      let response = await downFile(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response.data.entity)
+        // this.fileLists = response.data.entity.reverse()
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    // 文件生成
+    makeFile () {
+      let inclusion = Object.assign({}, this.matchCases)
+      let fields = this.choosenField
+      let phases = this.choosenPhase
+      let body = {
+        'inclusion': inclusion,
+        'fields': fields,
+        'phases': phases
+      }
+      let name = this.exportName
+      let data = {
+        'body': body,
+        'name': name
+      }
+      this.beginCreate(data)
+      this.getFileLists()
     }
   },
   watch: {
@@ -704,10 +783,12 @@ export default {
               {
                 label: '基本信息',
                 value: 'basic',
+                phase: '基本信息',
+                id: '基本信息',
                 children: [
-                  {label: '性别', value: 'gender'},
-                  {label: '民族', value: 'nation'},
-                  {label: '常住地址', value: 'dizhi'}
+                  {label: '性别', value: 'gender', id: 'gender', phase: '基本信息'},
+                  {label: '民族', value: 'nation', id: 'nation', phase: '基本信息'},
+                  {label: '常住地址', value: 'dizhi', id: 'dizhi', phase: '基本信息'}
                 ]
               }
             ],
@@ -761,16 +842,7 @@ export default {
       flex-direction: column;
       transition: all .5s linear;
       background-color: #fff;
-      overflow: hidden;
-      .filter-conditions{
-        position: absolute;
-        height: 400px;
-        width: 600px;
-        top: 50%;
-        margin-top: -200px;
-        left: 50%;
-        margin-left: -300px;
-      }
+      overflow: auto;
       .filter-head{
         height: 48px;
         // width: 100%;
@@ -795,8 +867,8 @@ export default {
         box-sizing: border-box;
         // width: 100%;
         // min-height: 220px;
-        max-height: 356px;
-        overflow: auto;
+        // max-height: 356px;
+        // overflow: auto;
         margin:0;
         .basic-info-filter, .record-info-filter, .other-info-filter, .operate-space{
           min-height: 50px;
@@ -835,8 +907,18 @@ export default {
         .other-info-filter{
           display: block;
         }
-        .operate-space{
-          text-align: center;
+      }
+      .operate-space{
+        text-align: center;
+        margin: 8px 0;
+        // border-top: 1px solid #dfdfdf;
+        // border-bottom: 1px solid #dfdfdf;
+        .match-cases-len{
+          margin-left: 20px;
+        }
+        .match-cases-len:hover{
+          text-decoration: underline;
+          cursor: pointer;
         }
       }
       .filter-cases{
@@ -845,12 +927,31 @@ export default {
         background-color: #eee;
         box-sizing: border-box;
         margin: 0 16px;
-        max-height: calc(100% - 356px);
+        // max-height: calc(100% - 392px);
         overflow-x: hidden;
         overflow-y: auto;
         position: relative;
+        z-index: 1;
         .el-tree{
-          background-color: #eee;
+          z-index: 1;
+          background-color: transparent;
+        }
+        .choosen-wrapper{
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 0;
+          bottom: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          font-size: 30px;
+          font-weight: 900;
+          // filter: blur(1px);
+          z-index: -1;
+          color: #ccc;
+          background-color: #fff;
         }
       }
     }
