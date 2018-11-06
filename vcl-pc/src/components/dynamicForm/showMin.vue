@@ -1,17 +1,17 @@
 <template>
   <div class="showMinAll">
     <div v-for="(v, k) in whatFileds" :key="k"  style="display: flex;">
-      <div v-if="Array.isArray(v)" style="display: flex;">
+      <div v-if="Array.isArray(v)" >
         <div v-for="(item, index) in v" :key="index">
           <div>
-            {{!index ? whatFiledsWhere[k].label + '：' : ''}}
-            <sx-show-min :whatFileds="item" :whatFiledsWhere="whatFiledsWhere"></sx-show-min>
+            <span style="font-weight:bold">{{!index ? whatFiledsWhere[k].label + '：' : ''}}</span>
+            <sx-show-min :whatFileds="item" :whatFiledsWhere="whatFiledsWhere" :ohShit="false"></sx-show-min>
           </div>
         </div>
       </div>
       <div v-else>
         <div v-if="v">
-          {{whatFiledsWhere[k].label}}: {{v}} &nbsp;
+          <span v-if="ohShit" style="font-weight:bold">{{whatFiledsWhere[k].label}}：</span>{{v}} &nbsp;
         </div>
       </div>
     </div>
@@ -25,6 +25,12 @@ export default {
     },
     whatFiledsWhere: {
       type: Object
+    },
+    ohShit: {
+      type: Boolean,
+      default () {
+        return true
+      }
     }
   },
   data () {
@@ -42,9 +48,12 @@ export default {
 </script>
 <style lang="scss" scoped>
 .showMinAll {
+  * {
+    font-family: "微软雅黑";
+  }
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  font-size: 14px;
+  font-size: 15px;
 }
 </style>
