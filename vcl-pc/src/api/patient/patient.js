@@ -33,11 +33,11 @@ export const editPatientBasic = data => {
 // 患者记录部分:
 // 获取患者的所有记录
 export const getPatientRecords = data => {
-  return axios.get(api + `/recordsOrdered/patient/${data}`)
+  return axios.get(api + `/formdata/recordsOrdered/patient/${data}`)
 }
 
 export const getPatientFollows = data => {
-  return axios.get(api + `/followUpFilledForm/${data}`)
+  return axios.get(api + `/formdata/followUpFilledForm/${data}`)
 }
 
 // 获取记录的字段模板等
@@ -47,7 +47,7 @@ export const getAllFormTemplates = data => {
 
 // 根据记录Id获取记录的详情
 export const getRecordById = data => {
-  return axios.get(api + `/record/${data}`)
+  return axios.get(api + `/formdata/record/${data}`)
 }
 
 // 性别统计

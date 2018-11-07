@@ -272,7 +272,7 @@ export default {
   methods: {
     // 初始化图表信息
     initCharts () {
-      let info = charts
+      let info = [...charts]
       this.optionA = Object.assign({}, info[1])
       this.optionB = Object.assign({}, info[2])
       this.dataByGender()

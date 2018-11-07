@@ -53,21 +53,53 @@ export const removeProjectMember = data => {
 //   return axios.post(dali + `/mix/getProjectMembers?projectId=${data}`)
 // }
 // 筛选患者
+// export const filterPaient = data => {
+//   return axios.post(boss + `formdata/inclusion?currentPage=1&perPage=50${data.basic}`, data.record)
+// }
+
+// // 生成文件
+// export const createFile = data => {
+//   return axios.post(boss + `formdata/export?fileName=${data.name}`, data.body)
+// }
+
+// // 获取患者列表
+// export const fileLists = data => {
+//   return axios.get(boss + `formdata/export_files`)
+// }
+
+// // 下载文件
+// export const downFile = data => {
+//   return axios.get(boss + `formdata/download/${data.fileId}/${data.fileName}`, config)
+// }
+
 export const filterPaient = data => {
-  return axios.post(boss + `formdata/inclusion?currentPage=1&perPage=50${data.basic}`, data.record)
+  return axios.post(boss + `inclusion?currentPage=1&perPage=50${data.basic}`, data.record)
 }
 
 // 生成文件
 export const createFile = data => {
-  return axios.post(boss + `formdata/export?fileName=${data.name}`, data.body)
+  return axios.post(boss + `export?fileName=${data.name}`, data.body)
 }
 
 // 获取患者列表
 export const fileLists = data => {
-  return axios.get(boss + `formdata/export_files`)
+  return axios.get(boss + `export_files`)
 }
 
 // 下载文件
+// export const downFile = data => {
+//   return axios.get(boss + `download/${data.fileId}/${data.fileName}`)
+// }
 export const downFile = data => {
-  return axios.get(boss + `formdata/download/${data.fileId}/${data.fileName}`)
+  var eleLink = document.createElement('a')
+  eleLink.download = data.fileName
+  eleLink.style.display = 'none'
+  // 字符内容转变成blob地址
+  eleLink.href = boss + `download/${data.fileId}/${data.fileName}`
+  // 触发点击
+  document.body.appendChild(eleLink)
+  eleLink.click()
+  // 然后移除
+  document.body.removeChild(eleLink)
+  // return axios.get(boss + `download/${data.fileId}/${data.fileName}`)
 }

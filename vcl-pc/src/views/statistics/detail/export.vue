@@ -1,11 +1,12 @@
 <template>
   <div id="project-member">
-    <div class="filter">
-      <div class="filter-head">数据筛选
+    <div class="filter er-card">
+      <div class="filter-head">
+        数据导出
       </div>
       <div class="filter-condition">
         <div class="record-info-filter" v-for="(record, index) in basicInfomations" :key="index + 222">
-                    <!-- 第一步：选择字段 -->
+          <!-- 第一步：选择字段 -->
           <div class="case">
             <el-cascader
               placeholder="请选择基本信息字段"
@@ -46,7 +47,7 @@
             </el-select>
             <el-cascader
               :change-on-select="true"
-              v-if="record.field.value[1] === 'dizhi'"
+              v-if="record.field.value[1] === 'address'"
               :options="addressOption"
               placeholder="请选择常住地址"
               v-model="record.target.value">
@@ -184,12 +185,15 @@
           highlight-current
           :props="defaultProps"
           empty-text="loading">
+          <span class="custom-tree-node" style="font-size:13px;" slot-scope="{ node, data }">
+            <span>{{data.label}}{{'-' + data.type === undefined ? '/' : data.type}}</span>
+          </span>
         </el-tree>
       </div>
       <div class="operate-space">
-        <el-input type="text" size="medium" style="width: 203px;" v-model="exportName" placeholder="输入文件名"></el-input>
+        <el-input type="text" size="medium" style="width: 260px;" v-model="exportName" placeholder="输入文件名"></el-input>
         <el-button type="primary" size="medium" @click="makeFile"
-          :disabled="exportName === '' || Object.keys(matchCases).length < 1 || choosenField.length < 1">
+          :disabled="!ableCreate">
           生成文件
         </el-button>
       </div>
@@ -197,65 +201,16 @@
         <el-select v-model="thisFile" placeholder="请选择">
           <el-option
             v-for="item in fileLists"
+            :disabled="item.process !== 100"
             :key="item.file_id"
             :label="item.file_name"
             :value="item.file_id">
           </el-option>
         </el-select>
-        <el-button type="primary" size="medium" @click="downLoadFile">
+        <el-button class="el-icon-refresh" @click="getFileLists" type="primary" size="medium"></el-button>
+        <el-button type="primary" size="medium" @click="downLoadFile" style="margin-left:0px;">
           导出文件
         </el-button>
-      </div>
-      <div class="filter-cases">
-        <el-table
-          class="absolute-table"
-          :data="filterCases"
-          height="100%"
-          style="width: 100%"
-          size="medium"
-          border
-          fit>
-          <el-table-column
-            prop="hospNum"
-            align="center"
-            label="住院号">
-          </el-table-column>
-          <el-table-column
-            prop="serialNum"
-            align="center"
-            label="编号">
-          </el-table-column>
-          <el-table-column
-            prop="name"
-            align="center"
-            label="姓名">
-          </el-table-column>
-          <el-table-column
-            prop="gender"
-            align="center"
-            label="性别">
-          </el-table-column>
-          <el-table-column
-            prop="dischargeStatus"
-            align="center"
-            label="出院状态">
-          </el-table-column>
-          <el-table-column
-            prop="joinTime"
-            align="center"
-            label="入组日期">
-          </el-table-column>
-          <el-table-column
-            prop="operate"
-            align="center"
-            label="操作"
-            fixed="right"
-            width="180">
-            <template slot-scope="scope">
-              <el-button type="primary" size="small" plain @click="viewCase(scope.row)">查看</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
       </div>
     </div>
   </div>
@@ -304,7 +259,7 @@ export default {
               children: [
                 {label: '性别', value: 'gender'},
                 {label: '民族', value: 'nation'},
-                {label: '常住地址', value: 'dizhi'}
+                {label: '常住地址', value: 'address'}
               ]
             }
           ],
@@ -425,16 +380,6 @@ export default {
     this.getFileLists()
   },
   methods: {
-    // 列表页码信息
-    SizeChange (size) {
-      console.log(size)
-      // this.getProject(size, this.currentPage)
-    },
-    changePage (page) {
-      console.log(page)
-      // this.getProject(this.pageSize, page)
-    },
-    // 以下为筛选条件的代码区域
     // 获取表单模板
     async getFormTemplate () {
       let response = await getAllFormTemplates()
@@ -461,16 +406,21 @@ export default {
         module.value = module.id
         if (module.fields.length > 0) {
           module.children = module.fields
+          module.children.forEach((field, index3) => {
+            if (field.type === 'RADIO' && !field.values) {
+              module.children.splice(index3, 1)
+            }
+          })
           module.children.forEach((field, index2, arr) => {
             field.phase = module.phase
             field.value = field.id
-            field.reference = field.values
+            field.reference = field.values === undefined ? (field.children === undefined ? [] : field.children) : field.values
             if (field.subFields && field.subFields.length > 0) {
               field.children = field.subFields
               field.children.forEach((subField) => {
                 subField.phase = module.phase
                 subField.value = subField.id
-                subField.reference = subField.values === undefined ? [] : subField.values
+                subField.reference = subField.values === undefined ? (subField.children === undefined ? [] : subField.children) : subField.values
                 subField.children = null
               })
             } else {
@@ -500,14 +450,14 @@ export default {
         if (module) {
           let field = module.fields.find((n) => n.id === arrLen[2])
           this.hospitalRecords[index].relation = {value: '', options: [], type: field.type}
-          this.hospitalRecords[index].target = {value: '', options: field.values || field.children, type: field.type}
+          this.hospitalRecords[index].target = {value: '', options: field.reference, type: field.type}
           if (this.relationOptions[3].type.includes(field.type)) {
             this.hospitalRecords[index].target.value = []
           }
           if (field.children) {
             let subField = field.children.find((n) => n.id === arrLen[3])
             this.hospitalRecords[index].relation = {value: '', options: [], type: subField.type}
-            this.hospitalRecords[index].target = {value: '', options: subField.values || subField.children, type: subField.type}
+            this.hospitalRecords[index].target = {value: '', options: subField.reference, type: subField.type}
             if (this.relationOptions[3].type.includes(subField.type)) {
               this.hospitalRecords[index].target.value = []
             }
@@ -524,7 +474,7 @@ export default {
           {label: '男', value: 1},
           {label: '女', value: 0}
         ]
-      } else if (field === 'dizhi') {
+      } else if (field === 'address') {
         this.basicInfomations[index].target.value = []
         this.basicInfomations[index].target.options = addressData
       } else if (field === 'nation') {
@@ -549,6 +499,8 @@ export default {
       } else {
         if (this.basicInfoAble) {
           this.initComponent(this.basicInfomations, this.basicExample)
+        } else if (this.basicInfomations.length >= 2) {
+          this.$message.info('基本信息最多筛选三条不重复或冲突的条件')
         } else {
           this.$message.info('请先填写完毕当前一组基本信息筛选条件再新增')
         }
@@ -575,7 +527,6 @@ export default {
         console.log(response.data.entity)
         let inclusion = response.data.entity
         this.matchCases = Object.assign({}, inclusion)
-        this.afterFilter = true
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
@@ -656,7 +607,7 @@ export default {
           text += '&gender=' + basic.target.value
         } else if (basic.field.value[1] === 'nation' && text.indexOf('nation') < 0) {
           text += '&ethnic=' + basic.target.value
-        } else if (basic.field.value[1] === 'dizhi' && text.indexOf('dizhi') < 0) {
+        } else if (basic.field.value[1] === 'address' && text.indexOf('address') < 0) {
           text += '&address=' + basic.target.value[basic.target.value.length - 1]
         }
       })
@@ -700,27 +651,56 @@ export default {
       if (response.data.mitiStatus === 'SUCCESS') {
         console.log(response.data.entity)
         this.fileLists = response.data.entity.reverse()
+        this.thisFile = this.fileLists[0].file_id
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
     },
     async downLoadFile () {
       let info = {}
-      this.fileLists.forEach((file) => {
-        if (file.file_id === this.thisFile) {
-          info = Object.assign({}, {
-            fileId: file.file_id,
-            fileName: file.file_name
-          })
-        }
-      })
-      let response = await downFile(info)
-      if (response.data.mitiStatus === 'SUCCESS') {
-        console.log(response.data.entity)
-        // this.fileLists = response.data.entity.reverse()
+      let file = this.fileLists.find((n) => n.file_id === this.thisFile)
+      if (file !== undefined) {
+        info = Object.assign({}, {
+          fileId: file.file_id,
+          fileName: file.file_name
+        })
+        await downFile(info)
       } else {
-        this.$message.error('ERROR: ' + response.data.message)
+        this.$message.info('请选择要导出的文件')
       }
+      // if (response.data) {
+      //   var eleLink = document.createElement('a')
+      //   eleLink.download = 'cccc.zip'
+      //   eleLink.style.display = 'none'
+      //   // 字符内容转变成blob地址
+      //   eleLink.href = 'http://192.168.10.217:8089/download/5be1625de5230d773dee2cb6/食欲'
+      //   // 触发点击
+      //   document.body.appendChild(eleLink)
+      //   eleLink.click()
+      //   // 然后移除
+      //   document.body.removeChild(eleLink)
+      // }
+      // if (response.data.mitiStatus === 'SUCCESS') {
+      // console.log(
+      //   new Blob([response.data], {type: 'application//zip'})
+      // )
+      // let fileDownload = require('js-file-download')
+      // 导出文件名称为所选的文件名称
+      // let fileName = '2222222.zip'
+      // fileDownload(response.data, fileName)
+      // console.log(String.fromCharCode.apply(null, new Uint8Array(response.data)))
+      // const blob = new Blob([response.data], {type: 'application/zip'})
+      // const url = window.URL.createObjectURL(blob)
+      // const a = document.createElement('a')
+      // a.href = url
+      // a.download = name
+      // document.body.appendChild(a)
+      // a.click()
+      // this.$message.success('文件导出成功')
+      // this.fileLists = response.data.entity.reverse()
+      // } else {
+      // this.$message.error('ERROR: ' + response.data.message)
+      // }
     },
     // 文件生成
     makeFile () {
@@ -737,8 +717,12 @@ export default {
         'body': body,
         'name': name
       }
-      this.beginCreate(data)
-      this.getFileLists()
+      if (this.fileLists.find((n) => n.file_name === data.name) !== undefined) {
+        this.$message.info('该文件名已存在,请输入其他文件名以区别')
+      } else {
+        this.beginCreate(data)
+        this.getFileLists()
+      }
     }
   },
   watch: {
@@ -788,7 +772,7 @@ export default {
                 children: [
                   {label: '性别', value: 'gender', id: 'gender', phase: '基本信息'},
                   {label: '民族', value: 'nation', id: 'nation', phase: '基本信息'},
-                  {label: '常住地址', value: 'dizhi', id: 'dizhi', phase: '基本信息'}
+                  {label: '常住地址', value: 'address', id: 'address', phase: '基本信息'}
                 ]
               }
             ],
@@ -819,6 +803,17 @@ export default {
       },
       deep: true
     }
+  },
+  computed: {
+    ableCreate: {
+      get: function () {
+        if (this.exportName !== '' && Object.keys(this.matchCases).length > 0 && this.choosenData.length > 0) {
+          return true
+        } else {
+          return false
+        }
+      }
+    }
   }
 }
 </script>
@@ -837,7 +832,6 @@ export default {
       width:100%;
       height:100%;
       box-sizing: border-box;
-      // padding:16px;
       display: flex;
       flex-direction: column;
       transition: all .5s linear;
@@ -862,13 +856,8 @@ export default {
         }
       }
       .filter-condition{
-        // flex: 1;
         background-color: #fff;
         box-sizing: border-box;
-        // width: 100%;
-        // min-height: 220px;
-        // max-height: 356px;
-        // overflow: auto;
         margin:0;
         .basic-info-filter, .record-info-filter, .other-info-filter, .operate-space{
           min-height: 50px;
@@ -887,7 +876,6 @@ export default {
           .case{
             flex: 1;
             margin-left: 10px;
-            // text-align: center;
             div{
               width: 100%;
             }
@@ -906,13 +894,12 @@ export default {
         }
         .other-info-filter{
           display: block;
+          font-size: 15px;
         }
       }
       .operate-space{
         text-align: center;
         margin: 8px 0;
-        // border-top: 1px solid #dfdfdf;
-        // border-bottom: 1px solid #dfdfdf;
         .match-cases-len{
           margin-left: 20px;
         }
@@ -922,16 +909,17 @@ export default {
         }
       }
       .filter-cases{
-        // flex: 1;
         border-radius: 2px;
-        background-color: #eee;
+        background-color: #fff;
         box-sizing: border-box;
         margin: 0 16px;
-        // max-height: calc(100% - 392px);
+        height: calc(100% - 400px);
         overflow-x: hidden;
         overflow-y: auto;
         position: relative;
         z-index: 1;
+        border: 1px dotted #dfdfdf;
+        border-radius: 5px;
         .el-tree{
           z-index: 1;
           background-color: transparent;

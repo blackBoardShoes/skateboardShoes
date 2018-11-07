@@ -37,6 +37,9 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   response => {
     // loadingInstance.close()
+    if (typeof response.data !== 'object') {
+      return response
+    }
     if (response.data) {
       if ('mitiStatus' in response.data) {
         console.log(response.data)

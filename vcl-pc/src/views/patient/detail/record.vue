@@ -100,7 +100,10 @@
                   <div class="info-detail text-overflow-ellipsis">：{{basicInfo.gender === '1' ? '男' : '女'}}</div>
                 </div>
                 <div class="info-case">
-                  <div class="info-head">患者民族</div>
+                  <div class="info-head letter-space">
+                    <div>民</div>
+                    <div>族</div>
+                  </div>
                   <div class="info-detail text-overflow-ellipsis">：{{basicInfo.nation}}</div>
                 </div>
                 <div class="info-case">
