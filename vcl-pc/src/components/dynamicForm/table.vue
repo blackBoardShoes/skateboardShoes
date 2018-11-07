@@ -297,8 +297,6 @@ export default {
 
 <style lang="scss" scoped>
 .tableAll {
-  // width: calc(100%-255px);
-  // width: 100%;
   width: 520px;
   // max-width: 520px;
   // min-width: 650px;

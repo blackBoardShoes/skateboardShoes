@@ -4,7 +4,7 @@ const {api, hot, dali} = require('@/dev').proxyTableApi
 console.log(api, hot)
 // 新增
 export const record = data => {
-  return axios.post(api + '/record', data)
+  return axios.post(api + '/formdata/record', data)
 }
 // 删除
 export const formdataDelete = data => {

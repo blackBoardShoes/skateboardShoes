@@ -1,17 +1,17 @@
 <template>
   <div class="showMinAll">
-    <div v-for="(v, k) in whatFileds" :key="k"  style="display: flex;">
+    <div v-for="(v, k, index) in whatFileds" :key="k"  style="display: flex;">
       <div v-if="Array.isArray(v)" >
-        <div v-for="(item, index) in v" :key="index">
-          <div>
-            <span style="font-weight:bold">{{!index ? whatFiledsWhere[k].label + '：' : ''}}</span>
-            <sx-show-min :whatFileds="item" :whatFiledsWhere="whatFiledsWhere" :ohShit="false"></sx-show-min>
-          </div>
+        <div v-for="(item, index) in [...v[0]]" :key="index">
+          <!-- <span style="font-weight:bold">{{!index ? whatFiledsWhere[k].label + '：' : ''}}</span> -->
+          <sx-show-min :whatFileds="item" :whatFiledsWhere="whatFiledsWhere" :ohShit="false"></sx-show-min>
         </div>
       </div>
       <div v-else>
         <div v-if="v">
-          <span v-if="ohShit" style="font-weight:bold">{{whatFiledsWhere[k].label}}：</span>{{v}} &nbsp;
+          <span style="font-weight:bold">{{whatFiledsWhere[k].label}} </span>{{v}}
+          <span v-if="ohShit && Object.values(whatFileds).length != index + 1">，</span>
+          <span v-else>&nbsp;</span>
         </div>
       </div>
     </div>

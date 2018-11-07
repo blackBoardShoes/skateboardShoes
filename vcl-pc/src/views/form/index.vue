@@ -27,17 +27,17 @@ export default {
       navArr: [
         {
           index: 'bdk',
-          icon: 'el-icon-setting',
+          icon: 'ercp-icon-module-form',
           name: '表单库'
         },
         {
           index: 'zdk',
-          icon: 'el-icon-setting',
+          icon: 'ercp-icon-module-field',
           name: '字段库'
         },
         {
           index: 'syk',
-          icon: 'el-icon-setting',
+          icon: 'ercp-icon-module-term',
           name: '术语库'
         }
       ]

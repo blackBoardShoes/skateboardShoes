@@ -762,7 +762,7 @@ export default {
                 for (let j in arr) {
                   if (arr[j].value === w) {
                     if ('children' in arr[j]) {
-                      z = z + arr[j].label + '/'
+                      z = z + arr[j].label + '-'
                       forFn(arr[j].children)
                     } else {
                       z = z + arr[j].label
