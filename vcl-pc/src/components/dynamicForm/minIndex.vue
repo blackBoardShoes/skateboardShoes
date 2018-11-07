@@ -31,13 +31,13 @@
                 class="iconErrorClass" @click="deleteError(items)">
                 <i class="el-icon-error"  v-if="iconTf(items)"></i>
               </div>
+              <!-- v-if="leftAndRightShow" -->
               <div
-                v-if="leftAndRightShow"
                 style="width: 40px;text-align:center;margin-top: 6px;">
                 <el-popover
                   v-if="question[items.id]"
                   placement="right"
-                  title="术语解释"
+                  :title="question[items.id].title ? question[items.id].title : '术语解释'"
                   width="500"
                   trigger="click">
                   <!-- {{question[items.id].paraphrase}} -->
@@ -54,7 +54,7 @@
                       </template>
                     </div>
                   </div> -->
-                  <div class="allImages" v-if="question[items.id] && question[items.id].images.length">
+                  <div class="allImages" v-if="question[items.id] && question[items.id].images && question[items.id].images.length">
                     <img  class="images" v-for="(imgItem, imgIndex) in question[items.id].images" :src="imgItem" :key="imgIndex">
                   </div>
                   <i class="el-icon-question" slot="reference" style="font-size: 16px;cursor:pointer"></i>

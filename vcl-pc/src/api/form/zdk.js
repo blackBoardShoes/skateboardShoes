@@ -18,7 +18,7 @@ export const fieldFinish = data => {
 export const fieldUpdate = data => {
   return axios.put(api + '/field/update', data)
 }
-// 删除
+// 删除 上线后禁用
 export const fieldDelete = data => {
   return axios.delete(api + '/field/' + data)
 }

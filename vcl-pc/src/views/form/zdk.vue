@@ -13,7 +13,9 @@
             </div>
           </sx-segmenting-line>
           <div style="padding: 20px;">
+            <!-- :leftAndRightShow="false" -->
             <sx-min-form
+              :question="question"
               :leftAndRightShow="false"
               submitTF
               v-model="fishData"
@@ -234,6 +236,19 @@ export default {
             values: []
           }
         ]
+      },
+      question: {
+        layerTree: {
+          paraphrase: `选项创建快捷方式:
+    1、选项间连接方式 &&
+    2、选项值连接方式 ** (仅适用选项值为数字类型的情形)
+例子如下图所示
+          `,
+          title: '备注',
+          images: [
+            require('../../assets/images/layerTree.jpg')
+          ]
+        }
       },
       fishData: {},
       listData: [],
