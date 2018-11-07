@@ -159,7 +159,7 @@ export default {
         ，直径
         {{"id": "dia","type": "INPUT","validations": [{ "required": "true", "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]+([.]{1}[0-9]+){0,1}$", "message": "1-10" }]}}
         mm，伴
-        {{"id":"choledochoNarrowLocation","type": "SELECT","values":[{"label": "肝门部胆管", "value": "肝门部胆管"},{"label": "胆管中段", "value": "胆管中段"},{"label": "胆管下端", "value": "胆管下端"},{"label": "胆管下段", "value": "胆管下段"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
+        {{"id":"choledochoNarrowLocation","type": "SELECT","values":[{"label": "肝门部胆管", "value": "肝门部胆管"},{"label": "胆管中段", "value": "胆管中段"},{"label": "胆管上段", "value": "胆管上段"},{"label": "胆管下段", "value": "胆管下段"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
         狭窄，
         狭窄长度
         {{"id": "narrowLength","type": "INPUT","validations": [{ "required": true, "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]+([.]{1}[0-9]+){0,1}$", "message": "1-10" }]}}
