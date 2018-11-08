@@ -9,7 +9,7 @@
       </div>
       <div v-else>
         <div v-if="v">
-          <span style="font-weight:bold">{{whatFiledsWhere[k].label}} </span>{{v}}
+          <span v-if="v != '否'">{{whatFiledsWhere[k].label}} </span>{{(v === '是' | v === '否') ? '' : v}}{{whatFiledsWhere[k]['unit']}}
           <span v-if="ohShit && Object.values(whatFileds).length != index + 1">，</span>
           <span v-else>&nbsp;</span>
         </div>
@@ -54,6 +54,6 @@ export default {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  font-size: 15px;
+  font-size: 14px;
 }
 </style>
