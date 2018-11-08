@@ -22,30 +22,30 @@ export const loginRouter = {
 
 // 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
 export const appRouter = [
-  // {
-  //   path: '/home',
-  //   name: 'home',
-  //   redirect: '/home/index',
-  //   meta: {
-  //     navigator: true,
-  //     title: '系统首页',
-  //     role: [1, 2, 3, 4, 5, 6],
-  //     icon: 'module-home'
-  //   },
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'home_index',
-  //       meta: {
-  //         title: '系统首页',
-  //         navigator: true,
-  //         role: [1, 2, 3, 4, 5, 6]
-  //       },
-  //       component: () => import('../../src/views/home/index/index.vue')
-  //     }
-  //   ]
-  // },
+  {
+    path: '/home',
+    name: 'home',
+    redirect: '/home/index',
+    meta: {
+      navigator: true,
+      title: '系统首页',
+      role: [1, 2, 3, 4, 5, 6],
+      icon: 'module-home'
+    },
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'home_index',
+        meta: {
+          title: '系统首页',
+          navigator: true,
+          role: [1, 2, 3, 4, 5, 6]
+        },
+        component: () => import('../../src/views/home/index/index.vue')
+      }
+    ]
+  },
   {
     path: '/rules',
     name: 'rules',
@@ -174,7 +174,7 @@ export const appRouter = [
     redirect: '/statistics/index',
     meta: {
       title: '数据管理',
-      navigator: false,
+      navigator: true,
       role: [1, 2, 3],
       icon: 'module-data'
     },

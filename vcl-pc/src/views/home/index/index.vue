@@ -29,7 +29,7 @@
          </div>
        </div>
     </div>
-    <div class="daily er-card">
+    <div class="daily er-card" v-if="false">
       <div class="card-title">
         <span><i class="ercp-icon-medicine-reservation"></i><b>今日手术</b> <span class="light-text float-right small-text">2018-07--13 10:12:55更新过</span></span>
       </div>
@@ -122,66 +122,11 @@
         </div>
       </div>
     </div>
-    <el-dialog title="添加患者" :visible.sync="dialogTableVisible" :modal="true" append-to-body>
-        <el-form ref="basicForm" :rules="rules" :model="basicInfo" label-position="right" label-width="100px">
-          <el-col :span="24">
-            <el-form-item label="患者姓名:" prop="name">
-              <el-input v-model="basicInfo.name" size="small"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="患者性别:" prop="gender">
-              <el-radio-group v-model="basicInfo.gender">
-                <el-radio label="男" value="0"></el-radio>
-                <el-radio label="女" value="1"></el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="患者名族:" prop="nation">
-              <el-input v-model="basicInfo.nation" size="small"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="住院编号:" prop="hospitalNumber">
-              <el-input v-model="basicInfo.hospitalNumber" size="small"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="身份证号:" prop="identity">
-              <el-input v-model="basicInfo.identity" size="small"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="联系方式:" prop="concatNumber">
-              <el-input v-model="basicInfo.concatNumber" size="small"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="常居住地" prop="province">
-              <el-cascader
-                :options="addressOption"
-                v-model="basicInfo.province"
-                @change="handleChange">
-              </el-cascader>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item prop="permanentAddress" label="">
-              <el-input v-model="basicInfo.permanentAddress"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-form>
-        <div class="operate align-center">
-          <el-button type="info" @click="cancel">取消</el-button>
-          <el-button type="primary" @click="confirmAdd">确定</el-button>
-        </div>
-      </el-dialog>
   </div>
 </template>
 <script>
-import {addressData} from '../../../data/address/addressData'
 import {charts} from '../../../data/chartTemplates/chart'
+import { operationFinished } from '../../../api/home/home.js'
 export default {
   name: 'home',
   data () {
@@ -189,60 +134,6 @@ export default {
       optionA: {},
       optionB: {},
       optionC: {},
-      dialogTableVisible: false,
-      basicInfo: {
-        name: '',
-        gender: '',
-        nation: '',
-        hospitalNumber: '',
-        identity: '',
-        concatNumber: '',
-        province: [],
-        permanentAddress: ''
-      },
-      rules: {
-        name: [{
-          required: true,
-          message: '必填项不能为空',
-          trigger: 'change'
-        }],
-        gender: [{
-          required: true,
-          message: '必填项不能为空',
-          trigger: 'change'
-        }],
-        nation: [{
-          required: true,
-          message: '必填项不能为空',
-          trigger: 'change'
-        }],
-        hospitalNumber: [{
-          required: true,
-          message: '必填项不能为空',
-          trigger: 'change'
-        }],
-        identity: [{
-          required: true,
-          message: '必填项不能为空',
-          trigger: 'change'
-        }],
-        concatNumber: [{
-          required: true,
-          message: '必填项不能为空',
-          trigger: 'change'
-        }],
-        province: [{
-          required: true,
-          message: '必填项不能为空',
-          trigger: 'change'
-        }],
-        permanentAddress: [{
-          required: true,
-          message: '必填项不能为空',
-          trigger: 'change'
-        }]
-      },
-      addressOption: [],
       user: {},
       viewOptions: []
     }
@@ -255,7 +146,7 @@ export default {
     this.optionA = charts[4]
     this.optionB = charts[0]
     this.optionC = charts[0]
-    this.addressOption = addressData
+    this.operationFinished()
   },
   methods: {
     initView (type) {
@@ -263,6 +154,8 @@ export default {
         // 管理员
         case 1:
           this.viewOptions = [
+            // 患者人数、住院人次、用户数
+            // 手术完成统计/各科室患者分布/患者出院时状态分布
             {
               icon: 'ercp-icon-module-patient',
               title: '患者人数',
@@ -286,7 +179,9 @@ export default {
           ]
           break
         // 医生
-        case 2:
+        case 3:
+          //  患者人数、住院人次
+          //  手术完成统计/各科室患者分布/患者出院时状态分布
           this.viewOptions = [
             {
               icon: 'ercp-icon-module-patient',
@@ -311,7 +206,9 @@ export default {
           ]
           break
         // 科研管理员
-        case 3:
+        case 2:
+          // 患者人数、住院人次、用户数
+          // 工作量统计/各科室患者分布/患者出院时状态分布
           this.viewOptions = [
             {
               icon: 'ercp-icon-module-patient',
@@ -337,6 +234,8 @@ export default {
           break
         // 临床质控员
         case 4:
+          // 患者人数、住院人次、（本用户）今日审核、待审核
+          // 手术完成统计/手术时长分布/手术难度（ASGE分级）分布
           this.viewOptions = [
             {
               icon: 'ercp-icon-module-patient',
@@ -362,6 +261,8 @@ export default {
           break
         // 诊疗中心
         case 5:
+          // 患者人数、住院人次、（本用户）待审核、（本用户）待修正
+          // 手术完成统计/手术时长分布/手术难度（ASGE分级）分布
           this.viewOptions = [
             {
               icon: 'ercp-icon-module-patient',
@@ -387,6 +288,8 @@ export default {
           break
         // 科研护士
         case 6:
+          // 患者人数、住院人次、（本用户）待审核、（本用户）待修正
+          // 手术完成统计/各科室患者分布/患者出院时状态分布
           this.viewOptions = [
             {
               icon: 'ercp-icon-module-patient',
@@ -415,31 +318,14 @@ export default {
           break
       }
     },
-    // 地区
-    handleChange (data) {
-      console.log(data)
-    },
-    // 弹出添加患者的对话框
-    add () {
-      this.dialogTableVisible = true
-    },
-    refresh () {
-      this.$message.success('已更新患者列表,成功添加2名患者')
-    },
-    // 取消添加
-    cancel () {
-      this.dialogTableVisible = false
-      this.$refs.basicForm.resetFields()
-    },
-    // 确认添加患者
-    confirmAdd () {
-      this.$refs.basicForm.validate(valid => {
-        if (valid) {
-          console.log(this.basicInfo)
-        } else {
-          return false
-        }
-      })
+    async operationFinished () {
+      let info = 'month'
+      let response = await operationFinished(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response.data.entity)
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
     }
   }
 }
@@ -471,7 +357,8 @@ export default {
           flex-direction: row;
           .case{
             margin: 0 6px;
-            flex:1;
+            // flex:1;
+            width: 25%;
             height: 100%;
             box-sizing: border-box;
             border-right: 1px dotted #ddd;

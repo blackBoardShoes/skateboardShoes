@@ -1,9 +1,5 @@
 <template>
   <div id="data-charts">
-    <!-- <div class="settings-part">
-      <el-button type="primary" @click="showAdjust = !showAdjust">调整</el-button>
-      <el-button type="primary" plain @click="saveChange">保存</el-button>
-    </div> -->
     <div class="chart-part er-card">
       <div class="chart"  :style="transformData(item.style)" v-for="(item, index) in options" :key="index">
         <transition name="fade">
@@ -115,8 +111,10 @@ export default {
     }
   },
   mounted () {
+    let info = JSON.parse(JSON.stringify(charts))
+    console.log(info)
     this.options.forEach((item, index) => {
-      this.options[index].data = charts[index]
+      this.options[index].data = info[index]
     })
   }
 }

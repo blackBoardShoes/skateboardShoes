@@ -33,6 +33,7 @@
           <!-- 第三步：选择目标值 -->
           <div class="case">
             <el-select
+              style="width:95%;"
               v-if="record.field.value[1] === 'gender' || record.field.value[1] === 'nation'"
               :allow-create="record.field.value[1] === 'nation'"
               :filterable="record.field.value[1] === 'nation'"
@@ -46,6 +47,7 @@
               </el-option>
             </el-select>
             <el-cascader
+              style="width:95%;"
               :change-on-select="true"
               v-if="record.field.value[1] === 'address'"
               :options="addressOption"
@@ -94,6 +96,7 @@
             </el-input>
             <!-- 单选 -->
             <el-select
+              style="width:95%;"
               v-model="info.target.value"
               placeholder="请选择住院信息目标值"
               v-if="relationOptions[1].type.includes(info.target.type) || relationOptions[2].type.includes(info.target.type)">
@@ -106,6 +109,7 @@
             </el-select>
             <!-- 级联 -->
             <el-cascader
+              style="width:95%;"
               v-if="relationOptions[3].type.includes(info.target.type)"
               :options="info.target.options"
               placeholder="请选择住院信息目标值"
@@ -114,7 +118,7 @@
             <!-- 时间 -->
             <el-date-picker
               value-format="yyyy-MM-dd"
-              style="width:100%;"
+              style="width:95%;"
               v-if="relationOptions[4].type.includes(info.target.type)"
               v-model="info.target.value"
               type="date"
@@ -123,7 +127,7 @@
             <!-- 时间日期 -->
             <el-date-picker
               value-format="yyyy-MM-dd HH:mm:ss"
-              style="width:100%;"
+              style="width:95%;"
               v-if="relationOptions[5].type.includes(info.target.type)"
               v-model="info.target.value"
               type="datetime"
@@ -176,6 +180,7 @@
           已选中{{choosenField.length}}个字段
         </div>
         <el-tree
+          accordion
           :data="fieldsData"
           @check-change="getCheckNodes"
           show-checkbox
@@ -186,7 +191,7 @@
           :props="defaultProps"
           empty-text="loading">
           <span class="custom-tree-node" style="font-size:13px;" slot-scope="{ node, data }">
-            <span>{{data.label}}{{'-' + data.type === undefined ? '/' : data.type}}</span>
+            <span>{{data.label}}{{data.type}}</span>
           </span>
         </el-tree>
       </div>
@@ -225,9 +230,9 @@ export default {
     return {
       // tableData2: [],
       // 分页信息
-      pageSize: 10,
-      currentPage: 1,
-      total: 0,
+      // pageSize: 10,
+      // currentPage: 1,
+      // total: 0,
       // addCase: true,
       // 住院记录以及自增模板
       hospitalRecords: [],
@@ -279,10 +284,13 @@ export default {
           type: ''
         }
       },
+      // 地址选项
       addressOption: [],
       // 表单的所有字段的模板
       recordTemplates: [],
+      // 住院信息字段级联模板
       recordSelectOptions: [],
+      // 大小关系模板
       relationOptions: [
         // 文本单选
         {
@@ -348,8 +356,6 @@ export default {
       // 手术日期以及出院日期
       leaveTime: [],
       operateTime: [],
-      showConditions: false,
-      // filterCondition: {},
       filterCases: [],
       // 选择要导出的字段
       defaultProps: {
@@ -391,6 +397,86 @@ export default {
         this.$message.error('ERROR: ' + response.data.message)
       }
     },
+    // 根据筛选条件获取符合条件的记录
+    async filterPaients (info) {
+      let response = await filterPaient(info)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response.data.entity)
+        let inclusion = response.data.entity
+        this.matchCases = Object.assign({}, inclusion)
+        this.afterFilter = true
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    // 开始生成文件
+    async beginCreate (data) {
+      let response = await createFile(data)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response.data.entity)
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    // 获取当前用户已生成的文件列表
+    async getFileLists () {
+      let response = await fileLists()
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response.data.entity)
+        this.fileLists = response.data.entity.reverse()
+        this.thisFile = this.fileLists[0].file_id
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    // 下载文件
+    async downLoadFile () {
+      let info = {}
+      let file = this.fileLists.find((n) => n.file_id === this.thisFile)
+      if (file !== undefined) {
+        info = Object.assign({}, {
+          fileId: file.file_id,
+          fileName: file.file_name
+        })
+        await downFile(info)
+      } else {
+        this.$message.info('请选择要导出的文件')
+      }
+      // if (response.data) {
+      //   var eleLink = document.createElement('a')
+      //   eleLink.download = 'cccc.zip'
+      //   eleLink.style.display = 'none'
+      //   // 字符内容转变成blob地址
+      //   eleLink.href = 'http://192.168.10.217:8089/download/5be1625de5230d773dee2cb6/食欲'
+      //   // 触发点击
+      //   document.body.appendChild(eleLink)
+      //   eleLink.click()
+      //   // 然后移除
+      //   document.body.removeChild(eleLink)
+      // }
+      // if (response.data.mitiStatus === 'SUCCESS') {
+      // console.log(
+      //   new Blob([response.data], {type: 'application//zip'})
+      // )
+      // let fileDownload = require('js-file-download')
+      // 导出文件名称为所选的文件名称
+      // let fileName = '2222222.zip'
+      // fileDownload(response.data, fileName)
+      // console.log(String.fromCharCode.apply(null, new Uint8Array(response.data)))
+      // const blob = new Blob([response.data], {type: 'application/zip'})
+      // const url = window.URL.createObjectURL(blob)
+      // const a = document.createElement('a')
+      // a.href = url
+      // a.download = name
+      // document.body.appendChild(a)
+      // a.click()
+      // this.$message.success('文件导出成功')
+      // this.fileLists = response.data.entity.reverse()
+      // } else {
+      // this.$message.error('ERROR: ' + response.data.message)
+      // }
+    },
+    // 初始化住院信息的级联模板
     initFieldOptions () {
       let arr = [...this.recordTemplates]
       let arr2 = [
@@ -401,9 +487,15 @@ export default {
         {value: '出院综合评估', label: '出院综合评估', phase: '出院综合评估', children: []},
         {value: '随访', label: '随访', phase: '随访', children: []}
       ]
+      arr.forEach((module, index) => {
+        if (module.isStatic === true) {
+          arr.splice(index, 1)
+        }
+      })
       arr.forEach((module) => {
         module.label = module.name
         module.value = module.id
+        module.treeNode = module.id
         if (module.fields.length > 0) {
           module.children = module.fields
           module.children.forEach((field, index3) => {
@@ -414,6 +506,7 @@ export default {
           module.children.forEach((field, index2, arr) => {
             field.phase = module.phase
             field.value = field.id
+            field.treeNode = module.treeNode + '.' + field.id
             field.reference = field.values === undefined ? (field.children === undefined ? [] : field.children) : field.values
             if (field.subFields && field.subFields.length > 0) {
               field.children = field.subFields
@@ -422,9 +515,9 @@ export default {
                 subField.value = subField.id
                 subField.reference = subField.values === undefined ? (subField.children === undefined ? [] : subField.children) : subField.values
                 subField.children = null
+                subField.treeNode = field.treeNode + '.' + subField.id
               })
             } else {
-              field.phase = module.phase
               field.children = null
             }
           })
@@ -440,6 +533,7 @@ export default {
       this.fieldsData.unshift(this.basicExample.field.options[0])
       console.log(arr2)
     },
+    // 住院信息级联选项更改=>改变后面的大小关系以及目标值
     changeRelaAndTarget (arr, index) {
       let arrLen = arr.value
       if (arrLen.length === 0) {
@@ -465,6 +559,7 @@ export default {
         }
       }
     },
+    // 基本信息级联选项更改=>改变后面的大小关系以及目标值
     changeRelaAndTarget2 (arr, index) {
       this.basicInfomations[index].target.value = ''
       this.basicInfomations[index].relation.value = ''
@@ -485,6 +580,7 @@ export default {
         ]
       }
     },
+    // 模板的自增以及初始化
     initComponent (array, item) {
       let obj = Object.assign({}, item)
       array.push(obj)
@@ -497,10 +593,10 @@ export default {
           this.$message.info('请先填写完毕当前一组住院记录筛选条件再新增')
         }
       } else {
-        if (this.basicInfoAble) {
+        if (this.basicInfomations.length >= 3) {
+          this.$message.info('基本信息最多筛选三条不重复且不冲突的条件')
+        } else if (this.basicInfoAble) {
           this.initComponent(this.basicInfomations, this.basicExample)
-        } else if (this.basicInfomations.length >= 2) {
-          this.$message.info('基本信息最多筛选三条不重复或冲突的条件')
         } else {
           this.$message.info('请先填写完毕当前一组基本信息筛选条件再新增')
         }
@@ -519,16 +615,6 @@ export default {
         } else {
           this.$message.info('不能再删除了')
         }
-      }
-    },
-    async filterPaients (info) {
-      let response = await filterPaient(info)
-      if (response.data.mitiStatus === 'SUCCESS') {
-        console.log(response.data.entity)
-        let inclusion = response.data.entity
-        this.matchCases = Object.assign({}, inclusion)
-      } else {
-        this.$message.error('ERROR: ' + response.data.message)
       }
     },
     // 检索案例
@@ -631,76 +717,16 @@ export default {
         if (phases.indexOf(item.phase) < 0) {
           phases.push(item.phase)
         }
-        fieldArr.push(item.id)
+        if (item.treeNode) {
+          fieldArr.push(item.treeNode)
+        } else {
+          fieldArr.push(item.id)
+        }
       })
       console.log(phases)
       console.log(fieldArr)
       this.choosenPhase = [...phases]
       this.choosenField = [...fieldArr]
-    },
-    async beginCreate (data) {
-      let response = await createFile(data)
-      if (response.data.mitiStatus === 'SUCCESS') {
-        console.log(response.data.entity)
-      } else {
-        this.$message.error('ERROR: ' + response.data.message)
-      }
-    },
-    async getFileLists () {
-      let response = await fileLists()
-      if (response.data.mitiStatus === 'SUCCESS') {
-        console.log(response.data.entity)
-        this.fileLists = response.data.entity.reverse()
-        this.thisFile = this.fileLists[0].file_id
-      } else {
-        this.$message.error('ERROR: ' + response.data.message)
-      }
-    },
-    async downLoadFile () {
-      let info = {}
-      let file = this.fileLists.find((n) => n.file_id === this.thisFile)
-      if (file !== undefined) {
-        info = Object.assign({}, {
-          fileId: file.file_id,
-          fileName: file.file_name
-        })
-        await downFile(info)
-      } else {
-        this.$message.info('请选择要导出的文件')
-      }
-      // if (response.data) {
-      //   var eleLink = document.createElement('a')
-      //   eleLink.download = 'cccc.zip'
-      //   eleLink.style.display = 'none'
-      //   // 字符内容转变成blob地址
-      //   eleLink.href = 'http://192.168.10.217:8089/download/5be1625de5230d773dee2cb6/食欲'
-      //   // 触发点击
-      //   document.body.appendChild(eleLink)
-      //   eleLink.click()
-      //   // 然后移除
-      //   document.body.removeChild(eleLink)
-      // }
-      // if (response.data.mitiStatus === 'SUCCESS') {
-      // console.log(
-      //   new Blob([response.data], {type: 'application//zip'})
-      // )
-      // let fileDownload = require('js-file-download')
-      // 导出文件名称为所选的文件名称
-      // let fileName = '2222222.zip'
-      // fileDownload(response.data, fileName)
-      // console.log(String.fromCharCode.apply(null, new Uint8Array(response.data)))
-      // const blob = new Blob([response.data], {type: 'application/zip'})
-      // const url = window.URL.createObjectURL(blob)
-      // const a = document.createElement('a')
-      // a.href = url
-      // a.download = name
-      // document.body.appendChild(a)
-      // a.click()
-      // this.$message.success('文件导出成功')
-      // this.fileLists = response.data.entity.reverse()
-      // } else {
-      // this.$message.error('ERROR: ' + response.data.message)
-      // }
     },
     // 文件生成
     makeFile () {
@@ -730,21 +756,11 @@ export default {
       handler: function (list) {
         console.log(list)
         this.hospitalExample = {
-          field: {
-            value: [],
-            options: []
-          },
-          relation: {
-            value: '',
-            options: [],
-            type: ''
-          },
-          target: {
-            value: '',
-            options: [],
-            type: ''
-          }
+          field: {value: [], options: []},
+          relation: {value: '', options: [], type: ''},
+          target: {value: '', options: [], type: ''}
         }
+        // 判断是否可以再增
         let flag = true
         list.forEach((item) => {
           for (let key in item) {
@@ -859,6 +875,8 @@ export default {
         background-color: #fff;
         box-sizing: border-box;
         margin:0;
+        max-height: 523px;
+        overflow: auto;
         .basic-info-filter, .record-info-filter, .other-info-filter, .operate-space{
           min-height: 50px;
           line-height: 50px;
@@ -904,7 +922,6 @@ export default {
           margin-left: 20px;
         }
         .match-cases-len:hover{
-          text-decoration: underline;
           cursor: pointer;
         }
       }
@@ -913,12 +930,15 @@ export default {
         background-color: #fff;
         box-sizing: border-box;
         margin: 0 16px;
-        height: calc(100% - 400px);
+        flex: 1;
+        // height: calc(100% - 400px);
         overflow-x: hidden;
         overflow-y: auto;
         position: relative;
         z-index: 1;
-        border: 1px dotted #dfdfdf;
+        border: 1px dotted #dfdfff;
+        padding: 8px;
+        box-sizing: border-box;
         border-radius: 5px;
         .el-tree{
           z-index: 1;

@@ -272,9 +272,10 @@ export default {
   methods: {
     // 初始化图表信息
     initCharts () {
-      let info = [...charts]
-      this.optionA = Object.assign({}, info[1])
-      this.optionB = Object.assign({}, info[2])
+      let info = JSON.parse(JSON.stringify(charts))
+      console.log(info)
+      this.optionA = info[1]
+      this.optionB = info[2]
       this.dataByGender()
       this.dataByArea()
     },
