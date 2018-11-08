@@ -234,10 +234,10 @@ export default {
     // fixed：刷新后面包屑重置
     this.env = process.env.NODE_ENV
     if (this.env === 'production') {
-      let ipc = this.$electron.ipcRenderer
-      setTimeout(() => {
-        ipc.send('mainshow')
-      }, 1000)
+      // let ipc = this.$electron.ipcRenderer
+      // setTimeout(() => {
+      //   ipc.send('mainshow')
+      // }, 1000)
     }
     this.user = this.$store.state.user
     this.initMenu(this.menu)
