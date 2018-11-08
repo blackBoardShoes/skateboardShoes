@@ -88,24 +88,37 @@ axios.interceptors.response.use(
       switch (err.response.status) {
         case 401:
           router.push('/login')
+          Message({
+            showClose: true,
+            message: '请重新登陆'
+          })
           break
         case 500:
           console.log('oh shit md fuck 又 500 了')
+          Message({
+            showClose: true,
+            message: '500'
+          })
           router.push('/error:500')
           break
         case 404:
           console.log('啥玩意又找不到了')
+          Message({
+            showClose: true,
+            message: '404',
+            type: 'error'
+          })
           router.push('/error:404')
           break
         default:
+          Message({
+            showClose: true,
+            message: '服务器没开？',
+            type: 'error'
+          })
           console.log('这个错 --->', err.response.status, '!!!!!!!!!!', err.response.status, '!!!!!!!!!!')
           break
       }
-      Message({
-        showClose: true,
-        message: '服务器没开？',
-        type: 'error'
-      })
     }
     return false
   }

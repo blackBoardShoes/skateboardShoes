@@ -158,7 +158,7 @@
                   <div v-if="items.type === 'CALCULATE'" >
                     <div>
                       {{formModel[items.id] ? formModel[items.id] : 0}}&nbsp;&nbsp;&nbsp;
-                      <el-button @click="onEval(items)">计算</el-button>
+                      <el-button v-if="!disabled" @click="onEval(items)">计算</el-button>
                     </div>
                   </div>
                   <div v-if="items.type === 'TABLE'">

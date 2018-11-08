@@ -174,8 +174,8 @@ export default {
         肝内胆管
         {{"id":"hepatolithiasis","type": "SELECT","values":[{"label": "可", "value": "可"},{"label": "未", "value": "未"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
         见结石负影，
-        {{"vIf": {"id":"hepatolithiasis", "value": "可"},"label":"结石位于","labelWidth": "70px","id":"calculusLocation","type": "SELECT","values":[{"label": "左", "value": "左"},{"label": "右", "value": "右"},{"label": "全肝内", "value": "全肝内"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
-        {{"vIf": {"id":"hepatolithiasis", "value": "可"},"label":"结石数目","labelWidth": "70px","id": "calculusAmount2","type": "INPUT","validations": [{ "required": true, "message": "请输入", "trigger": "change" },{ "pattern": "^[1-9]{0,1}$|^10$", "message": "1-10" }]}}
+        {{"vIf": {"id":"hepatolithiasis", "value": "可"},"label":"结石位于","labelWidth": "70px","id":"calculusLocation","type": "SELECT","values":[{"label": "左肝内", "value": "左肝内"},{"label": "右肝内", "value": "右肝内"},{"label": "全肝内", "value": "全肝内"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
+        {{"vIf": {"id":"hepatolithiasis", "value": "可"},"label":"，结石数目","labelWidth": "82px","id": "calculusAmount2","type": "INPUT","validations": [{ "required": true, "message": "请输入", "trigger": "change" },{ "pattern": "^[1-9]{0,1}$|^10$", "message": "1-10" }]}}
         {{"vIf": {"id":"hepatolithiasis", "value": "可"},"labelWidth": "130px","unit": "mm，","label": "枚，最大结石直径","id": "maxCalculusDia2","type": "INPUT","validations": [{ "required": true, "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]{0,2}([.]{1}[0-9]+){0,1}$|^[1-2][0-9]{0,2}([.]{1}[0-9]+){0,1}$|^300$", "message": "小数或整数0-300" }]}}
         {{"id":"contrastMediaLeakage","type": "SELECT","values":[{"label": "有", "value": "有"},{"label": "无", "value": "无"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
         造影剂外漏
@@ -188,7 +188,7 @@ export default {
         {{"id": "dia","type": "INPUT","validations": [{ "required": "true", "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]+([.]{1}[0-9]+){0,1}$", "message": "1-10" }]}}
         mm，
         伴胰
-        {{"id":"wirsungNarrowLocation","type": "SELECT","values":[{"label": "头", "value": "头"},{"label": "颈", "value": "颈"},{"label": "体", "value": "体"},{"label": "体", "value": "尾"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
+        {{"id":"wirsungNarrowLocation","type": "SELECT","values":[{"label": "头", "value": "头"},{"label": "颈", "value": "颈"},{"label": "体", "value": "体"},{"label": "尾", "value": "尾"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
         部狭窄，
         狭窄长度
         {{"id": "narrowLength","type": "INPUT","validations": [{ "required": "true", "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]+([.]{1}[0-9]+){0,1}$", "message": "1-10" }]}}
@@ -200,7 +200,7 @@ export default {
         {{"vIf": {"id":"pancreatolithiasis", "value": "可"},"label":"最大结石直径","labelWidth": "100px","unit": "mm，","id": "maxCalculusDia3","type": "INPUT","validations": [{ "required": "true", "message": "请输入", "trigger": "change" },{ "pattern": "^[0-9]{0,2}([.]{1}[0-9]+){0,1}$|^[1-2][0-9]{0,2}([.]{1}[0-9]+){0,1}$|^300$", "message": "小数或整数0-300" }]}}
         {{"id":"contrastMediaLeakage","type": "SELECT","values":[{"label": "有", "value": "有"},{"label": "无", "value": "无"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
         造影剂外漏
-        {{"vIf": {"id":"contrastMediaLeakage", "value": "有"},"labelWidth": "55px","label":"，部位","unit": "胰管。","id":"nasopancreaticTubeleakageLocation","type": "SELECT","values":[{"label": "头", "value": "头"},{"label": "颈", "value": "颈"},{"label": "体", "value": "体"},{"label": "体", "value": "尾"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
+        {{"vIf": {"id":"contrastMediaLeakage", "value": "有"},"labelWidth": "55px","label":"，部位","unit": "胰管。","id":"nasopancreaticTubeleakageLocation","type": "SELECT","values":[{"label": "头", "value": "头"},{"label": "颈", "value": "颈"},{"label": "体", "value": "体"},{"label": "尾", "value": "尾"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
       `,
       relation: {
         // a

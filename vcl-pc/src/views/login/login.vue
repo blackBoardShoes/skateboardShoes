@@ -74,10 +74,10 @@ import { login } from '../../api/user/user.js'
 export default {
   created () {
     if (process.env.NODE_ENV === 'production') {
-      let ipc = this.$electron.ipcRenderer
-      ipc.send('loginResize')
-      ipc.send('nonableResize')
-      ipc.send('center')
+      // let ipc = this.$electron.ipcRenderer
+      // ipc.send('loginResize')
+      // ipc.send('nonableResize')
+      // ipc.send('center')
     }
     // 每次在登录页面都要重新清除用户信息
     this.$store.commit('SET_TOKEN', '')

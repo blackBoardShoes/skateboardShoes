@@ -163,11 +163,11 @@
         <div class="reportOhterContain">
           <el-row type="flex">
             <el-col :span="12">
-              <sx-show-min :whatFiledsWhere="{modusOperandi: {label: '手术方式'}}"
+              <sx-show-min :whatFiledsWhere="{modusOperandi: {label: '手术方式：'}}"
               :whatFileds="{modusOperandi: reportData['intraoperativeProcedure'] ? reportData['intraoperativeProcedure']['modusOperandi'] : ''}"></sx-show-min>
             </el-col>
             <el-col :span="12">
-              <sx-show-min :whatFiledsWhere="{anaType: {label: '麻醉方式'}}" :whatFileds="reportData['preoperativeRecord']"></sx-show-min>
+              <sx-show-min :whatFiledsWhere="{anaType: {label: '麻醉方式：'}}" :whatFileds="reportData['preoperativeRecord']"></sx-show-min>
             </el-col>
           </el-row>
           <div v-for="(row, i) in contentModel.operationCheckBox" :key="i" class="showContain">
@@ -266,9 +266,9 @@
           <el-col :span="12">
           </el-col>
           <el-col :span="12" style="display: flex;justify-content: space-between">
-            <sx-show-min :whatFiledsWhere="{operationOperator: {label: '报告医师'}}" :whatFileds="{operationOperator: reportData['intraoperativeDiagnosisAndEvaluation'] ? reportData['intraoperativeDiagnosisAndEvaluation']['operationOperator'] : ''}"></sx-show-min>
-            <div style="display: flex;width: 300px;justify-content: space-between;font-size:15px;">
-              <span style="font-weight:bold">报告日期:</span>
+            <sx-show-min :whatFiledsWhere="{operationOperator: {label: '报告医师：'}}" :whatFileds="{operationOperator: reportData['intraoperativeDiagnosisAndEvaluation'] ? reportData['intraoperativeDiagnosisAndEvaluation']['operationOperator'] : ''}"></sx-show-min>
+            <div style="display: flex;width: 255px;justify-content: space-between;font-size:14px;">
+              <span>报告日期:</span>
                {{patientInfo['header']['operationDate']}}
             </div>
           </el-col>
@@ -665,7 +665,6 @@ export default {
           'incisionLength',
           'incisionDirection',
           'incisionMethod',
-          'preIncision',
           'preIncisiondirection',
           'preIncisionPower',
           'dilatationPart',
@@ -679,11 +678,11 @@ export default {
           'drainageTable'
         ],
         diverticulumBiliaryTractAndDuodenumCalculus: [
+          'calculusTable',
           'padAmount',
           'padDia',
           'padType',
-          'padIntlType',
-          'calculusTable'
+          'padIntlType'
         ]
       }
       let ohShitObj = {}
@@ -762,7 +761,7 @@ export default {
                 for (let j in arr) {
                   if (arr[j].value === w) {
                     if ('children' in arr[j]) {
-                      z = z + arr[j].label + '/'
+                      z = z + arr[j].label + '-'
                       forFn(arr[j].children)
                     } else {
                       z = z + arr[j].label
@@ -978,14 +977,15 @@ $marginContentW: 25px;
     }
   }
   .reportOhter {
-    display: flex;
-    flex-wrap: wrap;
+    // display: flex;
+    // flex-wrap: wrap;
     // justify-content: space-between;
     // flex-wrap: wrap;
     // width: 100%;
     .reportOhterItem {
-      display: flex;
-      flex-wrap: wrap;
+      // border: 1px solid red;
+      // display: flex;
+      // flex-wrap: wrap;
     //   width: 49%;
     //   white-space:normal;
     //   word-break:break-all;
