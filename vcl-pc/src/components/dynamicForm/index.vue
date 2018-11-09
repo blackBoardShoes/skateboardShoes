@@ -190,15 +190,15 @@ import sxLayerTree from './layerTree'
 import sxTree from './tree'
 import sxCalculate from './calculate'
 import relationFactory from './relationFactory'
-import draggable from 'vuedraggable'
+// import draggable from 'vuedraggable'
 export default {
   components: {
     sxTable,
     sxTree,
     sxLayerTree,
     sxCalculate,
-    relationFactory,
-    draggable
+    relationFactory
+    // draggable
   },
   props: {
     labelWidth: {
