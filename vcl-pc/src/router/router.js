@@ -27,7 +27,7 @@ export const appRouter = [
     name: 'home',
     redirect: '/home/index',
     meta: {
-      navigator: true,
+      navigator: false,
       title: '系统首页',
       role: [1, 2, 3, 4, 5, 6],
       icon: 'module-home'
@@ -174,7 +174,7 @@ export const appRouter = [
     redirect: '/statistics/index',
     meta: {
       title: '数据管理',
-      navigator: true,
+      navigator: false,
       role: [1, 2, 3],
       icon: 'module-data'
     },

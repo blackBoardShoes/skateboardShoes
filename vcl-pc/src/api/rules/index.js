@@ -1,7 +1,7 @@
 
 import axios from '../index'
-const {api, hot, dali} = require('@/dev').proxyTableApi
-console.log(api, hot)
+const {api} = require('@/dev').proxyTableApi
+console.log(api)
 // 新增
 export const record = data => {
   return axios.post(api + '/formdata/record', data)
@@ -47,7 +47,7 @@ export const patientGetPatientCount = data => {
     cancel()
     cancel = null
   }
-  return axios.get(dali + '/patient/getPatientCount', {
+  return axios.get(api + '/patient/getPatientCount', {
     cancelToken: new CancelToken(function executor (c) {
       cancel = c
     }),
@@ -55,9 +55,9 @@ export const patientGetPatientCount = data => {
   })
 }
 // export const patientGetPatientCount = data => {
-//   return axios.get(dali + '/patient/getPatientCount', { params: data })
+//   return axios.get(api + '/patient/getPatientCount', { params: data })
 // }
 // 添加患者信息
 export const patientAddPatient = data => {
-  return axios.post(dali + '/patient/addPatient', data)
+  return axios.post(api + '/patient/addPatient', data)
 }

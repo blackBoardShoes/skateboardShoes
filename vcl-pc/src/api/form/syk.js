@@ -1,28 +1,28 @@
 import axios from '../index'
-const { all } = require('@/dev').proxyTableApi
+const { api } = require('@/dev').proxyTableApi
 
 let config = {
   headers: { 'Content-Type': 'multipart/form-data' }
 }
 // termbase/getPageTermbases 获取table数据 all 术语列表 无分页。
 export const termbaseGetAllTermbases = data => {
-  return axios.get(all + '/termbase/getAllTermbases')
+  return axios.get(api + '/termbase/getAllTermbases')
 }
 // termbase/getPageTermbases 获取术语列表
 export const termbaseGetPageTermbases = data => {
-  return axios.get(all + '/termbase/getPageTermbases', { params: data })
+  return axios.get(api + '/termbase/getPageTermbases', { params: data })
 }
 // termbase/addTermbaseImage 添加术语
 export const termbaseAddTermbase = data => {
-  return axios.post(all + '/termbase/addTermbase', data, config)
+  return axios.post(api + '/termbase/addTermbase', data, config)
 }
 // termbase/removeTermbase 删除术语
 export const termbaseRemoveTermbase = data => {
-  return axios.delete(all + '/termbase/removeTermbase', { params: {id: data.id} })
+  return axios.delete(api + '/termbase/removeTermbase', { params: {id: data.id} })
 }
 // updateTermbase 更新编辑术语
 export const updateTermbase = data => {
-  return axios.put(all + '/termbase/updateTermbase', data)
+  return axios.put(api + '/termbase/updateTermbase', data)
 }
 var CancelToken = axios.CancelToken
 var cancel
@@ -32,7 +32,7 @@ export const termbaseSelectTermbase = data => {
     cancel()
     cancel = null
   }
-  return axios.get(all + '/termbase/selectTermbase', {
+  return axios.get(api + '/termbase/selectTermbase', {
     cancelToken: new CancelToken(function executor (c) {
       cancel = c
     }),
@@ -41,7 +41,7 @@ export const termbaseSelectTermbase = data => {
 }
 // termbase/addTermbaseImage 添加术语照片
 export const termbaseAddTermbaseImage = data => {
-  return axios.post(all + '/termbase/addTermbaseImage', data)
+  return axios.post(api + '/termbase/addTermbaseImage', data)
 }
 // export const termbaseSelectTermbase = data => {
 //   return axios.get(all + '/termbase/selectTermbase', {

@@ -177,7 +177,7 @@
 <script>
 import textRadio from '../../../components/textRadio/textRadio'
 import {addressData} from '../../../data/address/addressData'
-import {charts} from '../../../data/chartTemplates/chart'
+import {charts, initChart} from '../../../data/chartTemplates/chart'
 import { getAllPatient, searchPatient, getDataByGender, getDataByArea } from '../../../api/patient/patient.js'
 export default {
   name: 'patient_index',
@@ -285,12 +285,14 @@ export default {
       if (response.data.mitiStatus === 'SUCCESS') {
         console.log(response.data.entity)
         let data = response.data.entity
-        this.optionA.title.text = data.title || ''
-        this.optionA.title.subtext = '共计' + data.total + '人' || ''
         this.patientAccount = data.total
-        this.optionA.series[0].data = data.data || []
-        this.optionA.series[0].name = data.title || ''
-        this.optionA.legend.data = data.types
+        let obj = {
+          text: data.title,
+          subtext: '共计' + data.total + '人',
+          classes: data.types,
+          data: data.data
+        }
+        initChart(this.optionA, obj, 2)
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
@@ -300,12 +302,13 @@ export default {
       if (response.data.mitiStatus === 'SUCCESS') {
         console.log(response.data.entity)
         let data = response.data.entity
-        this.optionB.title.text = data.title || ''
-        this.optionB.title.subtext = '共计' + data.total + '人' || ''
-        // this.patientAccount = data.total
-        this.optionB.xAxis[0].data = data.types || []
-        this.optionB.series[0].name = data.title || ''
-        this.optionB.series[0].data = data.data
+        let obj = {
+          text: data.title,
+          subtext: '共计' + data.total + '人',
+          classes: data.types,
+          data: data.data
+        }
+        initChart(this.optionB, obj, 3)
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }

@@ -70,14 +70,14 @@ export const charts = [
         // 数据
         data: [
           // 需要传入的具体数据，包含值和名称，对象形式
-          {value: 110, name: '具类1'},
-          {value: 120, name: '具类2'},
-          {value: 130, name: '具类3'},
-          {value: 140, name: '具类4'},
-          {value: 130, name: '具类5'},
-          {value: 120, name: '具类6'},
-          {value: 110, name: '具类7'},
-          {value: 100, name: '具类8'}
+          {value: 0, name: '具类1'},
+          {value: 0, name: '具类2'},
+          {value: 0, name: '具类3'},
+          {value: 0, name: '具类4'},
+          {value: 0, name: '具类5'},
+          {value: 0, name: '具类6'},
+          {value: 0, name: '具类7'},
+          {value: 0, name: '具类8'}
         ]
       }
     ]
@@ -117,8 +117,8 @@ export const charts = [
         radius: '75%',
         center: ['50%', '50%'],
         data: [
-          {value: 335, name: '类1'},
-          {value: 310, name: '类2'}
+          {value: 0, name: '类1'},
+          {value: 0, name: '类2'}
         ],
         itemStyle: {
           emphasis: {
@@ -132,6 +132,7 @@ export const charts = [
   },
   //  二维柱状图图
   {
+    color: ['#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59'],
     // 标题: 副标题为总数统计, 自行填入
     title: {
       text: '二维柱状统计',
@@ -202,20 +203,20 @@ export const charts = [
         },
         // 数据
         data: [
-          {name: '具类1', value: 100},
-          {name: '具类2', value: 110},
-          {name: '具类3', value: 120},
-          {name: '具类4', value: 130},
-          {name: '具类5', value: 140},
-          {name: '具类6', value: 150},
-          {name: '具类7', value: 160},
-          {name: '具类8', value: 170},
-          {name: '具类9', value: 180},
-          {name: '具类10', value: 190},
-          {name: '具类11', value: 200},
-          {name: '具类12', value: 60},
-          {name: '具类13', value: 90},
-          {name: '具类14', value: 50}
+          {name: '具类1', value: 0},
+          {name: '具类2', value: 0},
+          {name: '具类3', value: 0},
+          {name: '具类4', value: 0},
+          {name: '具类5', value: 0},
+          {name: '具类6', value: 0},
+          {name: '具类7', value: 0},
+          {name: '具类8', value: 0},
+          {name: '具类9', value: 0},
+          {name: '具类10', value: 0},
+          {name: '具类11', value: 0},
+          {name: '具类12', value: 0},
+          {name: '具类13', value: 0},
+          {name: '具类14', value: 0}
         ]
       }
     ]
@@ -292,20 +293,20 @@ export const charts = [
         },
         // 数据
         data: [
-          {name: '具类1', value: 100},
-          {name: '具类2', value: 110},
-          {name: '具类3', value: 120},
-          {name: '具类4', value: 130},
-          {name: '具类5', value: 140},
-          {name: '具类6', value: 150},
-          {name: '具类7', value: 160},
-          {name: '具类8', value: 170},
-          {name: '具类9', value: 180},
-          {name: '具类10', value: 190},
-          {name: '具类11', value: 200},
-          {name: '具类12', value: 60},
-          {name: '具类13', value: 90},
-          {name: '具类14', value: 50}
+          {name: '具类1', value: 0},
+          {name: '具类2', value: 0},
+          {name: '具类3', value: 0},
+          {name: '具类4', value: 0},
+          {name: '具类5', value: 0},
+          {name: '具类6', value: 0},
+          {name: '具类7', value: 0},
+          {name: '具类8', value: 0},
+          {name: '具类9', value: 0},
+          {name: '具类10', value: 0},
+          {name: '具类11', value: 0},
+          {name: '具类12', value: 0},
+          {name: '具类13', value: 0},
+          {name: '具类14', value: 0}
         ]
       }
     ]
@@ -456,18 +457,18 @@ export const charts = [
         },
         // 数据
         data: [
-          {name: '具类1', value: 222},
-          {name: '具类2', value: 222},
-          {name: '具类3', value: 222},
-          {name: '具类4', value: 222},
-          {name: '具类5', value: 222},
-          {name: '具类6', value: 222},
-          {name: '具类7', value: 222},
-          {name: '具类8', value: 222},
-          {name: '具类9', value: 222},
-          {name: '具类10', value: 222},
-          {name: '具类11', value: 222},
-          {name: '具类12', value: 222}
+          {name: '具类1', value: 0},
+          {name: '具类2', value: 0},
+          {name: '具类3', value: 0},
+          {name: '具类4', value: 0},
+          {name: '具类5', value: 0},
+          {name: '具类6', value: 0},
+          {name: '具类7', value: 0},
+          {name: '具类8', value: 0},
+          {name: '具类9', value: 0},
+          {name: '具类10', value: 0},
+          {name: '具类11', value: 0},
+          {name: '具类12', value: 0}
         ]
       },
       {
@@ -486,18 +487,18 @@ export const charts = [
         },
         // 数据
         data: [
-          {name: '具类1', value: 212},
-          {name: '具类2', value: 222},
-          {name: '具类3', value: 222},
-          {name: '具类4', value: 122},
-          {name: '具类5', value: 222},
-          {name: '具类6', value: 222},
-          {name: '具类7', value: 322},
-          {name: '具类8', value: 222},
-          {name: '具类9', value: 222},
-          {name: '具类10', value: 222},
-          {name: '具类11', value: 322},
-          {name: '具类12', value: 222}
+          {name: '具类1', value: 0},
+          {name: '具类2', value: 0},
+          {name: '具类3', value: 0},
+          {name: '具类4', value: 0},
+          {name: '具类5', value: 0},
+          {name: '具类6', value: 0},
+          {name: '具类7', value: 0},
+          {name: '具类8', value: 0},
+          {name: '具类9', value: 0},
+          {name: '具类10', value: 0},
+          {name: '具类11', value: 0},
+          {name: '具类12', value: 0}
         ]
       },
       {
@@ -516,18 +517,18 @@ export const charts = [
         },
         // 数据
         data: [
-          {name: '具类1', value: 232},
-          {name: '具类2', value: 222},
-          {name: '具类3', value: 222},
-          {name: '具类4', value: 242},
-          {name: '具类5', value: 222},
-          {name: '具类6', value: 252},
-          {name: '具类7', value: 222},
-          {name: '具类8', value: 262},
-          {name: '具类9', value: 272},
-          {name: '具类10', value: 212},
-          {name: '具类11', value: 222},
-          {name: '具类12', value: 222}
+          {name: '具类1', value: 0},
+          {name: '具类2', value: 0},
+          {name: '具类3', value: 0},
+          {name: '具类4', value: 0},
+          {name: '具类5', value: 0},
+          {name: '具类6', value: 0},
+          {name: '具类7', value: 0},
+          {name: '具类8', value: 0},
+          {name: '具类9', value: 0},
+          {name: '具类10', value: 0},
+          {name: '具类11', value: 0},
+          {name: '具类12', value: 0}
         ]
       }
     ]
@@ -648,18 +649,18 @@ export const charts = [
         },
         // 数据
         data: [
-          {name: '具类1', value: 222},
-          {name: '具类2', value: 222},
-          {name: '具类3', value: 222},
-          {name: '具类4', value: 222},
-          {name: '具类5', value: 222},
-          {name: '具类6', value: 222},
-          {name: '具类7', value: 222},
-          {name: '具类8', value: 222},
-          {name: '具类9', value: 222},
-          {name: '具类10', value: 222},
-          {name: '具类11', value: 222},
-          {name: '具类12', value: 222}
+          {name: '具类1', value: 0},
+          {name: '具类2', value: 0},
+          {name: '具类3', value: 0},
+          {name: '具类4', value: 0},
+          {name: '具类5', value: 0},
+          {name: '具类6', value: 0},
+          {name: '具类7', value: 0},
+          {name: '具类8', value: 0},
+          {name: '具类9', value: 0},
+          {name: '具类10', value: 0},
+          {name: '具类11', value: 0},
+          {name: '具类12', value: 0}
         ]
       },
       {
@@ -678,18 +679,18 @@ export const charts = [
         },
         // 数据
         data: [
-          {name: '具类1', value: 212},
-          {name: '具类2', value: 222},
-          {name: '具类3', value: 222},
-          {name: '具类4', value: 122},
-          {name: '具类5', value: 222},
-          {name: '具类6', value: 222},
-          {name: '具类7', value: 322},
-          {name: '具类8', value: 222},
-          {name: '具类9', value: 222},
-          {name: '具类10', value: 222},
-          {name: '具类11', value: 322},
-          {name: '具类12', value: 222}
+          {name: '具类1', value: 0},
+          {name: '具类2', value: 0},
+          {name: '具类3', value: 0},
+          {name: '具类4', value: 0},
+          {name: '具类5', value: 0},
+          {name: '具类6', value: 0},
+          {name: '具类7', value: 0},
+          {name: '具类8', value: 0},
+          {name: '具类9', value: 0},
+          {name: '具类10', value: 0},
+          {name: '具类11', value: 0},
+          {name: '具类12', value: 0}
         ]
       },
       {
@@ -708,18 +709,18 @@ export const charts = [
         },
         // 数据
         data: [
-          {name: '具类1', value: 232},
-          {name: '具类2', value: 222},
-          {name: '具类3', value: 222},
-          {name: '具类4', value: 242},
-          {name: '具类5', value: 222},
-          {name: '具类6', value: 252},
-          {name: '具类7', value: 222},
-          {name: '具类8', value: 262},
-          {name: '具类9', value: 272},
-          {name: '具类10', value: 212},
-          {name: '具类11', value: 222},
-          {name: '具类12', value: 222}
+          {name: '具类1', value: 0},
+          {name: '具类2', value: 0},
+          {name: '具类3', value: 0},
+          {name: '具类4', value: 0},
+          {name: '具类5', value: 0},
+          {name: '具类6', value: 0},
+          {name: '具类7', value: 0},
+          {name: '具类8', value: 0},
+          {name: '具类9', value: 0},
+          {name: '具类10', value: 0},
+          {name: '具类11', value: 0},
+          {name: '具类12', value: 0}
         ]
       }
     ]
@@ -762,11 +763,11 @@ export const charts = [
         },
         data: [
           {
-            value: 80,
+            value: 0,
             name: '任务1完成率'
           },
           {
-            value: 20,
+            value: 0,
             name: '未通过率',
             itemStyle: {
               normal: {
@@ -795,11 +796,11 @@ export const charts = [
         },
         data: [
           {
-            value: 68,
+            value: 0,
             name: '任务2完成率'
           },
           {
-            value: 32,
+            value: 0,
             name: '未通过率',
             itemStyle: {
               normal: {
@@ -828,11 +829,11 @@ export const charts = [
         },
         data: [
           {
-            value: 68,
+            value: 0,
             name: '任务3完成率'
           },
           {
-            value: 32,
+            value: 0,
             name: '未通过率',
             itemStyle: {
               normal: {
@@ -850,3 +851,42 @@ export const charts = [
     ]
   }
 ]
+
+export const initChart = (chart, obj, type) => {
+  chart.title.text = obj.text
+  chart.title.subtext = obj.subtext
+  chart.color = ['#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59', '#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59']
+  switch (type) {
+    case 1 : case 2 :
+      chart.series[0].name = obj.text
+      chart.legend.data = obj.classes
+      chart.series[0].data = obj.data
+      break
+    case 3 : case 4 :
+      chart.series[0].name = obj.text
+      chart.xAxis[0].data = obj.classes
+      chart.series[0].data = obj.data
+      break
+    case 5 : case 6 :
+      chart.legend = obj.classes
+      obj.classes.forEach((item, index) => {
+        let obj2 = {
+          name: item,
+          type: 'bar',
+          barWidth: '20%',
+          label: {
+            normal: {
+              show: false,
+              position: 'top',
+              formatter: '{c}'
+            }
+          },
+          data: obj.data[index]
+        }
+        chart.series.push(obj2)
+      })
+      break
+    default :
+      break
+  }
+}

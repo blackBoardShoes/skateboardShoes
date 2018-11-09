@@ -44,6 +44,9 @@
           prop="gender"
           align="center"
           label="性别">
+          <template slot-scope="scope">
+            <span>{{ scope.row.gender || '/' }}</span>
+          </template>
         </el-table-column>
         <el-table-column
           show-overflow-tooltip
@@ -52,6 +55,9 @@
           label="科室"
           :filters="[{ text: '外科一', value: '外科一' }, { text: '外科二', value: '外科二' }, { text: '特需外科', value: '特需外科' }]"
           :filter-method="filterTag2">
+          <template slot-scope="scope">
+            <span>{{ scope.row.department || '/' }}</span>
+          </template>
         </el-table-column>
         <el-table-column
           prop="institution"
@@ -82,10 +88,12 @@
           label="操作"
           fixed="right"
           width="180">
-          <template slot-scope="scope" class="header-operate" v-if="showOperate(scope.row)">
-            <el-button type="danger" size="small" plain @click="banUser(scope.row)" >禁用</el-button>
-            <el-button type="primary" size="small" plain @click="resetUser(scope.row)">重置密码</el-button>
-            <!-- <span v-else>不可操作</span> -->
+          <template slot-scope="scope" class="header-operate">
+            <span  v-if="showOperate(scope.row)">
+              <el-button type="danger" size="small" plain @click="banUser(scope.row)" >禁用</el-button>
+              <el-button type="primary" size="small" plain @click="resetUser(scope.row)">重置密码</el-button>
+            </span>
+            <span v-else> - </span>
           </template>
         </el-table-column>
       </el-table>

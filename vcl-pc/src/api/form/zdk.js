@@ -1,6 +1,6 @@
 import axios from '../index'
-const {api, hot} = require('@/dev').proxyTableApi
-console.log(api, hot)
+const {api} = require('@/dev').proxyTableApi
+console.log(api)
 
 // 所有字段
 export const fieldAllFields = data => {

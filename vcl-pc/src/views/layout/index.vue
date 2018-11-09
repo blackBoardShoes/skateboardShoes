@@ -115,6 +115,7 @@
       <!-- 用户操作用户信息 -->
       <div class="user-operate float-right">
         <el-dropdown
+          trigger="click"
           placement="bottom"
           @command="handleCommand">
           <span class="el-dropdown-link">

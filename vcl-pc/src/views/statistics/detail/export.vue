@@ -424,7 +424,7 @@ export default {
       if (response.data.mitiStatus === 'SUCCESS') {
         console.log(response.data.entity)
         this.fileLists = response.data.entity.reverse()
-        this.thisFile = this.fileLists[0].file_id
+        this.thisFile = this.fileLists.length > 0 ? this.fileLists[0].file_id : ''
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
@@ -438,7 +438,8 @@ export default {
           fileId: file.file_id,
           fileName: file.file_name
         })
-        await downFile(info)
+        let response = await downFile(info)
+        console.log(response)
       } else {
         this.$message.info('请选择要导出的文件')
       }

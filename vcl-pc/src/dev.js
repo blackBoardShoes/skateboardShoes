@@ -5,23 +5,7 @@
 // 服务主要地址
 // 启敏
 // let host = 'http://192.168.10.249:8089'
-let host = 'http://192.168.10.196:8089'
-host = 'http://192.168.10.104:8090'
-// let host = 'http://192.168.2.105:8089'
-// 大力
-// let host2 = 'http://192.168.10.13:8090'
-// yt
-let host3 = 'http://192.168.10.217:8089'
-// fwq
-// let host3 = 'http://192.168.10.104:8085'
-
-// 杜宣
-let host4 = 'http://192.168.10.104:8090'
-
-// let host5 = 'http://192.168.10.13:8090'
-
-let all = 'http://192.168.10.104:8090'
-// Is your service nginx  和 npm run dev 都是代理方式
+let host = 'http://192.168.10.104:8090'
 let nginx = false
 nginx = true
 // 是APP是 gzip 选用 false
@@ -34,56 +18,6 @@ let proxyTable = {
     changeOrigin: true,
     pathRewrite: {
       '^/api': '/'
-    }
-  },
-  '/dali': {
-    target: all,
-    changeOrigin: true,
-    pathRewrite: {
-      '^/dali': '/'
-    }
-  },
-  '/qiji': {
-    target: all,
-    changeOrigin: true,
-    pathRewrite: {
-      '^/qiji': '/'
-    }
-  },
-  '/yt': {
-    target: all,
-    changeOrigin: true,
-    pathRewrite: {
-      '^/yt': '/'
-    }
-  },
-  '/boss': {
-    target: host3,
-    changeOrigin: true,
-    pathRewrite: {
-      '^/boss': '/'
-    }
-  },
-  '/dx': {
-    target: host4,
-    changeOrigin: true,
-    pathRewrite: {
-      '^/dx': '/'
-    }
-  },
-  '/all': {
-    target: all,
-    changeOrigin: true,
-    pathRewrite: {
-      '^/all': '/'
-    }
-  },
-  // 没有代理服务器环境 不可用, 用上nginx代理 可用
-  '/hot': {
-    target: 'http://echarts.baidu.com/',
-    changeOrigin: true,
-    pathRewrite: {
-      '^/hot': '/'
     }
   }
 }

@@ -135,12 +135,10 @@
           <div class="bottom-bg"></div>
           <div class="form-recorder light-text">
             <div class="recorder float-left">
-              <span>填报人员：{{record.header.responseName}}</span>
-              <span>填报时间：</span>
+              <span>录入人员：{{record.header.responseName}}</span>
             </div>
             <div class="recorder float-right">
-              <span>审核人员：</span>
-              <span>审核时间：{{record.header.checkerName}}</span>
+              <span>审核人员：{{record.header.checkerName}}</span>
             </div>
           </div>
           <div class="detail" v-for="(module, index) in record._template" :key="index">
@@ -156,7 +154,7 @@
               <div class="question-case" v-for="(question, index) in module.fields" :key="index">
                 <div class="text-question" v-if="question.type !== 'TABLE' && question.label_value !== null">
                   <span :class="{'success-text': question.type === 'TITLE', 'bolder-text': question.type === 'TITLE'}">{{question.label}}：</span>
-                  <span>{{question.label_value || question.real_value}}</span>
+                  <span>{{typeof (question.label_value) === 'string' ? question.label_value.split('**')[0] : question.real_value}}</span>
                   <span>{{question.unit || ''}}</span>
                 </div>
                 <div class="table-question" v-if="question.type === 'TABLE'">

@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     toHome () {
-      this.$router.push({ path: '/home' })
+      this.$router.push({ path: '/patient' })
     },
     toFeedback () {
       this.$router.push({ path: '/helpCenter' })

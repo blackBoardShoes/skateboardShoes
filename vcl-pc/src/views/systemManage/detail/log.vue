@@ -2,9 +2,17 @@
   <div id="system-log">
     <div class="operate-buttons">
       <div class="filter-conditions float-left">
-        <span class="light-text">日期：</span>
+        <el-input size="medium" v-model="searchObj" placeholder="搜索操作账号" clearable style="flex:1;">
+          <i slot="prefix" class="el-input__icon el-icon-search" @click="search" style="cursor:pointer;"></i>
+        </el-input>
+        <el-select v-model="operateType" style="flex:1;margin:0 20px;" size="medium" placeholder="请选择操作方式" clearable>
+          <el-option label="GET" value="GET"></el-option>
+          <el-option label="POST" value="POST"></el-option>
+          <el-option label="DELETE" value="DELETE"></el-option>
+          <el-option label="PUT" value="PUT"></el-option>
+        </el-select>
         <el-date-picker
-          style="width:55%"
+          style="flex:2;margin-right: 20px;"
           size="medium"
           v-model="dataRange"
           type="daterange"
@@ -13,16 +21,11 @@
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
-          :picker-options="pickerOptions"
-          @change="timeFilter">
+          :picker-options="pickerOptions">
         </el-date-picker>
-          <el-input size="medium" v-model="searchObj" placeholder="搜索对象账号" clearable style="width:30%;" @keyup.enter.native="search">
-            <i slot="prefix" class="el-input__icon el-icon-search" @click="search" style="cursor:pointer;"></i>
-          </el-input>
+        <el-button @click="search" size="small" type="primary">搜索</el-button>
       </div>
       <div class="buttons float-right">
-        <!-- <el-button type="primary" @click="exportLog">导出日志</el-button> -->
-        <!-- <el-button type="primary" @click="clearLog">清空日志</el-button> -->
       </div>
     </div>
     <div class="system-log">
@@ -62,12 +65,12 @@
           align="center"
           label="对象">
         </el-table-column> -->
-        <el-table-column
+        <!-- <el-table-column
           prop="bodyMessage"
           align="center"
           label="详情"
           show-overflow-tooltip>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
     </div>
     <div class="pagination align-right">
@@ -127,7 +130,8 @@ export default {
             picker.$emit('pick', [start, end])
           }
         }]
-      }
+      },
+      operateType: ''
     }
   },
   methods: {
@@ -162,7 +166,10 @@ export default {
       let info = {
         currentPage: currentPage,
         pageSize: pageSize,
-        username: this.searchObj
+        username: this.searchObj,
+        type: this.operateType,
+        startTime: this.dataRange === null ? '' : this.dataRange[0] + ' 00:00:00',
+        endTime: this.dataRange === null ? '' : this.dataRange[0] + ' 00:00:00'
       }
       let response = await getLog(info)
       if (response.data.mitiStatus === 'SUCCESS') {
@@ -190,10 +197,14 @@ export default {
     beforeToday (today) {
       return false
     },
-    timeFilter () {
-      console.log(this.dataRange)
-      this.dateFilter(this.dataRange[0] + ' 00:00:00', this.dataRange[1] + ' 00:00:00')
-    },
+    // timeFilter () {
+    //   console.log(this.dataRange)
+    //   if (this.dataRange) {
+    //     this.dateFilter(this.dataRange[0] + ' 00:00:00', this.dataRange[1] + ' 00:00:00')
+    //   } else {
+    //     this.getLog(1, this.pageSize)
+    //   }
+    // },
     pageSizeChange (size) {
       this.pageSize = size
       this.getLog(this.currentPage, this.pageSize)
@@ -227,6 +238,9 @@ export default {
       flex-direction: row;
       .filter-conditions{
         flex: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
       .buttons{
         width: auto;

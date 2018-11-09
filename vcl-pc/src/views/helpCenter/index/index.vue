@@ -10,9 +10,9 @@
             <i class="ercp-icon-general-search el-input__icon" slot="suffix" @click="search"></i>
           </el-input>
         </div>
-        <div class="feedback float-left">
+        <!-- <div class="feedback float-left">
           <el-button type="primary" size="medium" @click="feedback"><i class="ercp-icon-general-opinion"></i> 意见反馈</el-button>
-        </div>
+        </div> -->
         <div class="our-connection">
           <span class="light-text">0571-886554555 SUPPORT@MITIGENOMICS.COM</span>
         </div>
@@ -279,7 +279,7 @@ export default {
       activeIndex1: 0,
       activeIndex2: 0,
       currentQus: '',
-      centerDialogVisible: true,
+      centerDialogVisible: false,
       message: {
         opinion: '',
         connection: ''

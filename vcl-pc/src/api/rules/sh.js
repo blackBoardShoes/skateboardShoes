@@ -1,7 +1,7 @@
 
 import axios from '../index'
-const {api, hot} = require('@/dev').proxyTableApi
-console.log(api, hot)
+const {api} = require('@/dev').proxyTableApi
+console.log(api)
 // 通过
 export const formdataPass = data => {
   console.log(data, 'datadatadata')
