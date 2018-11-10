@@ -112,9 +112,14 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <div class="imgGroup">
+            <!-- <div class="imgGroup">
               <img :src="img.source" v-for="(img, o) in contentModel.choiceResults" :key="o">
-            </div>
+            </div> -->
+            <el-row class="imgGroup" :gutter="20" v-if="contentModel.choiceResults ? contentModel.choiceResults.length : false">
+              <el-col :span="4" v-for="(img, o) in contentModel.choiceResults" :key="o">
+                <img :src="img.source" >
+              </el-col>
+            </el-row>
           </div>
           <!-- <div class="twoContentBottom">
             <el-form-item label="麻醉方式 :" prop="operationSelectMz" style="flex-grow:1;">
@@ -135,7 +140,7 @@
           </div> -->
         </el-collapse-item>
       </el-collapse>
-      <div ref="printAndBrowse" class="printAndBrowse" v-show="true">
+      <div ref="printAndBrowse" class="printAndBrowse" v-show="false">
         <div class="top">
           <div class="hospital">
             <div class="logo">
@@ -161,9 +166,11 @@
         <hr>
         <br>
         <!-- <grayTitle>镜检照片</grayTitle> -->
-        <div class="imgGroup" v-if="contentModel.choiceResults ? contentModel.choiceResults.length : false">
-          <img :src="img.source" v-for="(img, o) in contentModel.choiceResults" :key="o">
-        </div>
+        <el-row class="imgGroup" :gutter="20" v-if="contentModel.choiceResults ? contentModel.choiceResults.length : false">
+          <el-col :span="4" v-for="(img, o) in contentModel.choiceResults" :key="o">
+            <img :src="img.source" >
+          </el-col>
+        </el-row>
         <grayTitle>检查所见</grayTitle>
         <div class="reportOhterContain">
           <el-row type="flex">
@@ -854,7 +861,7 @@ $marginContentW: 25px;
     }
     .twoContentContain {
       width: $full;
-      min-height: 300px;
+      // min-height: 300px;
       .twoContentContainEdit {
         // border: 1px solid $lightBorderColor;
       }
@@ -917,13 +924,13 @@ $marginContentW: 25px;
 .imgGroup {
   width: $full;
   display: flex;
-  height: 100px;
-  justify-content: space-between;
+  // height: 100px;
+  // justify-content: space-between;
   margin-top: $marginW;
   margin-bottom: $marginW;
   img {
-    width: 100px;
-    height: 100px;
+    width: 100%;
+    // height: 100px;
   }
 }
 .printAndBrowse {
