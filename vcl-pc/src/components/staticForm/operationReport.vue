@@ -135,7 +135,7 @@
           </div> -->
         </el-collapse-item>
       </el-collapse>
-      <div ref="printAndBrowse" class="printAndBrowse">
+      <div ref="printAndBrowse" class="printAndBrowse" v-show="true">
         <div class="top">
           <div class="hospital">
             <div class="logo">
@@ -182,7 +182,7 @@
                 <div
                   v-if="contentModel[item.id] ? (item.vIf ? (Array.isArray(item.vIf.value) ? item.vIf.value.includes(contentModel[item.vIf.id]) : contentModel[item.vIf.id] === item.vIf.value) : true) : false"
                   style="">
-                    <div style="display: flex;">
+                  <div style="display: flex;">
                     {{item.label}}{{contentModel[item.id]}}
                     <div style="max-width: 200px;" v-if="item.unit">
                       {{item.unit}}
@@ -984,15 +984,16 @@ $marginContentW: 25px;
   }
 }
 .reportOhter {
-  // display: flex;
-  // flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
   // justify-content: space-between;
   // flex-wrap: wrap;
-  // width: 100%;
+  width: 100%;
   .reportOhterItem {
     // border: 1px solid red;
-    // display: flex;
-    // flex-wrap: wrap;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
   //   width: 49%;
   //   white-space:normal;
   //   word-break:break-all;

@@ -1,7 +1,7 @@
 <template>
   <div class="showMinAll">
     <div v-for="(v, k, index) in whatFileds" :key="k"  style="display: flex;">
-      <div v-if="Array.isArray(v)" >
+      <div v-if="Array.isArray(v)" style="display: flex;flex-wrap: wrap;">
         <div v-for="(item, index) in [...v[0]]" :key="index">
           <!-- <span style="font-weight:bold">{{!index ? whatFiledsWhere[k].label + '：' : ''}}</span> -->
           <sx-show-min :whatFileds="item" :whatFiledsWhere="whatFiledsWhere" :ohShit="false"></sx-show-min>
