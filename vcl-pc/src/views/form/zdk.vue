@@ -231,7 +231,7 @@ export default {
           // createtable
           {
             id: 'createTable',
-            label: '创建表格',
+            label: '选择字段',
             type: 'CREATETABLE',
             values: []
           }

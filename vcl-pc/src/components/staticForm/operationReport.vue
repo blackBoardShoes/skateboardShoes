@@ -135,7 +135,7 @@
           </div> -->
         </el-collapse-item>
       </el-collapse>
-      <div ref="printAndBrowse" v-show="true" class="printAndBrowse">
+      <div ref="printAndBrowse" class="printAndBrowse">
         <div class="top">
           <div class="hospital">
             <div class="logo">
@@ -148,14 +148,19 @@
           </div>
           <div class="bolder-title">内镜报告检查单</div>
         </div>
-        <grayTitle>受检者基本情况</grayTitle>
+        <!-- <grayTitle>受检者基本情况</grayTitle> -->
+        <hr>
+        <br>
         <el-row>
           <el-col :span="6" v-for="(e, ee) in basicInfo" :key="ee" style="display: flex; height: 26px;font-size: 14px">
             <div >{{e.label}}：</div>
             {{e.value}}
           </el-col>
         </el-row>
-        <grayTitle>镜检照片</grayTitle>
+        <br>
+        <hr>
+        <br>
+        <!-- <grayTitle>镜检照片</grayTitle> -->
         <div class="imgGroup" v-if="contentModel.choiceResults ? contentModel.choiceResults.length : false">
           <img :src="img.source" v-for="(img, o) in contentModel.choiceResults" :key="o">
         </div>
@@ -171,60 +176,25 @@
             </el-col>
           </el-row>
           <div v-for="(row, i) in contentModel.operationCheckBox" :key="i" class="showContain">
-            <div v-for="(item, index) in content[row]" :key="index">
+            <div v-for="(item, index) in content[row]" :key="index" style="display:flex;align-items:center;height:28px">
               <!--  && contentModel[item.id] -->
-              <div v-if="item['type']">
-                <el-form-item
-                  style="display:flex;height: 10px;width:100%"
+              <span v-if="item['type']">
+                <div
                   v-if="contentModel[item.id] ? (item.vIf ? (Array.isArray(item.vIf.value) ? item.vIf.value.includes(contentModel[item.vIf.id]) : contentModel[item.vIf.id] === item.vIf.value) : true) : false"
-                  :label-width="item.labelWidth ? item.labelWidth : '0px'"
-                  :label="item.label"
-                  :prop="item.id">
-                  <!-- :rules="item.validations" -->
-                  <div style="display: flex">
-                    <el-select
-                      :disabled="true"
-                      :style="{ width: contentModel[item.id].toString().length * 14 + 'px !important', height: '100%' }" v-if="item['type'] === 'SELECT'" v-model="contentModel[item.id]" placeholder="">
-                      <el-option
-                        v-for="option in item.values"
-                        :key="option.value"
-                        :label="option.label"
-                        :value="option.value">
-                      </el-option>
-                    </el-select>
-                    <el-input :disabled="true" :style="{ width: contentModel[item.id].toString().length * 14 + 'px !important', height: '100%' }"
-                      v-if="item['type'] === 'INPUT'" v-model="contentModel[item.id]"></el-input>
+                  style="">
+                    <div style="display: flex;">
+                    {{item.label}}{{contentModel[item.id]}}
                     <div style="max-width: 200px;" v-if="item.unit">
                       {{item.unit}}
                     </div>
                   </div>
-                  <el-date-picker
-                    :disabled="true"
-                    :style="{ width: 40 + contentModel[item.id].toString().length * 6 + 'px !important', height: '100%' }"
-                    v-if="item['type'] === 'DATE'"
-                    v-model="contentModel[item.id]"
-                    type="date"
-                    format="yyyy/MM/dd"
-                    value-format="yyyy/MM/dd"
-                    placeholder="">
-                  </el-date-picker>
-                  <el-radio-group
-                    :disabled="true"
-                    style="min-width: 100px"
-                    v-if="item['type'] === 'RADIO'"
-                    v-model="contentModel[item.id]">
-                    <el-radio
-                      v-for="option in item.values"
-                      :key="option.value"
-                      :label="option.label"></el-radio>
-                  </el-radio-group>
-                </el-form-item>
-              </div>
-              <span v-else>{{item}}</span>
+                </div>
+              </span>
+              <span v-else>
+                {{item}}
+              </span>
             </div>
           </div>
-          <br>
-
         <!-- <div class="reportOhter">
           <div class="reportOhterItem" v-for="(item, key) in reportData" :key="key">
             <div
@@ -259,16 +229,18 @@
             <sx-show-min :whatFiledsWhere="filedsObject" :whatFileds="item"></sx-show-min>
           </div> -->
         </div>
+        <br>
         <br><br>
-        <br><br><br>
         <hr>
         <el-row type="flex" style="margin-top: 12px">
-          <el-col :span="12">
+          <el-col :span="13">
           </el-col>
-          <el-col :span="12" style="display: flex;justify-content: space-between">
-            <sx-show-min :whatFiledsWhere="{operationOperator: {label: '报告医师：'}}" :whatFileds="{operationOperator: reportData['intraoperativeDiagnosisAndEvaluation'] ? reportData['intraoperativeDiagnosisAndEvaluation']['operationOperator'] : ''}"></sx-show-min>
-            <div style="display: flex;width: 255px;justify-content: space-between;font-size:14px;">
-              <span>报告日期:</span>
+          <el-col :span="11" style="display: flex;justify-content: space-between;align-items:center">
+            <div style="width: 155px;">
+              <sx-show-min :whatFiledsWhere="{operationOperator: {label: '报告医师：'}}" :whatFileds="{operationOperator: reportData['intraoperativeDiagnosisAndEvaluation'] ? reportData['intraoperativeDiagnosisAndEvaluation']['operationOperator'] : ''}"></sx-show-min>
+            </div>
+            <div style="font-size:14px;">
+              <span>报告日期：</span>
                {{patientInfo['header']['operationDate']}}
             </div>
           </el-col>
@@ -327,6 +299,36 @@ export default {
     return {
       activeNames: ['1', '2'],
       imgArr: [
+        {
+          source: require('../../../src/assets/images/xbx.jpg'),
+          thumbnail: require('../../../src/assets/images/xbx.jpg'),
+          checked: false,
+          information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
+        },
+        {
+          source: require('../../../src/assets/images/xbx.jpg'),
+          thumbnail: require('../../../src/assets/images/xbx.jpg'),
+          checked: false,
+          information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
+        },
+        {
+          source: require('../../../src/assets/images/xbx.jpg'),
+          thumbnail: require('../../../src/assets/images/xbx.jpg'),
+          checked: false,
+          information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
+        },
+        {
+          source: require('../../../src/assets/images/xbx.jpg'),
+          thumbnail: require('../../../src/assets/images/xbx.jpg'),
+          checked: false,
+          information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
+        },
+        {
+          source: require('../../../src/assets/images/xbx.jpg'),
+          thumbnail: require('../../../src/assets/images/xbx.jpg'),
+          checked: false,
+          information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
+        },
         {
           source: require('../../../src/assets/images/xbx.jpg'),
           thumbnail: require('../../../src/assets/images/xbx.jpg'),
@@ -521,7 +523,8 @@ export default {
       filedsObject: {},
       whatFormWhereObject: {},
       patientInfo: {},
-      basicInfo: []
+      basicInfo: [],
+      printAndBrowseTF: false
     }
   },
   watch: {
@@ -727,15 +730,16 @@ export default {
       // })
       console.log(this.reportData, 'dcdcdcdcdcdc')
       // console.log(this.reportData)
+      this.printAndBrowseTF = true
       this.loadingReport = false
-      // this.$nextTick(_ => {
-      //   let newContent = this.$refs.printAndBrowse.innerHTML
-      //   let oldContent = document.body.innerHTML
-      //   document.body.innerHTML = newContent
-      //   window.print()
-      //   window.location.reload()
-      //   document.body.innerHTML = oldContent
-      // })
+      this.$nextTick(_ => {
+        let newContent = this.$refs.printAndBrowse.innerHTML
+        let oldContent = document.body.innerHTML
+        document.body.innerHTML = newContent
+        window.print()
+        window.location.reload()
+        document.body.innerHTML = oldContent
+      })
     },
     filedsDataConversion (filedsObject, filedsData) {
       let dc = {}
@@ -820,10 +824,10 @@ export default {
 $full: 100%;
 $marginW: 15px;
 $marginContentW: 25px;
+* {
+  font-family: "微软雅黑";
+}
 .operationAll {
-  * {
-    font-family: "微软雅黑";
-  }
   width: $full;
   height: $full;
   // overflow: hidden;
@@ -913,115 +917,117 @@ $marginContentW: 25px;
 .imgGroup {
   width: $full;
   display: flex;
-  height: 180px;
+  height: 100px;
   justify-content: space-between;
   margin-top: $marginW;
   margin-bottom: $marginW;
   img {
-    width: 180px;
-    height: 180px;
+    width: 100px;
+    height: 100px;
   }
 }
 .printAndBrowse {
   padding: 20px;
   box-sizing:border-box;
-  .grayTitle {
-    background: #e9e9eb;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 36px;
-    font-weight: bold;
-    width: 100%;
-    margin-top: 15px;
-    margin-bottom: 15px;
-  }
+}
+.grayTitle {
+  background: #e9e9eb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 36px;
+  font-weight: bold;
+  width: 100%;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
 
-  .showContain {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    /deep/ .el-form-item__label {
-      color: black;
-      margin-right: 0px !important;
-    }
-    /deep/ .el-form-item__label:before{
-      content: '';
-      margin-right: 0px;
-    }
-    /deep/ .el-form-item__content {
-      margin:0px !important;
-    }
-    /deep/ .el-input__inner {
-      background-color: transparent;
-      border-radius: 0;
-      font-size: 14px;
-      padding: 0px !important;
-      margin:0px !important;
-      border: none;
-      width:100%;
-      height:100% !important;
-      // color: #117FD1;
-      // border-bottom:1px solid #117FD1;
-      text-align: center;
-      // &:hover{
-      //   border-color: #b4bccc;
-      // }
-      // &:focus{
-      //   border-color: #409EFF;
-      //   outline: 0;
-      // }
-    }
-    /deep/ .el-select__caret{
-      display:none;
-    }
+.showContain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  * {
+    font-size: 14px;
   }
-  .reportOhter {
+  /deep/ .el-form-item__label {
+    color: black;
+    margin: 0px !important;
+  }
+  /deep/ .el-form-item__label:before{
+    content: '';
+    margin-right: 0px;
+  }
+  /deep/ .el-form-item__content {
+    margin:0px !important;
+  }
+  /deep/ .el-input__inner {
+    background-color: transparent;
+    border-radius: 0;
+    padding: 0px !important;
+    margin:0px !important;
+    border: none;
+    width:100%;
+    height:100% !important;
+    // color: #117FD1;
+    // border-bottom:1px solid #117FD1;
+    text-align: center;
+    // &:hover{
+    //   border-color: #b4bccc;
+    // }
+    // &:focus{
+    //   border-color: #409EFF;
+    //   outline: 0;
+    // }
+  }
+  /deep/ .el-select__caret{
+    display:none;
+  }
+}
+.reportOhter {
+  // display: flex;
+  // flex-wrap: wrap;
+  // justify-content: space-between;
+  // flex-wrap: wrap;
+  // width: 100%;
+  .reportOhterItem {
+    // border: 1px solid red;
     // display: flex;
     // flex-wrap: wrap;
-    // justify-content: space-between;
-    // flex-wrap: wrap;
-    // width: 100%;
-    .reportOhterItem {
-      // border: 1px solid red;
-      // display: flex;
-      // flex-wrap: wrap;
-    //   width: 49%;
-    //   white-space:normal;
-    //   word-break:break-all;
-    //   word-wrap:break-word;
+  //   width: 49%;
+  //   white-space:normal;
+  //   word-break:break-all;
+  //   word-wrap:break-word;
+  }
+}
+.top {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  .hospital{
+    display: flex;
+    align-items: center;
+    .logo {
+      height: 100%;
+      padding: 13px;
+      padding-left: 0;
+      img {
+        width: 65px;
+      }
+    }
+    .top-text{
+      display: flex;
+      flex-direction: column;
+      font-size: 12px;
     }
   }
-  .top {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    .hospital{
-      display: flex;
-      align-items: center;
-      .logo {
-        height: 100%;
-        padding: 13px;
-        padding-left: 0;
-        img {
-          width: 65px;
-        }
-      }
-      .top-text{
-        display: flex;
-        flex-direction: column;
-        font-size: 12px;
-      }
-    }
-    .bolder-text, .bolder-title {
-      font-size: 22px;
-      margin-bottom: 6px;
-    }
-    .bolder-title {
-      margin-bottom: 16px;
-      text-align: center;
-      font-weight: bold;
-    }
+  .bolder-text, .bolder-title {
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+  .bolder-title {
+    margin-bottom: 16px;
+    text-align: center;
+    font-weight: bold;
   }
 }
 </style>

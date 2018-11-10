@@ -8,8 +8,8 @@
         </div>
       </div>
       <div v-else>
-        <div v-if="v">
-          <span v-if="v != '否'">{{whatFiledsWhere[k].label}} </span>{{(v === '是' | v === '否') ? '' : v}}{{whatFiledsWhere[k]['unit']}}
+        <div v-if="v && !(['calculusProperties', 'confirmedResidualCalculus', 'stentCompany', 'balloonCo', 'amount'].includes(k))">
+          <span v-if="v != '否'">{{whatFiledsWhere[k].label}}</span>{{(v === '是' | v === '否') ? '' : v}}{{whatFiledsWhere[k]['unit']}}
           <span v-if="ohShit && Object.values(whatFileds).length != index + 1">，</span>
           <span v-else>&nbsp;</span>
         </div>
@@ -55,5 +55,6 @@ export default {
   display: flex;
   flex-wrap: wrap;
   font-size: 14px;
+  line-height: 31px;
 }
 </style>
