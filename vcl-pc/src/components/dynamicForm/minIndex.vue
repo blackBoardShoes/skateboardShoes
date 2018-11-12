@@ -400,9 +400,9 @@ export default {
             value: '',
             type: 'RADIO',
             values: [
-              {label: '字迹模糊潦草无法分辨', value: '字迹模糊潦草无法分辨'},
+              // {label: '字迹模糊潦草无法分辨', value: '字迹模糊潦草无法分辨'},
               {label: '上下文逻辑关系错误', value: '上下文逻辑关系错误'},
-              {label: '原始资料缺失无法校验', value: '原始资料缺失无法校验'}
+              {label: '未录入', value: '未录入'}
             ]
           },
           {

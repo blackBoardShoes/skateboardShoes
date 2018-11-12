@@ -14,7 +14,7 @@
         :index="item.path ? item.path : item.index"
         @click="emitClick(item, index)"
         :key="index">
-        <i :class="item.icon"></i>
+        <i :class="item.icon"></i>&nbsp;&nbsp;
         <span class="menuName">{{item.name}}</span>
       </el-menu-item>
     </el-menu>
