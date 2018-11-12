@@ -248,7 +248,7 @@
             </div>
             <div style="font-size:14px;">
               <span>报告日期：</span>
-               {{patientInfo['header']['operationDate']}}
+               {{patientInfo['header'] ? patientInfo['header']['operationDate'] : ''}}
             </div>
           </el-col>
         </el-row>
@@ -841,6 +841,7 @@ $marginContentW: 25px;
   .operationContent {
     width: $full;
     /deep/ .el-collapse-item__header{
+      // width: 100%;
       padding-left: $marginW;
       background: $groupColor;
       font-weight: bold;

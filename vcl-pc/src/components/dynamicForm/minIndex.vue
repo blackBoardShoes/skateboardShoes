@@ -20,7 +20,7 @@
           <!-- <draggable v-model="newFields"> -->
             <!-- :rules="items.validations" -->
             <div
-              v-if="disabled ? true : tf(items)"
+              v-if="tf(items)"
               v-for="(items, index) in newFields"
               :class="(items.type === 'RADIO' && (!items.values)) ? 'abnormal' : noLabel ? 'noLabel' : 'normal'"
               :style="{display: 'flex', alignItems: 'flexStart', width: coordinate[items.id] ? coordinate[items.id] + '%' : '100%'}"

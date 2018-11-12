@@ -73,13 +73,22 @@
                   @notVerifying="notVerifying"
                   @consoleData="consoleData"></sx-min-form>
               </div>
-              <div class="rightContentStatic">
-                <sx-operation-report v-model="fishData[navArr[activeIndex].id]"
+              <div class="rightContentStatic" v-if="'isStatic' in navArr[activeIndex] ? navArr[activeIndex].isStatic : false">
+                <!-- <sx-operation-report v-model="fishData[navArr[activeIndex].id]"
                   ref="ssbgModel" v-if="navArr[activeIndex].name === '手术报告'"></sx-operation-report>
                 <sx-radiography
                   ref="zyModel"
                   v-model="fishData[navArr[activeIndex].id]"
-                  v-if="navArr[activeIndex].name === '鼻胆/胰管造影'"></sx-radiography>
+                  v-if="navArr[activeIndex].name === '鼻胆/胰管造影'"></sx-radiography> -->
+                <sx-operation-report
+                  v-model="fishData[navArr[activeIndex].id]"
+                  :fishData="fishData"
+                  :mozhu="navArr"
+                  ref="ssbgModel" v-if="smf && (navArr[activeIndex].name === '手术报告')"></sx-operation-report>
+                <sx-radiography
+                  ref="zyModel"
+                  v-model="fishData[navArr[activeIndex].id]"
+                  v-if="smf && (navArr[activeIndex].name === '鼻胆/胰管造影')"></sx-radiography>
               </div>
             </div>
           </div>
@@ -295,10 +304,8 @@ export default {
     if (this.$route.params.data) {
       this.patientInfo = JSON.parse(this.$route.params.data)
       this.subNavData = this.patientInfo.information.data
-      console.log(this.patientInfo)
       // this.activeIndexNav = this.patientInfo.phase
       this.activeIndexNav = this.patientInfo.activeIndexNav ? this.patientInfo.activeIndexNav : '住院基本情况'
-      console.log(this.subNavData, 'cccccccc')
     }
     await this.firstShow()
     await this.init()
@@ -313,6 +320,7 @@ export default {
     },
     async show () {
       let a = await recordData(this.patientInfo.id)
+      console.log(a)
       if (a) {
         this.fishAllData = a.data.entity ? [...a.data.entity.forms] : []
         // this.fishData = a.data.entity ? Object.assign({}, a.data.entity.data) : {}
@@ -323,7 +331,6 @@ export default {
           }
         }
       }
-      console.log(this.fishAllData, 'firstShow')
     },
     async init () {
       this.navArr = []
@@ -346,10 +353,10 @@ export default {
     async emitClick (data = {}) {
       this.smf = false
       this.activeIndex = data['index']
-      console.log(this.activeIndex, 'this.activeIndex')
       setTimeout(_ => {
         this.smf = true
       }, 1)
+      // this.show()
     },
     gainId (_, key) {
       for (let i in _) {
@@ -357,17 +364,17 @@ export default {
           return _[i].id
         } else {
           if (_[i]['submenu'].length) {
-            if (this.gainId(_[i].submenu)) {
-              return this.gainId(_[i].submenu)
+            if (this.gainId(_[i].submenu, key)) {
+              return this.gainId(_[i].submenu, key)
             }
           }
         }
       }
     },
     async handleSelect (key, keyPath) {
-      console.log(key, keyPath)
       this.smf = false
       this.activeIndexNav = key
+      this.activeIndex = 0
       let id = this.gainId(this.subNavData, key)
       for (let z of this.fishAllData) {
         if (id === z.id) {
@@ -465,11 +472,14 @@ $marginW: 15px;
           padding-bottom: 150px;
           display: flex;
           .rightContentDynamic {
-            width: 800px;
+            // width: 800px;
             flex-grow: 1;
             padding: 50px 25px;
           }
-          .rightContentStatic {}
+          .rightContentStatic {
+            padding: 50px 25px;
+            width: 100%;
+          }
         }
       }
       .rightContentControl {
