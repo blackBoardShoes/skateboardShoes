@@ -522,10 +522,10 @@ export default {
           }
           // this.undoneFilledFormDataMozhu
         } else {
-          this.patientInfo.header = Object.assign(this.patientInfo.header, formModel, { responseId: this.user.username })
+          this.patientInfo.header = Object.assign(this.patientInfo.header, formModel, { responseId: this.user.id })
         }
         let fds = await formdataSubmit(Object.assign(this.patientInfo, {data: this.fishData}))
-        console.log(fds, 'fdsfdsfdsfdsfdsfdsfdsfdsfdsfdsfds')
+        console.log(this.patientInfo.header, 'patientInfo.headerpatientInfo.headerpatientInfo.header')
         if (fds) {
           this.generalBack()
         }
