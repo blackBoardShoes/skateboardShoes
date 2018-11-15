@@ -19,7 +19,7 @@
       </div>
     </div>
     <div class="right-content">
-      <router-view></router-view>
+      <router-view v-on:readMessage="$emit('readMessage')"></router-view>
     </div>
   </div>
 </template>

@@ -2,7 +2,7 @@
   <div id="write">
     <el-form ref="messagePen" :rules="rules" :model="message" label-position="left" label-width="80px">
       <el-form-item prop="receivers" label="发送对象">
-        <el-select v-model="message.receivers" filterable style="margin-right:20px;width:100%;" multiple collapse-tags  placeholder="请搜索用户账号/姓名或选择用户列表">
+        <el-select v-model="message.receivers" filterable style="margin-right:20px;width:100%;" multiple  placeholder="请搜索用户账号/姓名或选择用户列表">
         <el-option
           v-for="(item, index) in userOptions"
           :laebl="item.name + '/' + item.username"
@@ -81,7 +81,7 @@ export default {
       // let info = this.message
       let response = await sendMessage(info)
       if (response.data.mitiStatus === 'SUCCESS') {
-        this.$message.success(response.data.entity)
+        // this.$message.success(response.data.entity)
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }

@@ -5,6 +5,9 @@ const {api} = require('@/dev').proxyTableApi
 export const unreadMessage = data => {
   return axios.get(api + `/mail/topStatic?userId=${data}`)
 }
+export const unreadMessageUrl = data => {
+  return api + `/mail/topStatic?userId=${data}`
+}
 // 顶部栏全部标记为已读
 export const allRead = data => {
   return axios.put(api + `/mail/allReceiveMailInRead?userId=${data.userId}&type=${data.type}`)

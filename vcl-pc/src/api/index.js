@@ -1,21 +1,14 @@
 import axios from 'axios'
 import router from '../router/index'
-// import Qs from 'qs'
-// import {apiUrl} from '../dev'
-// axios.defaults.baseURL = '/api'
 import store from '../store/index'
 import { Message } from 'element-ui'
 
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
-// var loadingInstance
 axios.defaults.timeout = 120000
+// 请求
 axios.interceptors.request.use(
   config => {
-    // loadingInstance = Loading.service({
-    //   fullscreen: true,
-    //   lock: true,
-    //   text: '正在请求数据...'
-    // })
+    // 设置token
     if (store.user !== null) {
       config.headers.token = store.state.token
     } else {
@@ -36,7 +29,6 @@ axios.interceptors.request.use(
 )
 axios.interceptors.response.use(
   response => {
-    // loadingInstance.close()
     if (typeof response.data !== 'object') {
       return response
     }
@@ -51,7 +43,7 @@ axios.interceptors.response.use(
             Message({
               showClose: true,
               message: response.data.message,
-              type: 'info'
+              type: 'error'
             })
           } else {
             Message({
@@ -61,26 +53,27 @@ axios.interceptors.response.use(
             })
           }
         } else if (response.data.mitiStatus === 'SUCCESS') {
-          if (response.data.message) {
-            Message({
-              showClose: true,
-              message: response.data.message,
-              type: 'success'
-            })
-          }
+          // if (response.data.message) {
+          //   Message({
+          //     showClose: true,
+          //     message: response.data.message,
+          //     type: 'success'
+          //   })
+          // }
           return response
         } else {
-          Message({
-            showClose: true,
-            message: '服务器有点忙。',
-            type: 'info'
-          })
+          // Message({
+          //   showClose: true,
+          //   message: '服务器有点忙。',
+          //   type: 'info'
+          // })
         }
         return false
       }
     } else {
       router.push('/error:504')
     }
+    return response
   },
   err => {
     // loadingInstance.close()
@@ -94,7 +87,6 @@ axios.interceptors.response.use(
           })
           break
         case 500:
-          console.log('oh shit md fuck 又 500 了')
           Message({
             showClose: true,
             message: '500'
@@ -102,7 +94,6 @@ axios.interceptors.response.use(
           router.push('/error:500')
           break
         case 404:
-          console.log('啥玩意又找不到了')
           Message({
             showClose: true,
             message: '404',
@@ -113,10 +104,11 @@ axios.interceptors.response.use(
         default:
           Message({
             showClose: true,
-            message: '服务器没开？',
+            message: '服务器开小差了',
             type: 'error'
           })
-          console.log('这个错 --->', err.response.status, '!!!!!!!!!!', err.response.status, '!!!!!!!!!!')
+          router.push(`/error:${err.response.status}`)
+          // console.log('这个错 --->', err.response.status, '!!!!!!!!!!', err.response.status, '!!!!!!!!!!')
           break
       }
     }

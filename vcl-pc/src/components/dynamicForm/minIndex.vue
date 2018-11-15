@@ -45,6 +45,7 @@
                     :rows="5"
                     style="width: 100%;"
                     type="textarea"
+                    v-if="question[items.id] && question[items.id].paraphrase"
                     v-model='question[items.id].paraphrase'></el-input>
                     <br><br>
                   <!-- <div class="viewerWrapper" v-if="question[items.id] && question[items.id].images.length" >

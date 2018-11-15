@@ -17,9 +17,9 @@
       <div class="err-reason">{{ errorMap[errorCode] && errorMap[errorCode].message || '请求失败'}}</div>
       <div class="tips">
         不要着急，你可以返回
-        <a class="click-page" @click="backPrev"> 上一页 </a> 或
-        <a class="click-page" @click="toHome"> 首页 </a> 或进行
-        <a class="click-page" @click="toFeedback"> 反馈 </a>
+        <a class="click-page" @click="backPrev"> 上一页 </a> 或跳转到
+        <a class="click-page" @click="toHome"> 患者中心 </a> 或跳转到
+        <a class="click-page" @click="toFeedback"> 帮助中心 </a>
       </div>
     </div>
   </div>

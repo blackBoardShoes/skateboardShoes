@@ -137,7 +137,7 @@
             <div class="recorder float-left">
               <span>录入人员：{{record.header.responseName}}</span>
             </div>
-            <div class="recorder float-right">
+            <div class="checker float-right">
               <span>审核人员：{{record.header.checkerName}}</span>
             </div>
           </div>
@@ -478,13 +478,6 @@ export default {
         // 其他未检索到的类型赋值为其real_value
         caseItem.label_value = caseItem.real_value
       }
-      // if (caseItem.label_value === null) {
-      //   console.log(caseItem.type)
-      //   console.log(caseItem.real_value)
-      // }
-      // console.log(caseItem.type)
-      // console.log(caseItem.label_value)
-      // console.log(caseItem.real_value)
     }
   },
   watch: {
@@ -526,7 +519,7 @@ export default {
       height: 56px;
       line-height: 56px;
       font-size: 15px;
-      background-color: $groupColor;
+      background-color: rgba($color: $groupColor, $alpha: .3);
       border-left: 1px solid #e6e6e6;
       // border-bottom: 1px solid #C1C1C1;
       padding: 0 32px;
@@ -636,7 +629,7 @@ export default {
     }
     .module-content{
       font-size: 15px;
-      line-height: 1.5;
+      line-height: 1.3;
       .question-case{
         // margin: 5px
         .text-question{
@@ -650,25 +643,6 @@ export default {
             margin-top: 8px;
             padding: 8px;
             position: relative;
-            // .table-index{
-            //   position: absolute;
-            //   width: 100px;
-            //   left: 50%;
-            //   margin-left: -50px;
-            //   // margin: 0px auto;
-            //   // left: 100px;
-            //   // right: 100px;
-            //   font-weight: 100;
-            //   top: 5px;
-            //   bottom: 5px;
-            //   font-size: 30px;
-            //   display: flex;
-            //   justify-content: center;
-            //   align-items: center;
-            //   z-index: -1;
-            //   // filter: blur(3px);
-            //   color: #666;
-            // }
           }
           .one-record::before{
             content: "";
@@ -703,6 +677,7 @@ export default {
     }
   }
   .forms{
+    // font-size: 14px;
     .reord-header{
       font-weight: 900;
       padding:0 16px;
@@ -721,10 +696,11 @@ export default {
       line-height: 30px;
       font-size: 15px;
       .recorder, .checker{
+        text-align: left;
         min-width: 220px;
-        span{
-          margin-left: 10px;
-        }
+      }
+      .checker{
+        text-align: right;
       }
     }
   }
@@ -778,12 +754,16 @@ export default {
       .basic-info{
         margin-top: 20px;
         flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         .info-title{
           font-size: 24px;
         }
         .info-content{
           font-size: 16px;
           margin: 20px auto;
+          flex:1;
           .info-case{
             width: auto;
             margin: 0px auto;

@@ -52,7 +52,7 @@
             <div class="message-case" slot="title">
               <div :class="{'read': true, 'not-readyet': item.isRead === 0}"></div>
               <div class="message-title" @click="singleMark(item)">
-                <div class="sender text-overflow-ellipsis"><span :class="{'primary-text': item.isRead === 0}">{{item.type === 0 ? '系统通知' : (item.sendUser === null ? '无发件人' : item.sendUser.name)}}</span></div>
+                <div class="sender text-overflow-ellipsis"><span :class="{'primary-text': item.isRead === 0}">{{item.type === 0 ? '系统通知' : (item.sendUser === null ? '系统通知' : item.sendUser.name)}}</span></div>
               </div>
               <div class="message-content" @click="singleMark(item)">
                 <div class="theme">{{item.title}}</div>
@@ -180,7 +180,7 @@ export default {
       }
       let response = await allRead(info)
       if (response.data.mitiStatus === 'SUCCESS') {
-        this.$message.success(response.data.entity)
+        // this.$message.success(response.data.entity)
         this.getMyMessage(this.messageType, this.pageSize, this.currentPage)
       } else {
         this.$message.error('ERROR: ' + response.data.message)
@@ -196,7 +196,7 @@ export default {
       }
       let response = await clearAllMessage(info)
       if (response.data.mitiStatus === 'SUCCESS') {
-        this.$message.success(response.data.entity)
+        // this.$message.success(response.data.entity)
         this.getMyMessage(this.messageType, this.pageSize, this.currentPage)
       } else {
         this.$message.error('ERROR: ' + response.data.message)
@@ -253,7 +253,8 @@ export default {
         let info = item.id
         let response = await singleRead(info)
         if (response.data.mitiStatus === 'SUCCESS') {
-          this.$message.success(response.data.entity)
+          // this.$message.success(response.data.entity)
+          this.$emit('readMessage')
           this.getMyMessage(this.messageType, this.pageSize, this.currentPage)
         } else {
           this.$message.error('ERROR: ' + response.data.message)
@@ -262,6 +263,7 @@ export default {
     },
     // 弹出回复消息的对话框
     recall (item) {
+      this.singleMark(item)
       this.showRecall = true
       this.recallMessage.receivers = []
       this.recallMessage.title = 'Re「' + (item.title.length >= 11 ? item.title.slice(0, 11) : item.title) + '」'
@@ -286,7 +288,7 @@ export default {
           info.sender = this.$store.state.user.id
           let response = await sendMessage(info)
           if (response.data.mitiStatus === 'SUCCESS') {
-            this.$message.success(response.data.entity)
+            // this.$message.success(response.data.entity)
             this.$refs.reMessage.resetFields()
             this.showRecall = false
           } else {
@@ -305,7 +307,8 @@ export default {
       }
       let response = await removeSingleMail(info)
       if (response.data.mitiStatus === 'SUCCESS') {
-        this.$message.success(response.data.entity)
+        // this.$message.success(response.data.entity)
+        this.$emit('readMessage')
         this.getMyMessage(this.messageType, this.pageSize, this.currentPage)
       } else {
         this.$message.error('ERROR: ' + response.data.message)

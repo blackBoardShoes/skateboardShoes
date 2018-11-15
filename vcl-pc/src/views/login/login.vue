@@ -2,7 +2,7 @@
   <div id="login">
     <div class="login-wrapper">
       <div class="left-bgi">
-        <img src="../../assets/images/登录框@2x.png" alt="">
+        <img src="../../assets/images/登录框.png" alt="">
       </div>
       <div class="right-login">
         <div class="login-title">
@@ -20,7 +20,7 @@
                 <i slot="prefix" class="el-input__icon ercp-icon-general-account" style="font-size: 18px;line-height:48px;"></i>
               </el-input>
             </el-form-item>
-            <el-form-item prop="password">
+            <el-form-item prop="password" ref="password">
               <el-input :type="passwordType" v-model="form.password" placeholder="请输入密码" @keyup.enter.native="login('loginForm')">
                 <i slot="prefix" class="el-input__icon ercp-icon-general-password" style="font-size: 18px;line-height:48px;"></i> -->
                 <i slot="suffix" class="el-input__icon ercp-icon-general-preview" style="cursor: pointer;line-height:48px;"
@@ -29,7 +29,7 @@
             </el-form-item>
             <el-row>
               <el-col :span="13">
-                <el-form-item prop="yanzhengma">
+                <el-form-item prop="yanzhengma" ref="yanzhengma">
                   <div class="check-code-wrapper">
                     <div class="yanzhengma-wrapper">
                       <el-input v-model="form.yanzhengma" @keyup.enter.native="login('loginForm')" :placeholder="yanzhengmaHolder">
@@ -60,7 +60,7 @@
             </div>
           </el-form>
         </div>
-        <div class="close-button">
+        <div class="close-button" v-if="false">
           <i class="ercp-icon-general-minimine" @click="windwowOperate('mini')"></i>
           <i class="ercp-icon-general-close" @click="windwowOperate('close')"></i>
         </div>
@@ -73,16 +73,16 @@ import validateCode from '../../components/ValidateCode/index'
 import { login } from '../../api/user/user.js'
 export default {
   created () {
-    if (process.env.NODE_ENV === 'production') {
-      // let ipc = this.$electron.ipcRenderer
-      // ipc.send('loginResize')
-      // ipc.send('nonableResize')
-      // ipc.send('center')
+    // 如果是在electron环境下，动画
+    if (this.$electron) {
+      let ipc = this.$electron.ipcRenderer
+      ipc.send('loginResize')
+      ipc.send('nonableResize')
+      ipc.send('center')
     }
     // 每次在登录页面都要重新清除用户信息
     this.$store.commit('SET_TOKEN', '')
     this.$store.commit('SET_USER', null)
-    console.log(this.$store.state)
   },
   mounted () {
     this.env = process.env.NODE_ENV
@@ -128,7 +128,6 @@ export default {
     // 更换验证码
     _setCheckCode (value) {
       this.checkCode = value
-      this.form.yanzhengma = value
     },
     // 密码是否可见
     _togglePasswordType () {
@@ -147,14 +146,14 @@ export default {
             password: this.form.password
           }
           let response = await login(info)
-          if (response.data.mitiStatus === 'SUCCESS') {
+          if (response.data && response.data.mitiStatus === 'SUCCESS') {
             let user = response.data.entity.User
             let token = response.data.entity.Token.token
             this.$store.commit('SET_TOKEN', token)
             this.$store.commit('SET_USER', user)
-            this.$router.push('/patient')
-            this.env = process.env.NODE_ENV
-            if (this.env === 'production') {
+            this.$router.push('/home')
+            // 如果是在electron环境下，动画
+            if (this.$electron) {
               let ipc = this.$electron.ipcRenderer
               ipc.send('hide')
               ipc.send('mainResize')
@@ -162,28 +161,34 @@ export default {
               ipc.send('center')
             }
           } else {
-            this.$message.error('ERROR: ' + response.data.message)
+            this._updateCheckCode()
+            this.$refs.password.resetField()
+            this.$refs.yanzhengma.resetField()
           }
         } else {
+          this.form.yanzhengma = ''
           return false
         }
       })
     },
     windwowOperate (operate) {
       // 按钮操控主进程窗口
-      let ipc = this.$electron.ipcRenderer
-      switch (operate) {
-        case 'mini':
-          ipc.send('min')
-          break
-        case 'max':
-          ipc.send('max')
-          break
-        case 'close':
-          ipc.send('close')
-          break
+      if (this.$electron) {
+        let ipc = this.$electron.ipcRenderer
+        switch (operate) {
+          case 'mini':
+            ipc.send('min')
+            break
+          case 'max':
+            ipc.send('max')
+            break
+          case 'close':
+            ipc.send('close')
+            break
+        }
+      } else {
+        this.$message.info('无效点击操作')
       }
-      console.log(operate)
     }
   },
   components: {

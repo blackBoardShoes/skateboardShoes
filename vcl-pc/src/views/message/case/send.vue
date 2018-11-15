@@ -125,7 +125,7 @@ export default {
       }
       let response = await clearAllMessage(info)
       if (response.data.mitiStatus === 'SUCCESS') {
-        this.$message.success(response.data.entity)
+        // this.$message.success(response.data.entity)
         this.getSendMessage(this.pageSize, this.currentPage)
       } else {
         this.$message.error('ERROR: ' + response.data.message)
@@ -177,7 +177,7 @@ export default {
       }
       let response = await removeSingleMail(info)
       if (response.data.mitiStatus === 'SUCCESS') {
-        this.$message.success(response.data.entity)
+        // this.$message.success(response.data.entity)
         this.getSendMessage(this.pageSize, this.currentPage)
       } else {
         this.$message.error('ERROR: ' + response.data.message)

@@ -89,16 +89,20 @@
           <div class="case">
             <!-- 文本 -->
             <el-input
-              placeholder="请填写住院信息目标值"
+              placeholder="请填写"
               style="width:95%;"
               v-if="relationOptions[0].type.includes(info.target.type)"
               v-model="info.target.value">
             </el-input>
             <!-- 单选 -->
             <el-select
+              collapse-tags
+              :allow-create="info.target.type === 'RADIOTEXT' || info.target.type === 'CHECKBOXTEXT'"
+              :filterable="info.target.type === 'RADIOTEXT' || info.target.type === 'CHECKBOXTEXT'"
+              :multiple="info.target.type === 'CHECKBOX' || info.target.type === 'SELECTMUTIPLE' || info.target.type === 'CHECKBOXTEXT'"
               style="width:95%;"
               v-model="info.target.value"
-              placeholder="请选择住院信息目标值"
+              :placeholder="'请选择' + ((info.target.type === 'RADIOTEXT' || info.target.type === 'CHECKBOXTEXT') ? '(或输入)' : '') + ((info.target.type === 'CHECKBOX' || info.target.type === 'SELECTMUTIPLE' || info.target.type === 'CHECKBOXTEXT') ? '(可多选)' : '')"
               v-if="relationOptions[1].type.includes(info.target.type) || relationOptions[2].type.includes(info.target.type)">
               <el-option
                 v-for="item in info.target.options"
@@ -112,7 +116,7 @@
               style="width:95%;"
               v-if="relationOptions[3].type.includes(info.target.type)"
               :options="info.target.options"
-              placeholder="请选择住院信息目标值"
+              placeholder="请选择"
               v-model="info.target.value">
             </el-cascader>
             <!-- 时间 -->
@@ -294,7 +298,7 @@ export default {
       relationOptions: [
         // 文本单选
         {
-          type: ['INPUT', 'TEXTAREA', 'CALCULATE', 'INT', 'DOUBLE', 'RADIOTEXT'],
+          type: ['INPUT', 'TEXTAREA', 'CALCULATE', 'INT', 'DOUBLE'],
           typeOptions: [
             {label: '等于', value: 'equal'},
             {label: '不等于', value: 'not_equal'},
@@ -306,7 +310,7 @@ export default {
         },
         // 选项
         {
-          type: ['RADIO', 'SELECT'],
+          type: ['RADIO', 'SELECT', 'RADIOTEXT'],
           typeOptions: [
             {label: '等于', value: 'equal'},
             {label: '不等于', value: 'not_equal'}
@@ -439,43 +443,17 @@ export default {
           fileName: file.file_name
         })
         let response = await downFile(info)
-        console.log(response)
+        let url = window.URL.createObjectURL(response.data)
+        let a = document.createElement('a')
+        a.href = url
+        a.download = file.file_name + '.zip'
+        console.log(a)
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
       } else {
         this.$message.info('请选择要导出的文件')
       }
-      // if (response.data) {
-      //   var eleLink = document.createElement('a')
-      //   eleLink.download = 'cccc.zip'
-      //   eleLink.style.display = 'none'
-      //   // 字符内容转变成blob地址
-      //   eleLink.href = 'http://192.168.10.217:8089/download/5be1625de5230d773dee2cb6/食欲'
-      //   // 触发点击
-      //   document.body.appendChild(eleLink)
-      //   eleLink.click()
-      //   // 然后移除
-      //   document.body.removeChild(eleLink)
-      // }
-      // if (response.data.mitiStatus === 'SUCCESS') {
-      // console.log(
-      //   new Blob([response.data], {type: 'application//zip'})
-      // )
-      // let fileDownload = require('js-file-download')
-      // 导出文件名称为所选的文件名称
-      // let fileName = '2222222.zip'
-      // fileDownload(response.data, fileName)
-      // console.log(String.fromCharCode.apply(null, new Uint8Array(response.data)))
-      // const blob = new Blob([response.data], {type: 'application/zip'})
-      // const url = window.URL.createObjectURL(blob)
-      // const a = document.createElement('a')
-      // a.href = url
-      // a.download = name
-      // document.body.appendChild(a)
-      // a.click()
-      // this.$message.success('文件导出成功')
-      // this.fileLists = response.data.entity.reverse()
-      // } else {
-      // this.$message.error('ERROR: ' + response.data.message)
-      // }
     },
     // 初始化住院信息的级联模板
     initFieldOptions () {
@@ -508,7 +486,7 @@ export default {
             field.phase = module.phase
             field.value = field.id
             field.treeNode = module.treeNode + '.' + field.id
-            field.reference = field.values === undefined ? (field.children === undefined ? [] : field.children) : field.values
+            field.reference = field.values !== undefined ? field.values : (field.children === undefined ? [] : field.children)
             if (field.subFields && field.subFields.length > 0) {
               field.children = field.subFields
               field.children.forEach((subField) => {
@@ -531,7 +509,7 @@ export default {
       })
       this.recordSelectOptions = [...arr2]
       this.fieldsData = [...arr2]
-      this.fieldsData.unshift(this.basicExample.field.options[0])
+      // this.fieldsData.unshift(this.basicExample.field.options[0])
       console.log(arr2)
     },
     // 住院信息级联选项更改=>改变后面的大小关系以及目标值

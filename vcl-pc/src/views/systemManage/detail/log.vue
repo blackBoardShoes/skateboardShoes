@@ -12,6 +12,7 @@
           <el-option label="PUT" value="PUT"></el-option>
         </el-select>
         <el-date-picker
+          :clearable="false"
           style="flex:2;margin-right: 20px;"
           size="medium"
           v-model="dataRange"
@@ -168,8 +169,8 @@ export default {
         pageSize: pageSize,
         username: this.searchObj,
         type: this.operateType,
-        startTime: this.dataRange === null ? '' : this.dataRange[0] + ' 00:00:00',
-        endTime: this.dataRange === null ? '' : this.dataRange[0] + ' 00:00:00'
+        startTime: (this.dataRange.length === 0 || this.dataRange === undefined) ? '' : (this.dataRange[0] + ' 00:00:00'),
+        endTime: (this.dataRange.length === 0 || this.dataRange === undefined) ? '' : (this.dataRange[1] + ' 00:00:00')
       }
       let response = await getLog(info)
       if (response.data.mitiStatus === 'SUCCESS') {

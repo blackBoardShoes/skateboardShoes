@@ -6,12 +6,12 @@
           <span><i class="ercp-icon-module-patient"></i> <b>基本信息</b></span>
         </div>
         <!-- 患者基本信息 -->
-        <div class="basic-information" >
+        <div class="basic-information" v-if="patientRecords.length > 0 || followRecords.length > 0">
           <el-form ref="basicForm" :rules="rules" :model="basicInfo" label-position="left" label-width="100px"  :disabled="editable">
             <el-row>
               <el-col :span="8">
                 <el-form-item label="住院号:" prop="hospitalId">
-                  <el-input v-model="basicInfo.hospitalId" style="width:217px;" size="small"></el-input>
+                  <el-input v-model="basicInfo.hospitalId" style="width:217px;" size="small" :disabled="true"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -62,7 +62,7 @@
               </el-col>
             </el-row>
           </el-form>
-          <div class="operate">
+          <div class="operate" v-if="$store.state.user.codetype == '5' || $store.state.user.codetype == '6'">
             <div class="float-right">
               <el-button type="danger" size="small" @click="deletePat">删除</el-button>
               <el-button type="primary" size="small" v-if="editable" @click="editable = false">编辑</el-button>
@@ -72,7 +72,7 @@
         </div>
       </div>
       <el-tabs type="border-card">
-        <el-tab-pane :label="'住院记录-' + (index + 1)" v-for="(record, index) in patientRecords" :key="index">
+        <el-tab-pane :label="'住院记录 - ' + (index + 1)" v-for="(record, index) in patientRecords" :key="index">
           <div class="record-info er-card">
             <div class="card-title">
               住院记录
@@ -129,14 +129,14 @@
               <el-button type="primary" size="small" plain @click="linkToRecord(record)" >查看报告</el-button>
             </div>
           </div>
-          <el-carousel :interval="4000" type="card"  style="height:100%;width:600px;" :autoplay=false>
+          <el-carousel :interval="4000" type="card"  style="height:100%;width:600px;" :autoplay=false arrow="always">
             <el-carousel-item v-for="(item, index) in record.forms" :key="index" :label="item.header.phase">
               <div class="card-content">
                 <div class="card-title">
-                  <el-tooltip class="item" effect="dark" placement="top" :disabled="true">
-                    <span v-if="item.header.phase === '术中'" class="ercp-icon-medicine-report primary-text"></span>
-                    <span slot="content">查看术中报告</span>
-                  </el-tooltip>
+                  <!-- <el-tooltip class="item" effect="dark" placement="top" :disabled="true"> -->
+                    <!-- <span v-if="item.header.phase === '术中'" class="ercp-icon-medicine-report primary-text" @click="operate('view', record, index)"></span> -->
+                    <!-- <span slot="content">查看术中报告</span> -->
+                  <!-- </el-tooltip> -->
                     {{item.header.phase}}
                   <span v-if="item.header.operationNum">（{{item.header.operationNum}}）</span>
                 </div>
@@ -148,31 +148,31 @@
                 <div class="info"  v-if="item.header.phase === '术前'">
                   <el-tooltip class="item" effect="dark" placement="top">
                     <div slot="content">
-                      <span v-for="(disease, index) in (record.forms.find((n) => n.header.phase === '术前')) === undefined ? '' :valueTransLabel((record.forms.find((n) => n.header.phase === '术前')).data.preoperativeRecord.preoperativeDiagnosis, 'preoperativeRecord', 'preoperativeDiagnosis', 'diseaseName')" :key="index">
+                      <span v-for="(disease, index) in valueTransLabel(item.data.preoperativeRecord.preoperativeDiagnosis, 'preoperativeRecord', 'preoperativeDiagnosis', 'diseaseName')" :key="index">
                           {{disease}}
                       </span>
                     </div>
                     <div class="case one-case">术前诊断：
-                      <span v-for="(disease, index) in (record.forms.find((n) => n.header.phase === '术前')) === undefined ? '' :valueTransLabel((record.forms.find((n) => n.header.phase === '术前')).data.preoperativeRecord.preoperativeDiagnosis, 'preoperativeRecord', 'preoperativeDiagnosis', 'diseaseName')" :key="index">
+                      <span v-for="(disease, index) in valueTransLabel(item.data.preoperativeRecord.preoperativeDiagnosis, 'preoperativeRecord', 'preoperativeDiagnosis', 'diseaseName')" :key="index">
                         {{disease}}
                       </span>
                     </div>
                   </el-tooltip>
                 </div>
                 <div class="info"  v-if="item.header.phase === '术中'">
-                  <div class="case">手术日期：{{item.data.intraoperativeDiagnosisAndEvaluation.surgeryDate === undefined ? '' : item.data.intraoperativeDiagnosisAndEvaluation.surgeryDate}}</div>
+                  <div class="case">手术日期：{{item.header.operationDate === undefined ? '' : item.header.operationDate}}</div>
                   <div class="case">操作者：{{item.data.intraoperativeDiagnosisAndEvaluation.operationOperator}}</div>
                 </div>
                 <div class="info"  v-if="item.header.phase === '术后'">
                   <el-tooltip class="item" effect="dark" placement="top">
                     <div slot="content">
-                      <span v-for="(disease, index) in (record.forms.find((n) => n.header.phase === '术后')) === undefined ? '' :valueTransLabel((record.forms.find((n) => n.header.phase === '术后')).data.postDiagnosisAndExamination.postDiagnosis, 'postDiagnosisAndExamination', 'postDiagnosis', 'diseaseName')" :key="index">
+                      <span v-for="(disease, index) in valueTransLabel(item.data.postDiagnosisAndExamination.postDiagnosis, 'postDiagnosisAndExamination', 'postDiagnosis', 'diseaseName')" :key="index">
                       {{disease}}
                       </span>
                     </div>
                     <div class="case one-case">
                       <span>入院诊断：</span>
-                      <span v-for="(disease, index) in (record.forms.find((n) => n.header.phase === '术后')) === undefined ? '' :valueTransLabel((record.forms.find((n) => n.header.phase === '术后')).data.postDiagnosisAndExamination.postDiagnosis, 'postDiagnosisAndExamination', 'postDiagnosis', 'diseaseName')" :key="index">
+                      <span v-for="(disease, index) in valueTransLabel(item.data.postDiagnosisAndExamination.postDiagnosis, 'postDiagnosisAndExamination', 'postDiagnosis', 'diseaseName')" :key="index">
                       {{disease}}
                       </span>
                     </div>
@@ -220,16 +220,30 @@
                     查看
                   </el-button>
                 </div>
+                <div class="wrapper">
+                  <span v-if="item.header.isFinished === 0">
+                    待录入
+                  </span>
+                  <span v-if="item.header.isFinished === 1 && item.header.isPassed === 0 && item.header.isRejected === 0">
+                    待审核
+                  </span>
+                  <span v-if="item.header.isFinished === 1 && item.header.isPassed === 0 && item.header.isRejected === 1">
+                    待修正
+                  </span>
+                  <span v-if="item.header.isFinished === 1 && item.header.isPassed === 1 && item.header.isRejected === 0">
+                    已完成
+                  </span>
+                </div>
               </div>
             </el-carousel-item>
           </el-carousel>
         </el-tab-pane>
-        <el-tab-pane label="随访记录" v-if="followRecords.length > 0">
-          <el-carousel :interval="4000" type="card" style="height:100%;;width:600px;" :autoplay=false>
-            <el-carousel-item v-for="(record, index) in followRecords" :key="index" :label="'随访记录' + (index + 1)">
+        <el-tab-pane :label="'随访记录 - ' + (followIndex + 1)"  v-for="(follow, followIndex) in followRecords" :key="'随访记录' + followIndex">
+          <el-carousel :interval="4000" type="card" style="height:100%;;width:600px;" :autoplay=false arrow="always">
+            <el-carousel-item v-for="(record, index) in follow" :key="index" :label="record.header.phase + '(' + record.data.endpointEventRecord.followUpDate+ ')'" v-if="record.information.state === '已完成'">
               <div class="card-content">
                 <div class="card-title">
-                  {{record.header.phase}}记录{{index + 1}}
+                  {{record.header.phase}}({{record.data.endpointEventRecord.followUpDate}})
                 </div>
                 <div class="info">
                   <div class="case">
@@ -250,12 +264,12 @@
                     <el-tooltip class="item" effect="dark" placement="top">
                       <div slot="content">
                         <span v-for="(thing, thingIndex) in record.data.endpointEventRecord.secondaryEndpointEvent" :key="thingIndex">
-                          {{thingIndex + 1}}、{{thing.primaryEndpointName}}
+                          {{thingIndex + 1}}、{{thing.secondaryEndpointEventName}}
                         </span>
                       </div>
                       <div class="case one-case">继发性终点事件：
                         <span v-for="(thing, thingIndex) in record.data.endpointEventRecord.secondaryEndpointEvent" :key="thingIndex">
-                          {{thingIndex + 1}}、{{thing.primaryEndpointName}}
+                          {{thingIndex + 1}}、{{thing.secondaryEndpointEventName}}
                         </span>
                       </div>
                     </el-tooltip>
@@ -264,7 +278,7 @@
                 <div class="info-operator">
                   <div class="case">
                     出院日期：
-                    {{patientRecords[patientRecords.length - 1].forms.find((n) => n.header.phase === '出院综合评估') === undefined ? '' : patientRecords[patientRecords.length - 1].forms.find((n) => n.header.phase === '出院综合评估').data.comprehensiveAssessment.dischargeDate}}
+                    {{patientRecords[followIndex].forms.find((n) => n.header.phase === '出院综合评估') === undefined ? '' : patientRecords[followIndex].forms.find((n) => n.header.phase === '出院综合评估').data.comprehensiveAssessment.dischargeDate}}
                   </div>
                   <div class="case">
                     录入情况：{{record.header.responseName}}
@@ -277,6 +291,20 @@
                   <el-button type="primary" size="mini" plain @click="operate2(record)">
                     查看
                   </el-button>
+                </div>
+                <div class="wrapper">
+                  <span v-if="record.header.isFinished === 0">
+                    待录入
+                  </span>
+                  <span v-if="record.header.isFinished === 1 && record.header.isPassed === 0 && record.header.isRejected === 0">
+                    待审核
+                  </span>
+                  <span v-if="record.header.isFinished === 1 && record.header.isPassed === 0 && record.header.isRejected === 1">
+                    待修正
+                  </span>
+                  <span v-if="record.header.isFinished === 1 && record.header.isPassed === 1 && record.header.isRejected === 0">
+                    已完成
+                  </span>
                 </div>
                 <!-- 以下内容每表皆同 -->
               </div>
@@ -378,11 +406,11 @@ export default {
       activeIndex: 0,
       // 用户权限
       userPermission: {
-        view: { permission: false, codetype: [1, 2, 4, 5, 6] },
-        typein: { permission: false, codetype: [1, 5, 6] },
-        check: { permission: false, codetype: [1, 2, 4] },
-        repair: { permission: false, codetype: [1, 5, 6] },
-        suifang: { permission: false, codetype: [1, 6] }
+        view: { permission: false, codetype: [1, 2, 3, 4, 5, 6] },
+        typein: { permission: false, codetype: [5, 6] },
+        check: { permission: false, codetype: [2, 4] },
+        repair: { permission: false, codetype: [5, 6] },
+        suifang: { permission: false, codetype: [1, 2, 3, 4, 5, 6] }
       },
       // 患者表单记录
       patientRecords: [],
@@ -473,19 +501,27 @@ export default {
         this.$message.error('ERROR: ' + response.data.message)
       }
     },
+    // 随访
     async getPatientFollow () {
       let info = this.NumInHospital
       let response = await getPatientFollows(info)
       if (response.data.mitiStatus === 'SUCCESS') {
         console.log(response.data.entity)
-        this.followRecords = response.data.entity
-        let arr = []
-        this.followRecords.forEach((item) => {
-          if (item.information.state === '已完成') {
-            arr.push(item)
-          }
-        })
-        this.followRecords = arr
+        // this.followRecords = response.data.entity
+        let arr = [...response.data.entity]
+        let arr2 = []
+        let num1 = Math.ceil((arr.length) / 5)
+        let num2 = num1
+        for (num2 > 0; num2--;) {
+          arr2.push(arr.splice(0, 5))
+        }
+        console.log(arr2)
+        // this.followRecords.forEach((item) => {
+        //   if (item.information.state === '已完成') {
+        //     arr.push(item)
+        //   }
+        // })
+        this.followRecords = arr2
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
@@ -515,29 +551,6 @@ export default {
           message: '已取消删除'
         })
       })
-    },
-    // 左滑动
-    prev (case1) {
-      let dom = this.$refs[case1][0] === undefined ? this.$refs[case1] : this.$refs[case1][0]
-      let myWidth = 280 * dom.children.length
-      let width = dom.offsetWidth
-      let diff = myWidth - width
-      let left = dom.offsetLeft
-      if (diff > 0 && Math.abs(left) < diff) {
-        dom.style.left = dom.offsetLeft - 280 + 'px'
-      } else {
-        return null
-      }
-    },
-    // 右滑动
-    next (case1) {
-      let dom = this.$refs[case1][0] === undefined ? this.$refs[case1] : this.$refs[case1][0]
-      let left = dom.offsetLeft
-      if (left < 0) {
-        dom.style.left = dom.offsetLeft + 280 + 'px'
-      } else {
-        return null
-      }
     },
     // 值、表单id、字段id
     valueTransLabel (value, formId, fieldId, subFieldId) {
@@ -597,7 +610,7 @@ export default {
       }
       console.log(this.userPermission)
     },
-    // 具体的表单操作
+    // 具体的表单操作（查看、审核、录入、修正）
     operate (type, data, index) {
       switch (type) {
         // 录入
@@ -629,6 +642,7 @@ export default {
           break
       }
     },
+    // 随访
     operate2 (data) {
       let data4 = data
       for (let i in data4.header) {
@@ -644,7 +658,7 @@ export default {
         info.basicInfo = this.basicInfo
         this.$router.push(`/patient/record/${JSON.stringify(info)}`)
       } else {
-        this.$message.info('记录尚未完全审核通过，查看详情报告请先审核通过')
+        this.$message.info('记录尚未完全审核通过，请在审核后查看')
       }
     }
   }
@@ -713,7 +727,7 @@ export default {
           // height:46px;
           white-space:normal;
           overflow:hidden;
-          line-height: 1;
+          // line-height: 1;
           display: flex;
           flex-direction: column;
           // align-items: center;
@@ -733,11 +747,14 @@ export default {
       }
       .status{
         height: 15%;
-        // line-height: 36px;
+        line-height: 36px;
         text-align: center;
         margin: 0 81px;
         overflow: hidden;
         box-sizing: border-box;
+        .el-button:nth-of-type(2){
+          display: none;
+        }
       }
       .wrapper{
         position: absolute;
@@ -745,7 +762,7 @@ export default {
         top: 10px;
         filter: blur(1px);
         font-weight: 900;
-        color: #ddd;
+        color: #efefef;
         bottom: 0;
         left: 0;
         right: 0;
@@ -753,6 +770,15 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
+        span{
+          transform: rotate(-45deg);
+          border: 5px solid #efefef;
+          height: 120px;
+          text-align: center;
+          line-height: 120px;
+          width: 120px;
+          border-radius: 50%;
+        }
       }
     }
     .card-title{
@@ -775,12 +801,16 @@ export default {
         height: 40px;
       }
     }
-    .el-tabs__content{
+    /deep/ .el-tabs__content{
       flex: 1;
-      align-self: center;
+      display: flex;
+      flex-direction: column;
+    }
+    .el-tabs__content{
       .el-tab-pane{
-        background-color: rgba($color: #d3dce6, $alpha: .7);
-        height: 100%;
+        background-color: rgba($color: #d3dce6, $alpha: .4);
+        flex: 1;
+        align-items: center;
         display: flex;
         flex-direction: row;
         justify-content: center;

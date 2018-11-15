@@ -31,3 +31,12 @@ export const forbiddenUser = data => {
 export const resetUser = data => {
   return axios.post(api + `/user/reset_password?user_id=${data}`)
 }
+
+// 帮助中心获取图片
+export const getImages = data => {
+  return axios({
+    url: api + `/helpCenter/termbase/getImage/image${data}.png`,
+    method: 'GET',
+    responseType: 'blob'
+  })
+}

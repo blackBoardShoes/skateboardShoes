@@ -47,26 +47,26 @@ export const charts = [
         label: {
           // 环内则设置center
           normal: {
-            show: false,
-            position: 'center',
-            formatter: '{b}:{c}'
-          },
-          // 强调
-          emphasis: {
             show: true,
-            position: 'center',
-            textStyle: {
-              fontSize: '30',
-              fontWeight: 'bold'
-            }
+            position: 'left',
+            formatter: '{b}'
           }
+          // 强调
+          // emphasis: {
+          //   show: true,
+          //   position: 'center',
+          //   textStyle: {
+          //     fontSize: '30',
+          //     fontWeight: 'bold'
+          //   }
+          // }
         },
         // 标签线
-        labelLine: {
-          normal: {
-            show: true
-          }
-        },
+        // labelLine: {
+        //   normal: {
+        //     show: true
+        //   }
+        // },
         // 数据
         data: [
           // 需要传入的具体数据，包含值和名称，对象形式
@@ -853,21 +853,53 @@ export const charts = [
 ]
 
 export const initChart = (chart, obj, type) => {
-  chart.title.text = obj.text
-  chart.title.subtext = obj.subtext
-  chart.color = ['#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59', '#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59']
   switch (type) {
-    case 1 : case 2 :
+    case 1 :
+      chart = JSON.parse(JSON.stringify(charts[0]))
       chart.series[0].name = obj.text
       chart.legend.data = obj.classes
       chart.series[0].data = obj.data
       break
-    case 3 : case 4 :
+    case 2 :
+      chart = JSON.parse(JSON.stringify(charts[1]))
+      chart.series[0].name = obj.text
+      chart.legend.data = obj.classes
+      chart.series[0].data = obj.data
+      break
+    case 3 :
+      chart = JSON.parse(JSON.stringify(charts[2]))
       chart.series[0].name = obj.text
       chart.xAxis[0].data = obj.classes
       chart.series[0].data = obj.data
       break
-    case 5 : case 6 :
+    case 4 :
+      chart = JSON.parse(JSON.stringify(charts[3]))
+      chart.series[0].name = obj.text
+      chart.xAxis[0].data = obj.classes
+      chart.series[0].data = obj.data
+      break
+    case 5 :
+      chart = JSON.parse(JSON.stringify(charts[4]))
+      chart.legend = obj.classes
+      obj.classes.forEach((item, index) => {
+        let obj2 = {
+          name: item,
+          type: 'bar',
+          barWidth: '20%',
+          label: {
+            normal: {
+              show: false,
+              position: 'top',
+              formatter: '{c}'
+            }
+          },
+          data: obj.data[index]
+        }
+        chart.series.push(obj2)
+      })
+      break
+    case 6 :
+      chart = JSON.parse(JSON.stringify(charts[5]))
       chart.legend = obj.classes
       obj.classes.forEach((item, index) => {
         let obj2 = {
@@ -889,4 +921,9 @@ export const initChart = (chart, obj, type) => {
     default :
       break
   }
+  chart.title.text = obj.text
+  chart.title.subtext = obj.subtext
+  chart.color = ['#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59', '#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59']
+  // console.log(chart)
+  return chart
 }

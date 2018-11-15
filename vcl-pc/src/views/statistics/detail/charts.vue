@@ -1,121 +1,76 @@
 <template>
   <div id="data-charts">
-    <div class="chart-part er-card">
-      <div class="chart"  :style="transformData(item.style)" v-for="(item, index) in options" :key="index">
-        <transition name="fade">
-          <div class="top" v-if="showAdjust">
-            <div class="block">
-              <el-slider v-model="item.style.width" :show-tooltip="false" :min="30" :max="98"></el-slider>
-              <i class="el-icon-sort-up icon1" @click="upIndex(index)" v-if="index !== 0"></i>
-              <i class="el-icon-sort-down icon2" @click="downIndex(index)" v-if="index !== options.length - 1"></i>
-            </div>
-          </div>
-        </transition>
-        <chart ref="A" :options="item.data" auto-resize></chart>
-        <transition name="fade">
-          <div class="left"  v-if="showAdjust">
-            <div class="block">
-              <el-slider v-model="item.style.height" :show-tooltip="false" vertical height="100%" :min="30" :max="90"></el-slider>
-            </div>
-          </div>
-        </transition>
+    <div class="chart-part er-card" id="all-charts">
+      <div class="chart"  v-for="(item, index) in options" :key="index">
+        <chart ref="A" :options="item" auto-resize></chart>
       </div>
     </div>
   </div>
 </template>
 <script>
-import {charts} from '../../../data/chartTemplates/chart'
+import {initChart} from '../../../data/chartTemplates/chart'
+import { Loading } from 'element-ui'
+import { education, occupation, familyIncome, hospitalCost, hospitalAge, hospitalDays, operationBetween, operationAfter, partingLocal, partingNation } from '../../../api/statistics/statistics'
 export default {
   name: 'System_manage',
   data () {
     return {
-      showAdjust: false,
-      options: [
-        {
-          style: {
-            width: 48,
-            height: 35
-          },
-          data: {}
-        },
-        {
-          style: {
-            width: 48,
-            height: 35
-          },
-          data: {}
-        },
-        {
-          style: {
-            width: 48,
-            height: 35
-          },
-          data: {}
-        },
-        {
-          style: {
-            width: 48,
-            height: 35
-          },
-          data: {}
-        },
-        {
-          style: {
-            width: 98,
-            height: 35
-          },
-          data: {}
-        },
-        {
-          style: {
-            width: 98,
-            height: 35
-          },
-          data: {}
-        },
-        {
-          style: {
-            width: 98,
-            height: 35
-          },
-          data: {}
-        }
-      ]
+      options: [],
+      loadingInstance: ''
     }
   },
   methods: {
-    upIndex (index) {
-      let obj = this.options[index]
-      if (index > 0) {
-        this.options.splice(index, 1)
-        this.options.splice(index - 1, 0, obj)
-      }
-    },
-    downIndex (index) {
-      let obj = this.options[index]
-      if (index !== this.options.length) {
-        this.options.splice(index, 1)
-        this.options.splice(index + 1, 0, obj)
-      }
-    },
-    transformData (value) {
-      let clientHeight = document.body.clientHeight
-      let obj = {
-        width: value.width.toString() + '%',
-        height: value.height / 100 * clientHeight + 'px'
-      }
-      return obj
-    },
-    saveChange () {
-      console.log(this.options)
+    async getStatistics () {
+      this.loadingInstance = Loading.service({
+        lock: true,
+        target: document.getElementById('all-charts'),
+        text: '数据加载中，请稍等',
+        spinner: 'el-icon-loading',
+        background: '#fff',
+        fullscreen: false
+      })
+      let arr = []
+      arr.push({type: 1, chart: await education()})
+      arr.push({type: 1, chart: await occupation()})
+      arr.push({type: 1, chart: await familyIncome()})
+      arr.push({type: 1, chart: await hospitalCost()})
+      arr.push({type: 1, chart: await hospitalAge()})
+      arr.push({type: 1, chart: await hospitalDays()})
+      arr.push({type: 1, chart: await operationBetween()})
+      arr.push({type: 1, chart: await operationAfter()})
+      arr.push({type: 1, chart: await partingLocal()})
+      arr.push({type: 1, chart: await partingNation()})
+      let textArr = ['教育水平', '职业', '家庭年收入', '总住院费用', '住院年龄', '总住院天数', '术中并发症', '术后表现及并发症', '分型（本中心）', '分型（国际分型）']
+      arr.forEach((bbb, index) => {
+        let item = bbb.chart
+        if (item.data.mitiStatus === 'SUCCESS') {
+          console.log(item.data.entity)
+          let data = item.data.entity
+          let total = 0
+          data.data.forEach((item) => {
+            total += item.value
+          })
+          let obj = {
+            text: textArr[index] + '统计',
+            subtext: '共计' + total + '例',
+            classes: data.type,
+            data: data.data
+          }
+          let a = []
+          this.options.push(initChart(a, obj, 1))
+          console.log(initChart(a, obj, 2).legend.data)
+        } else {
+          this.$message.error('ERROR: ' + item.data.message)
+        }
+      })
+      this.loadingInstance.close()
     }
   },
   mounted () {
-    let info = JSON.parse(JSON.stringify(charts))
-    console.log(info)
-    this.options.forEach((item, index) => {
-      this.options[index].data = info[index]
-    })
+    // let info = JSON.parse(JSON.stringify(charts))
+    // console.log(info)
+    // this.options = info
+    this.getStatistics()
   }
 }
 </script>
@@ -132,86 +87,27 @@ export default {
     }
     .chart-part{
       width: 100%;
-      // height: 100%;
-      padding: 0 2%;
+      height: 100%;
+      padding-bottom: 20px;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      align-items: center;
       box-sizing: border-box;
-      // overflow: auto;
+      overflow: auto;
       .chart{
+        width: calc(50% - 30px);
+        height: 400px;
+        margin-top: 20px;
         background-color: #fff;
         position: relative;
-        margin: 10px 1%;
         box-sizing: border-box;
         padding: 30px;
+        overflow: auto;
         float: left;
-        .top{
-          position: absolute;
-          top: 0px;
-          left: 0;
-          height: 20px;
-          width: 100%;
-          .block{
-            position: absolute;
-            top: -5px;
-            width: 200px;
-            max-width: 80%;
-            margin-left: 26px;
-            .el-slider{
-              margin-left: 16px;
-            }
-            i.icon1{
-              position: absolute;
-              left: -28px;
-              top: 12px;
-              color: $themeColor;
-              // transform: rotate(90deg);
-            }
-            // i:nth-of-type(2){
-            //   position: absolute;
-            //   right: -32px;
-            //   top: 12px;
-            //   width: 20px;
-            //   height: 20px;
-            //   text-align: center;
-            //   line-height: 20px;
-            //   color: $themeColor;
-            //   border: 2px solid $themeColor;
-            //   border-radius: 50%;
-            // }
-            i.icon2{
-              position: absolute;
-              left: -12px;
-              top: 12px;
-              color: $themeColor;
-              // transform: rotate(90deg);
-            }
-          }
-        }
-        .left{
-          position: absolute;
-          left: 0px;
-          top: 26px;
-          width: 30px;
-          height: 100%;
-          .block{
-            position: absolute;
-            left: -5px;
-            height: 200px;
-            max-height: 80%;
-            margin-top: 10px;
-            .el-slider{
-              height: 100%;
-            }
-          }
-        }
+        border: 1px dotted #dfdfdf;
       }
     }
-  }
-</style>
-<style>
-  .fade-enter-active, .fade-leave-active {
-    transition: opacity .5s;
-  }
-  .fade-enter, .fade-leave-to{
-    opacity: 0;
   }
 </style>

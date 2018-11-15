@@ -125,8 +125,8 @@
   </div>
 </template>
 <script>
-import {charts} from '../../../data/chartTemplates/chart'
-import { operationFinished } from '../../../api/home/home.js'
+import {charts, initChart} from '../../../data/chartTemplates/chart'
+import { aoPatient, operationFinished, operationDiff, outHospitalStatus, patientNumber, inHospitalNumber, needOperation, nonCheckNumber, nonRepairNumber } from '../../../api/home/home.js'
 export default {
   name: 'home',
   data () {
@@ -135,7 +135,11 @@ export default {
       optionB: {},
       optionC: {},
       user: {},
-      viewOptions: []
+      viewOptions: [],
+      number1: 0,
+      number2: 0,
+      number3: 0,
+      number4: 0
     }
   },
   mounted () {
@@ -144,185 +148,301 @@ export default {
       this.initView(this.user.codetype)
     }
     this.optionA = charts[4]
-    this.optionB = charts[0]
+    // this.optionB = charts[0]
     this.optionC = charts[0]
-    this.operationFinished()
   },
   methods: {
     initView (type) {
       switch (type) {
-        // 管理员
-        case 1:
+        // 管理员/医生
+        case 1: case 3:
           this.viewOptions = [
-            // 患者人数、住院人次、用户数
+            // 患者人数、住院人次、待做手术
             // 手术完成统计/各科室患者分布/患者出院时状态分布
             {
               icon: 'ercp-icon-module-patient',
               title: '患者人数',
-              count: '117'
+              count: '???'
             },
             {
               icon: 'ercp-icon-module-patient',
               title: '住院人次',
-              count: '127'
+              count: '???'
             },
             {
               icon: 'ercp-icon-module-user',
-              title: '用户数量',
-              count: '34'
-            },
-            {
-              icon: 'ercp-icon-module-project',
-              title: '项目数',
-              count: '3'
+              title: '待做手术',
+              count: '???'
             }
           ]
-          break
-        // 医生
-        case 3:
-          //  患者人数、住院人次
-          //  手术完成统计/各科室患者分布/患者出院时状态分布
-          this.viewOptions = [
-            {
-              icon: 'ercp-icon-module-patient',
-              title: '患者人数',
-              count: '117'
-            },
-            {
-              icon: 'ercp-icon-module-patient',
-              title: '住院人次',
-              count: '127'
-            },
-            {
-              icon: 'ercp-icon-module-project',
-              title: '自有项目',
-              count: '2'
-            },
-            {
-              icon: 'ercp-icon-module-project',
-              title: '参与项目',
-              count: '3'
-            }
-          ]
+          // 数字统计
+          this.patientNumberMeth(1)
+          this.inHospitalNumberMeth(2)
+          // this.needOperationMeth(3)
+          // 图表统计
+          this.outHospitalStatusMeth()
           break
         // 科研管理员
         case 2:
-          // 患者人数、住院人次、用户数
-          // 工作量统计/各科室患者分布/患者出院时状态分布
+          // 患者人数、住院人次、待做手术、待审核
+          // 手术完成统计、各科室患者分布、患者出院状态分布
           this.viewOptions = [
             {
               icon: 'ercp-icon-module-patient',
               title: '患者人数',
-              count: '117'
+              count: '???'
             },
             {
               icon: 'ercp-icon-module-patient',
               title: '住院人次',
-              count: '127'
+              count: '???'
             },
             {
               icon: 'ercp-icon-module-user',
-              title: '用户数量',
-              count: '34'
+              title: '待做手术',
+              count: '???'
             },
             {
               icon: 'ercp-icon-module-project',
-              title: '项目数',
-              count: '3'
+              title: '待审核',
+              count: '???'
             }
           ]
+          // 数字统计
+          this.patientNumberMeth(1)
+          this.inHospitalNumberMeth(2)
+          // this.needOperationMeth(3)
+          this.nonCheckNumberMeth(4)
+          // 图表统计
+          this.outHospitalStatusMeth()
           break
         // 临床质控员
         case 4:
-          // 患者人数、住院人次、（本用户）今日审核、待审核
-          // 手术完成统计/手术时长分布/手术难度（ASGE分级）分布
+          // 患者人数、住院人次、待做手术、待审核
+          // 手术完成统计/手术难度（ASGE分级）分布、各科室患者分布
           this.viewOptions = [
             {
               icon: 'ercp-icon-module-patient',
               title: '患者人数',
-              count: '117'
+              count: '???'
             },
             {
               icon: 'ercp-icon-module-patient',
               title: '住院人次',
-              count: '127'
+              count: '???'
             },
             {
               icon: 'ercp-icon-general-audit',
-              title: '今日审核',
-              count: '34'
+              title: '待做手术',
+              count: '???'
             },
             {
               icon: 'ercp-icon-general-audit',
               title: '待审核',
-              count: '3'
+              count: '???'
             }
           ]
+          // 数字统计
+          this.patientNumberMeth(1)
+          this.inHospitalNumberMeth(2)
+          // this.needOperationMeth(3)
+          this.nonCheckNumberMeth(4)
+          // 图表统计
+          this.operationDiffMeth()
           break
         // 诊疗中心
         case 5:
           // 患者人数、住院人次、（本用户）待审核、（本用户）待修正
-          // 手术完成统计/手术时长分布/手术难度（ASGE分级）分布
+          // 手术完成统计/手术难度（ASGE分级）分布、各科室患者分布
           this.viewOptions = [
             {
               icon: 'ercp-icon-module-patient',
               title: '患者人数',
-              count: '117'
+              count: '???'
             },
             {
               icon: 'ercp-icon-module-patient',
               title: '住院人次',
-              count: '127'
+              count: '???'
             },
             {
               icon: 'ercp-icon-general-audit',
               title: '待审核',
-              count: '34'
+              count: '???'
             },
             {
               icon: 'ercp-icon-general-correct',
               title: '待修正',
-              count: '3'
+              count: '???'
             }
           ]
+          // 数字统计
+          this.patientNumberMeth(1)
+          this.inHospitalNumberMeth(2)
+          this.nonCheckNumberMeth(3)
+          this.nonRepairNumberMeth(4)
+          // 图表统计
+          this.operationDiffMeth()
           break
         // 科研护士
         case 6:
           // 患者人数、住院人次、（本用户）待审核、（本用户）待修正
-          // 手术完成统计/各科室患者分布/患者出院时状态分布
+          // 手术完成统计、各科室患者分布、患者出院状态分布
           this.viewOptions = [
             {
               icon: 'ercp-icon-module-patient',
               title: '患者人数',
-              count: '117'
+              count: '???'
             },
             {
               icon: 'ercp-icon-module-patient',
               title: '住院人次',
-              count: '127'
+              count: '???'
             },
             {
               icon: 'ercp-icon-general-audit',
               title: '待审核',
-              count: '34'
+              count: '???'
             },
             {
               icon: 'ercp-icon-general-correct',
               title: '待修正',
-              count: '3'
+              count: '???'
             }
           ]
+          // 数字统计
+          this.patientNumberMeth(1)
+          this.inHospitalNumberMeth(2)
+          this.nonCheckNumberMeth(3)
+          this.nonRepairNumberMeth(4)
+          // 图表统计
+          this.outHospitalStatusMeth()
           break
         default:
           this.$messsage.error('未存在该用户类型')
           break
       }
+      // 各科室患者分布、手术完成统计
+      this.aoPatientMeth()
+      // this.operationFinishedMeth()
     },
-    async operationFinished () {
-      let info = 'month'
-      let response = await operationFinished(info)
+    // 各科室患者分布
+    async aoPatientMeth () {
+      let response = await aoPatient()
       if (response.data.mitiStatus === 'SUCCESS') {
         console.log(response.data.entity)
+        let data = response.data.entity
+        let total = 0
+        data.value.forEach((item) => {
+          total += item.value
+        })
+        let obj = {
+          text: '各科室患者分布',
+          subtext: '共计' + total + '例',
+          classes: data.type,
+          data: data.value
+        }
+        this.optionB = (initChart(this.optionB, obj, 1))
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    // 已完成手术统计
+    async operationFinishedMeth () {
+      let response = await operationFinished()
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response.data.entity)
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    // 患者出院状态
+    async outHospitalStatusMeth () {
+      let response = await outHospitalStatus()
+      if (response.data.mitiStatus === 'SUCCESS') {
+        let data = response.data.entity
+        let total = 0
+        data.value.forEach((item) => {
+          total += item.value
+        })
+        let obj = {
+          text: '患者出院时状态分布',
+          subtext: '共计' + total + '例',
+          classes: data.type,
+          data: data.value
+        }
+        this.optionC = (initChart(this.optionC, obj, 1))
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    // 手术难度分级
+    async operationDiffMeth () {
+      let response = await operationDiff()
+      if (response.data.mitiStatus === 'SUCCESS') {
+        let data = response.data.entity
+        let total = 0
+        data.value.forEach((item) => {
+          total += item.value
+        })
+        let obj = {
+          text: '手术难度分级统计',
+          subtext: '共计' + total + '例',
+          classes: data.type,
+          data: data.value
+        }
+        this.optionC = (initChart(this.optionC, obj, 1))
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    // 患者人数、住院人次、待做手术、待审核、待修正
+    async patientNumberMeth (index) {
+      let response = await patientNumber()
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response.data.entity)
+        let info = response.data.entity
+        this.viewOptions[index - 1].count = info
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    async inHospitalNumberMeth (index) {
+      let response = await inHospitalNumber()
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response.data.entity)
+        let info = response.data.entity
+        this.viewOptions[index - 1].count = info
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    async needOperationMeth (index) {
+      let response = await needOperation()
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response.data.entity)
+        let info = response.data.entity
+        this.viewOptions[index - 1].count = info
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    async nonCheckNumberMeth (index) {
+      let response = await nonCheckNumber()
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response.data.entity)
+        let info = response.data.entity
+        this.viewOptions[index - 1].count = info
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    async nonRepairNumberMeth (index) {
+      let response = await nonRepairNumber()
+      if (response.data.mitiStatus === 'SUCCESS') {
+        console.log(response.data.entity)
+        let info = response.data.entity
+        this.viewOptions[index - 1].count = info
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
@@ -357,8 +477,8 @@ export default {
           flex-direction: row;
           .case{
             margin: 0 6px;
-            // flex:1;
-            width: 25%;
+            flex:1;
+            // width: 25%;
             height: 100%;
             box-sizing: border-box;
             border-right: 1px dotted #ddd;
@@ -390,7 +510,7 @@ export default {
             }
             // background-color: #fff;
           }
-          .case:nth-of-type(4) {
+          .case:nth-last-child(1){
             border:none;
           }
         }

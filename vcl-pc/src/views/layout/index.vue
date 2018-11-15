@@ -53,17 +53,17 @@
         </el-breadcrumb>
       </div>
       <!-- 系统操作按钮: 最大化/最小化/关闭 -->
-      <div class="system-operate float-right">
+      <div class="system-operate float-right" v-if="false">
         <span class="ercp-icon-general-minimine" @click="windwowOperate('mini')"></span>
         <span class="ercp-icon-general-restore"  @click="windwowOperate('max')"></span>
         <span class="ercp-icon-general-close" @click="windwowOperate('close')"></span>
       </div>
       <!-- <div class="between-line float-right"></div> -->
       <!-- 系统标题 -->
-      <!-- <div class="system-title float-right">
+      <div class="system-title float-right">
         <img src="../../assets/images/ercp标题.png" alt="">
         <span>信息录入管理系统</span>
-      </div> -->
+      </div>
       <div class="between-line float-right"></div>
       <!-- 消息提醒 -->
       <div class="message float-right">
@@ -75,7 +75,7 @@
             <div class="title">
               <div :class="{'nav-case': true, 'active': messageType === 'system' } " @click="currentMessage = sysMessage">
                 <div style="position:relative;" @click="messageType = 'system'">
-                系统通知
+                系统消息
                 <span class="right-corner-primary" v-if="sysMessage && sysMessage.length > 0">{{sysMessage.length}}</span>
                 </div>
               </div>
@@ -90,9 +90,9 @@
               <div class="no-message" v-if="currentMessage && currentMessage.length === 0">
                 <span>暂无未读消息</span>
               </div>
-              <div class="message-case" v-for="(item, index) in currentMessage" :key="index">
+              <div class="message-case" v-for="(item, index) in currentMessage" :key="index" @click="toMessage">
                 <div class="from">
-                  <div class="sender float-left text-overflow-ellipsis">{{item.sendUser === null ? '系统通知' : item.sendUser.username}}</div>
+                  <div class="sender float-left text-overflow-ellipsis">{{item.sendUser === null ? '系统通知' : item.sendUser.name + '( ' + item.sendUser.username + ' )'}}</div>
                   <div class="send-time float-right">{{item.sendTime}}</div>
                   <div class="single-mark" @click="singleMarkRead(item)">标为已读</div>
                 </div>
@@ -140,7 +140,7 @@
       </div>
     </div>
     <div id="content-wrapper">
-      <router-view></router-view>
+      <router-view v-on:readMessage="getMessage"></router-view>
     </div>
     <!-- 修改密码 -->
     <el-dialog
@@ -341,7 +341,7 @@ export default {
       }
       console.log(type)
       let obj = {
-        userId: '002',
+        userId: this.user.id,
         type: type
       }
       let response = await allRead(obj)
@@ -441,6 +441,8 @@ export default {
   },
   watch: {
     '$route' (to) {
+      console.log(to)
+      this.getMessage()
       this.currentPath = getCurrentPath(this, to)
     }
   }
@@ -675,6 +677,10 @@ export default {
         .no-click:hover{
           color: #eee;
         }
+      }
+      .system-title{
+        // background: linear-gradient(to right, #fff, rgba($color: $themeColor, $alpha: .05));
+        background-color: rgba($color: $themeColor, $alpha: .03);
       }
 
     }

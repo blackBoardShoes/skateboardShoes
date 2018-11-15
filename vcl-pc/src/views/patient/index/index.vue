@@ -30,10 +30,6 @@
               <i slot="prefix" class="el-input__icon el-icon-search" @click="search" style="cursor:pointer;"></i>
             </el-input>
           </div>
-          <!-- <div class="refresh float-right">
-            <el-button type="primary" @click="refresh">更新患者</el-button>
-            <el-button type="primary" @click="add">新增患者</el-button>
-          </div> -->
         </div>
         <!-- 患者列表 -->
         <div class="table">
@@ -115,62 +111,6 @@
           </el-pagination>
         </div>
       </div>
-      <!-- <el-dialog title="新增患者" :visible.sync="dialogTableVisible" :modal="true" append-to-body width="700px">
-        <el-form ref="basicForm" :rules="rules" :model="basicInfo" label-position="right" label-width="80px">
-          <el-col :span="24">
-            <el-form-item label="住院号" prop="hospitalId">
-              <el-input v-model="basicInfo.hospitalId" size="small"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="姓名" prop="name">
-              <el-input v-model="basicInfo.name" size="small"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="性别" prop="gender">
-              <el-radio-group v-model="basicInfo.gender">
-                <el-radio label="1">男</el-radio>
-                <el-radio label="0">女</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="民族">
-              <text-radio v-model="basicInfo.nation" :options="['汉族','回族','藏族']"></text-radio>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="身份证号" prop="idCard">
-              <el-input v-model="basicInfo.idCard" size="small"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="联系方式" prop="phoneNum">
-              <el-input v-model="basicInfo.phoneNum" size="small"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="常居住地">
-              <el-cascader
-                :options="addressOption"
-                value-key="label"
-                v-model="basicInfo.address"
-                @change="handleChange">
-              </el-cascader>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item prop="staAddress" label="街道地址">
-              <el-input v-model="basicInfo.staAddress"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-form>
-        <div class="operate align-center">
-          <el-button type="info" @click="cancel">取消</el-button>
-          <el-button type="primary" @click="confirmAdd">确定</el-button>
-        </div>
-      </el-dialog> -->
     </el-card>
   </div>
 </template>
@@ -197,71 +137,6 @@ export default {
       total: 0,
       optionA: {},
       optionB: {}
-      // basicInfo: {
-      //   hospitalId: '',
-      //   name: '',
-      //   gender: '1',
-      //   nation: '维吾尔族',
-      //   idCard: '360731199501234567',
-      //   phoneNum: '13687654321',
-      //   province: '',
-      //   city: '',
-      //   district: '',
-      //   staAddress: '芝麻街12号',
-      //   address: ['浙江省', '杭州市', '滨江区']
-      // },
-      // rules: {
-      //   name: [{
-      //     required: true,
-      //     message: '必填项不能为空',
-      //     trigger: 'change'
-      //   }],
-      //   gender: [{
-      //     required: true,
-      //     message: '必填项不能为空',
-      //     trigger: 'change'
-      //   }],
-      //   hospitalId: [
-      //     {
-      //       required: true,
-      //       message: '必填项不能为空',
-      //       trigger: 'change'
-      //     }
-      //   ],
-      //   phoneNum: [
-      //     { validator (rule, value, callback) {
-      //       setTimeout(() => {
-      //         if (value !== '') {
-      //           let pattern = /^\d[\d-]{5,12}$/
-      //           if (!pattern.test(value)) {
-      //             callback(new Error('请输入正确的联系方式'))
-      //           } else {
-      //             callback()
-      //           }
-      //         } else {
-      //           callback()
-      //         }
-      //       }, 1500)
-      //     }}
-      //   ],
-      //   idCard: [
-      //     { validator (rule, value, callback) {
-      //       setTimeout(() => {
-      //         if (value !== '') {
-      //           let pattern = /^\d{17}[\dxX]$/
-      //           if (!pattern.test(value)) {
-      //             callback(new Error('请输入正确的身份证号'))
-      //           } else {
-      //             callback()
-      //           }
-      //         } else {
-      //           callback()
-      //         }
-      //       }, 1500)
-      //     }}
-      //   ]
-      // },
-      // addressOption: []
     }
   },
   mounted () {
@@ -274,8 +149,8 @@ export default {
     initCharts () {
       let info = JSON.parse(JSON.stringify(charts))
       console.log(info)
-      this.optionA = info[1]
-      this.optionB = info[2]
+      // this.optionA = info[1]
+      // this.optionB = info[2]
       this.dataByGender()
       this.dataByArea()
     },
@@ -292,7 +167,7 @@ export default {
           classes: data.types,
           data: data.data
         }
-        initChart(this.optionA, obj, 2)
+        this.optionA = initChart(this.optionA, obj, 2)
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
@@ -308,7 +183,7 @@ export default {
           classes: data.types,
           data: data.data
         }
-        initChart(this.optionB, obj, 3)
+        this.optionB = initChart(this.optionB, obj, 3)
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }

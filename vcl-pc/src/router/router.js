@@ -27,7 +27,7 @@ export const appRouter = [
     name: 'home',
     redirect: '/home/index',
     meta: {
-      navigator: false,
+      navigator: true,
       title: '系统首页',
       role: [1, 2, 3, 4, 5, 6],
       icon: 'module-home'
@@ -76,7 +76,7 @@ export const appRouter = [
         meta: {
           title: '总表',
           navigator: false,
-          role: [2, 4, 5, 6]
+          role: [1, 2, 4, 5, 6]
         },
         component: () => import('../../src/views/rules/zb.vue')
       },
@@ -116,7 +116,7 @@ export const appRouter = [
         meta: {
           title: '随访',
           navigator: false,
-          role: [2, 4, 5, 6]
+          role: [1, 2, 4, 5, 6]
         },
         component: () => import('../../src/views/rules/sf.vue')
       }
@@ -471,7 +471,7 @@ export const appRouter = [
     meta: {
       title: '帮助中心',
       // 暂时隐藏
-      navigator: false,
+      navigator: true,
       role: [1, 2, 3, 4, 5, 6]
     },
     component: Layout,
