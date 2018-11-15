@@ -584,7 +584,7 @@ $marginW: 15px;
           padding-bottom: 150px;
           display: flex;
           .rightContentDynamic {
-            width: 800px;
+            // width: 800px;
             flex-grow: 1;
             padding: 50px 25px;
           }
