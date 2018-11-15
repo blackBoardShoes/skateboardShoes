@@ -645,6 +645,7 @@ export default {
         }
       }
       // 术前表 preoperativeRecord获取 ， 要 麻醉方式（ANAtype）这个字段
+      console.log(this.patientInfo, this.activeIndexNav, this.patientInfo.recordId, 'this.patientInfo.recordIdthis.patientInfo.recordIdthis.patientInfo.recordId')
       let fgp = await formdataGetPeroperative(this.patientInfo.recordId)
       let anaType = {}
       if (fgp) {

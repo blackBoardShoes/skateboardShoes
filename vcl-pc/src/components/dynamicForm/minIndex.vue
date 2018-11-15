@@ -772,27 +772,88 @@ export default {
       return idGroup
     },
     formatSubmission () {
+      console.log(this.newFields, 'this.newFields')
+      let formatType = {}
+      for (let x of this.newFields) {
+        formatType[x.id] = x.type
+      }
       let newFormModels = Object.assign({}, this.formModel)
       // let formModels = Object.assign({}, this.formModel)
       for (let i in this.relation) {
         if (this.relation[i].ruleType === 'EQUAL') {
           if (Array.isArray(this.relation[i].value)) {
             if (!this.relation[i].value.includes(newFormModels[this.relation[i].target])) {
-              newFormModels[i] = ''
+              switch (formatType[i]) {
+                case 'CHECKBOX':
+                case 'CHECKBOXTEXT':
+                case 'CASCADER':
+                case 'TABLE':
+                case 'TREE':
+                case 'LAYERTREE':
+                case 'CREATETABLE':
+                case 'SELECTMUTIPLE':
+                  newFormModels[i] = []
+                  break
+                default:
+                  newFormModels[i] = ''
+                  break
+              }
             }
           } else {
             if (newFormModels[this.relation[i].target] !== this.relation[i].value) {
-              newFormModels[i] = ''
+              switch (formatType[i]) {
+                case 'CHECKBOX':
+                case 'CHECKBOXTEXT':
+                case 'CASCADER':
+                case 'TABLE':
+                case 'TREE':
+                case 'LAYERTREE':
+                case 'CREATETABLE':
+                case 'SELECTMUTIPLE':
+                  newFormModels[i] = []
+                  break
+                default:
+                  newFormModels[i] = ''
+                  break
+              }
             }
           }
         } else {
           if (Array.isArray(this.relation[i].value)) {
             if (this.relation[i].value.includes(newFormModels[this.relation[i].target])) {
-              newFormModels[i] = ''
+              switch (formatType[i]) {
+                case 'CHECKBOX':
+                case 'CHECKBOXTEXT':
+                case 'CASCADER':
+                case 'TABLE':
+                case 'TREE':
+                case 'LAYERTREE':
+                case 'CREATETABLE':
+                case 'SELECTMUTIPLE':
+                  newFormModels[i] = []
+                  break
+                default:
+                  newFormModels[i] = ''
+                  break
+              }
             }
           } else {
             if (newFormModels[this.relation[i].target] === this.relation[i].value) {
-              newFormModels[i] = ''
+              switch (formatType[i]) {
+                case 'CHECKBOX':
+                case 'CHECKBOXTEXT':
+                case 'CASCADER':
+                case 'TABLE':
+                case 'TREE':
+                case 'LAYERTREE':
+                case 'CREATETABLE':
+                case 'SELECTMUTIPLE':
+                  newFormModels[i] = []
+                  break
+                default:
+                  newFormModels[i] = ''
+                  break
+              }
             }
           }
         }
