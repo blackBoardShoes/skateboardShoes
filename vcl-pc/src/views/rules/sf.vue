@@ -414,6 +414,7 @@ export default {
     async handleSelect (key, keyPath) {
       this.smf = false
       this.activeIndexNav = key
+      this.activeIndex = 0
       setTimeout(_ => {
         this.init()
       }, 1)
@@ -588,7 +589,8 @@ $marginW: 15px;
             padding: 50px 25px;
           }
           .rightContentStatic {
-            width: $full;
+            padding: 50px 25px;
+            width: 100%;
           }
         }
       }

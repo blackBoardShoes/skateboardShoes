@@ -4,10 +4,10 @@
       <!-- <div class="rulesTop">
         tubiao
       </div> -->
-      <div class="controlContent">
+      <!-- <div class="controlContent">
         <el-button type="primary" @click="openCreateFish" v-if="[5, 6].includes(user.codetype)">新增</el-button>
-        <!-- <el-button type="primary" @click="updateFish">更新</el-button> -->
-      </div>
+        <el-button type="primary" @click="updateFish">更新</el-button>
+      </div> -->
       <div class="rulesContain">
         <div class="rulesContainTop">
           <div
@@ -25,7 +25,7 @@
           </div>
         </div>
         <div class="rulesContainContent">
-          <el-row style="margin-bottom: 8px;">
+          <el-row style="margin-bottom: 8px;" type="flex" justify="space-between">
             <el-col :span="6">
               <el-input
                 @keyup.enter.native="lookupFormInput"
@@ -34,6 +34,7 @@
                 clearable
                 prefix-icon="el-icon-search"></el-input>
             </el-col>
+            <el-button type="primary" @click="openCreateFish" v-if="[5, 6].includes(user.codetype)">新增</el-button>
           </el-row>
           <sx-min-table
             :mozhu="mozhu"
@@ -366,10 +367,10 @@ export default {
           },
           {
             id: 'staAddress',
-            label: '街道',
+            label: '街道地址',
             type: 'INPUT',
             validations: [
-              { required: true, message: '请输入街道', trigger: 'change' },
+              { required: true, message: '请输入街道地址', trigger: 'change' },
               { min: 1, max: 40, message: '长度在 1 到 40 个字符', trigger: 'change' }
             ]
           }

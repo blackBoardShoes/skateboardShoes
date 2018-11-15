@@ -226,10 +226,12 @@
           <br>
           <el-row type="flex">
             <el-col :span="12">
-              <sx-show-min :whatFiledsWhere="filedsObject" :whatFileds="{intraoperativeDiagnosis: reportData['intraoperativeDiagnosisAndEvaluation'] ? reportData['intraoperativeDiagnosisAndEvaluation']['intraoperativeDiagnosis'] : ''}"></sx-show-min>
+              <sx-show-min :whatFiledsWhere="Object.assign({}, filedsObject, {diseaseName: {label: '检查诊断：'}})"
+              :whatFileds="{intraoperativeDiagnosis: reportData['intraoperativeDiagnosisAndEvaluation'] ? reportData['intraoperativeDiagnosisAndEvaluation']['intraoperativeDiagnosis'] : ''}"></sx-show-min>
             </el-col>
             <el-col :span="12">
-              <sx-show-min :whatFiledsWhere="filedsObject" :whatFileds="{biopsyTable: reportData['intraoperativeProcedure'] ? reportData['intraoperativeProcedure']['biopsyTable'] : ''}"></sx-show-min>
+              <sx-show-min :whatFiledsWhere="Object.assign({}, filedsObject, {organAndPosition: {label: '活检部位：'}})"
+              :whatFileds="{biopsyTable: reportData['intraoperativeProcedure'] ? reportData['intraoperativeProcedure']['biopsyTable'] : ''}"></sx-show-min>
             </el-col>
           </el-row>
           <!-- <div class="reportOhterItem" v-for="(item, key) in reportData" :key="key">
@@ -244,11 +246,11 @@
           </el-col>
           <el-col :span="11" style="display: flex;justify-content: space-between;align-items:center">
             <div style="width: 155px;">
-              <sx-show-min :whatFiledsWhere="{operationOperator: {label: '报告医师：'}}" :whatFileds="{operationOperator: reportData['intraoperativeDiagnosisAndEvaluation'] ? reportData['intraoperativeDiagnosisAndEvaluation']['operationOperator'] : ''}"></sx-show-min>
+              <sx-show-min style="line-height: 16px;" :whatFiledsWhere="{operationOperator: {label: '报告医师：'}}" :whatFileds="{operationOperator: reportData['intraoperativeDiagnosisAndEvaluation'] ? reportData['intraoperativeDiagnosisAndEvaluation']['operationOperator'] : ''}"></sx-show-min>
             </div>
-            <div style="font-size:14px;">
+            <div style="font-size:14px;line-height: 16px;">
               <span>报告日期：</span>
-               {{patientInfo['header']['operationDate']}}
+               {{activeIndexNav ? activeIndexNav.substr(2) : (patientInfo['header'] ? patientInfo['header']['operationDate'] : '')}}
             </div>
           </el-col>
         </el-row>
@@ -280,6 +282,9 @@ export default {
     grayTitle
   },
   props: {
+    activeIndexNav: {
+      type: String
+    },
     disabled: {
       type: Boolean
     },
@@ -841,6 +846,7 @@ $marginContentW: 25px;
   .operationContent {
     width: $full;
     /deep/ .el-collapse-item__header{
+      // width: 100%;
       padding-left: $marginW;
       background: $groupColor;
       font-weight: bold;

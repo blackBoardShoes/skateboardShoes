@@ -420,6 +420,7 @@ export default {
     async handleSelect (key, keyPath) {
       this.smf = false
       this.activeIndexNav = key
+      this.activeIndex = 0
       setTimeout(_ => {
         this.init()
       }, 1)
@@ -521,10 +522,10 @@ export default {
           }
           // this.undoneFilledFormDataMozhu
         } else {
-          this.patientInfo.header = Object.assign(this.patientInfo.header, formModel, { responseId: this.user.username })
+          this.patientInfo.header = Object.assign(this.patientInfo.header, formModel, { responseId: this.user.id })
         }
         let fds = await formdataSubmit(Object.assign(this.patientInfo, {data: this.fishData}))
-        console.log(fds, 'fdsfdsfdsfdsfdsfdsfdsfdsfdsfdsfds')
+        console.log(this.patientInfo.header, 'patientInfo.headerpatientInfo.headerpatientInfo.header')
         if (fds) {
           this.generalBack()
         }
@@ -588,7 +589,7 @@ $marginW: 15px;
           padding-bottom: 150px;
           display: flex;
           .rightContentDynamic {
-            width: 800px;
+            // width: 800px;
             flex-grow: 1;
             padding: 50px 25px;
           }

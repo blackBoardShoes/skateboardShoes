@@ -20,7 +20,7 @@
           <!-- <draggable v-model="newFields"> -->
             <!-- :rules="items.validations" -->
             <div
-              v-if="disabled ? true : tf(items)"
+              v-if="tf(items)"
               v-for="(items, index) in newFields"
               :class="(items.type === 'RADIO' && (!items.values)) ? 'abnormal' : noLabel ? 'noLabel' : 'normal'"
               :style="{display: 'flex', alignItems: 'flexStart', width: coordinate[items.id] ? coordinate[items.id] + '%' : '100%'}"
@@ -401,9 +401,9 @@ export default {
             value: '',
             type: 'RADIO',
             values: [
-              {label: '字迹模糊潦草无法分辨', value: '字迹模糊潦草无法分辨'},
+              // {label: '字迹模糊潦草无法分辨', value: '字迹模糊潦草无法分辨'},
               {label: '上下文逻辑关系错误', value: '上下文逻辑关系错误'},
-              {label: '原始资料缺失无法校验', value: '原始资料缺失无法校验'}
+              {label: '未录入', value: '未录入'}
             ]
           },
           {
