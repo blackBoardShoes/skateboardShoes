@@ -272,7 +272,9 @@ export default {
       for (let i in row) {
         if (this.formLabel[i]) {
           if (this.formLabel[i].type === 'DATE' | this.formLabel[i].type === 'DATETIME') {
-            row[i] = new Date(row[i])
+            if (row[i]) {
+              row[i] = new Date(row[i])
+            }
           }
         }
       }
