@@ -81,6 +81,7 @@
                   v-model="fishData[navArr[activeIndex].id]"
                   v-if="navArr[activeIndex].name === '鼻胆/胰管造影'"></sx-radiography> -->
                 <sx-operation-report
+                  :fishAllData="fishAllData"
                   :activeIndexNav="activeIndexNav"
                   v-model="fishData[navArr[activeIndex].id]"
                   :fishData="fishData"
@@ -321,7 +322,6 @@ export default {
     },
     async show () {
       let a = await recordData(this.patientInfo.id)
-      console.log(a)
       if (a) {
         this.fishAllData = a.data.entity ? [...a.data.entity.forms] : []
         // this.fishData = a.data.entity ? Object.assign({}, a.data.entity.data) : {}

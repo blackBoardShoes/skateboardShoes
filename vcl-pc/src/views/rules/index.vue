@@ -224,6 +224,7 @@ export default {
           // { prop: 'operationNum', label: '编号' },
           { prop: 'patientName', label: '姓名', width: '90' },
           { prop: 'gender', label: '性别', width: '80', sortable: true },
+          { prop: 'dept', label: '科室' },
           { prop: 'inHospitalDate', label: '入院日期' },
           { prop: '住院基本情况', label: '住院基本情况', width: '122' },
           { prop: '术前', label: '术前记录' },

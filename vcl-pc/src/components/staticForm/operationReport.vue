@@ -294,6 +294,9 @@ export default {
         return {}
       }
     },
+    fishAllData: {
+      type: null
+    },
     fishData: {
       type: Object,
       default () {
@@ -613,7 +616,6 @@ export default {
     },
     confirmData (confirmData = []) {
       this.$set(this.contentModel, 'choiceResults', confirmData)
-      console.log(confirmData, 'confirmData')
       this.dialogVisible = false
     },
     async clearData () {
@@ -645,17 +647,31 @@ export default {
         }
       }
       // 术前表 preoperativeRecord获取 ， 要 麻醉方式（ANAtype）这个字段
-      console.log(this.patientInfo, this.activeIndexNav, this.patientInfo.recordId, 'this.patientInfo.recordIdthis.patientInfo.recordIdthis.patientInfo.recordId')
-      let fgp = await formdataGetPeroperative(this.patientInfo.recordId)
+      let recordId = ''
+      let operationNum = ''
       let anaType = {}
-      if (fgp) {
-        anaType = { preoperativeRecord: fgp.data.entity.data.preoperativeRecord }
+      if (this.fishAllData) {
+        for (let ccc of this.fishAllData) {
+          if (ccc['header'].operationDate === this.activeIndexNav.substr(2)) {
+            recordId = ccc['header'].recordId
+            operationNum = ccc['header'].operationNum
+            break
+          }
+        }
+        await formdataGetPeroperative({id: recordId, operationNum: operationNum})
+        anaType = { preoperativeRecord: this.fishAllData[1].data.preoperativeRecord ? this.fishAllData[1].data.preoperativeRecord.anaType : '' }
       } else {
-        this.loadingReport = false
-        this.$message({
-          showClose: true,
-          message: '麻醉方式未获取'
-        })
+        console.log({id: this.patientInfo.recordId, operationNum: this.patientInfo.operationNum}, 'ccccccccccccc')
+        let fgp = await formdataGetPeroperative({id: this.patientInfo.recordId, operationNum: this.patientInfo.operationNum})
+        if (fgp) {
+          anaType = { preoperativeRecord: fgp.data.entity.data.preoperativeRecord }
+        } else {
+          this.loadingReport = false
+          this.$message({
+            showClose: true,
+            message: '麻醉方式未获取'
+          })
+        }
       }
       this.fishData = Object.assign(this.fishData, anaType)
       // basicInfo
@@ -715,7 +731,6 @@ export default {
           this.$set(ohShitObj[os], osItem, isHas(osItem, this.fishData[os]))
         }
       }
-      console.log(ohShitObj, 'ohShitObjohShitObjohShitObj')
       // 格式数据的值 最终赋给 reportData 对象   end
       for (let end in ohShitObj) {
         await this.$set(this.reportData, end, this.filedsDataConversion(this.filedsObject, ohShitObj[end]))
@@ -724,25 +739,20 @@ export default {
       // reportDynamicData = Object.assign({}, this.reportData)
       for (let er in this.reportData) {
         for (let rr in this.reportData[er]) {
-          console.log(rr, '----')
           if (!(['modusOperandi', 'anaType', 'intraoperativeDiagnosis', 'biopsyTable', 'operationOperator'].includes(rr))) {
             this.$set(reportDynamicData, er, this.reportData[er])
           }
         }
       }
       this.reportDynamicData = reportDynamicData
-      console.log(reportDynamicData, 'reportDynamicDatareportDynamicData')
       for (let i of this.mozhu) {
         this.$set(this.whatFormWhereObject, i.id, i)
       }
       this.whatFormWhereObject = Object.assign(this.whatFormWhereObject, {preoperativeRecord: {name: '术前记录', id: 'preoperativeRecord'}})
-      console.log(this.whatFormWhereObject, 'whatFormWhereObject')
       // let dc = this.filedsDataConversion(this.filedsObject, {
       //   'intraoperativeDiagnosis': intraoperativeDiagnosis,
       //   'operationOperator': operationOperator
       // })
-      console.log(this.reportData, 'dcdcdcdcdcdc')
-      // console.log(this.reportData)
       this.printAndBrowseTF = true
       this.loadingReport = false
       this.$nextTick(_ => {

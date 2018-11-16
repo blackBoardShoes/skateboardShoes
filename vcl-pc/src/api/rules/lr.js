@@ -20,5 +20,5 @@ export const userByMyType = data => {
 }
 // formdata/getPeroperative/{id} 术前表
 export const formdataGetPeroperative = data => {
-  return axios.get(`${api}/formdata/getPeroperative/${data}`)
+  return axios.get(`${api}/formdata/getPeroperative/${data.id}/${data.operationNum}`)
 }
