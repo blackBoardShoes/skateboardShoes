@@ -755,12 +755,12 @@ export default {
       this.printAndBrowseTF = true
       this.loadingReport = false
       this.$nextTick(_ => {
-        // let newContent = this.$refs.printAndBrowse.innerHTML
-        // let oldContent = document.body.innerHTML
-        // document.body.innerHTML = newContent
-        // window.print()
-        // window.location.reload()
-        // document.body.innerHTML = oldContent
+        let newContent = this.$refs.printAndBrowse.innerHTML
+        let oldContent = document.body.innerHTML
+        document.body.innerHTML = newContent
+        window.print()
+        window.location.reload()
+        document.body.innerHTML = oldContent
       })
     },
     filedsDataConversion (filedsObject, filedsData) {
