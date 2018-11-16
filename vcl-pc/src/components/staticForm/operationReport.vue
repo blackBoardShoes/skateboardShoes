@@ -661,6 +661,7 @@ export default {
         await formdataGetPeroperative({id: recordId, operationNum: operationNum})
         anaType = { preoperativeRecord: this.fishAllData[1].data.preoperativeRecord ? this.fishAllData[1].data.preoperativeRecord.anaType : '' }
       } else {
+        console.log({id: this.patientInfo.recordId, operationNum: this.patientInfo.operationNum}, 'ccccccccccccc')
         let fgp = await formdataGetPeroperative({id: this.patientInfo.recordId, operationNum: this.patientInfo.operationNum})
         if (fgp) {
           anaType = { preoperativeRecord: fgp.data.entity.data.preoperativeRecord }
