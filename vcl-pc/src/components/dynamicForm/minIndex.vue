@@ -183,7 +183,7 @@
                   <!-- {{formModel['createTable']}} -->
                   <el-select v-model="formModel['createTable']" multiple clearable filterable style="width: 100%">
                     <el-option
-                      v-if="it.type !== 'CALCULATE'"
+                      v-if="it.type !== 'TABLE' && it.type !== 'CALCULATE'"
                       v-for="(it, ii) in repositoryData" :key="ii" :label="it.label + ' - ' + it.id" :value="it.id" ></el-option>
                   </el-select>
                   <!-- it.type !== 'TABLE' &  -->

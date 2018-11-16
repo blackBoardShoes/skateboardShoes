@@ -9,5 +9,5 @@ export const formdataPass = data => {
 }
 // 驳回
 export const formdataReject = data => {
-  return axios.post(`${api}/formdata/reject`, data)
+  return axios.post(`${api}/formdata/reject/${data['whatUser'].id}/${data['whatUser'].name}`, data)
 }

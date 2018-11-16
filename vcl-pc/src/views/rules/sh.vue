@@ -776,7 +776,7 @@ export default {
     },
     async generalReject () {
       await this.$refs.thatForm.notVerifying()
-      let fdr = await formdataReject(Object.assign(this.patientInfo, { data: this.fishData, comments: this.fishDataComments }))
+      let fdr = await formdataReject(Object.assign(this.patientInfo, { data: this.fishData, comments: this.fishDataComments }, { whatUser: this.user }))
       console.log(fdr)
       if (fdr) {
         this.generalBack()
