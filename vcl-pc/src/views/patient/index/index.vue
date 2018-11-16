@@ -117,7 +117,7 @@
 <script>
 import textRadio from '../../../components/textRadio/textRadio'
 import {addressData} from '../../../data/address/addressData'
-import {charts, initChart} from '../../../data/chartTemplates/chart'
+import {initChart} from '../../../data/chartTemplates/chart'
 import { getAllPatient, searchPatient, getDataByGender, getDataByArea } from '../../../api/patient/patient.js'
 export default {
   name: 'patient_index',
@@ -147,10 +147,6 @@ export default {
   methods: {
     // 初始化图表信息
     initCharts () {
-      let info = JSON.parse(JSON.stringify(charts))
-      console.log(info)
-      // this.optionA = info[1]
-      // this.optionB = info[2]
       this.dataByGender()
       this.dataByArea()
     },
@@ -158,7 +154,6 @@ export default {
       // 获取和同步根据性别统计
       let response = await getDataByGender()
       if (response.data.mitiStatus === 'SUCCESS') {
-        console.log(response.data.entity)
         let data = response.data.entity
         this.patientAccount = data.total
         let obj = {
@@ -175,7 +170,6 @@ export default {
     async dataByArea () {
       let response = await getDataByArea()
       if (response.data.mitiStatus === 'SUCCESS') {
-        console.log(response.data.entity)
         let data = response.data.entity
         let obj = {
           text: data.title,
@@ -230,50 +224,6 @@ export default {
         this.$message.error('ERROR: ' + response.data.message)
       }
     }
-    // 地区
-    // handleChange (data) {
-    //   if (data.length === 2) {
-    //     this.basicInfo.province = data[0]
-    //     this.basicInfo.city = data[0]
-    //     this.basicInfo.district = data[1]
-    //   } else if (data.length === 3) {
-    //     this.basicInfo.province = data[0]
-    //     this.basicInfo.city = data[1]
-    //     this.basicInfo.district = data[2]
-    //   } else {
-    //     this.basicInfo.province = ''
-    //     this.basicInfo.city = ''
-    //     this.basicInfo.district = ''
-    //   }
-    // },
-    // 弹出添加患者的对话框
-    // add () {
-    //   this.dialogTableVisible = true
-    // },
-    // 取消添加
-    // cancel () {
-    //   this.dialogTableVisible = false
-    //   this.$refs.basicForm.resetFields()
-    // },
-    // // 确认添加患者
-    // async confirmAdd () {
-    //   this.$refs.basicForm.validate(async valid => {
-    //     if (valid) {
-    //       let info = this.basicInfo
-    //       delete info.address
-    //       let response = await addPatient(info)
-    //       if (response.data.mitiStatus === 'SUCCESS') {
-    //         this.getPatient(this.pageSize, 1)
-    //         this.$refs.basicForm.resetFields()
-    //         this.dialogTableVisible = false
-    //       } else {
-    //         this.$message.error('ERROR: ' + response.data.message)
-    //       }
-    //     } else {
-    //       return false
-    //     }
-    //   })
-    // }
   }
 }
 </script>

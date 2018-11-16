@@ -7,7 +7,7 @@
         </div>
         <div class="serch-input float-left">
           <el-select
-            style="width: 260px;"
+            style="width: 360px;"
             @change="search"
             v-model="searchText"
             filterable
@@ -26,7 +26,7 @@
           </el-select>
         </div>
         <div class="our-connection">
-          <span class="light-text">0571-886554555 SUPPORT@MITIGENOMICS.COM</span>
+          <span class="light-text">SUPPORT@MITIGENOMICS.COM</span>
         </div>
       </div>
     <div class="main-question">
@@ -1068,7 +1068,6 @@ export default {
     justify-content: center;
     img{
       width: 90%;
-      transition: all .5s;
     }
   }
 </style>

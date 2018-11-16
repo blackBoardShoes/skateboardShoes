@@ -10,6 +10,7 @@
       class="menuClass"
       router :default-active="'path' in navArr[0] ? $route.path : $route.name">
       <el-menu-item
+        style="text-align:center;"
         v-for="(item, index) in navArr"
         :index="item.path ? item.path : item.index"
         @click="emitClick(item, index)"

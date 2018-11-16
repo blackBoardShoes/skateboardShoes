@@ -30,17 +30,17 @@ export default {
         fullscreen: false
       })
       let arr = []
-      arr.push({type: 1, chart: await education()})
-      arr.push({type: 1, chart: await occupation()})
-      arr.push({type: 1, chart: await familyIncome()})
-      arr.push({type: 1, chart: await hospitalCost()})
-      arr.push({type: 1, chart: await hospitalAge()})
-      arr.push({type: 1, chart: await hospitalDays()})
-      arr.push({type: 1, chart: await operationBetween()})
-      arr.push({type: 1, chart: await operationAfter()})
-      arr.push({type: 1, chart: await partingLocal()})
-      arr.push({type: 1, chart: await partingNation()})
-      let textArr = ['教育水平', '职业', '家庭年收入', '总住院费用', '住院年龄', '总住院天数', '术中并发症', '术后表现及并发症', '分型（本中心）', '分型（国际分型）']
+      arr.push({type: 2, chart: await hospitalAge()})
+      arr.push({type: 2, chart: await hospitalDays()})
+      arr.push({type: 3, chart: await education()})
+      arr.push({type: 3, chart: await occupation()})
+      arr.push({type: 3, chart: await familyIncome()})
+      arr.push({type: 3, chart: await hospitalCost()})
+      arr.push({type: 3, chart: await operationBetween()})
+      arr.push({type: 3, chart: await operationAfter()})
+      arr.push({type: 2, chart: await partingLocal()})
+      arr.push({type: 2, chart: await partingNation()})
+      let textArr = ['入院年龄', '总住院天数', '教育水平', '职业', '家庭年收入', '总住院费用', '术中并发症', '术后表现及并发症', '憩室分型（本中心分型）', '憩室分型（国际分型）']
       arr.forEach((bbb, index) => {
         let item = bbb.chart
         if (item.data.mitiStatus === 'SUCCESS') {
@@ -57,8 +57,7 @@ export default {
             data: data.data
           }
           let a = []
-          this.options.push(initChart(a, obj, 1))
-          console.log(initChart(a, obj, 2).legend.data)
+          this.options.push(initChart(a, obj, bbb.type))
         } else {
           this.$message.error('ERROR: ' + item.data.message)
         }

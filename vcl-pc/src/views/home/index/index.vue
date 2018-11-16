@@ -18,6 +18,11 @@
        <div class="statistics">
          <div class="case-top er-card">
            <chart ref="A" :options="optionA" auto-resize style="width: 100%;height: 100%;"></chart>
+           <div class="transType">
+             <div class="type" @click="transformBy('day')"><div :class="{'color': true, 'active': activeIndex === 'day'}"></div>按日</div>
+             <div class="type" @click="transformBy('week')"><div :class="{'color': true, 'active': activeIndex === 'week'}"></div>按周</div>
+             <div class="type" @click="transformBy('month')"><div :class="{'color': true, 'active': activeIndex === 'month'}"></div>按月</div>
+           </div>
          </div>
          <div class="case-bottom">
            <div class="case-left er-card">
@@ -126,7 +131,7 @@
 </template>
 <script>
 import {charts, initChart} from '../../../data/chartTemplates/chart'
-import { aoPatient, operationFinished, operationDiff, outHospitalStatus, patientNumber, inHospitalNumber, needOperation, nonCheckNumber, nonRepairNumber } from '../../../api/home/home.js'
+import { aoPatient, operationDiff, outHospitalStatus, patientNumber, inHospitalNumber, needOperation, nonCheckNumber, nonRepairNumber, operationFinishedByMonth, operationFinishedByWeek, operationFinishedByDay } from '../../../api/home/home.js'
 export default {
   name: 'home',
   data () {
@@ -139,7 +144,13 @@ export default {
       number1: 0,
       number2: 0,
       number3: 0,
-      number4: 0
+      number4: 0,
+      finishedOperation: {
+        day: {},
+        month: {},
+        week: {}
+      },
+      activeIndex: 'day'
     }
   },
   mounted () {
@@ -148,11 +159,13 @@ export default {
       this.initView(this.user.codetype)
     }
     this.optionA = charts[4]
-    // this.optionB = charts[0]
     this.optionC = charts[0]
   },
   methods: {
     initView (type) {
+      this.operationByDay()
+      this.operationByWeek()
+      this.operationByMonth()
       switch (type) {
         // 管理员/医生
         case 1: case 3:
@@ -178,7 +191,7 @@ export default {
           // 数字统计
           this.patientNumberMeth(1)
           this.inHospitalNumberMeth(2)
-          // this.needOperationMeth(3)
+          this.needOperationMeth(3)
           // 图表统计
           this.outHospitalStatusMeth()
           break
@@ -211,7 +224,7 @@ export default {
           // 数字统计
           this.patientNumberMeth(1)
           this.inHospitalNumberMeth(2)
-          // this.needOperationMeth(3)
+          this.needOperationMeth(3)
           this.nonCheckNumberMeth(4)
           // 图表统计
           this.outHospitalStatusMeth()
@@ -245,7 +258,7 @@ export default {
           // 数字统计
           this.patientNumberMeth(1)
           this.inHospitalNumberMeth(2)
-          // this.needOperationMeth(3)
+          this.needOperationMeth(3)
           this.nonCheckNumberMeth(4)
           // 图表统计
           this.operationDiffMeth()
@@ -324,13 +337,11 @@ export default {
       }
       // 各科室患者分布、手术完成统计
       this.aoPatientMeth()
-      // this.operationFinishedMeth()
     },
     // 各科室患者分布
     async aoPatientMeth () {
       let response = await aoPatient()
       if (response.data.mitiStatus === 'SUCCESS') {
-        console.log(response.data.entity)
         let data = response.data.entity
         let total = 0
         data.value.forEach((item) => {
@@ -342,16 +353,75 @@ export default {
           classes: data.type,
           data: data.value
         }
-        this.optionB = (initChart(this.optionB, obj, 1))
+        this.optionB = (initChart(this.optionB, obj, 2))
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
     },
-    // 已完成手术统计
-    async operationFinishedMeth () {
-      let response = await operationFinished()
+    transformBy (value) {
+      this.activeIndex = value
+      let data = this.finishedOperation[value]
+      let total = 0
+      let legendData = []
+      data.value.forEach((item) => {
+        item.value.forEach((item2) => {
+          total += item2.value
+        })
+      })
+      let obj = {
+        text: '手术完成统计',
+        subtext: '共计' + total + '例',
+        classes: data.type,
+        data: data.value,
+        legendData: legendData
+      }
+      switch (value) {
+        case 'day':
+          data.value[0].value.forEach((item3) => {
+            legendData.push((item3.name.split(' 00:00:00')[0]).split('2018-')[1])
+          })
+          this.optionA = (initChart(this.optionA, obj, 5))
+          break
+        case 'week':
+          data.value[0].value.forEach((item3) => {
+            let text1 = item3.name.split('2018-')[1] + item3.name.split('2018-')[2]
+            let text2 = text1.split('2018-')[0]
+            text2 = text2.replace(/至/, ' ~')
+            legendData.push(text2)
+          })
+          this.optionA = (initChart(this.optionA, obj, 5))
+          this.optionA.xAxis[0].axisLabel = {rotate: 15, interval: 0}
+          break
+        case 'month':
+          data.value[0].value.forEach((item3) => {
+            legendData.push(item3.name)
+          })
+          this.optionA = (initChart(this.optionA, obj, 5))
+          break
+      }
+    },
+    // 已完成手术统计(日周月)
+    async operationByDay () {
+      let response = await operationFinishedByDay()
       if (response.data.mitiStatus === 'SUCCESS') {
-        console.log(response.data.entity)
+        this.finishedOperation.day = response.data.entity
+        this.transformBy('day')
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    async operationByWeek () {
+      let response = await operationFinishedByWeek()
+      if (response.data.mitiStatus === 'SUCCESS') {
+        this.finishedOperation.week = response.data.entity
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
+    async operationByMonth () {
+      let response = await operationFinishedByMonth()
+      if (response.data.mitiStatus === 'SUCCESS') {
+        this.finishedOperation.month = response.data.entity
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
@@ -371,7 +441,7 @@ export default {
           classes: data.type,
           data: data.value
         }
-        this.optionC = (initChart(this.optionC, obj, 1))
+        this.optionC = (initChart(this.optionC, obj, 2))
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
@@ -391,7 +461,7 @@ export default {
           classes: data.type,
           data: data.value
         }
-        this.optionC = (initChart(this.optionC, obj, 1))
+        this.optionC = (initChart(this.optionC, obj, 2))
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
@@ -400,7 +470,6 @@ export default {
     async patientNumberMeth (index) {
       let response = await patientNumber()
       if (response.data.mitiStatus === 'SUCCESS') {
-        console.log(response.data.entity)
         let info = response.data.entity
         this.viewOptions[index - 1].count = info
       } else {
@@ -410,7 +479,6 @@ export default {
     async inHospitalNumberMeth (index) {
       let response = await inHospitalNumber()
       if (response.data.mitiStatus === 'SUCCESS') {
-        console.log(response.data.entity)
         let info = response.data.entity
         this.viewOptions[index - 1].count = info
       } else {
@@ -420,7 +488,6 @@ export default {
     async needOperationMeth (index) {
       let response = await needOperation()
       if (response.data.mitiStatus === 'SUCCESS') {
-        console.log(response.data.entity)
         let info = response.data.entity
         this.viewOptions[index - 1].count = info
       } else {
@@ -430,7 +497,6 @@ export default {
     async nonCheckNumberMeth (index) {
       let response = await nonCheckNumber()
       if (response.data.mitiStatus === 'SUCCESS') {
-        console.log(response.data.entity)
         let info = response.data.entity
         this.viewOptions[index - 1].count = info
       } else {
@@ -440,7 +506,6 @@ export default {
     async nonRepairNumberMeth (index) {
       let response = await nonRepairNumber()
       if (response.data.mitiStatus === 'SUCCESS') {
-        console.log(response.data.entity)
         let info = response.data.entity
         this.viewOptions[index - 1].count = info
       } else {
@@ -478,7 +543,6 @@ export default {
           .case{
             margin: 0 6px;
             flex:1;
-            // width: 25%;
             height: 100%;
             box-sizing: border-box;
             border-right: 1px dotted #ddd;
@@ -508,7 +572,6 @@ export default {
                 font-size:14px;
               }
             }
-            // background-color: #fff;
           }
           .case:nth-last-child(1){
             border:none;
@@ -520,6 +583,7 @@ export default {
         width:100%;
         display: flex;
         flex-direction: column;
+        position: relative;
         .case-top{
           width:100%;
           height: 60%;
@@ -528,6 +592,39 @@ export default {
           margin-bottom: 8px;
           box-sizing: border-box;
           position: relative;
+        }
+        .transType{
+          position: absolute;
+          width: 50%;
+          height: 30px;
+          left: 25%;
+          top: 20px;
+          display: flex;
+          justify-content: center;
+          flex-direction: row;
+          align-items: center;
+          .type{
+            cursor: pointer;
+            height: 30px;
+            padding: 0 8px;
+            font-size: 12px;
+            line-height: 30px;
+            width: 80px;
+            display: flex;
+            justify-content: space-around;
+            flex-direction: row;
+            align-items: center;
+            .color{
+              height: 15px;
+              width: 30px;
+              border-radius: 5px;
+              background-color: #eee;
+              display: inline-block;
+            }
+            .active{
+              background-color: #117FD1;
+            }
+          }
         }
         .case-bottom{
           height: 60%;
@@ -588,7 +685,6 @@ export default {
         border-bottom: 1px solid #ddd;
       }
       .daily-work{
-        // margin-bottom: 16px;
         flex: 1;
         padding:16px;
         overflow-y: auto;
@@ -628,7 +724,6 @@ export default {
         }
         .yet{
           .icon-line{
-            // color: #eee;
             .line{
               background-color: #878A8D;
             }

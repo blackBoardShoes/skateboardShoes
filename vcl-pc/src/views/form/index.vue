@@ -5,7 +5,7 @@
         <div slot="title">
           <div class="slotFormClass">
             <h1> 表单管理 </h1>
-            <span>Form Management</span>
+            <h5 class="light-text">Form Management</h5>
           </div>
         </div>
       </sx-submenu-control>
@@ -59,14 +59,14 @@ $full: 100%;
   .slotFormClass {
     background: url('../../assets/images/标题栏.png') center center no-repeat;
     width: $full;
-    height: 130px;
+    height: 110px;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     h1 {
       color:$mainTextColor;
-      font-size: 30px;
+      font-size: 26px;
     }
     span{
       color: $minorTextColor;

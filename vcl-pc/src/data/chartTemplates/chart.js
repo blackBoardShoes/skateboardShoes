@@ -10,6 +10,10 @@ export const charts = [
     // 标题
     title: {
       text: '二维环状统计',
+      textStyle: {
+        fontSize: 16,
+        fontWeight: 800
+      },
       subtext: '此处加入总计',
       left: 0,
       top: 0
@@ -87,6 +91,10 @@ export const charts = [
     color: ['#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59'],
     title: {
       text: '二维饼图',
+      textStyle: {
+        fontSize: 16,
+        fontWeight: 800
+      },
       subtext: '此处加入总计',
       left: 0,
       top: 0
@@ -96,10 +104,13 @@ export const charts = [
       formatter: '{a} <br/>{b} : {c} ({d}%)'
     },
     legend: {
+      show: true,
       orient: 'vertical',
       type: 'scroll',
+      // x: 'center',
+      // y: 'bottom',
       left: 0,
-      top: 50,
+      top: '50%',
       bottom: 5,
       padding: [5, 0, 5, 0],
       data: ['类1', '类2']
@@ -114,7 +125,7 @@ export const charts = [
       {
         name: '饼图分布',
         type: 'pie',
-        radius: '75%',
+        radius: '55%',
         center: ['50%', '50%'],
         data: [
           {value: 0, name: '类1'},
@@ -136,6 +147,10 @@ export const charts = [
     // 标题: 副标题为总数统计, 自行填入
     title: {
       text: '二维柱状统计',
+      textStyle: {
+        fontSize: 16,
+        fontWeight: 800
+      },
       subtext: '此处加入总计'
     },
     tooltip: {
@@ -159,12 +174,13 @@ export const charts = [
       show: true,
       left: '1%',
       right: '1%',
-      bottom: '3%',
+      bottom: '1%',
       containLabel: true
     },
     xAxis: [
       {
         type: 'category',
+        axisLabel: {rotate: 45, interval: 0},
         // 多个类别自填
         data: ['具类1', '具类2', '具类3', '具类4', '具类5', '具类6', '具类7', '具类8', '具类9', '具类10', '具类11', '具类12', '具类13', '具类14'],
         axisTick: {
@@ -226,6 +242,10 @@ export const charts = [
     // 标题: 副标题为总数统计, 自行填入
     title: {
       text: '二维线状图趋势统计',
+      textStyle: {
+        fontSize: 16,
+        fontWeight: 800
+      },
       subtext: '此处加入总计'
     },
     tooltip: {
@@ -316,6 +336,10 @@ export const charts = [
     color: ['#3fb1e3', '#6be6c1', '#626c91', '#a0a7e6', '#c4ebad', '#96dee8'],
     title: {
       text: '区域缩放三维柱状图',
+      textStyle: {
+        fontSize: 16,
+        fontWeight: 800
+      },
       subtext: '此处加入总计',
       left: '0%',
       top: '0%'
@@ -327,8 +351,8 @@ export const charts = [
       }
     },
     grid: {
-      left: '3%',
-      right: 0,
+      left: 10,
+      right: 100,
       bottom: '20%',
       containLabel: true,
       show: true
@@ -337,8 +361,9 @@ export const charts = [
       data: ['情形1', '情形2', '情形3'],
       type: 'scroll',
       // orient: '',
-      right: 'center',
-      top: 10,
+      orient: 'vertical',
+      right: 10,
+      top: 'center',
       // bottom: 5,
       padding: [5, 0, 5, 0],
       formatter: function (name) {
@@ -370,7 +395,7 @@ export const charts = [
         handleStyle: {
           color: 'rgba(63, 177, 227, 0.75)'
         },
-        left: '4%',
+        left: '10px',
         right: '10px',
         bottom: '10px'
       }
@@ -394,6 +419,7 @@ export const charts = [
     xAxis: [
       {
         type: 'category',
+        axisLabel: {rotate: 15, interval: 0},
         axisTick: {show: false},
         data: [
           '具类1',
@@ -408,31 +434,7 @@ export const charts = [
           '具类10',
           '具类11',
           '具类12'
-        ],
-        axisLabel: {
-          formatter: function (params) {
-            let newParamsName = ''
-            let paramsNameNumber = params.length
-            let provideNumber = 5
-            let rowNumber = Math.ceil(paramsNameNumber / provideNumber)
-            if (paramsNameNumber > provideNumber) {
-              for (let p = 0; p < rowNumber; p++) {
-                let tempStr = ''
-                let start = p * provideNumber
-                let end = start + provideNumber
-                if (p === rowNumber - 1) {
-                  tempStr = params.substring(start, paramsNameNumber)
-                } else {
-                  tempStr = params.substring(start, end) + '\n'
-                }
-                newParamsName += tempStr
-              }
-            } else {
-              newParamsName = params
-            }
-            return newParamsName
-          }
-        }
+        ]
       }
     ],
     yAxis: [
@@ -538,6 +540,10 @@ export const charts = [
     color: ['#3fb1e3', '#6be6c1', '#626c91', '#a0a7e6', '#c4ebad', '#96dee8'],
     title: {
       text: '三维柱状图统计',
+      textStyle: {
+        fontSize: 16,
+        fontWeight: 800
+      },
       subtext: '此处加入总计',
       left: '0%',
       top: '0%'
@@ -729,7 +735,11 @@ export const charts = [
   {
     color: ['#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59'],
     title: {
-      text: '任务进度统计'
+      text: '任务进度统计',
+      textStyle: {
+        fontSize: 16,
+        fontWeight: 800
+      }
     },
     tooltip: {
       show: true,
@@ -853,6 +863,8 @@ export const charts = [
 ]
 
 export const initChart = (chart, obj, type) => {
+  console.log(obj)
+  console.log(chart)
   switch (type) {
     case 1 :
       chart = JSON.parse(JSON.stringify(charts[0]))
@@ -863,8 +875,19 @@ export const initChart = (chart, obj, type) => {
     case 2 :
       chart = JSON.parse(JSON.stringify(charts[1]))
       chart.series[0].name = obj.text
+      chart.series[0].data = []
+      console.log(obj)
       chart.legend.data = obj.classes
-      chart.series[0].data = obj.data
+      obj.data.forEach((item, index) => {
+        // if (item.value) {
+        item.label = {
+          normal: {
+            formatter: '{b} : {c} ({d}%)'
+          }
+        }
+        chart.series[0].data.push(item)
+        // }
+      })
       break
     case 3 :
       chart = JSON.parse(JSON.stringify(charts[2]))
@@ -880,10 +903,12 @@ export const initChart = (chart, obj, type) => {
       break
     case 5 :
       chart = JSON.parse(JSON.stringify(charts[4]))
-      chart.legend = obj.classes
-      obj.classes.forEach((item, index) => {
+      chart.series = []
+      chart.xAxis[0].data = obj.legendData
+      chart.legend.data = obj.classes
+      obj.data.forEach((item, index) => {
         let obj2 = {
-          name: item,
+          name: item.name,
           type: 'bar',
           barWidth: '20%',
           label: {
@@ -893,7 +918,7 @@ export const initChart = (chart, obj, type) => {
               formatter: '{c}'
             }
           },
-          data: obj.data[index]
+          data: item.value
         }
         chart.series.push(obj2)
       })
@@ -921,8 +946,9 @@ export const initChart = (chart, obj, type) => {
     default :
       break
   }
-  chart.title.text = obj.text
-  chart.title.subtext = obj.subtext
+  console.log(chart)
+  chart.title.text = obj.text || '???'
+  chart.title.subtext = obj.subtext || '???'
   chart.color = ['#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59', '#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59']
   // console.log(chart)
   return chart

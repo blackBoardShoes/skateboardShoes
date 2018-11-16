@@ -167,17 +167,6 @@
                       <span>{{item2.unit || ''}}</span>
                     </div>
                   </div>
-                  <!-- <el-table
-                    :data="tableTransform(question.real_value)"
-                    border
-                    style="width: 100%">
-                    <el-table-column
-                      v-for="(item, index3) in question.real_value[0].length"
-                      :key="index3"
-                      :prop="tableTransform2(question.real_value)[index3].prop"
-                      :label="tableTransform2(question.real_value)[index3].label">
-                    </el-table-column>
-                  </el-table> -->
                 </div>
               </div>
             </div>
@@ -188,8 +177,6 @@
   </div>
 </template>
 <script>
-// import textRadio from '../../../components/textRadio/textRadio'
-// import {addressData} from '../../../data/address/addressData'
 import {getRecordById, getAllFormTemplates} from '../../../api/patient/patient.js'
 import { Loading } from 'element-ui'
 let syncSlider = () => import('../../../components/syncSlider/syncSlider.vue')
@@ -197,7 +184,6 @@ export default {
   name: 'patient_record',
   components: {
     syncSlider
-    // textRadio
   },
   data () {
     return {
@@ -231,14 +217,12 @@ export default {
     })
   },
   created () {
-    // this.NumInHospital = this.$route.params.id
   },
   methods: {
     changeActiveIndex (activeIndex) {
       this.activeIndex = activeIndex
     },
     scroll (index) {
-      console.log(index)
       this.$refs.child.scroll(index)
     },
     // 打印、导出
@@ -272,10 +256,8 @@ export default {
     },
     // 根据表单id 获取表单详情
     async getRecord (info) {
-      // let info = this.NumInHospital
       let response = await getRecordById(info)
       if (response.data.mitiStatus === 'SUCCESS') {
-        // console.log(response.data.entity)
         this.formData = response.data.entity
         if (this.formData.forms.length > 0) {
           let last = this.formData.forms[4]
@@ -286,12 +268,10 @@ export default {
         for (let i in this.formData) {
           if (i !== 'forms') {
             recordCover[i] = this.formData[i]
-            // recordCover = Object.assign(recordCover, this.formData[i])
           }
         }
         this.formData.recordCover = recordCover
         this.smallNavi.push(recordCover)
-        // this.basic = response.data.entity
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
@@ -300,7 +280,6 @@ export default {
     async getFormTemplate () {
       let response = await getAllFormTemplates()
       if (response.data.mitiStatus === 'SUCCESS') {
-        console.log(response.data.entity)
         this.templates = response.data.entity
       } else {
         this.$message.error('ERROR: ' + response.data.message)
@@ -380,7 +359,6 @@ export default {
           for (let key in record) {
             let fieldTemplate = tableItem.subFields.find((n) => n.id === key)
             fieldTemplate.real_value = record[key]
-            // item[key]
             this.matchValue(fieldTemplate)
             arr2.push(fieldTemplate)
           }
@@ -489,12 +467,6 @@ export default {
             this.mixOptions()
           }
         }
-      },
-      deep: true
-    },
-    'activeIndex': {
-      handler: function (newVal) {
-        // console.log(newVal)
       },
       deep: true
     }

@@ -427,7 +427,7 @@ export default {
       let response = await fileLists()
       if (response.data.mitiStatus === 'SUCCESS') {
         console.log(response.data.entity)
-        this.fileLists = response.data.entity.reverse()
+        this.fileLists = response.data.entity.reverse().splice(0, 6)
         this.thisFile = this.fileLists.length > 0 ? this.fileLists[0].file_id : ''
       } else {
         this.$message.error('ERROR: ' + response.data.message)
@@ -487,7 +487,7 @@ export default {
             field.value = field.id
             field.treeNode = module.treeNode + '.' + field.id
             field.reference = field.values !== undefined ? field.values : (field.children === undefined ? [] : field.children)
-            if (field.subFields && field.subFields.length > 0) {
+            if (field.subFields && field.subFields.length > 0 && field.type !== 'TABLE') {
               field.children = field.subFields
               field.children.forEach((subField) => {
                 subField.phase = module.phase

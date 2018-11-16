@@ -142,8 +142,8 @@
                 </div>
                 <!-- 以下内容每表不一 -->
                 <div class="info"  v-if="item.header.phase === '住院基本情况'">
-                  <div class="case">有无胆囊：{{valueTransLabel(item.data.previousHistory.cholecystectomy, 'previousHistory', 'cholecystectomy')}}</div>
-                  <div class="case">无ERCP相关操作史：{{valueTransLabel(item.data.previousHistory.oph, 'previousHistory', 'oph')}}</div>
+                  <div class="case">胆囊：{{valueTransLabel(item.data.previousHistory.cholecystectomy, 'previousHistory', 'cholecystectomy')}}</div>
+                  <div class="case">ERCP相关操作史：{{valueTransLabel(item.data.previousHistory.oph, 'previousHistory', 'oph')}}</div>
                 </div>
                 <div class="info"  v-if="item.header.phase === '术前'">
                   <el-tooltip class="item" effect="dark" placement="top">
@@ -161,7 +161,7 @@
                 </div>
                 <div class="info"  v-if="item.header.phase === '术中'">
                   <div class="case">手术日期：{{item.header.operationDate === undefined ? '' : item.header.operationDate}}</div>
-                  <div class="case">操作者：{{item.data.intraoperativeDiagnosisAndEvaluation.operationOperator}}</div>
+                  <div class="case">手术操作者：{{item.data.intraoperativeDiagnosisAndEvaluation.operationOperator}}</div>
                 </div>
                 <div class="info"  v-if="item.header.phase === '术后'">
                   <el-tooltip class="item" effect="dark" placement="top">
@@ -171,7 +171,7 @@
                       </span>
                     </div>
                     <div class="case one-case">
-                      <span>入院诊断：</span>
+                      <span>术后诊断：</span>
                       <span v-for="(disease, index) in valueTransLabel(item.data.postDiagnosisAndExamination.postDiagnosis, 'postDiagnosisAndExamination', 'postDiagnosis', 'diseaseName')" :key="index">
                       {{disease}}
                       </span>
@@ -186,7 +186,7 @@
                 <div class="info-operator">
                   <div class="case">录入情况 : {{item.header.responseName}}</div>
                   <div class="case">审核情况 : {{item.header.checkerName}}</div>
-                  <div class="case" v-if="item.header.isFinished === 0">
+                  <div class="case" v-if="item.header.isFinished === 0 && item.header.isRejected === 0">
                     状态：待录入
                   </div>
                   <!-- 已提交录入未通过未驳回 -->
@@ -194,17 +194,17 @@
                     状态：待审核
                   </div>
                   <!-- 已提交录入未通过已驳回 -->
-                  <div class="case" v-if="item.header.isFinished === 1 && item.header.isPassed === 0 && item.header.isRejected === 1">
+                  <div class="case" v-if="item.header.isFinished === 0 && item.header.isPassed === 0 && item.header.isRejected === 1">
                     状态：待修正
                   </div>
                   <!-- 皆可查看，但是和以上按钮无并存需要，css溢出隐藏 -->
                   <div class="case" v-if="item.header.isFinished === 1 && item.header.isPassed === 1 && item.header.isRejected === 0">
-                    状态：已完成
+                    状态：已通过
                   </div>
                 </div>
                 <div class="status">
                   <!-- 未提交录入 -->
-                  <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 0 && userPermission.typein.permission === true" @click="operate('typein', item)">
+                  <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 0 && item.header.isRejected === 0 && userPermission.typein.permission === true" @click="operate('typein', item)">
                     录入
                   </el-button>
                   <!-- 已提交录入未通过未驳回 -->
@@ -212,7 +212,7 @@
                     审核
                   </el-button>
                   <!-- 已提交录入未通过已驳回 -->
-                  <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 1 && item.header.isPassed === 0 && item.header.isRejected === 1 && userPermission.repair.permission === true" @click="operate('repair', item)">
+                  <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 0 && item.header.isPassed === 0 && item.header.isRejected === 1 && userPermission.repair.permission === true" @click="operate('repair', item)">
                     修正
                   </el-button>
                   <!-- 皆可查看，但是和以上按钮无并存需要，css溢出隐藏 -->
@@ -221,17 +221,17 @@
                   </el-button>
                 </div>
                 <div class="wrapper">
-                  <span v-if="item.header.isFinished === 0">
+                  <span v-if="item.header.isFinished === 0 && item.header.isRejected === 0">
                     待录入
                   </span>
                   <span v-if="item.header.isFinished === 1 && item.header.isPassed === 0 && item.header.isRejected === 0">
                     待审核
                   </span>
-                  <span v-if="item.header.isFinished === 1 && item.header.isPassed === 0 && item.header.isRejected === 1">
+                  <span v-if="item.header.isFinished === 0 && item.header.isPassed === 0 && item.header.isRejected === 1">
                     待修正
                   </span>
                   <span v-if="item.header.isFinished === 1 && item.header.isPassed === 1 && item.header.isRejected === 0">
-                    已完成
+                    已通过
                   </span>
                 </div>
               </div>
@@ -239,7 +239,7 @@
           </el-carousel>
         </el-tab-pane>
         <el-tab-pane :label="'随访记录 - ' + (followIndex + 1)"  v-for="(follow, followIndex) in followRecords" :key="'随访记录' + followIndex">
-          <el-carousel :interval="4000" type="card" style="height:100%;;width:600px;" :autoplay=false arrow="always">
+          <el-carousel :interval="4000" type="card" style="height:100%;;width:600px;" :autoplay=false arrow="always" v-if="follow.find((n) => n.information.state === '已完成')">
             <el-carousel-item v-for="(record, index) in follow" :key="index" :label="record.header.phase + '(' + record.data.endpointEventRecord.followUpDate+ ')'" v-if="record.information.state === '已完成'">
               <div class="card-content">
                 <div class="card-title">
@@ -253,7 +253,8 @@
                           {{thingIndex + 1}}、{{thing.primaryEndpointName}}
                         </span>
                       </div>
-                      <div class="case one-case">原发性终点事件：
+                      <div class="case one-case" style="line-height: 26px;">
+                        <span>原发性终点事件：</span>
                         <span v-for="(thing, thingIndex) in record.data.endpointEventRecord.primaryEndpointEvent" :key="thingIndex">
                           {{thingIndex + 1}}、{{thing.primaryEndpointName}}
                         </span>
@@ -267,7 +268,8 @@
                           {{thingIndex + 1}}、{{thing.secondaryEndpointEventName}}
                         </span>
                       </div>
-                      <div class="case one-case">继发性终点事件：
+                      <div class="case one-case" style="line-height: 26px;">
+                        <span>继发性终点事件：</span>
                         <span v-for="(thing, thingIndex) in record.data.endpointEventRecord.secondaryEndpointEvent" :key="thingIndex">
                           {{thingIndex + 1}}、{{thing.secondaryEndpointEventName}}
                         </span>
@@ -293,23 +295,15 @@
                   </el-button>
                 </div>
                 <div class="wrapper">
-                  <span v-if="record.header.isFinished === 0">
-                    待录入
-                  </span>
-                  <span v-if="record.header.isFinished === 1 && record.header.isPassed === 0 && record.header.isRejected === 0">
-                    待审核
-                  </span>
-                  <span v-if="record.header.isFinished === 1 && record.header.isPassed === 0 && record.header.isRejected === 1">
-                    待修正
-                  </span>
                   <span v-if="record.header.isFinished === 1 && record.header.isPassed === 1 && record.header.isRejected === 0">
-                    已完成
+                    已通过
                   </span>
                 </div>
                 <!-- 以下内容每表皆同 -->
               </div>
             </el-carousel-item>
           </el-carousel>
+          <h3 v-else>随访记录皆未完成</h3>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -539,7 +533,7 @@ export default {
     },
     // 删除操作
     deletePat () {
-      this.$confirm('此操作将删除该患者, 是否继续?', '提示', {
+      this.$confirm('此操作将删除该患者及其相关的手术记录、随访记录, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -634,9 +628,12 @@ export default {
         // 查看
         case 'view' :
           let data4 = data
-          // console.log(data)
-          data4.activeIndexNav = data.forms[index].header.phase
-          // data4.id = data.id
+          let phase = data.forms[index].header.phase
+          data4.activeIndexNav = phase
+          if (phase === '术前' || phase === '术中' || phase === '术后') {
+            let nav = data.forms[index].header.createDate.split(' ')[0]
+            data4.activeIndexNav += nav
+          }
           console.log(data4)
           this.$router.push({ name: 'zb', params: { data: JSON.stringify(data4) } })
           break
@@ -658,7 +655,7 @@ export default {
         info.basicInfo = this.basicInfo
         this.$router.push(`/patient/record/${JSON.stringify(info)}`)
       } else {
-        this.$message.info('记录尚未完全审核通过，请在审核后查看')
+        this.$message.info('记录尚未完全审核通过，请审核后再查看')
       }
     }
   }
@@ -716,7 +713,6 @@ export default {
         padding: 0 8px;
         height:45%;
         box-sizing: border-box;
-        // padding: 5px 0;
         line-height: 23px;
         width: 100%;
         display: flex;
@@ -724,15 +720,12 @@ export default {
         justify-content: center;
         .case, .one-case{
           flex: 1;
-          // height:46px;
           white-space:normal;
           overflow:hidden;
-          // line-height: 1;
-          display: flex;
-          flex-direction: column;
-          // align-items: center;
-          justify-content: center;
-          // line-height:23px;
+          line-height: 26px;
+          span{
+            min-height: 26px;
+          }
         }
       }
       .info{
@@ -740,7 +733,6 @@ export default {
       }
       .info-operator{
         height: 40%;
-        // flex:1;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -795,7 +787,6 @@ export default {
       flex: 1;
       display: flex;
       color: #000;
-      // justify-content: space-between;
       flex-direction: column;
       .el-tabs__header{
         height: 40px;
@@ -819,7 +810,6 @@ export default {
         height: 300px;
         width: 320px;
         margin-top: 16px;
-        // width: 30%;
         margin-right: 16px;
         display: flex;
         flex-direction: column;
@@ -827,7 +817,6 @@ export default {
         position: relative;
         padding: 48px 8px 8px 8px;
         box-sizing: border-box;
-        // border-radius: 5px;
         .report{
           text-align: center;
         }

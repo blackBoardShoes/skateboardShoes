@@ -5,14 +5,13 @@
         <!-- 测试阶段使用  后期去掉 -->
         <div class="logo">
           <img src="../../assets/images/导航栏@2x.png" alt="">
-          <!-- <img src="../../assets/images/ercp标题.png" style="width:150px;height: 48px;position:relative;top:20px;" alt=""> -->
         </div>
         <el-tooltip
           placement="right"
           v-for="(menu,index) in menuData"
           :key="index"
           @click="linkTo(menu)"
-          :disabled="menu.title !== '开发测试'">
+          :disabled="true">
           <div
             @click="linkTo(menu)"
             :class="{menu: true, active: menu.path === ($route.path.split('/')[1] === 'home' ? '/home' : '/' +  $route.path.split('/')[1])}">
