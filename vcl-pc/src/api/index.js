@@ -53,20 +53,20 @@ axios.interceptors.response.use(
             })
           }
         } else if (response.data.mitiStatus === 'SUCCESS') {
-          // if (response.data.message) {
-          //   Message({
-          //     showClose: true,
-          //     message: response.data.message,
-          //     type: 'success'
-          //   })
-          // }
+          if (response.data.message) {
+            Message({
+              showClose: true,
+              message: response.data.message,
+              type: 'success'
+            })
+          }
           return response
         } else {
-          // Message({
-          //   showClose: true,
-          //   message: '服务器有点忙。',
-          //   type: 'info'
-          // })
+          Message({
+            showClose: true,
+            message: '服务器繁忙，请稍后再试。',
+            type: 'info'
+          })
         }
         return false
       }
