@@ -53,13 +53,13 @@ axios.interceptors.response.use(
             })
           }
         } else if (response.data.mitiStatus === 'SUCCESS') {
-          if (response.data.message) {
-            Message({
-              showClose: true,
-              message: response.data.message,
-              type: 'success'
-            })
-          }
+          // if (response.data.message) {
+          //   Message({
+          //     showClose: true,
+          //     message: response.data.message,
+          //     type: 'success'
+          //   })
+          // }
           return response
         } else {
           Message({
