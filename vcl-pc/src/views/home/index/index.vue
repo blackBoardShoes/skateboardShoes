@@ -378,7 +378,7 @@ export default {
       switch (value) {
         case 'day':
           data.value[0].value.forEach((item3) => {
-            legendData.push((item3.name.split(' 00:00:00')[0]).split('2018-')[1])
+            legendData.push(((item3.name.split(' 00:00:00')[0]).split('2018-')[1]).substr(0, 5))
           })
           this.optionA = (initChart(this.optionA, obj, 5))
           break

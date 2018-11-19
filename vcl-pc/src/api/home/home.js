@@ -7,34 +7,34 @@ export const patientNumber = data => {
 }
 // 住院人次 222
 export const inHospitalNumber = data => {
-  return axios.get(api + `/formdata//inHospitalCount`)
+  return axios.get(api + `/formdata/inHospitalCount`)
 }
 // // 用户数量
 // export const userNumber = data => {
 //   return axios.get(api + `formdata/getOperCompCount?type=${data}`)
 // }
-// 待手术
+// 待手术 222
 export const needOperation = data => {
-  return axios.get(api + `formdata/wairForOperaiton`)
+  return axios.get(api + `/formdata/wairForOperaiton`)
 }
 //  (本用户) 待审核   222
 export const nonCheckNumber = data => {
-  return axios.get(api + `formdata/getToCheckCount`)
+  return axios.get(api + `/formdata/getToCheckCount`)
 }
 //  (本用户) 待修正  222
 export const nonRepairNumber = data => {
-  return axios.get(api + `formdata/getToAmend`)
+  return axios.get(api + `/formdata/getToAmend`)
 }
 // 首页统计(图表统计)
-// 手术完成统计
+// 手术完成统计  222
 export const operationFinishedByMonth = data => {
-  return axios.get(api + `formdata/getOperCompCountByMonth`)
+  return axios.get(api + `/formdata/getOperCompCountByMonth`)
 }
 export const operationFinishedByWeek = data => {
-  return axios.get(api + `formdata/getOperCompCountByWeek`)
+  return axios.get(api + `/formdata/getOperCompCountByWeek`)
 }
 export const operationFinishedByDay = data => {
-  return axios.get(api + `formdata/getOperCompCountByDay`)
+  return axios.get(api + `/formdata/getOperCompCountByDay`)
 }
 // 各科室患者分布  222
 export const aoPatient = data => {

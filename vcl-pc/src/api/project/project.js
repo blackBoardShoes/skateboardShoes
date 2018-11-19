@@ -83,7 +83,7 @@ export const createFile = data => {
 
 // 获取患者列表
 export const fileLists = data => {
-  return axios.get(api + `formdata/export_files`)
+  return axios.get(api + `/formdata/export_files`)
 }
 
 // 下载文件
@@ -91,18 +91,6 @@ export const fileLists = data => {
 //   return axios.get(api + `download/${data.fileId}/${data.fileName}`)
 // }
 export const downFile = data => {
-  // var eleLink = document.createElement('a')
-  // eleLink.download = data.fileName
-  // eleLink.style.display = 'none'
-  // // 字符内容转变成blob地址
-  // console.log(data)
-  // eleLink.href = api + `/formdata/download/${data.fileId}/${data.fileName}`
-  // // 触发点击
-  // document.body.appendChild(eleLink)
-  // eleLink.click()
-  // // 然后移除
-  // document.body.removeChild(eleLink)
-  // let href = (api + `/formdata/download/${data.fileId}/${data.fileName}`)
   return axios({
     url: api + `/formdata/download/${data.fileId}/${data.fileName}`,
     method: 'GET',
