@@ -236,9 +236,11 @@ export default {
   top: 16px;
   display: flex;
   flex-direction: column;
+  overflow: auto;
   // 系统概览
   .patient-statistics{
     flex: 0 0 30%;
+    min-height: 280px;
     display: flex;
     flex-direction: column;
     .el-card_header{
@@ -273,6 +275,7 @@ export default {
   // 患者列表
   .patient-list{
     flex: 1;
+    // min-height: 500px;
     margin-top: 8px;
     display: flex;
     flex-direction: column;

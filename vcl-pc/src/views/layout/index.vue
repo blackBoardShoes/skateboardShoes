@@ -43,8 +43,8 @@
       </div>
     </div>
     <!-- 禁止右键: 程序上不允许调出自定义菜单 -->
-    <!-- <div id="topbar-wrapper" @contextmenu.prevent.stop="ban"> -->
-    <div id="topbar-wrapper">
+    <div id="topbar-wrapper" @contextmenu.prevent.stop="ban">
+    <!-- <div id="topbar-wrapper"> -->
       <!-- 顶部导航 -->
       <div class="bread-nav float-left">
         <!-- <div class="between-line float-left"></div> -->
