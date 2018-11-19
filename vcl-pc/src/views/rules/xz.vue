@@ -905,7 +905,7 @@ $marginW: 15px;
           display: flex;
           justify-content: flex-end;
           font-weight: bold;
-          // margin-right: $marginW;
+          margin-right: $marginW;
           /deep/ .el-button {
             display: flex;
             align-items: center;

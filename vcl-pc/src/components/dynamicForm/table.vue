@@ -299,8 +299,34 @@ export default {
 
 <style lang="scss" scoped>
 .tableAll {
-  width: 360px;
+  width: 900px;
+  transition: all 0.5s;
   // max-width: 520px;
   // min-width: 650px;
+}
+@media screen and (max-width: 1024px) {
+  .tableAll {
+    width: 270px;
+  }
+}
+@media screen and (min-width: 1025px) and (max-width: 1200px) {
+  .tableAll {
+    width: 280px;
+  }
+}
+@media screen and (min-width: 1200px) and (max-width: 1366px) {
+  .tableAll {
+    width: 450px;
+  }
+}
+@media screen and (min-width: 1366px) and (max-width: 1536px) {
+  .tableAll {
+    width: 600px;
+  }
+}
+@media screen and (min-width: 1536px) and (max-width: 1736px) {
+  .tableAll {
+    width: 750px;
+  }
 }
 </style>

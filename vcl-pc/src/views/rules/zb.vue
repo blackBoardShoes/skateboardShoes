@@ -505,12 +505,12 @@ $marginW: 15px;
         .rightContentControlBtn {
           transition: all .5s;
           // flex-grow: 1;
-          width: 500px;
+          width: 400px;
           height: $full;
           display: flex;
           justify-content: flex-end;
           font-weight: bold;
-          // margin-right: $marginW;
+          margin-right: $marginW;
           /deep/ .el-button {
             display: flex;
             align-items: center;
