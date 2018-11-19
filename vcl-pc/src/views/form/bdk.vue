@@ -856,6 +856,8 @@ $bottomH: 200px;
     .createFormContent {
       width: $full;
       height: $full;
+      overflow: auto;
+      padding-bottom: 30px;
       .createContentBottom {
         height: 30px;
         padding: 10px;
