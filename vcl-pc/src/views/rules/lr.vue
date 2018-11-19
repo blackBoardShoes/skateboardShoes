@@ -24,7 +24,7 @@
       </div>
       <div class="formContentContent" v-if="Boolean(navArr[activeIndex])">
         <sx-no-route-control :navArr="navArr" :activeIndex="activeIndex" @emitClick="emitClick"></sx-no-route-control>
-        <div >
+        <div style="width: 100%">
           <div class="rightContentControl">
             <div class="rightContentControlName">
               <div v-if="navArr[activeIndex].name.length < 14">
@@ -598,7 +598,8 @@ $marginW: 15px;
           }
           .rightContentStatic {
             padding: 50px 25px;
-            width: $full;
+            // width: $full;
+            flex-grow: 1;
           }
         }
       }
@@ -629,7 +630,7 @@ $marginW: 15px;
           display: flex;
           justify-content: flex-end;
           font-weight: bold;
-          // margin-right: $marginW;
+          margin-right: $marginW;
           /deep/ .el-button {
             display: flex;
             align-items: center;
