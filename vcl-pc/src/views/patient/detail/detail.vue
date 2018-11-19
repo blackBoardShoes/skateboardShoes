@@ -6,7 +6,7 @@
           <span><i class="ercp-icon-module-patient"></i> <b>基本信息</b></span>
         </div>
         <!-- 患者基本信息 -->
-        <div class="basic-information" v-if="patientRecords.length > 0 || followRecords.length > 0">
+        <div class="basic-information">
           <el-form ref="basicForm" :rules="rules" :model="basicInfo" label-position="left" label-width="100px"  :disabled="editable">
             <el-row>
               <el-col :span="8">
@@ -71,7 +71,7 @@
           </div>
         </div>
       </div>
-      <el-tabs type="border-card">
+      <el-tabs type="border-card" v-if="patientRecords.length > 0 || followRecords.length > 0">
         <el-tab-pane :label="'住院记录 - ' + (index + 1)" v-for="(record, index) in patientRecords" :key="index">
           <div class="record-info er-card">
             <div class="card-title">
