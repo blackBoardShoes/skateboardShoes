@@ -24,22 +24,22 @@
       </div>
       <div class="formContentContent" v-if="Boolean(navArr[activeIndex])">
         <sx-no-route-control :navArr="navArr" :activeIndex="activeIndex" @emitClick="emitClick"></sx-no-route-control>
-        <div style="width: 100%;">
+        <div >
           <div class="rightContentControl">
             <div class="rightContentControlName">
               <div v-if="navArr[activeIndex].name.length < 14">
-                {{navArr[activeIndex] ? navArr[activeIndex].name : ''}}
+                {{navArr[activeIndex] ? navArr[activeIndex].name : ''}}&nbsp;&nbsp;
               </div>
               <el-tooltip class="item" effect="dark" placement="top" :content="navArr[activeIndex] ? navArr[activeIndex].name : ''" v-else>
                 <div style="font-weight: bold;width: 210px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
                   {{navArr[activeIndex] ? navArr[activeIndex].name : ''}}
                 </div>
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" placement="top" :content="navArr[activeIndex] ? navArr[activeIndex].description : ''">
+              <!-- <el-tooltip v-if="navArr[activeIndex] ? navArr[activeIndex].description : false" class="item" effect="dark" placement="top" :content="navArr[activeIndex] ? navArr[activeIndex].description : ''">
                 <div style="font-size:13px;font-weight:400;width: 180px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
                   {{navArr[activeIndex] ? navArr[activeIndex].description : ''}}
                 </div>
-              </el-tooltip>
+              </el-tooltip> -->
             </div>
             <div class="rightContentControlBtn">
               <el-button @click="generalSubmit"
@@ -47,7 +47,7 @@
                 :disabled="activeIndexNav != patientInfo.phase">
                 <i class="ercp-icon-general-submit"></i>&nbsp;
                 阶段提交</el-button>
-              <div style="width: 120px;" v-else></div>
+              <!-- <div style="width: 120px;" v-else></div> -->
               <el-button @click="generalDelete" style="color: #FF455B;" :disabled="activeIndexNav != patientInfo.phase">
                 <i class="ercp-icon-general-delete"></i>&nbsp;
                 删除</el-button>
@@ -579,6 +579,7 @@ $marginW: 15px;
       width: $full;
       display: flex;
       height: $full;
+      // box-sizing: border-box;
       .formContentRight {
         height: $full;
         // width: $full;
@@ -591,6 +592,8 @@ $marginW: 15px;
           .rightContentDynamic {
             // width: 800px;
             flex-grow: 1;
+            // width: $full;
+            // box-sizing: border-box;
             padding: 50px 25px;
           }
           .rightContentStatic {
@@ -616,7 +619,7 @@ $marginW: 15px;
           justify-content: space-between;
           align-items: center;
           border-left: 9px solid $minorTextColor;
-          width: 400px;
+          // width: 200px;
         }
         .rightContentControlBtn {
           transition: all .5s;
@@ -624,9 +627,9 @@ $marginW: 15px;
           width: 400px;
           height: $full;
           display: flex;
-          justify-content: space-between;
+          justify-content: flex-end;
           font-weight: bold;
-          margin-right: $marginW;
+          // margin-right: $marginW;
           /deep/ .el-button {
             display: flex;
             align-items: center;
