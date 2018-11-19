@@ -207,8 +207,8 @@ export default {
       if (value === '') {
         callback(new Error('请填写用户姓名'))
       } else {
-        if (this.nameArr.indexOf(value) > -1) {
-          callback(new Error('该用户姓名已存在'))
+        if (this.nameArr.find((n) => n.name === value && n.type === this.newUser.type)) {
+          callback(new Error('同类型用户，该用户名已存在，请输入其他用户名'))
         }
         callback()
       }
@@ -465,7 +465,7 @@ export default {
         // 名字校验
         this.nameArr = []
         this.tableData.forEach((item) => {
-          this.nameArr.push(item.name)
+          this.nameArr.push(item)
         })
         if (add === 1) {
           this.$message.success('新增用户成功')

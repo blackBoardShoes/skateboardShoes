@@ -56,12 +56,14 @@
       <!-- 系统标题 -->
       <div class="system-title float-right">
         <img src="../../assets/images/ercp标题.png" alt="">
-        <span class="min-min">信息录入管理系统</span>
         <!-- 系统操作按钮: 最大化/最小化/关闭 -->
         <div class="system-operate">
-          <div class="ercp-icon-general-minimine" @click="windwowOperate('mini')"></div>
-          <div class="ercp-icon-general-restore"  @click="windwowOperate('max')"></div>
-          <div class="ercp-icon-general-close" @click="windwowOperate('close')"></div>
+          <div class="min-min">信息录入管理系统</div>
+          <div class="min-max">
+            <div class="ercp-icon-general-minimine" @click="windwowOperate('mini')"></div>
+            <div class="ercp-icon-general-restore"  @click="windwowOperate('max')"></div>
+            <div class="ercp-icon-general-close" @click="windwowOperate('close')"></div>
+          </div>
         </div>
       </div>
       <div class="between-line float-right"></div>
@@ -370,19 +372,23 @@ export default {
     },
     windwowOperate (operate) {
       // 按钮操控主进程窗口
-      let ipc = this.$electron.ipcRenderer
-      switch (operate) {
-        case 'mini':
-          ipc.send('min')
-          break
-        case 'max':
-          ipc.send('max')
-          break
-        case 'close':
-          ipc.send('close')
-          break
+      if (this.env) {
+        let ipc = this.$electron.ipcRenderer
+        switch (operate) {
+          case 'mini':
+            ipc.send('min')
+            break
+          case 'max':
+            ipc.send('max')
+            break
+          case 'close':
+            ipc.send('close')
+            break
+        }
+        console.log(operate)
+      } else {
+        this.$message.info('无效点击')
       }
-      console.log(operate)
       // console.log(ipc)
     },
     locationOperate (operate) {
@@ -631,55 +637,51 @@ export default {
 
       .system-title{
         width:300px;
-        // text-align: center;
         font-size:19px;
         font-weight: 900;
         display: flex;
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        // background-color: rgba($color: $themeColor, $alpha: 0.05);
 
         img{
           width: 80px;
           vertical-align: middle;
           margin-right: 10px;
+          cursor: pointer;
         }
-
         .system-operate{
-          display: none;
-          transition: all 2s;
-          opacity: 0;
+          width: 153px;
+          overflow: hidden;
+          position: relative;
+          .min-min{
+            width: 153px;
+            position: absolute;
+            left: 0;
+            transition: all 1s;
+          }
+          .min-max{
+            transition: all 1s;
+            width: 153px;
+            position: absolute;
+            left: 153px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            padding-left: 10px;
+            div{
+              flex:1;
+            }
+          }
         }
       }
-
-      .min-min{
-        transition: all 2s;
-        opacity: 1;
-        display: block;
+      .system-title:hover>.system-operate>.min-min{
+        left: -153px;
+        transition: all 1s;
       }
-      .system-title:hover>.min-min{
-        display: none;
-        opacity: 0;
-        transition: all 2s linear;
-      }
-      .system-title:hover>.system-operate{
-        cursor: pointer;
-        opacity: 1;
-        transition: all 2s linear;
-        padding-left: 20px;
-        box-sizing: border-box;
-        float: right;
-        width: 152px;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        div{
-          flex:1;
-        }
-        div:hover{
-          color: $themeColor;
-        }
+      .system-title:hover>.system-operate>.min-max{
+        left: 0;
+        transition: all 1s;
       }
 
       .message{

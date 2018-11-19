@@ -173,7 +173,7 @@ export default {
     },
     windwowOperate (operate) {
       // 按钮操控主进程窗口
-      if (this.$electron) {
+      if (this.env) {
         let ipc = this.$electron.ipcRenderer
         switch (operate) {
           case 'mini':
@@ -187,7 +187,7 @@ export default {
             break
         }
       } else {
-        this.$message.info('无效点击操作')
+        this.$message.info('无效点击')
       }
     }
   },
