@@ -43,7 +43,8 @@
       </div>
     </div>
     <!-- 禁止右键: 程序上不允许调出自定义菜单 -->
-    <div id="topbar-wrapper" @contextmenu.prevent.stop="ban">
+    <!-- <div id="topbar-wrapper" @contextmenu.prevent.stop="ban"> -->
+    <div id="topbar-wrapper">
       <!-- 顶部导航 -->
       <div class="bread-nav float-left">
         <!-- <div class="between-line float-left"></div> -->
@@ -51,17 +52,17 @@
           <el-breadcrumb-item :to="{ path: item.path }" v-for="(item, index) in currentPath" :key="index">{{item.title}}</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
-      <!-- 系统操作按钮: 最大化/最小化/关闭 -->
-      <div class="system-operate float-right" v-if="false">
-        <span class="ercp-icon-general-minimine" @click="windwowOperate('mini')"></span>
-        <span class="ercp-icon-general-restore"  @click="windwowOperate('max')"></span>
-        <span class="ercp-icon-general-close" @click="windwowOperate('close')"></span>
-      </div>
       <!-- <div class="between-line float-right"></div> -->
       <!-- 系统标题 -->
       <div class="system-title float-right">
         <img src="../../assets/images/ercp标题.png" alt="">
-        <span>信息录入管理系统</span>
+        <span class="min-min">信息录入管理系统</span>
+        <!-- 系统操作按钮: 最大化/最小化/关闭 -->
+        <div class="system-operate">
+          <span class="ercp-icon-general-minimine" @click="windwowOperate('mini')"></span>
+          <span class="ercp-icon-general-restore"  @click="windwowOperate('max')"></span>
+          <span class="ercp-icon-general-close" @click="windwowOperate('close')"></span>
+        </div>
       </div>
       <div class="between-line float-right"></div>
       <!-- 消息提醒 -->
@@ -232,12 +233,12 @@ export default {
   mounted () {
     // fixed: 页面刷新清空缓存
     // fixed：刷新后面包屑重置
-    this.env = process.env.NODE_ENV
-    if (this.env === 'production') {
-      // let ipc = this.$electron.ipcRenderer
-      // setTimeout(() => {
-      //   ipc.send('mainshow')
-      // }, 1000)
+    this.env = this.$electron
+    if (this.env) {
+      let ipc = this.$electron.ipcRenderer
+      setTimeout(() => {
+        ipc.send('mainshow')
+      }, 1000)
     }
     this.user = this.$store.state.user
     this.initMenu(this.menu)
@@ -630,7 +631,7 @@ export default {
 
       .system-title{
         width:300px;
-        text-align: center;
+        // text-align: center;
         font-size:19px;
         font-weight: 900;
         // background-color: rgba($color: $themeColor, $alpha: 0.05);
@@ -640,7 +641,30 @@ export default {
           height: 18px;
           vertical-align: middle;
           margin-bottom: 4px;
+          // display: none;
         }
+
+        .min-min{
+          display: none;
+        }
+        .system-operate{
+          // display: none;
+          width: 152px;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          display: inline-block;
+          // float: left;
+        }
+      }
+
+      .system-title:hover>.min-min{
+        // background-color: red;
+        display: none;
+      }
+      .system-title:hover>.system-operate{
+        // background-color: green;
+        display: block !important;
       }
 
       .message{
@@ -657,26 +681,26 @@ export default {
         }
       }
 
-      .system-operate{
-        -webkit-app-region: no-drag;
-        cursor: pointer;
-        width: 120px;
-        height: 48px;
-        line-height: 48px;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        span:hover{
-          color: $themeColor;
-        }
-        .no-click{
-          color: #eee;
-          cursor: not-allowed;
-        }
-        .no-click:hover{
-          color: #eee;
-        }
-      }
+      // .system-operate{
+      //   -webkit-app-region: no-drag;
+      //   cursor: pointer;
+      //   width: 120px;
+      //   height: 48px;
+      //   line-height: 48px;
+      //   display: flex;
+      //   justify-content: space-around;
+      //   align-items: center;
+      //   span:hover{
+      //     color: $themeColor;
+      //   }
+      //   .no-click{
+      //     color: #eee;
+      //     cursor: not-allowed;
+      //   }
+      //   .no-click:hover{
+      //     color: #eee;
+      //   }
+      // }
       .system-title{
         // background: linear-gradient(to right, #fff, rgba($color: $themeColor, $alpha: .05));
         background-color: rgba($color: $themeColor, $alpha: .03);

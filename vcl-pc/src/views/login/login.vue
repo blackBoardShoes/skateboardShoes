@@ -60,7 +60,7 @@
             </div>
           </el-form>
         </div>
-        <div class="close-button" v-if="false">
+        <div class="close-button" v-if="env">
           <i class="ercp-icon-general-minimine" @click="windwowOperate('mini')"></i>
           <i class="ercp-icon-general-close" @click="windwowOperate('close')"></i>
         </div>
@@ -85,7 +85,7 @@ export default {
     this.$store.commit('SET_USER', null)
   },
   mounted () {
-    this.env = process.env.NODE_ENV
+    this.env = this.$electron
   },
   data () {
     var checkYanzhengma = (rule, value, callback) => {
@@ -153,7 +153,7 @@ export default {
             this.$store.commit('SET_USER', user)
             this.$router.push('/home')
             // 如果是在electron环境下，动画
-            if (this.$electron) {
+            if (this.env) {
               let ipc = this.$electron.ipcRenderer
               ipc.send('hide')
               ipc.send('mainResize')

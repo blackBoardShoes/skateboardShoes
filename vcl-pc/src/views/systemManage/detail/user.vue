@@ -90,7 +90,7 @@
           width="180">
           <template slot-scope="scope" class="header-operate">
             <span  v-if="showOperate(scope.row)">
-              <el-button type="danger" size="small" plain @click="banUser(scope.row)" >禁用</el-button>
+              <el-button type="danger" size="small" plain @click="banUser(scope.row)" >删除</el-button>
               <el-button type="primary" size="small" plain @click="resetUser(scope.row)">重置密码</el-button>
             </span>
             <span v-else> - </span>
@@ -182,7 +182,7 @@
         </el-col>
         <el-col :span="23">
           <el-form-item label="用户性别:" prop="gender">
-            <el-radio-group v-model="newUser.gender" :disabled="newUser.type === '诊疗中心'">
+            <el-radio-group v-model="newUser.gender">
               <el-radio label="男" value="男"></el-radio>
               <el-radio label="女" value="女"></el-radio>
             </el-radio-group>
@@ -444,7 +444,7 @@ export default {
         let arr2 = []
         let sort = (type) => {
           arr1.forEach((item) => {
-            if (item.type === type) {
+            if (item.type === type && item.status !== '禁用') {
               arr2.push(item)
             }
           })
@@ -480,7 +480,7 @@ export default {
     },
     // 禁用用户
     async banUser (value) {
-      this.$confirm('操作将禁用  ' + value.name + '  用户，是否继续？', '提示', {
+      this.$confirm('操作将删除  ' + value.name + '  用户，是否继续？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

@@ -84,7 +84,7 @@ export const appRouter = [
         meta: {
           title: '数据录入',
           navigator: false,
-          role: [2, 4, 5, 6]
+          role: [5, 6]
         },
         component: () => import('../../src/views/rules/lr.vue')
       },
@@ -94,7 +94,7 @@ export const appRouter = [
         meta: {
           title: '数据审核',
           navigator: false,
-          role: [2, 4, 5, 6]
+          role: [2, 4]
         },
         component: () => import('../../src/views/rules/sh.vue')
       },
@@ -104,7 +104,7 @@ export const appRouter = [
         meta: {
           title: '数据修正',
           navigator: false,
-          role: [2, 4, 5, 6]
+          role: [5, 6]
         },
         component: () => import('../../src/views/rules/xz.vue')
       },
@@ -114,7 +114,7 @@ export const appRouter = [
         meta: {
           title: '随访',
           navigator: false,
-          role: [1, 2, 4, 5, 6]
+          role: [1, 2, 3, 4, 5, 6]
         },
         component: () => import('../../src/views/rules/sf.vue')
       }
@@ -271,93 +271,6 @@ export const appRouter = [
       }
     ]
   },
-  // {
-  //   path: '/project',
-  //   name: 'project',
-  //   redirect: '/project/index',
-  //   meta: {
-  //     title: '项目管理',
-  //     // 暂时隐藏
-  //     navigator: false,
-  //     role: [1, 2, 3],
-  //     icon: 'module-project'
-  //   },
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'project_index',
-  //       meta: {
-  //         title: '项目管理',
-  //         navigator: false,
-  //         role: [1, 2, 3]
-  //       },
-  //       component: () => import('../../src/views/project/index/index.vue')
-  //     },
-  //     {
-  //       path: 'detail/:id',
-  //       name: 'project_detail',
-  //       meta: {
-  //         title: '项目详情',
-  //         navigator: false,
-  //         role: [1, 2, 3]
-  //       },
-  //       component: () => import('../../src/views/project/detail/detail.vue'),
-  //       children: [
-  //         {
-  //           path: 'basic',
-  //           name: 'project_basic',
-  //           meta: {
-  //             title: '基本信息',
-  //             navigator: false,
-  //             role: [1, 2, 3]
-  //           },
-  //           component: () => import('../../src/views/project/detail/case/basic.vue')
-  //         },
-  //         {
-  //           path: 'member',
-  //           name: 'project_member',
-  //           meta: {
-  //             title: '项目成员',
-  //             navigator: false,
-  //             role: [1, 2, 3]
-  //           },
-  //           component: () => import('../../src/views/project/detail/case/member.vue')
-  //         },
-  //         {
-  //           path: 'patientCase',
-  //           name: 'project_patientCase',
-  //           meta: {
-  //             title: '数组导出',
-  //             navigator: false,
-  //             role: [1, 2, 3]
-  //           },
-  //           component: () => import('../../src/views/project/detail/case/patientCase.vue')
-  //         },
-  //         {
-  //           path: 'projectStatistics',
-  //           name: 'project_projectStatistics',
-  //           meta: {
-  //             title: '项目统计',
-  //             navigator: false,
-  //             role: [1, 2, 3]
-  //           },
-  //           component: () => import('../../src/views/project/detail/case/projectStatistics.vue')
-  //         },
-  //         {
-  //           path: 'projectExport',
-  //           name: 'project_projectExport',
-  //           meta: {
-  //             title: '数据导出',
-  //             navigator: false,
-  //             role: [1, 2, 3]
-  //           },
-  //           component: () => import('../../src/views/project/detail/case/projectExport.vue')
-  //         }
-  //       ]
-  //     }
-  //   ]
-  // },
   {
     path: '/systemManage',
     name: 'systemManage',

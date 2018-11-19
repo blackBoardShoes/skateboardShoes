@@ -7,10 +7,10 @@
 // let host = 'http://192.168.10.249:8089'
 let host = 'http://192.168.10.104:8090'
 let nginx = false
-nginx = true
+// nginx = true
 // 是APP是 gzip 选用 false
 let gzip = true
-// gzip = false
+gzip = false
 // ----------------------------------------------------
 let proxyTable = {
   '/api': {
