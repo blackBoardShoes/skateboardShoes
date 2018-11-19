@@ -10,7 +10,7 @@
         </div>
       </sx-submenu-control>
       <!-- <keep-alive> -->
-      <router-view></router-view>
+      <router-view style="width:calc(100% - 160px);"></router-view>
       <!-- </keep-alive> -->
     </div>
   </div>

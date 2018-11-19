@@ -12,7 +12,7 @@ export const formdataDelete = data => {
 }
 // /record/followingup/{id} 删除
 export const formdataDeleteId = data => {
-  return axios.delete(`${api}/formdata/followingup/${data.id}`)
+  return axios.delete(`${api}/formdata/record/followingup/${data.id}`)
 }
 // 失访 /formdata/followingup/lostcontact/{id}
 export const formdataFollowingupLostcontact = data => {

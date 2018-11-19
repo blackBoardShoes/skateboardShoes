@@ -513,8 +513,8 @@ $full: 100%;
       .zdkContentBottomLeft {
         overflow-y: auto;
         // max-width: 0px;
-        width: 700px;
-        flex-grow: 1;
+        // width: 700px;
+        // flex-grow: 1;
       }
       .zdkContentBottomRight {
         width: 300px;

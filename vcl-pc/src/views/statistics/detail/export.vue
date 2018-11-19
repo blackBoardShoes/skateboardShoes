@@ -487,7 +487,7 @@ export default {
             field.value = field.id
             field.treeNode = module.treeNode + '.' + field.id
             field.reference = field.values !== undefined ? field.values : (field.children === undefined ? [] : field.children)
-            if (field.subFields && field.subFields.length > 0 && field.type !== 'TABLE') {
+            if (field.subFields && field.subFields.length > 0) {
               field.children = field.subFields
               field.children.forEach((subField) => {
                 subField.phase = module.phase
@@ -508,9 +508,22 @@ export default {
         })
       })
       this.recordSelectOptions = [...arr2]
-      this.fieldsData = [...arr2]
-      // this.fieldsData.unshift(this.basicExample.field.options[0])
-      console.log(arr2)
+      this.fieldsData = JSON.parse(JSON.stringify([...arr2]))
+      console.log(this.fieldsData)
+      this.fieldsData.forEach((item) => {
+        console.log(item)
+        if (item.children) {
+          item.children.forEach((item2) => {
+            if (item2.children) {
+              item2.children.forEach((field) => {
+                if (field.type === 'TABLE' && field.children) {
+                  field.children = null
+                }
+              })
+            }
+          })
+        }
+      })
     },
     // 住院信息级联选项更改=>改变后面的大小关系以及目标值
     changeRelaAndTarget (arr, index) {

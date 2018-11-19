@@ -246,7 +246,7 @@ export default {
           { prop: 'operationDate', label: '手术日期' },
           { prop: 'phase', label: '数据阶段', sortable: true, width: '115' },
           { prop: 'responseName', label: '记录者', width: 100, sortable: true },
-          { option: true, label: '操作', width: '130', contain: [{label: '编辑', hidden: true}, {label: '录入'}, {label: '删除', style: 'color: #FF455B'}] }
+          { option: true, fixed: 'right', label: '操作', width: '130', contain: [{label: '编辑', hidden: true}, {label: '录入'}, {label: '删除', style: 'color: #FF455B'}] }
         ],
         // 待审核 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (审核
         toBeAuditedColumn: [
@@ -260,7 +260,7 @@ export default {
           { prop: 'operationDate', label: '手术日期' },
           { prop: 'phase', label: '数据阶段', sortable: true, width: 115 },
           { prop: 'responseName', label: '记录者', sortable: true, width: 100 },
-          { option: true, label: '操作', contain: [{label: '审核'}] }
+          { option: true, fixed: 'right', label: '操作', contain: [{label: '审核'}] }
         ],
         // 待修正 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (编辑
         toBeAmendedColumn: [
@@ -273,8 +273,8 @@ export default {
           { prop: 'inHospitalDate', label: '入院日期' },
           { prop: 'operationDate', label: '手术日期' },
           { prop: 'phase', label: '数据阶段', sortable: true, width: 115 },
-          { prop: 'responseName', label: '记录者', sortable: true },
-          { option: true, label: '操作', contain: [{label: '编辑'}] }
+          { prop: 'responseName', label: '记录者', sortable: true, width: 100 },
+          { option: true, fixed: 'right', label: '操作', contain: [{label: '编辑'}] }
         ],
         // 随访 ---> 住院号 编号 姓名 性别 主管医生 术后诊断 出院日期 记录者 状态（待问询、已失访、待复查） 操作（编辑）
         followUpColumn: [
@@ -288,7 +288,7 @@ export default {
           { prop: 'followUpDate', label: '随访日期' },
           { prop: 'responseName', label: '记录者' },
           { prop: 'isLostContact', label: '状态' },
-          { option: true, label: '操作', contain: [{label: '查看', hidden: true, reverse: true}, {label: '失访', style: 'color: #878A8D', hidden: true}, {label: '编辑', hidden: true}, {label: '删除', hidden: true, style: 'color: #FF455B'}], width: 130 }
+          { option: true, fixed: 'right', label: '操作', contain: [{label: '查看', hidden: true, reverse: true}, {label: '失访', style: 'color: #878A8D', hidden: true}, {label: '编辑', hidden: true}, {label: '删除', hidden: true, style: 'color: #FF455B'}], width: 130 }
         ]
       },
       dialogVisible: false,

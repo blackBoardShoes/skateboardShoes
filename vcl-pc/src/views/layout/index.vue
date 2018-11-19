@@ -59,9 +59,9 @@
         <span class="min-min">信息录入管理系统</span>
         <!-- 系统操作按钮: 最大化/最小化/关闭 -->
         <div class="system-operate">
-          <span class="ercp-icon-general-minimine" @click="windwowOperate('mini')"></span>
-          <span class="ercp-icon-general-restore"  @click="windwowOperate('max')"></span>
-          <span class="ercp-icon-general-close" @click="windwowOperate('close')"></span>
+          <div class="ercp-icon-general-minimine" @click="windwowOperate('mini')"></div>
+          <div class="ercp-icon-general-restore"  @click="windwowOperate('max')"></div>
+          <div class="ercp-icon-general-close" @click="windwowOperate('close')"></div>
         </div>
       </div>
       <div class="between-line float-right"></div>
@@ -634,37 +634,52 @@ export default {
         // text-align: center;
         font-size:19px;
         font-weight: 900;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
         // background-color: rgba($color: $themeColor, $alpha: 0.05);
 
         img{
           width: 80px;
-          height: 18px;
           vertical-align: middle;
-          margin-bottom: 4px;
-          // display: none;
+          margin-right: 10px;
         }
 
-        .min-min{
-          display: none;
-        }
         .system-operate{
-          // display: none;
-          width: 152px;
-          display: flex;
-          flex-direction: row;
-          justify-content: center;
-          display: inline-block;
-          // float: left;
+          display: none;
+          transition: all 2s;
+          opacity: 0;
         }
       }
 
+      .min-min{
+        transition: all 2s;
+        opacity: 1;
+        display: block;
+      }
       .system-title:hover>.min-min{
-        // background-color: red;
         display: none;
+        opacity: 0;
+        transition: all 2s linear;
       }
       .system-title:hover>.system-operate{
-        // background-color: green;
-        display: block !important;
+        cursor: pointer;
+        opacity: 1;
+        transition: all 2s linear;
+        padding-left: 20px;
+        box-sizing: border-box;
+        float: right;
+        width: 152px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        div{
+          flex:1;
+        }
+        div:hover{
+          color: $themeColor;
+        }
       }
 
       .message{
@@ -681,26 +696,26 @@ export default {
         }
       }
 
-      // .system-operate{
-      //   -webkit-app-region: no-drag;
-      //   cursor: pointer;
-      //   width: 120px;
-      //   height: 48px;
-      //   line-height: 48px;
-      //   display: flex;
-      //   justify-content: space-around;
-      //   align-items: center;
-      //   span:hover{
-      //     color: $themeColor;
-      //   }
-      //   .no-click{
-      //     color: #eee;
-      //     cursor: not-allowed;
-      //   }
-      //   .no-click:hover{
-      //     color: #eee;
-      //   }
-      // }
+      .system-operate{
+        -webkit-app-region: no-drag;
+        cursor: pointer;
+        width: 120px;
+        height: 48px;
+        line-height: 48px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        span:hover{
+          color: $themeColor;
+        }
+        .no-click{
+          color: #eee;
+          cursor: not-allowed;
+        }
+        .no-click:hover{
+          color: #eee;
+        }
+      }
       .system-title{
         // background: linear-gradient(to right, #fff, rgba($color: $themeColor, $alpha: .05));
         background-color: rgba($color: $themeColor, $alpha: .03);

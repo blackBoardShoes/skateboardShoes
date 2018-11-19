@@ -33,11 +33,11 @@
                   {{navArr[activeIndex] ? navArr[activeIndex].name : ''}}
                 </div>
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" placement="top" :content="navArr[activeIndex] ? navArr[activeIndex].description : ''">
+              <!-- <el-tooltip class="item" effect="dark" placement="top" :content="navArr[activeIndex] ? navArr[activeIndex].description : ''">
                 <div style="font-size:13px;font-weight:400;width: 180px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
                   {{navArr[activeIndex] ? navArr[activeIndex].description : ''}}
                 </div>
-              </el-tooltip>
+              </el-tooltip> -->
             </div>
             <div class="rightContentControlBtn">
               <!-- {{fishDataComments[navArr[activeIndex].id] ? Object.keys(fishDataComments[navArr[activeIndex].id]).length ? Object.keys(fishDataComments[navArr[activeIndex].id]).length : '' : ''}} -->
@@ -891,7 +891,7 @@ $marginW: 15px;
           justify-content: space-between;
           align-items: center;
           border-left: 9px solid $minorTextColor;
-          width: 400px;
+          // width: 400px;
         }
         .rightContentControlBtn {
           transition: all .5s;
@@ -899,9 +899,9 @@ $marginW: 15px;
           width: 400px;
           height: $full;
           display: flex;
-          justify-content: space-between;
+          justify-content: flex-end;
           font-weight: bold;
-          margin-right: $marginW;
+          // margin-right: $marginW;
           /deep/ .el-button {
             display: flex;
             align-items: center;
