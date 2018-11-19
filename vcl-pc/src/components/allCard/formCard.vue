@@ -61,7 +61,7 @@ export default {
 @import '../../assets/css/variable';
 
 .formCardAll {
-  width: 24%;
+  width: 23.6%;
   // height: 200px;
   border: 0.5px solid $lightBorderColor;
   border-radius: 3px;

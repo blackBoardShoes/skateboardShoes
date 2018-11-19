@@ -55,7 +55,7 @@ $minW: 160px;
 $W: 16%;
 .formControlAll {
   height: $full;
-  width: $W;
+  // width: $W;
   min-width: $minW;
   background-color: $groupColor;
   .menuClass {

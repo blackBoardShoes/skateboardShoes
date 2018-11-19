@@ -106,40 +106,48 @@
             <div class="transfer-footer" slot="left-footer"></div>
             <el-button @click="openRelation" class="transfer-footer" slot="right-footer" size="mini">关联关系</el-button>
           </el-transfer> -->
-          <sx-min-tree
-            ref="minTreeOne"
-            :title="'字段库'"
-            :mark="'leftChecked'"
-            v-model="leftData" showCheckbox style="width: 400px"
-            @handleCheckChange="handleCheckChange"></sx-min-tree>
-          <div style="display: flex;flex-grow: 0.1;flex-direction: column;align-self: center;justify-content: center;padding: 35px">
-            <div>
-              <el-button
-                :disabled="Boolean(!rightChecked.length)"
-                type="primary"
-                style="width:100%;" @click="deleteField" icon="el-icon-arrow-left">
-                删除字段</el-button>
-            </div>
-            <div style="margin-top: 15px;">
-              <el-button
-                :disabled="Boolean(!leftChecked.length)"
-                type="primary"
-                style="width:100%;" @click="addField" icon="el-icon-arrow-right">
-                增加字段</el-button>
-            </div>
-          </div>
-          <sx-min-tree
-            ref="minTreeTwo"
-            :title="'当前表'"
-            :mark="'rightChecked'"
-            v-model="rightData" draggable
-            showCheckbox style="width: 400px" @handleCheckChange="handleCheckChange">
-            <div slot="bottom" class="createContentBottom">
-              <el-button @click="openRelation" size="mini">关联关系</el-button>
-              <el-button @click="openCoordinate" size="mini">排版</el-button>
-              <el-button @click="openPreview" size="mini">预览</el-button>
-            </div>
-          </sx-min-tree>
+          <el-row type="flex" justify="space-between" style="width:100%">
+            <el-col :span="10" style="display:flex;justify-content: center">
+              <sx-min-tree
+                ref="minTreeOne"
+                :title="'字段库'"
+                :mark="'leftChecked'"
+                v-model="leftData" showCheckbox style="width: 100%;max-width:400px;"
+                @handleCheckChange="handleCheckChange"></sx-min-tree>
+            </el-col>
+            <el-col :span="4" style="display:flex;align-items:center;height:100%;justify-content: center;">
+              <div style="display: flex;flex-grow: 0.1;flex-direction: column;align-self: center;justify-content: center;">
+                <div>
+                  <el-button
+                    :disabled="Boolean(!rightChecked.length)"
+                    type="primary"
+                    style="width:100%;" @click="deleteField" icon="el-icon-arrow-left">
+                    删除字段</el-button>
+                </div>
+                <div style="margin-top: 15px;">
+                  <el-button
+                    :disabled="Boolean(!leftChecked.length)"
+                    type="primary"
+                    style="width:100%;" @click="addField" icon="el-icon-arrow-right">
+                    增加字段</el-button>
+                </div>
+              </div>
+            </el-col>
+            <el-col :span="10" style="display:flex;justify-content: center">
+              <sx-min-tree
+                ref="minTreeTwo"
+                :title="'当前表'"
+                :mark="'rightChecked'"
+                v-model="rightData" draggable
+                showCheckbox style="width: 100%;max-width:400px" @handleCheckChange="handleCheckChange">
+                <div slot="bottom" class="createContentBottom">
+                  <el-button @click="openRelation" size="mini">关联关系</el-button>
+                  <el-button @click="openCoordinate" size="mini">排版</el-button>
+                  <el-button @click="openPreview" size="mini">预览</el-button>
+                </div>
+              </sx-min-tree>
+            </el-col>
+          </el-row>
         </div>
       </div>
     </div>
@@ -865,7 +873,8 @@ $bottomH: 200px;
       .createContent {
         width: $full;
         display: flex;
-        justify-content: space-around;
+        // justify-content: space-around;
+        justify-content: space-between;
         // .el-transfer {
         //   width: $full;
         //   display: flex;
