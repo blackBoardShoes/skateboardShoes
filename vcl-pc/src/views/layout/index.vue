@@ -4,7 +4,7 @@
       <div class="slider-menu">
         <!-- 测试阶段使用  后期去掉 -->
         <div class="logo">
-          <img src="../../assets/images/导航栏@2x.png" alt="">
+          <img src="../../assets/images/导航栏@2x.png">
         </div>
         <el-tooltip
           placement="right"
@@ -22,13 +22,6 @@
               {{menu.title}}
             </div>
           </div>
-          <!-- 测试阶段使用  后期去掉 -->
-          <div class="sub-menu" slot="content">
-            <div class="child-menu" v-for="(child, index2) in menu.children" :key="index2" @click="linkTo(child)">
-              <span style="display:block;height:30px;line-height:30px;font-size:12px;padding:0 10px;text-align: left;cursor:pointer;">
-                {{child.meta.title}}</span>
-            </div>
-          </div>
         </el-tooltip>
       </div>
       <!-- 帮助中心 -->
@@ -44,7 +37,6 @@
     </div>
     <!-- 禁止右键: 程序上不允许调出自定义菜单 -->
     <div id="topbar-wrapper" @contextmenu.prevent.stop="ban">
-    <!-- <div id="topbar-wrapper"> -->
       <!-- 顶部导航 -->
       <div class="bread-nav float-left">
         <!-- <div class="between-line float-left"></div> -->
@@ -399,7 +391,8 @@ export default {
           this.ableForward += 1
           break
         case 'refresh':
-          this.$router.go(0)
+          // this.$router.go(0)
+          window.location.reload()
           break
         case 'forward':
           if (this.ableForward) {
@@ -668,7 +661,7 @@ export default {
             display: flex;
             flex-direction: row;
             justify-content: center;
-            padding-left: 10px;
+            padding-left: 30px;
             div{
               flex:1;
             }

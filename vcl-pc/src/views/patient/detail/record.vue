@@ -5,7 +5,7 @@
       患者：
       <span class="primary-text">{{formData.patientName}}</span>
       <span>（{{formData.gender === 1 ? '男' : '女'}}）</span>
-      <span class="hospital-num"> 住院编号：{{formData.operationNum}} </span>
+      <span class="hospital-num"> 住院编号：{{formData.patientId}} </span>
       <div class="operate-buttons">
         <el-button type="primary" @click="printRecord" plain size="small">打印</el-button>
       </div>
@@ -272,6 +272,7 @@ export default {
         }
         this.formData.recordCover = recordCover
         this.smallNavi.push(recordCover)
+        console.log(this.formData)
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }

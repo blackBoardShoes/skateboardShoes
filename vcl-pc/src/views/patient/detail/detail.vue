@@ -490,7 +490,7 @@ export default {
       let response = await getPatientRecords(info)
       if (response.data.mitiStatus === 'SUCCESS') {
         console.log(response.data.entity)
-        this.patientRecords = response.data.entity
+        this.patientRecords = [...response.data.entity]
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }

@@ -2,7 +2,8 @@
   <div id="data-charts">
     <div class="chart-part er-card" id="all-charts">
       <div class="chart"  v-for="(item, index) in options" :key="index">
-        <chart ref="A" :options="item" auto-resize></chart>
+        <div class="error" v-if="item.error">{{item.error}}</div>
+        <chart :options="item" auto-resize v-else></chart>
       </div>
     </div>
   </div>
@@ -43,7 +44,7 @@ export default {
       let textArr = ['入院年龄', '总住院天数', '教育水平', '职业', '家庭年收入', '总住院费用', '术中并发症', '术后表现及并发症', '憩室分型（本中心分型）', '憩室分型（国际分型）']
       arr.forEach((bbb, index) => {
         let item = bbb.chart
-        if (item.data.mitiStatus === 'SUCCESS') {
+        if (item.data && item.data.mitiStatus === 'SUCCESS') {
           console.log(item.data.entity)
           let data = item.data.entity
           let total = 0
@@ -59,7 +60,11 @@ export default {
           let a = []
           this.options.push(initChart(a, obj, bbb.type))
         } else {
-          this.$message.error('ERROR: ' + item.data.message)
+          let obj = {
+            error: '服务器错误' + '(' + textArr[index] + '统计)'
+          }
+          this.options.push(obj)
+          return false
         }
       })
       this.loadingInstance.close()
@@ -106,6 +111,12 @@ export default {
         overflow: auto;
         float: left;
         border: 1px dotted #dfdfdf;
+      }
+      .error{
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        line-height: 338px;
       }
     }
   }

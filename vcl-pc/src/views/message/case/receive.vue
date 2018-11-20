@@ -67,7 +67,7 @@
                     <i class="ercp-icon-general-forward primary-text" v-if="item.type === 1" @click.stop="recall(item)"></i>
                   </el-tooltip>
                   <el-tooltip effect="dark" content="删除消息" placement="top">
-                    <i class="ercp-icon-general-remove light-text" @click.stop="deleteSingle(item)"></i>
+                    <i class="ercp-icon-general-remove danger-text" @click.stop="deleteSingle(item)"></i>
                   </el-tooltip>
                 </div>
               </div>

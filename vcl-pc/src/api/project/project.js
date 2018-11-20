@@ -73,12 +73,12 @@ export const removeProjectMember = data => {
 // }
 
 export const filterPaient = data => {
-  return axios.post(api + `formdata/inclusion?currentPage=1&perPage=50${data.basic}`, data.record)
+  return axios.post(api + `/formdata/inclusion?currentPage=1&perPage=50${data.basic}`, data.record)
 }
 
 // 生成文件
 export const createFile = data => {
-  return axios.post(api + `formdata/export?fileName=${data.name}`, data.body)
+  return axios.post(api + `/formdata/export?fileName=${data.name}`, data.body)
 }
 
 // 获取患者列表

@@ -465,7 +465,9 @@ export default {
         // 名字校验
         this.nameArr = []
         this.tableData.forEach((item) => {
-          this.nameArr.push(item)
+          if (item.status !== '禁用') {
+            this.nameArr.push(item)
+          }
         })
         if (add === 1) {
           this.$message.success('新增用户成功')
