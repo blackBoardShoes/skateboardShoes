@@ -472,7 +472,7 @@ export default {
         if (add === 1) {
           this.$message.success('新增用户成功')
         } else if (add === 2) {
-          this.$message.success('禁用用户成功')
+          this.$message.success('删除用户成功')
         } else if (add === 3) {
           // this.$message.success('重置用户密码成功')
         }
