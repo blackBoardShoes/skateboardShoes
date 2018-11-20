@@ -62,11 +62,11 @@ axios.interceptors.response.use(
           // }
           return response
         } else {
-          // Message({
-          //   showClose: true,
-          //   message: '服务器有点忙。',
-          //   type: 'info'
-          // })
+          Message({
+            showClose: true,
+            message: '服务器繁忙，请稍后再试。',
+            type: 'info'
+          })
         }
         return false
       }

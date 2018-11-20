@@ -178,7 +178,7 @@
     </el-dialog>
     <!-- 预览-->
     <el-dialog
-      width="1000px"
+      width="70%"
       title="预览"
       append-to-body
       v-if="previewDialogVisible"
