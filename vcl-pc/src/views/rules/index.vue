@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import { charts } from '../../data/chartTemplates/chart'
+// import { charts } from '../../data/chartTemplates/chart'
 import { mapState } from 'vuex'
 import sxMinTable from '../../components/dynamicForm/minTable'
 import { formdataDeleteId, formdataFollowingupLostcontact, record, formdataDelete, recordAllRecord, formdataRejectedFilledForm, formdataFinishedFilledForm, formdataUndoneFilledForm, formdataFollowUpFilledForm, patientGetPatientCount, patientAddPatient } from '../../api/rules/index.js'
@@ -246,7 +246,8 @@ export default {
           { prop: 'operationDate', label: '手术日期' },
           { prop: 'phase', label: '数据阶段', sortable: true, width: '115' },
           { prop: 'responseName', label: '记录者', width: 100, sortable: true },
-          { option: true, fixed: 'right', label: '操作', width: '130', contain: [{label: '编辑', hidden: true}, {label: '录入'}, {label: '删除', style: 'color: #FF455B'}] }
+          // , hidden: true
+          { option: true, fixed: 'right', label: '操作', width: '130', contain: [{label: '编辑'}, {label: '录入'}, {label: '删除', style: 'color: #FF455B'}] }
         ],
         // 待审核 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (审核
         toBeAuditedColumn: [
@@ -303,7 +304,7 @@ export default {
             type: 'INPUT',
             validations: [
               { required: true, message: '请输入住院号', trigger: 'change' },
-              { pattern: '^[0-9]{11}$', message: '11位', trigger: 'change' }
+              { pattern: '^[0-9a-zA-Z]{11}$', message: '11位', trigger: 'change' }
             ]
           },
           {
@@ -393,7 +394,7 @@ export default {
     user: state => state.user
   }),
   async created () {
-    this.optionYY = charts[2]
+    // this.optionYY = charts[2]
     // 规则 a
     let a = {
       // 管理员 医生 无页面
