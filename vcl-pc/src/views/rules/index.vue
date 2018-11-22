@@ -303,7 +303,7 @@ export default {
             type: 'INPUT',
             validations: [
               { required: true, message: '请输入住院号', trigger: 'change' },
-              { pattern: '^[0-9]{11}$', message: '11位', trigger: 'change' }
+              { pattern: '^[0-9a-zA-Z]{11}$', message: '11位', trigger: 'change' }
             ]
           },
           {
