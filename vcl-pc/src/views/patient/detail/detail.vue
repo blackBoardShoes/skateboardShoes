@@ -387,12 +387,12 @@ export default {
           required: true,
           message: '必填项不能为空',
           trigger: 'focus'
-        }],
-        staAddress: [{
-          required: true,
-          message: '必填项不能为空',
-          trigger: 'focus'
         }]
+        // staAddress: [{
+        //   required: true,
+        //   message: '必填项不能为空',
+        //   trigger: 'focus'
+        // }]
       },
       // 地址选项
       addressOption: [],

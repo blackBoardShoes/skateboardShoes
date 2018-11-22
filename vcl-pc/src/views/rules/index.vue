@@ -68,7 +68,7 @@
         <div style="padding-left: 60px;padding-right: 39px;">
           <el-form-item label="住院号" prop="patientId" :rules="[
             { required: true, message: '请输入病人住院号', trigger: 'change'},
-            { pattern: '^[0-9]{11}$', message: '11位', trigger: 'change' }]">
+            { pattern: '^[0-9a-zA-Z]{11}$', message: '11位', trigger: 'change' }]">
             <el-input v-model="ruleForm.patientId" @blur="patientIdCheckUp" placeholder="请输入"></el-input>
           </el-form-item>
           <el-form-item label="姓名" prop="patientName" :rules="[
@@ -371,7 +371,7 @@ export default {
             label: '街道地址',
             type: 'INPUT',
             validations: [
-              { required: true, message: '请输入街道地址', trigger: 'change' },
+              // { required: true, message: '请输入街道地址', trigger: 'change' },
               { min: 1, max: 40, message: '长度在 1 到 40 个字符', trigger: 'change' }
             ]
           }
