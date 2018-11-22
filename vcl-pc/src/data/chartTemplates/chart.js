@@ -352,7 +352,7 @@ export const charts = [
     },
     grid: {
       left: 10,
-      right: 100,
+      right: 10,
       bottom: '20%',
       containLabel: true,
       show: true
@@ -385,25 +385,25 @@ export const charts = [
         end: 80,
         dataBackground: {
           areaStyle: {
-            color: 'rgba(203, 204, 205, 1)'
+            color: 'rgba(103, 104, 105, 0.7)'
           },
           lineStyle: {
-            color: 'rgba(203, 204, 205, 1)'
+            color: 'rgba(203, 104, 105, 1)'
           }
         },
-        fillerColor: 'rgba(217, 239, 249, 0.4)',
+        fillerColor: 'rgba(217, 239, 249, 0.5)',
         handleStyle: {
-          color: 'rgba(63, 177, 227, 0.75)'
+          color: 'rgba(63, 177, 227, 0.9)'
         },
-        left: '10px',
-        right: '10px',
+        left: '20px',
+        right: '20px',
         bottom: '10px'
       }
     ],
     toolbox: {
       show: true,
       feature: {
-        magicType: {type: ['line', 'bar', 'tiled', 'stack']},
+        magicType: {type: ['line', 'bar']},
         // dataView: {show: true, readOnly: true, lang: ['统计表', '关闭', '刷新']},
         saveAsImage: {show: true}
       }
@@ -906,11 +906,13 @@ export const initChart = (chart, obj, type) => {
       chart.series = []
       chart.xAxis[0].data = obj.legendData
       chart.legend.data = obj.classes
+      chart.dataZoom[0].start = obj.zoom[0]
+      chart.dataZoom[0].end = obj.zoom[1]
       obj.data.forEach((item, index) => {
         let obj2 = {
           name: item.name,
           type: 'bar',
-          barWidth: '20%',
+          barWidth: obj.barWidth,
           label: {
             normal: {
               show: false,

@@ -8,30 +8,27 @@ let mainWindow
 // 渲染进程与主进程互相通信 
 ipcMain.on('min', e=> mainWindow.minimize())
 ipcMain.on('max', e=> {
-    if (mainWindow.isMaximized()) {
-        mainWindow.unmaximize()
+    if (mainWindow.getSize()[0] !== 1366) {
+      mainWindow.setSize(1366, 768, { animation: true })
+      mainWindow.center()
     } else {
-        mainWindow.maximize()
+      mainWindow.maximize()
     }
 })
 ipcMain.on('close', e=> mainWindow.close())
 
 ipcMain.on('loginResize', e=> mainWindow.setSize(840, 360, { animation: true }))
-// ipcMain.on('hide', e=> mainWindow.hide())
 ipcMain.on('hide', e=> mainWindow.setOpacity(0))
 ipcMain.on('nonableResize', e=> mainWindow.setResizable(false))
 
 ipcMain.on('center', e=> mainWindow.center())
 ipcMain.on('mainResize', e=> mainWindow.setSize(1366, 768, { animation: true }))
 ipcMain.on('ableResize', e=> mainWindow.setResizable(true))
-// ipcMain.on('mainshow', e=> mainWindow.show())
 ipcMain.on('mainshow', e=> mainWindow.setOpacity(1))
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 840, height: 360, frame: false, resizable: false})
-  // mainWindow.webContents.openDevTools({ mode: true })
-  // and load the index.html of the app.
+  mainWindow = new BrowserWindow({width: 840, height: 360, frame: false, resizable: false, icon: 'vcl-pc/dist/logo.ico'})
   mainWindow.loadFile('vcl-pc/dist/index.html')
 
   // Open the DevTools.

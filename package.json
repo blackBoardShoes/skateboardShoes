@@ -1,5 +1,5 @@
 {
-  "name": "electron-quick-start",
+  "name": "ercp",
   "version": "1.0.0",
   "description": "A minimal Electron application",
   "main": "main.js",
@@ -8,13 +8,13 @@
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "miti",
+    "genomics",
+    "vue",
+    "electron",
+    "medical"
   ],
-  "author": "GitHub",
+  "author": "Mitigenomics",
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^2.0.5"

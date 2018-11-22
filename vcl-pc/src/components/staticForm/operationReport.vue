@@ -313,44 +313,7 @@ export default {
   data () {
     return {
       activeNames: ['1', '2'],
-      imgArr: [
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg'),
-          checked: false,
-          information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
-        },
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg'),
-          checked: false,
-          information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
-        },
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg'),
-          checked: false,
-          information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
-        },
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg'),
-          checked: false,
-          information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
-        },
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg'),
-          checked: false,
-          information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
-        },
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg'),
-          checked: false,
-          information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
-        }
-      ],
+      imgArr: [],
       contentModel: this.value,
       formData: {
         operationCheckBox: [
