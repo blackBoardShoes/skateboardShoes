@@ -53,7 +53,7 @@
           prop="department"
           align="center"
           label="科室"
-          :filters="[{ text: '外科一', value: '外科一' }, { text: '外科二', value: '外科二' }, { text: '特需外科', value: '特需外科' }]"
+          :filters="[{ text: '普外二科', value: '普外二科' }, { text: '普外五科', value: '普外五科' }, { text: '特需外科', value: '特需外科' }, { text: '东岗院区普外科', value: '东岗院区普外科'}]"
           :filter-method="filterTag2">
           <template slot-scope="scope">
             <span>{{ scope.row.department || '/' }}</span>
