@@ -38,7 +38,7 @@
 </template>
 <script>
 import {initChart} from '../../../data/chartTemplates/chart'
-import { aoPatient, operationDiff, outHospitalStatus, patientNumber, inHospitalNumber, needOperation, nonCheckNumber, nonRepairNumber, operationFinishedByMonth, operationFinishedByWeek, operationFinishedByDay } from '../../../api/home/home.js'
+import { operationDiff, outHospitalStatus, patientNumber, inHospitalNumber, needOperation, nonCheckNumber, nonRepairNumber, operationFinishedByMonth, operationFinishedByWeek, operationFinishedByDay } from '../../../api/home/home.js'
 export default {
   name: 'home',
   data () {
@@ -231,26 +231,7 @@ export default {
           break
       }
     },
-    // 各科室患者分布
-    async aoPatientMeth () {
-      let response = await aoPatient()
-      if (response.data.mitiStatus === 'SUCCESS') {
-        let data = response.data.entity
-        let total = 0
-        data.value.forEach((item) => {
-          total += item.value
-        })
-        let obj = {
-          text: '各科室患者分布',
-          subtext: '共计' + total + '例',
-          classes: data.type,
-          data: data.value
-        }
-        this.optionB = (initChart(this.optionB, obj, 2))
-      } else {
-        this.$message.error('ERROR: ' + response.data.message)
-      }
-    },
+    // 切换手术完成统计的日月周
     transformBy (value) {
       this.activeIndex = value
       let data = this.finishedOperation[value]
@@ -262,6 +243,12 @@ export default {
         name: '手术完成',
         value: data.value.reverse()
       }]
+      let colorOptions = ['#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59', '#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59', '#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59', '#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59', '#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59']
+      obj2[0].value.forEach((item, index) => {
+        item.itemStyle = {
+          color: colorOptions[index]
+        }
+      })
       let obj = {
         text: '手术完成统计' + ' (' + data.types[data.types.length - 1] + '~' + data.types[0] + ')',
         subtext: '共计' + total + '例',
@@ -280,13 +267,13 @@ export default {
           obj.zoom = [20, 80]
           obj.barWidth = '50%'
           this.optionA = (initChart(this.optionA, obj, 5))
+          this.optionA.xAxis[0].axisLabel = {rotate: 15, interval: 0, align: 'center', verticalAlign: 'top'}
           break
         case 'week':
           obj.text = '手术完成统计' + ' (' + data.types[data.types.length - 1].split('~')[0] + '~' + data.types[0].split('~')[1] + ')'
           obj.zoom = [0, 100]
           obj.barWidth = '20%'
           this.optionA = (initChart(this.optionA, obj, 5))
-          this.optionA.xAxis[0].axisLabel = {rotate: 15, interval: 0}
           break
         case 'month':
           obj.zoom = [0, 100]

@@ -23,7 +23,9 @@ axios.interceptors.request.use(
     return config
   },
   err => {
-    console.log(err)
+    Message.error({
+      message: '请求失败'
+    })
     return Promise.reject(err)
   }
 )
@@ -34,7 +36,6 @@ axios.interceptors.response.use(
     }
     if (response.data) {
       if ('mitiStatus' in response.data) {
-        console.log(response.data)
         if (response.data.mitiStatus.indexOf('ERROR') > -1) {
           if (response.data.message) {
             if (response.data.message === 'token无效' || response.data.message === '身份认证Token已失效') {
@@ -53,13 +54,6 @@ axios.interceptors.response.use(
             })
           }
         } else if (response.data.mitiStatus === 'SUCCESS') {
-          // if (response.data.message) {
-          //   Message({
-          //     showClose: true,
-          //     message: response.data.message,
-          //     type: 'success'
-          //   })
-          // }
           return response
         } else {
           Message({
@@ -76,7 +70,6 @@ axios.interceptors.response.use(
     return response
   },
   err => {
-    // loadingInstance.close()
     if (err.response) {
       switch (err.response.status) {
         case 401:
@@ -108,7 +101,6 @@ axios.interceptors.response.use(
             type: 'error'
           })
           router.push(`/error:${err.response.status}`)
-          // console.log('这个错 --->', err.response.status, '!!!!!!!!!!', err.response.status, '!!!!!!!!!!')
           break
       }
     }

@@ -419,8 +419,9 @@ export const charts = [
     xAxis: [
       {
         type: 'category',
-        axisLabel: {rotate: 15, interval: 0},
+        axisLabel: {rotate: 0, interval: 0, align: 'center'},
         axisTick: {show: false},
+        nameLocation: 'center',
         data: [
           '具类1',
           '具类2',
@@ -891,6 +892,12 @@ export const initChart = (chart, obj, type) => {
       break
     case 3 :
       chart = JSON.parse(JSON.stringify(charts[2]))
+      let colorOptions = ['#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59', '#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59', '#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59', '#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59', '#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59']
+      obj.data.forEach((item, index) => {
+        item.itemStyle = {
+          color: colorOptions[index]
+        }
+      })
       chart.series[0].name = obj.text
       chart.xAxis[0].data = obj.classes
       chart.series[0].data = obj.data
