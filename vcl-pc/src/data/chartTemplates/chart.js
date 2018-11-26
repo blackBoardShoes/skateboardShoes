@@ -352,7 +352,7 @@ export const charts = [
     },
     grid: {
       left: 10,
-      right: 100,
+      right: 10,
       bottom: '20%',
       containLabel: true,
       show: true
@@ -385,25 +385,25 @@ export const charts = [
         end: 80,
         dataBackground: {
           areaStyle: {
-            color: 'rgba(203, 204, 205, 1)'
+            color: 'rgba(103, 104, 105, 0.7)'
           },
           lineStyle: {
-            color: 'rgba(203, 204, 205, 1)'
+            color: 'rgba(203, 104, 105, 1)'
           }
         },
-        fillerColor: 'rgba(217, 239, 249, 0.4)',
+        fillerColor: 'rgba(217, 239, 249, 0.5)',
         handleStyle: {
-          color: 'rgba(63, 177, 227, 0.75)'
+          color: 'rgba(63, 177, 227, 0.9)'
         },
-        left: '10px',
-        right: '10px',
+        left: '20px',
+        right: '20px',
         bottom: '10px'
       }
     ],
     toolbox: {
       show: true,
       feature: {
-        magicType: {type: ['line', 'bar', 'tiled', 'stack']},
+        magicType: {type: ['line', 'bar']},
         // dataView: {show: true, readOnly: true, lang: ['统计表', '关闭', '刷新']},
         saveAsImage: {show: true}
       }
@@ -419,8 +419,9 @@ export const charts = [
     xAxis: [
       {
         type: 'category',
-        axisLabel: {rotate: 15, interval: 0},
+        axisLabel: {rotate: 0, interval: 0, align: 'center'},
         axisTick: {show: false},
+        nameLocation: 'center',
         data: [
           '具类1',
           '具类2',
@@ -891,6 +892,12 @@ export const initChart = (chart, obj, type) => {
       break
     case 3 :
       chart = JSON.parse(JSON.stringify(charts[2]))
+      let colorOptions = ['#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59', '#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59', '#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59', '#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59', '#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59']
+      obj.data.forEach((item, index) => {
+        item.itemStyle = {
+          color: colorOptions[index]
+        }
+      })
       chart.series[0].name = obj.text
       chart.xAxis[0].data = obj.classes
       chart.series[0].data = obj.data
@@ -906,11 +913,13 @@ export const initChart = (chart, obj, type) => {
       chart.series = []
       chart.xAxis[0].data = obj.legendData
       chart.legend.data = obj.classes
+      chart.dataZoom[0].start = obj.zoom[0]
+      chart.dataZoom[0].end = obj.zoom[1]
       obj.data.forEach((item, index) => {
         let obj2 = {
           name: item.name,
           type: 'bar',
-          barWidth: '20%',
+          barWidth: obj.barWidth,
           label: {
             normal: {
               show: false,

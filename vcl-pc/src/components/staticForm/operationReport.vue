@@ -313,12 +313,7 @@ export default {
     return {
       activeNames: ['1', '2'],
       imgArr: [
-        require('../../../src/assets/images/xbx.jpg') + '?' + Math.random(),
-        require('../../../src/assets/images/xbx.jpg') + '?' + Math.random(),
-        require('../../../src/assets/images/xbx.jpg') + '?' + Math.random(),
-        require('../../../src/assets/images/xbx.jpg') + '?' + Math.random(),
-        require('../../../src/assets/images/xbx.jpg') + '?' + Math.random(),
-        require('../../../src/assets/images/xbx.jpg')
+        require('../../../src/assets/images/导航栏@2x.png')
       ],
       contentModel: this.value,
       formData: {

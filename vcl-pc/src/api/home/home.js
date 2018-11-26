@@ -9,10 +9,6 @@ export const patientNumber = data => {
 export const inHospitalNumber = data => {
   return axios.get(api + `/formdata/inHospitalCount`)
 }
-// // 用户数量
-// export const userNumber = data => {
-//   return axios.get(api + `formdata/getOperCompCount?type=${data}`)
-// }
 // 待手术 222
 export const needOperation = data => {
   return axios.get(api + `/formdata/wairForOperaiton`)
@@ -37,21 +33,14 @@ export const operationFinishedByDay = data => {
   return axios.get(api + `/formdata/getOperCompCountByDay`)
 }
 // 各科室患者分布  222
-export const aoPatient = data => {
-  return axios.get(api + `/formdata/getDeptPatientCount`)
-}
+// export const aoPatient = data => {
+//   return axios.get(api + `/formdata/getDeptPatientCount`)
+// }
 // 患者出院时状态分布  222
 export const outHospitalStatus = data => {
   return axios.get(api + `/formdata/getLeaveHospitalStatus`)
 }
-// // 工作量统计
-// export const workload = data => {
-//   return axios.get(api + `formdata/getOperCompCount?type=${data}`)
-// }
-// // 手术时长分布
-// export const operationDuration = data => {
-//   return axios.get(api + `formdata/getOperCompCount?type=${data}`)
-// }
+
 // 手术难度分布  222
 export const operationDiff = data => {
   return axios.get(api + `/formdata/getAsgeCount`)

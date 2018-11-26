@@ -2,7 +2,7 @@
   <div id="login">
     <div class="login-wrapper">
       <div class="left-bgi">
-        <img src="../../assets/images/登录框.png" alt="">
+        <img src="../../assets/images/login.png" alt="">
       </div>
       <div class="right-login">
         <div class="login-title">
@@ -22,7 +22,7 @@
             </el-form-item>
             <el-form-item prop="password" ref="password">
               <el-input :type="passwordType" v-model="form.password" placeholder="请输入密码" @keyup.enter.native="login('loginForm')">
-                <i slot="prefix" class="el-input__icon ercp-icon-general-password" style="font-size: 18px;line-height:48px;"></i> -->
+                <i slot="prefix" class="el-input__icon ercp-icon-general-password" style="font-size: 18px;line-height:48px;"></i>
                 <i slot="suffix" class="el-input__icon ercp-icon-general-preview" style="cursor: pointer;line-height:48px;"
                   @click="_togglePasswordType"></i>
               </el-input>
@@ -47,7 +47,6 @@
             </el-row>
             <div style="margin-bottom: 0;margin-top:40px;height:48px;">
               <el-col :offset="6" :span="12">
-                <!-- <el-form-item> -->
                 <el-button
                   type="primary"
                   class="login-btn"
@@ -55,7 +54,6 @@
                   @click="login()">
                   登录系统
                 </el-button>
-                <!-- </el-form-item> -->
               </el-col>
             </div>
           </el-form>
@@ -238,22 +236,16 @@ export default {
         box-sizing: border-box;
         padding: 30px;
         background-color: rgba($color: $siderbarBgColor, $alpha: .9);
-        // background: url('../../assets/images/ldyy.png') center center;
-        // background-size: 100% 100%;
         .login-title{
           -webkit-app-region: no-drag;
-          // width:300px;
           text-align: center;
           font-size:19px;
           font-weight: 900;
           color: #fff;
-          // background-color: rgba($color: $themeColor, $alpha: 0.05);
 
           img{
             width: 80px;
             height: 18px;
-            // vertical-align: middle;
-            // margin-bottom: 4px;
           }
         }
         .login-form{

@@ -34,104 +34,11 @@
          </div>
        </div>
     </div>
-    <div class="daily er-card" v-if="false">
-      <div class="card-title">
-        <span><i class="ercp-icon-medicine-reservation"></i><b>今日手术</b> <span class="light-text float-right small-text">2018-07--13 10:12:55更新过</span></span>
-      </div>
-      <div class="case-statistics">
-        <div class="case">
-          <div class="light-text">完成手术</div>
-          <div>4</div>
-        </div>
-        <div class="case">
-          <div class="light-text">待做手术</div>
-          <div>2</div>
-        </div>
-        <div class="case">
-          <div class="light-text">未做排期</div>
-          <div>1</div>
-        </div>
-      </div>
-      <div class="operation-buttons">
-        <el-button type="primary" size="medium" @click="refresh" v-if="user.codetype=== 5 || user.codetype=== 6">更新患者</el-button>
-        <el-button type="primary" size="medium" @click="add" v-if="user.codetype=== 5">添加患者</el-button>
-      </div>
-      <!-- </div> -->
-      <div class="daily-work">
-        <div class="yet case" v-for="item in ['a', 'b' , 'c', 'd']" :key="item">
-          <div class="time">
-            14:00
-          </div>
-          <div class="icon-line">
-            <i class="ercp-icon-general-dolist"></i>
-            <span class="line"></span>
-          </div>
-          <div class="operation-info">
-            <div>
-              <span>林广福<span class="info-text">未手术</span></span>
-              <!-- 操作按钮 -->
-              <span class="ercp-icon-medicine-operation float-right" v-if="user.codetype && user.codetype=== 5"></span>
-              <span class="ercp-icon-general-fail float-right" v-if="user.codetype && user.codetype=== 5"></span>
-            </div>
-            <div>
-              <span>手术报告<span class="info-text"></span></span>
-            </div>
-            <div>
-              <span>手术医生<span class="info-text"></span></span>
-            </div>
-          </div>
-        </div>
-        <div class="ing case" v-for="item in ['e', 'f' , 'g', 'h']" :key="item">
-          <div class="time">
-            12:00
-          </div>
-          <div class="icon-line">
-            <i class="ercp-icon-general-progress"></i>
-            <span class="line"></span>
-          </div>
-          <div class="operation-info">
-            <div>
-              <span>黄小明<span class="primary-text">手术中</span></span>
-              <!-- 操作按钮 -->
-              <!-- <span class="ercp-icon-medicine-operation float-right"></span> -->
-            </div>
-            <div>
-              <span>手术报告<span class="info-text">待录入</span></span>
-            </div>
-            <div>
-              <span>手术医生<span class="info-text">王大彪</span></span>
-            </div>
-          </div>
-        </div>
-        <div class="done case" v-for="item in ['i', 'j' , 'k', 'l']" :key="item">
-          <div class="time">
-            10:00
-          </div>
-          <div class="icon-line">
-            <i class="ercp-icon-general-finish"></i>
-            <span class="line"></span>
-          </div>
-          <div class="operation-info">
-            <div>
-              <span>王小虎<span class="success-text">已完成</span></span>
-              <!-- 操作按钮 -->
-              <!-- <span class="ercp-icon-medicine-operation float-right"></span> -->
-            </div>
-            <div>
-              <span>手术报告<span class="success-text">已打印</span></span>
-            </div>
-            <div>
-              <span>手术医生<span class="info-text">王小彪</span></span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 <script>
-import {charts, initChart} from '../../../data/chartTemplates/chart'
-import { aoPatient, operationDiff, outHospitalStatus, patientNumber, inHospitalNumber, needOperation, nonCheckNumber, nonRepairNumber, operationFinishedByMonth, operationFinishedByWeek, operationFinishedByDay } from '../../../api/home/home.js'
+import {initChart} from '../../../data/chartTemplates/chart'
+import { operationDiff, outHospitalStatus, patientNumber, inHospitalNumber, needOperation, nonCheckNumber, nonRepairNumber, operationFinishedByMonth, operationFinishedByWeek, operationFinishedByDay } from '../../../api/home/home.js'
 export default {
   name: 'home',
   data () {
@@ -141,10 +48,6 @@ export default {
       optionC: {},
       user: {},
       viewOptions: [],
-      number1: 0,
-      number2: 0,
-      number3: 0,
-      number4: 0,
       finishedOperation: {
         day: {},
         month: {},
@@ -158,14 +61,16 @@ export default {
     if (this.user.codetype !== null) {
       this.initView(this.user.codetype)
     }
-    this.optionA = charts[4]
-    this.optionC = charts[0]
   },
   methods: {
     initView (type) {
+      // 相同的任务统计（年月日手术统计、难度分级、患者出院状态）
       this.operationByDay()
       this.operationByWeek()
       this.operationByMonth()
+      this.operationDiffMeth()
+      this.outHospitalStatusMeth()
+      // 不同的用户--不同的数字统计
       switch (type) {
         // 管理员/医生
         case 1: case 3:
@@ -178,12 +83,12 @@ export default {
               count: '???'
             },
             {
-              icon: 'ercp-icon-module-patient',
+              icon: 'ercp-icon-module-project',
               title: '住院人次',
               count: '???'
             },
             {
-              icon: 'ercp-icon-module-user',
+              icon: 'ercp-icon-module-task',
               title: '待做手术',
               count: '???'
             }
@@ -192,8 +97,6 @@ export default {
           this.patientNumberMeth(1)
           this.inHospitalNumberMeth(2)
           this.needOperationMeth(3)
-          // 图表统计
-          this.outHospitalStatusMeth()
           break
         // 科研管理员
         case 2:
@@ -206,17 +109,17 @@ export default {
               count: '???'
             },
             {
-              icon: 'ercp-icon-module-patient',
+              icon: 'ercp-icon-module-project',
               title: '住院人次',
               count: '???'
             },
             {
-              icon: 'ercp-icon-module-user',
+              icon: 'ercp-icon-module-task',
               title: '待做手术',
               count: '???'
             },
             {
-              icon: 'ercp-icon-module-project',
+              icon: 'ercp-icon-general-audit',
               title: '待审核',
               count: '???'
             }
@@ -226,8 +129,6 @@ export default {
           this.inHospitalNumberMeth(2)
           this.needOperationMeth(3)
           this.nonCheckNumberMeth(4)
-          // 图表统计
-          this.outHospitalStatusMeth()
           break
         // 临床质控员
         case 4:
@@ -240,7 +141,7 @@ export default {
               count: '???'
             },
             {
-              icon: 'ercp-icon-module-patient',
+              icon: 'ercp-icon-module-project',
               title: '住院人次',
               count: '???'
             },
@@ -260,8 +161,6 @@ export default {
           this.inHospitalNumberMeth(2)
           this.needOperationMeth(3)
           this.nonCheckNumberMeth(4)
-          // 图表统计
-          this.operationDiffMeth()
           break
         // 诊疗中心
         case 5:
@@ -274,7 +173,7 @@ export default {
               count: '???'
             },
             {
-              icon: 'ercp-icon-module-patient',
+              icon: 'ercp-icon-module-project',
               title: '住院人次',
               count: '???'
             },
@@ -294,8 +193,6 @@ export default {
           this.inHospitalNumberMeth(2)
           this.nonCheckNumberMeth(3)
           this.nonRepairNumberMeth(4)
-          // 图表统计
-          this.operationDiffMeth()
           break
         // 科研护士
         case 6:
@@ -308,7 +205,7 @@ export default {
               count: '???'
             },
             {
-              icon: 'ercp-icon-module-patient',
+              icon: 'ercp-icon-module-project',
               title: '住院人次',
               count: '???'
             },
@@ -328,74 +225,59 @@ export default {
           this.inHospitalNumberMeth(2)
           this.nonCheckNumberMeth(3)
           this.nonRepairNumberMeth(4)
-          // 图表统计
-          this.outHospitalStatusMeth()
           break
         default:
           this.$messsage.error('未存在该用户类型')
           break
       }
-      // 各科室患者分布、手术完成统计
-      this.aoPatientMeth()
     },
-    // 各科室患者分布
-    async aoPatientMeth () {
-      let response = await aoPatient()
-      if (response.data.mitiStatus === 'SUCCESS') {
-        let data = response.data.entity
-        let total = 0
-        data.value.forEach((item) => {
-          total += item.value
-        })
-        let obj = {
-          text: '各科室患者分布',
-          subtext: '共计' + total + '例',
-          classes: data.type,
-          data: data.value
-        }
-        this.optionB = (initChart(this.optionB, obj, 2))
-      } else {
-        this.$message.error('ERROR: ' + response.data.message)
-      }
-    },
+    // 切换手术完成统计的日月周
     transformBy (value) {
       this.activeIndex = value
       let data = this.finishedOperation[value]
       let total = 0
-      let legendData = []
       data.value.forEach((item) => {
-        item.value.forEach((item2) => {
-          total += item2.value
-        })
+        total += item.value
+      })
+      let obj2 = [{
+        name: '手术完成',
+        value: data.value.reverse()
+      }]
+      let colorOptions = ['#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59', '#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59', '#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59', '#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59', '#A0A7E6', '#63D2B5', '#3FB1E3', '#FBB46C', '#626C91', '#404A59']
+      obj2[0].value.forEach((item, index) => {
+        item.itemStyle = {
+          color: colorOptions[index]
+        }
       })
       let obj = {
-        text: '手术完成统计',
+        text: '手术完成统计' + ' (' + data.types[data.types.length - 1] + '~' + data.types[0] + ')',
         subtext: '共计' + total + '例',
-        classes: data.type,
-        data: data.value,
-        legendData: legendData
+        classes: [],
+        data: obj2,
+        // y轴
+        legendData: data.types.reverse()
       }
       switch (value) {
         case 'day':
-          data.value[0].value.forEach((item3) => {
-            legendData.push(((item3.name.split(' 00:00:00')[0]).split('2018-')[1]).substr(0, 5))
+          let arr = []
+          obj.legendData.forEach((item) => {
+            arr.push(item.substr(5))
           })
+          obj.legendData = arr
+          obj.zoom = [20, 80]
+          obj.barWidth = '50%'
           this.optionA = (initChart(this.optionA, obj, 5))
+          this.optionA.xAxis[0].axisLabel = {rotate: 15, interval: 0, align: 'center', verticalAlign: 'top'}
           break
         case 'week':
-          data.value[0].value.forEach((item3) => {
-            let text1 = item3.name.split('2018-')[1] + item3.name.split('2018-')[2]
-            let text2 = text1.split('2018-')[0]
-            text2 = text2.replace(/至/, ' ~')
-            legendData.push(text2)
-          })
+          obj.text = '手术完成统计' + ' (' + data.types[data.types.length - 1].split('~')[0] + '~' + data.types[0].split('~')[1] + ')'
+          obj.zoom = [0, 100]
+          obj.barWidth = '20%'
           this.optionA = (initChart(this.optionA, obj, 5))
-          this.optionA.xAxis[0].axisLabel = {rotate: 15, interval: 0}
           break
         case 'month':
-          data.value[0].value.forEach((item3) => {
-            legendData.push(item3.name)
-          })
+          obj.zoom = [0, 100]
+          obj.barWidth = '35%'
           this.optionA = (initChart(this.optionA, obj, 5))
           break
       }
@@ -461,12 +343,12 @@ export default {
           classes: data.type,
           data: data.value
         }
-        this.optionC = (initChart(this.optionC, obj, 2))
+        this.optionB = (initChart(this.optionB, obj, 2))
       } else {
         this.$message.error('ERROR: ' + response.data.message)
       }
     },
-    // 患者人数、住院人次、待做手术、待审核、待修正
+    // 患者人数、住院人次、待做手术、待审核、待修正(顶部数字统计)
     async patientNumberMeth (index) {
       let response = await patientNumber()
       if (response.data.mitiStatus === 'SUCCESS') {
@@ -556,7 +438,7 @@ export default {
               margin: 0 10px;
               line-height: 55px;
               text-align: center;
-              font-size:30px;
+              font-size:27px;
               color:#fff;
               border-radius: 50%;
               background-color: #117FD1;
@@ -595,10 +477,10 @@ export default {
         }
         .transType{
           position: absolute;
-          width: 50%;
+          width: 40%;
           height: 30px;
-          left: 25%;
-          top: 20px;
+          left: 30%;
+          top: 5%;
           display: flex;
           justify-content: center;
           flex-direction: row;

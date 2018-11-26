@@ -223,14 +223,14 @@ export default {
       total: 0,
       // imgSrc: 'https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=116399c62434349b6b066885f9eb1521/91ef76c6a7efce1ba958b016a351f3deb58f65fe.jpg',
       images: [
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg')
-        },
-        {
-          source: 'https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=116399c62434349b6b066885f9eb1521/91ef76c6a7efce1ba958b016a351f3deb58f65fe.jpg',
-          thumbnail: require('../../../src/assets/images/xbx.jpg')
-        }
+        // {
+        //   source: require('../../../src/assets/images/xbx.jpg'),
+        //   thumbnail: require('../../../src/assets/images/xbx.jpg')
+        // },
+        // {
+        //   source: 'https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=116399c62434349b6b066885f9eb1521/91ef76c6a7efce1ba958b016a351f3deb58f65fe.jpg',
+        //   thumbnail: require('../../../src/assets/images/xbx.jpg')
+        // }
       ],
       options: {
         inline: true,
