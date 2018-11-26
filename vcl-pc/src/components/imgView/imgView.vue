@@ -6,13 +6,15 @@
     </div> -->
     <div class="img-group">
       <div class="img-choosen">
-        <div class="img-choose" v-for="(img, index) in newImgArr" :key="index"  :class="{active: activeIndex === index}" @click="changeImg(img, index)">
-          <div class="img-index">{{index + 1}}</div>
-          <img :src="img.source" alt="error">
-          <el-checkbox v-model="img.checked" :disabled="imgCount > 5 && img.checked === false">{{img.information}}</el-checkbox>
-          <div class="cover1"></div>
-          <div class="cover2"></div>
-        </div>
+        <el-checkbox-group v-model="newCheckImageList">
+          <div class="img-choose" v-for="(img, index) in newImgArr" :key="index"  :class="{active: activeIndex === index}" @click="changeImg(img, index)">
+            <div class="img-index">{{index + 1}}</div>
+            <img :src="img" alt="error">
+            <el-checkbox :label="img" :disabled="newCheckImageList.length >= 5 && !(newCheckImageList.includes(img))"></el-checkbox>
+            <div class="cover1"></div>
+            <div class="cover2"></div>
+          </div>
+        </el-checkbox-group>
       </div>
       <div class="clear-choosen">
         <span class="clear" @click="clearAll">重置选区</span>
@@ -26,18 +28,17 @@
                 class="viewer" ref="viewer">
           <template slot-scope="scope">
             <figure class="images">
-              <div class="image-wrapper" v-for="{source, thumbnail} in scope.images" :key="source">
-                <img class="image"
-                     :src="thumbnail" :data-source="source" :alt="source.split('/').pop()">
+              <div class="image-wrapper" v-for="(item, index) in scope.images" :key="index">
+                <img class="image" :src="item" :data-source="item" :alt="item.split('/').pop()">
               </div>
             </figure>
           </template>
         </viewer>
       </div>
       <div class="operate">
-        <div class="info">当前查看第<span class="special">{{activeIndex + 1}}</span>张,已挑选<span class="special">{{imgCount}}张</span>,最多还有<span class="special">{{6-imgCount}}张</span>可挑选</div>
+        <div class="info">当前查看第<span class="special">{{activeIndex + 1}}</span>张,已挑选<span class="special">{{newCheckImageList.length}}张</span>,最多还有<span class="special">{{5-newCheckImageList.length}}张</span>可挑选</div>
         <div class="buttons">
-          <el-button size="medium" type="info" @click="closeAndCancel">取消</el-button>
+          <!-- <el-button size="medium" type="info" @click="closeAndCancel">取消</el-button> -->
           <el-button size="medium" type="primary" @click="confirmData">确定</el-button>
         </div>
       </div>
@@ -108,6 +109,12 @@ export default {
           }
         ]
       }
+    },
+    checkImageList: {
+      type: Array,
+      default () {
+        return []
+      }
     }
   },
   watch: {
@@ -116,16 +123,29 @@ export default {
         this.newImgArr = val
       },
       deep: true
+    },
+    checkImageList: {
+      handler (val) {
+        this.newCheckImageList = val
+      },
+      deep: true
+    }
+  },
+  created () {
+    if (this.newCheckImageList.length) {
+      this.previewImages = []
+      this.previewImages.push(this.newCheckImageList[0])
     }
   },
   data () {
     return {
       newImgArr: this.imgArr,
+      newCheckImageList: this.checkImageList,
       previewImages: [
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg')
-        }
+        // {
+        //   source: require('../../../src/assets/images/xbx.jpg'),
+        //   thumbnail: require('../../../src/assets/images/xbx.jpg')
+        // }
       ],
       options: {
         inline: true,
@@ -148,9 +168,7 @@ export default {
   },
   methods: {
     clearAll () {
-      this.newImgArr.forEach((item) => {
-        item.checked = false
-      })
+      this.newCheckImageList = []
     },
     inited (viewer) {
       this.$viewer = viewer
@@ -164,26 +182,7 @@ export default {
       console.log('close cancel this window')
     },
     confirmData () {
-      console.log(this.newImgArr)
-      let confirmData = []
-      for (let i of this.newImgArr) {
-        if (i.checked) {
-          confirmData.push(i)
-        }
-      }
-      console.log('confirmData', confirmData)
-      this.$emit('confirmData', confirmData)
-    }
-  },
-  computed: {
-    imgCount: function () {
-      let num = 0
-      this.newImgArr.forEach((item, index, array) => {
-        if (item.checked === true) {
-          num += 1
-        }
-      })
-      return num
+      this.$emit('confirmData', this.newCheckImageList)
     }
   }
 }

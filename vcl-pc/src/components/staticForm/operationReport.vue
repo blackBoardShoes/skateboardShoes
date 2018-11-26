@@ -113,10 +113,10 @@
               </el-col>
             </el-row>
             <!-- <div class="imgGroup">
-              <img :src="img.source" v-for="(img, o) in contentModel.choiceResults" :key="o">
+              <img :src="img.source" v-for="(img, o) in contentModel.checkImageList" :key="o">
             </div> -->
-            <el-row class="imgGroup" :gutter="20" v-if="contentModel.choiceResults ? contentModel.choiceResults.length : false">
-              <el-col :span="4" v-for="(img, o) in contentModel.choiceResults" :key="o">
+            <el-row class="imgGroup" :gutter="20" v-if="contentModel.checkImageList ? contentModel.checkImageList.length : false">
+              <el-col :span="4" v-for="(img, o) in contentModel.checkImageList" :key="o">
                 <img :src="img.source" >
               </el-col>
             </el-row>
@@ -166,9 +166,9 @@
         <hr>
         <br>
         <!-- <grayTitle>镜检照片</grayTitle> -->
-        <el-row class="imgGroup" :gutter="20" v-if="contentModel.choiceResults ? contentModel.choiceResults.length : false">
-          <el-col :span="4" v-for="(img, o) in contentModel.choiceResults" :key="o">
-            <img :src="img.source" >
+        <el-row class="imgGroup" :gutter="20" v-if="contentModel.checkImageList ? contentModel.checkImageList.length : false">
+          <el-col :span="4" v-for="(img, o) in contentModel.checkImageList" :key="o">
+            <img :src="img" >
           </el-col>
         </el-row>
         <grayTitle>检查所见</grayTitle>
@@ -256,7 +256,6 @@
         </el-row>
       </div>
     </el-form>
-
     <el-dialog
       title="请挑选镜检照片"
       append-to-body
@@ -264,7 +263,7 @@
       v-if="dialogVisible"
       :visible.sync="dialogVisible"
       width="80%">
-      <imgView :imgArr="imgArr" @confirmData="confirmData"></imgView>
+      <imgView :checkImageList="contentModel['checkImageList']" :imgArr="imgArr" @confirmData="confirmData"></imgView>
     </el-dialog>
   </div>
 </template>
@@ -314,42 +313,12 @@ export default {
     return {
       activeNames: ['1', '2'],
       imgArr: [
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg'),
-          checked: false,
-          information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
-        },
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg'),
-          checked: false,
-          information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
-        },
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg'),
-          checked: false,
-          information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
-        },
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg'),
-          checked: false,
-          information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
-        },
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg'),
-          checked: false,
-          information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
-        },
-        {
-          source: require('../../../src/assets/images/xbx.jpg'),
-          thumbnail: require('../../../src/assets/images/xbx.jpg'),
-          checked: false,
-          information: '镜检照片1镜检照片1镜检照片1镜检照片1镜检照片1'
-        }
+        require('../../../src/assets/images/xbx.jpg') + '?' + Math.random(),
+        require('../../../src/assets/images/xbx.jpg') + '?' + Math.random(),
+        require('../../../src/assets/images/xbx.jpg') + '?' + Math.random(),
+        require('../../../src/assets/images/xbx.jpg') + '?' + Math.random(),
+        require('../../../src/assets/images/xbx.jpg') + '?' + Math.random(),
+        require('../../../src/assets/images/xbx.jpg')
       ],
       contentModel: this.value,
       formData: {
@@ -564,8 +533,8 @@ export default {
     if (!this.contentModel['operationCheckBox']) {
       this.$set(this.contentModel, 'operationCheckBox', [])
     }
-    if (!this.contentModel['choiceResults']) {
-      this.$set(this.contentModel, 'choiceResults', [])
+    if (!this.contentModel['checkImageList']) {
+      this.$set(this.contentModel, 'checkImageList', [])
     }
     if (!this.contentModel['ohShitProject']) {
       this.$set(this.contentModel, 'ohShitProject', '')
@@ -612,16 +581,32 @@ export default {
       return { content: content, contentModel: contentModel }
     },
     async openDialogVisible () {
+      this.loadingImages = true
+      let recordId = ''
+      let operationNum = ''
+      if (this.fishAllData) {
+        for (let ccc of this.fishAllData) {
+          if (ccc['header'].operationDate === this.activeIndexNav.substr(2)) {
+            recordId = ccc['header'].recordId
+            operationNum = ccc['header'].operationNum
+            break
+          }
+        }
+        console.log({id: recordId, operationNum: operationNum})
+      } else {
+        console.log({id: this.patientInfo.recordId, operationNum: this.patientInfo.operationNum})
+      }
       this.dialogVisible = true
+      this.loadingImages = false
     },
     confirmData (confirmData = []) {
-      this.$set(this.contentModel, 'choiceResults', confirmData)
+      this.$set(this.contentModel, 'checkImageList', confirmData)
       this.dialogVisible = false
     },
     async clearData () {
       this.contentModel = {}
       this.init()
-      this.$set(this.contentModel, 'choiceResults', [])
+      this.$set(this.contentModel, 'checkImageList', [])
       this.$set(this.contentModel, 'operationCheckBox', [])
       this.$set(this.contentModel, 'ohShitProject', '')
       this.$set(this.contentModel, 'ohShitDept', '')
