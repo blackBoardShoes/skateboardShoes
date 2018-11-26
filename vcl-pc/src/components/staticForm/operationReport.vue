@@ -39,7 +39,7 @@
               </el-form-item>
             </div> -->
             <div>
-              <el-button type="primary" size="small" @click="openDialogVisible" :loading="loadingImages">获取图像</el-button>
+              <el-button type="primary" size="small" v-if="!fishAllData" @click="openDialogVisible" :loading="loadingImages">获取图像</el-button>
               <el-button type="primary" size="small" @click="printAndBrowse" :loading="loadingReport">报告预览</el-button>
             </div>
           </div>
@@ -270,6 +270,7 @@
 
 <script>
 import imgView from '../../components/imgView/imgView.vue'
+import { patientImageGetImages } from '../../api/rules/index.js'
 import { formdataGetPeroperative } from '../../api/rules/lr.js'
 import { fieldAllFields } from '../../api/form/zdk.js'
 let grayTitle = {
@@ -577,19 +578,34 @@ export default {
     },
     async openDialogVisible () {
       this.loadingImages = true
-      let recordId = ''
-      let operationNum = ''
+      // let recordId = ''
+      // let operationNum = ''
+      let patientInfo = {}
       if (this.fishAllData) {
         for (let ccc of this.fishAllData) {
           if (ccc['header'].operationDate === this.activeIndexNav.substr(2)) {
-            recordId = ccc['header'].recordId
-            operationNum = ccc['header'].operationNum
+            console.log(ccc['header'], 'cccccc')
+            // recordId = ccc['header'].recordId
+            // operationNum = ccc['header'].operationNum
+            patientInfo = Object.assign({}, ccc['header'], {gender: null})
             break
           }
         }
-        console.log({id: recordId, operationNum: operationNum})
+        let pigi = await patientImageGetImages(patientInfo)
+        if (pigi) {
+          this.imgArr = []
+          this.imgArr = pigi.data.entity
+          // this.imgArr = pigi
+        }
+        // console.log(patientInfo)
       } else {
-        console.log({id: this.patientInfo.recordId, operationNum: this.patientInfo.operationNum})
+        let pigi = await patientImageGetImages(Object.assign({}, this.patientInfo, {gender: null}))
+        if (pigi) {
+          this.imgArr = []
+          this.imgArr = pigi.data.entity
+          // this.imgArr = pigi
+        }
+        // console.log({id: this.patientInfo.recordId, operationNum: this.patientInfo.operationNum})
       }
       this.dialogVisible = true
       this.loadingImages = false
