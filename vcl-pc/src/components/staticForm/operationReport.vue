@@ -314,7 +314,7 @@ export default {
     return {
       activeNames: ['1', '2'],
       imgArr: [
-        require('../../../src/assets/images/导航栏@2x.png')
+        // require('../../../src/assets/images/导航栏@2x.png')
       ],
       contentModel: this.value,
       formData: {
@@ -580,26 +580,22 @@ export default {
       this.loadingImages = true
       // let recordId = ''
       // let operationNum = ''
-      let patientInfo = {}
+      // let patientInfo = {}
       if (this.fishAllData) {
-        for (let ccc of this.fishAllData) {
-          if (ccc['header'].operationDate === this.activeIndexNav.substr(2)) {
-            console.log(ccc['header'], 'cccccc')
-            // recordId = ccc['header'].recordId
-            // operationNum = ccc['header'].operationNum
-            patientInfo = Object.assign({}, ccc['header'], {gender: null})
-            break
-          }
-        }
-        let pigi = await patientImageGetImages(patientInfo)
-        if (pigi) {
-          this.imgArr = []
-          this.imgArr = pigi.data.entity
-          // this.imgArr = pigi
-        }
-        // console.log(patientInfo)
+        // for (let ccc of this.fishAllData) {
+        //   if (ccc['header'].operationDate === this.activeIndexNav.substr(2)) {
+        //     console.log(ccc['header'], 'cccccc')
+        //     patientInfo = Object.assign({}, ccc['header'], {gender: null})
+        //     break
+        //   }
+        // }
+        // let pigi = await patientImageGetImages(patientInfo)
+        // if (pigi) {
+        //   this.imgArr = []
+        //   this.imgArr = pigi.data.entity
+        // }
       } else {
-        let pigi = await patientImageGetImages(Object.assign({}, this.patientInfo, {gender: null}))
+        let pigi = await patientImageGetImages({patientName: this.patientInfo.patientName, operationDate: this.patientInfo.operationDate})
         if (pigi) {
           this.imgArr = []
           this.imgArr = pigi.data.entity

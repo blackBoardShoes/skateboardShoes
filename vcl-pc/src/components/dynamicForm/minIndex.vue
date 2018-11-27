@@ -1016,9 +1016,13 @@ export default {
         }
       }
       // console.log(values, 'values')
-      return Math.max(...values)
+      // return Math.max(...values)
       // return values[0].toString()
-      // return values[0].toFixed(2).toString()
+      if (Math.max(...values).toFixed(1).toString().substr(-1) === '0') {
+        return Math.max(...values).toFixed(0)
+      } else {
+        return Math.max(...values).toFixed(1).toString()
+      }
       /* eslint-disable */
     },
     evaluate (row, index) {
