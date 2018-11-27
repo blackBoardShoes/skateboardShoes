@@ -61,3 +61,8 @@ export const patientGetPatientCount = data => {
 export const patientAddPatient = data => {
   return axios.post(api + '/patient/addPatient', data)
 }
+
+// /patientImage/getImages  手术报告图片获取
+export const patientImageGetImages = data => {
+  return axios.post(`${api}/patientImage/getImages`, data)
+}
