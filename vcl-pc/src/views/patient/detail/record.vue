@@ -516,6 +516,7 @@ export default {
         width: 200px;
         height: 100%;
         background-color: #fff;
+        overflow-y: auto;
         .navi{
           cursor: pointer;
           transition: all .5s linear;

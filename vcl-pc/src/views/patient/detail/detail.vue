@@ -202,9 +202,27 @@
                     状态：已通过
                   </div>
                 </div>
-                <div class="status">
+                <div class="status" v-if="item.header.phase !== '术中'">
                   <!-- 未提交录入 -->
-                  <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 0 && item.header.isRejected === 0 && userPermission.typein.permission === true" @click="operate('typein', item)">
+                  <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 0 && item.header.isRejected === 0 && userPermission.typein.permission === true && $store.state.user.codetype !== 5" @click="operate('typein', item)">
+                    录入
+                  </el-button>
+                  <!-- 已提交录入未通过未驳回 -->
+                  <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 1 && item.header.isPassed === 0 && item.header.isRejected === 0 && userPermission.check.permission === true" @click="operate('check', item)">
+                    审核
+                  </el-button>
+                  <!-- 已提交录入未通过已驳回 -->
+                  <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 0 && item.header.isPassed === 0 && item.header.isRejected === 1 && userPermission.repair.permission === true" @click="operate('repair', item)">
+                    修正
+                  </el-button>
+                  <!-- 皆可查看，但是和以上按钮无并存需要，css溢出隐藏 -->
+                  <el-button type="primary" size="mini" plain @click="operate('view', record, index)">
+                    查看
+                  </el-button>
+                </div>
+                <div class="status" v-else>
+                  <!-- 未提交录入 -->
+                  <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 0 && item.header.isRejected === 0 && userPermission.typein.permission === true && $store.state.user.codetype !== 6" @click="operate('typein', item)">
                     录入
                   </el-button>
                   <!-- 已提交录入未通过未驳回 -->
