@@ -10,7 +10,7 @@
           <div class="img-choose" v-for="(img, index) in newImgArr" :key="index"  :class="{active: activeIndex === index}" @click="changeImg(img, index)">
             <div class="img-index">{{index + 1}}</div>
             <img :src="img" alt="error">
-            <el-checkbox :label="img" :disabled="newCheckImageList.length >= 5 && !(newCheckImageList.includes(img))"></el-checkbox>
+            <el-checkbox :label="img" :disabled="newCheckImageList.length >= 5 && !(newCheckImageList.includes(img))">{{null}}</el-checkbox>
             <div class="cover1"></div>
             <div class="cover2"></div>
           </div>
@@ -127,6 +127,7 @@ export default {
       console.log('close cancel this window')
     },
     confirmData () {
+      console.log(this.newCheckImageList, 'this.newCheckImageList')
       this.$emit('confirmData', this.newCheckImageList)
     }
   }
