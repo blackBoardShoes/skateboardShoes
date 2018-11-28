@@ -29,7 +29,7 @@
             </div>
           </sx-segmenting-line>
           <div style="padding: 20px;max-height: 250px;" >
-            <sx-min-form ref="thatFormPreview" v-model="thatFishData" :mozhu="thatFish" v-if="thatFishDataTF"></sx-min-form>
+            <sx-min-form ref="thatFormPreview" addNormal v-model="thatFishData" :mozhu="thatFish" v-if="thatFishDataTF"></sx-min-form>
           </div>
         </div>
         <div class="zdkContentBottomRight">

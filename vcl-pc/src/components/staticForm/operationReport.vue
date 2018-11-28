@@ -947,7 +947,7 @@ $marginContentW: 25px;
   margin-bottom: $marginW;
   img {
     // width: 100%;
-    height: 100px;
+    height: 80px;
   }
 }
 .printAndBrowse {
