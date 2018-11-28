@@ -85,6 +85,7 @@
         </div>
       </el-form>
       <sx-min-form
+        addNormal
         submitTF
         ref="thatFormPreview" v-model="thatFishData" :mozhu="thatFish"
         @consoleData="createFish" ></sx-min-form>

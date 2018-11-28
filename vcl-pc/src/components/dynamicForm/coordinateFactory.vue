@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     init () {
-      let w = [32, 47, 60]
+      let w = [47, 60]
       for (let i of this.subFields) {
         this.options.push(
           {value: i.id, label: i.label, children: []}

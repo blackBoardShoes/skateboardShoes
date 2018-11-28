@@ -15,6 +15,7 @@
           <div style="padding: 20px;">
             <!-- :leftAndRightShow="false" -->
             <sx-min-form
+              addNormal
               :question="question"
               :leftAndRightShow="false"
               submitTF

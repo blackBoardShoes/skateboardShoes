@@ -88,6 +88,7 @@
                   :mozhu="navArr"
                   ref="ssbgModel" v-if="smf && (navArr[activeIndex].name === '手术报告')"></sx-operation-report>
                 <sx-radiography
+                  disabled
                   ref="zyModel"
                   v-model="fishData[navArr[activeIndex].id]"
                   v-if="smf && (navArr[activeIndex].name === '鼻胆/胰管造影')"></sx-radiography>

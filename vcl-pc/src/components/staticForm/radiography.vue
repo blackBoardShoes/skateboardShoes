@@ -1,6 +1,7 @@
 <template>
   <div class='all'>
     <el-form
+      :disabled="disabled"
       size="mini"
       :rules="rules"
       :model="contentModel" ref="contentModel"
@@ -124,6 +125,12 @@ export default {
           incumbent: '',
           removeTime: ''
         }
+      }
+    },
+    disabled: {
+      type: Boolean,
+      default () {
+        return false
       }
     }
   },
