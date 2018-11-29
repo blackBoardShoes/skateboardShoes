@@ -81,6 +81,7 @@
                   v-model="fishData[navArr[activeIndex].id]"
                   v-if="navArr[activeIndex].name === '鼻胆/胰管造影'"></sx-radiography> -->
                 <sx-operation-report
+                  disabled
                   :fishAllData="fishAllData"
                   :activeIndexNav="activeIndexNav"
                   v-model="fishData[navArr[activeIndex].id]"

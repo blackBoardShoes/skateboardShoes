@@ -1,7 +1,7 @@
 <template>
   <div class="operationAll">
     <el-form
-      ref="contentModel" :model="contentModel" :disabled="disabled"
+      ref="contentModel" :model="contentModel"
       class="operationContent" label-position="left" label-width="80px" size="small">
       <el-collapse v-model="activeNames" @change="handleChange">
         <el-collapse-item name="1">
@@ -10,7 +10,7 @@
             <div></div>
           </div>
           <el-form-item prop="operationCheckBox" label-width="0px">
-            <el-checkbox-group v-model="contentModel['operationCheckBox']">
+            <el-checkbox-group v-model="contentModel['operationCheckBox']" :disabled="disabled">
               <el-checkbox v-for="(it, ii) in formData['operationCheckBox']" :key="ii" :label="it.value" >{{it.label}}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
@@ -60,6 +60,7 @@
                       >
                       <div style="display: flex">
                         <el-select
+                          :disabled="disabled"
                           filterable
                           :style="{ width: 30 + contentModel[item.id].toString().length * 14 + 'px !important', height: '100%' }" v-if="item['type'] === 'SELECT'" v-model="contentModel[item.id]" placeholder="">
                           <el-option
@@ -69,13 +70,14 @@
                             :value="option.value">
                           </el-option>
                         </el-select>
-                        <el-input :style="{ width: 20 + contentModel[item.id].toString().length * 14 + 'px !important', height: '100%' }"
+                        <el-input :disabled="disabled" :style="{ width: 20 + contentModel[item.id].toString().length * 14 + 'px !important', height: '100%' }"
                           v-if="item['type'] === 'INPUT'" v-model="contentModel[item.id]"></el-input>
                         <div style="max-width: 200px;text-align:center" v-if="item.unit">
                           {{item.unit}}
                         </div>
                       </div>
                       <el-date-picker
+                        :disabled="disabled"
                         :style="{ width: 40 + contentModel[item.id].toString().length * 14 + 'px !important', height: '100%' }"
                         v-if="item['type'] === 'DATE'"
                         v-model="contentModel[item.id]"
@@ -85,6 +87,7 @@
                         placeholder="">
                       </el-date-picker>
                       <el-radio-group
+                        :disabled="disabled"
                         style="min-width: 100px"
                         v-if="item['type'] === 'RADIO'"
                         v-model="contentModel[item.id]">
@@ -103,12 +106,12 @@
             <el-row :gutter="20">
               <el-col :span="10">
                 <el-form-item prop="ohShitProject" label="检查项目" >
-                  <el-input v-model="contentModel['ohShitProject']"></el-input>
+                  <el-input v-model="contentModel['ohShitProject']" :disabled="disabled"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="10">
                 <el-form-item prop="ohShitDept" label="送检科室" >
-                  <el-input v-model="contentModel['ohShitDept']"></el-input>
+                  <el-input v-model="contentModel['ohShitDept']" :disabled="disabled"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
