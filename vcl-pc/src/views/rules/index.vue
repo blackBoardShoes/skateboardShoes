@@ -281,6 +281,7 @@ export default {
           { prop: '术中', label: '术中记录' },
           { prop: '术后', label: '术后记录' },
           { prop: '出院综合评估', label: '出院综合评估', width: '122' },
+          { prop: '记录者', label: '记录者', width: '122' },
           { option: true, label: '操作', contain: [{label: '查看'}], fixed: 'right' }
           // { prop: 'name', label: '是否纳入随访记录', width: '180', filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] }
         ],
@@ -596,6 +597,12 @@ export default {
               }
             }
           }
+          // 记录员
+          i['记录者'] = []
+          for (let j of i.forms) {
+            i['记录者'].push(` ${j.header['phase']} ${j.header['operationDate'] ? j.header['operationDate'] : ''} ${j.header['patientName']} `)
+          }
+          i['记录者'] = i['记录者'].toString()
           if (i.gender) i.gender = '男'
           else i.gender = '女'
           this.recordAllRecordTableData.push(i)
