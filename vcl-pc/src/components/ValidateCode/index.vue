@@ -52,7 +52,7 @@ export default {
       this.drawText()
     },
     drawLine () {
-      const lineNumber = 300 // 线条条数
+      const lineNumber = 100 // 线条条数
       const lineX = 120
       const lineY = 40 // 最大线条坐标
       for (let i = 0; i < lineNumber; i++) {
@@ -70,7 +70,7 @@ export default {
       const canvas = this.$refs['canvas']
       this.ctx = canvas.getContext('2d')
       this.ctx.fillStyle = '#20272c'
-      this.ctx.fillRect(0, 0, 100, 40)
+      this.ctx.fillRect(0, 0, 120, 40)
       this.ctx.font = '20px Verdana'
       let x = 15
       for (let i = 0; i < 4; i++) {
