@@ -600,7 +600,7 @@ export default {
           // 记录员
           i['记录者'] = []
           for (let j of i.forms) {
-            i['记录者'].push(`${j.header['phase'] ? j.header['phase'] : ''} ${j.header['operationDate'] ? j.header['operationDate'] : ''} ${j.header['responseName'] ? j.header['responseName'] : ''}`)
+            i['记录者'].push(`${j.header['phase'] ? j.header['phase'] : ''} ${(['住院基本情况', '出院综合评估'].includes(j.header['phase'])) ? '' : (j.header['operationDate'] ? j.header['operationDate'] : '')} ${j.header['responseName'] ? j.header['responseName'] : ''}`)
           }
           i['记录者'] = i['记录者'].toString()
           if (i.gender) i.gender = '男'
