@@ -600,7 +600,7 @@ export default {
           // 记录员
           i['记录者'] = []
           for (let j of i.forms) {
-            i['记录者'].push(` ${j.header['phase']} ${j.header['operationDate'] ? j.header['operationDate'] : ''} ${j.header['patientName']} `)
+            i['记录者'].push(`${j.header['phase']} ${j.header['operationDate'] ? j.header['operationDate'] : ''} ${j.header['responseName']}`)
           }
           i['记录者'] = i['记录者'].toString()
           if (i.gender) i.gender = '男'
