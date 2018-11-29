@@ -982,6 +982,8 @@ $contentW: 95%;
   .rulesContent {
     width: 100%;
     height: 100%;
+    overflow-y: auto;
+    overflow-x:hidden;
     .rulesTop {
       background: white;
       border: $lightBorderColor 1px solid;
