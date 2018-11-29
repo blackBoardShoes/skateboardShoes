@@ -85,6 +85,7 @@
         </div>
       </el-form>
       <sx-min-form
+        addNormal
         submitTF
         ref="thatFormPreview" v-model="thatFishData" :mozhu="thatFish"
         @consoleData="createFish" ></sx-min-form>
@@ -261,7 +262,7 @@ export default {
       whatObj: {
         // 总表 ---> 住院号 编号 姓名 性别 入院日期 术前记录 术中记录 术后记录 是否纳入随访记录
         AlltableColumn: [
-          { prop: 'patientId', label: '住院号', width: '90' },
+          { prop: 'patientId', label: '住院号', width: '120' },
           // { prop: 'operationNum', label: '编号' },
           { prop: 'patientName', label: '姓名', width: '90' },
           { prop: 'gender', label: '性别', width: '80', sortable: true },
@@ -277,8 +278,8 @@ export default {
         ],
         // 待录入 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (编辑、删除)
         pendingEntryColumn: [
-          { prop: 'patientId', label: '住院号', width: '90' },
-          { prop: 'operationNum', label: '编号', width: '90' },
+          { prop: 'patientId', label: '住院号', width: '120' },
+          { prop: 'operationNum', label: '编号', width: '120' },
           { prop: 'patientName', label: '姓名', width: '90' },
           { prop: 'gender', label: '性别', width: '80', sortable: true },
           { prop: 'dept', label: '科室' },
@@ -292,8 +293,8 @@ export default {
         ],
         // 待审核 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (审核
         toBeAuditedColumn: [
-          { prop: 'patientId', label: '住院号', width: '90' },
-          { prop: 'operationNum', label: '编号', width: '90' },
+          { prop: 'patientId', label: '住院号', width: '120' },
+          { prop: 'operationNum', label: '编号', width: '120' },
           { prop: 'patientName', label: '姓名', width: '90' },
           { prop: 'gender', label: '性别', width: '80', sortable: true },
           { prop: 'dept', label: '科室' },
@@ -306,8 +307,8 @@ export default {
         ],
         // 待修正 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (编辑
         toBeAmendedColumn: [
-          { prop: 'patientId', label: '住院号', width: '90' },
-          { prop: 'operationNum', label: '编号', width: '90' },
+          { prop: 'patientId', label: '住院号', width: '120' },
+          { prop: 'operationNum', label: '编号', width: '120' },
           { prop: 'patientName', label: '姓名', width: '90' },
           { prop: 'gender', label: '性别', width: '80', sortable: true },
           { prop: 'dept', label: '科室' },
@@ -320,7 +321,7 @@ export default {
         ],
         // 随访 ---> 住院号 编号 姓名 性别 主管医生 术后诊断 出院日期 记录者 状态（待问询、已失访、待复查） 操作（编辑）
         followUpColumn: [
-          { prop: 'patientId', label: '住院号', width: '90' },
+          { prop: 'patientId', label: '住院号', width: '120' },
           // { prop: 'operationNum', label: '编号' },
           { prop: 'patientName', label: '姓名', width: '90' },
           { prop: 'gender', label: '性别', width: '80', sortable: true },

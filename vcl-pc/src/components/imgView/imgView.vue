@@ -10,7 +10,7 @@
           <div class="img-choose" v-for="(img, index) in newImgArr" :key="index"  :class="{active: activeIndex === index}" @click="changeImg(img, index)">
             <div class="img-index">{{index + 1}}</div>
             <img :src="img" alt="error">
-            <el-checkbox :label="img" :disabled="newCheckImageList.length >= 5 && !(newCheckImageList.includes(img))"></el-checkbox>
+            <el-checkbox :label="img" :disabled="newCheckImageList.length >= 6 && !(newCheckImageList.includes(img))">{{null}}</el-checkbox>
             <div class="cover1"></div>
             <div class="cover2"></div>
           </div>
@@ -36,7 +36,7 @@
         </viewer>
       </div>
       <div class="operate">
-        <div class="info">当前查看第<span class="special">{{activeIndex + 1}}</span>张,已挑选<span class="special">{{newCheckImageList.length}}张</span>,最多还有<span class="special">{{5-newCheckImageList.length}}张</span>可挑选</div>
+        <div class="info">当前查看第<span class="special">{{activeIndex + 1}}</span>张,已挑选<span class="special">{{newCheckImageList.length}}张</span>,最多还有<span class="special">{{6-newCheckImageList.length}}张</span>可挑选</div>
         <div class="buttons">
           <!-- <el-button size="medium" type="info" @click="closeAndCancel">取消</el-button> -->
           <el-button size="medium" type="primary" @click="confirmData">确定</el-button>
@@ -127,6 +127,7 @@ export default {
       console.log('close cancel this window')
     },
     confirmData () {
+      console.log(this.newCheckImageList, 'this.newCheckImageList')
       this.$emit('confirmData', this.newCheckImageList)
     }
   }

@@ -117,7 +117,7 @@
             </div> -->
             <el-row class="imgGroup" :gutter="20" v-if="contentModel.checkImageList ? contentModel.checkImageList.length : false">
               <el-col :span="4" v-for="(img, o) in contentModel.checkImageList" :key="o">
-                <img :src="img.source" >
+                <img :src="img" >
               </el-col>
             </el-row>
           </div>
@@ -166,6 +166,8 @@
         <hr>
         <br>
         <!-- <grayTitle>镜检照片</grayTitle> -->
+        <!-- <img src="http://192.168.10.104:8090/termbase/getImage/|apis|image|patientImage|阿萨德.jpg" alt=""> -->
+        <!-- <img style="widht:60px;height:60px" src="http://tp.yiaedu.com/showimg.php?url=http://uploads.xuexila.com/allimg/1703/867-1F330164643.jpg" alt=""> -->
         <el-row class="imgGroup" :gutter="20" v-if="contentModel.checkImageList ? contentModel.checkImageList.length : false">
           <el-col :span="4" v-for="(img, o) in contentModel.checkImageList" :key="o">
             <img :src="img" >
@@ -314,7 +316,7 @@ export default {
     return {
       activeNames: ['1', '2'],
       imgArr: [
-        require('../../../src/assets/images/导航栏@2x.png')
+        // require('../../../src/assets/images/导航栏@2x.png')
       ],
       contentModel: this.value,
       formData: {
@@ -580,26 +582,23 @@ export default {
       this.loadingImages = true
       // let recordId = ''
       // let operationNum = ''
-      let patientInfo = {}
+      // let patientInfo = {}
       if (this.fishAllData) {
-        for (let ccc of this.fishAllData) {
-          if (ccc['header'].operationDate === this.activeIndexNav.substr(2)) {
-            console.log(ccc['header'], 'cccccc')
-            // recordId = ccc['header'].recordId
-            // operationNum = ccc['header'].operationNum
-            patientInfo = Object.assign({}, ccc['header'], {gender: null})
-            break
-          }
-        }
-        let pigi = await patientImageGetImages(patientInfo)
-        if (pigi) {
-          this.imgArr = []
-          this.imgArr = pigi.data.entity
-          // this.imgArr = pigi
-        }
-        // console.log(patientInfo)
+        // for (let ccc of this.fishAllData) {
+        //   if (ccc['header'].operationDate === this.activeIndexNav.substr(2)) {
+        //     console.log(ccc['header'], 'cccccc')
+        //     patientInfo = Object.assign({}, ccc['header'], {gender: null})
+        //     break
+        //   }
+        // }
+        // let pigi = await patientImageGetImages(patientInfo)
+        // if (pigi) {
+        //   this.imgArr = []
+        //   this.imgArr = pigi.data.entity
+        // }
       } else {
-        let pigi = await patientImageGetImages(Object.assign({}, this.patientInfo, {gender: null}))
+        let pigi = await patientImageGetImages({patientName: this.patientInfo.patientName, operationDate: this.patientInfo.operationDate})
+        console.log('patientImageGetImagespatientImageGetImagespatientImageGetImages', pigi)
         if (pigi) {
           this.imgArr = []
           this.imgArr = pigi.data.entity
@@ -611,7 +610,10 @@ export default {
       this.loadingImages = false
     },
     confirmData (confirmData = []) {
-      this.$set(this.contentModel, 'checkImageList', confirmData)
+      console.log(confirmData)
+      for (let i in confirmData) {
+        this.$set(this.contentModel['checkImageList'], i, confirmData[i])
+      }
       this.dialogVisible = false
     },
     async clearData () {
@@ -750,14 +752,16 @@ export default {
       //   'operationOperator': operationOperator
       // })
       this.printAndBrowseTF = true
-      this.loadingReport = false
       this.$nextTick(_ => {
         let newContent = this.$refs.printAndBrowse.innerHTML
         let oldContent = document.body.innerHTML
         document.body.innerHTML = newContent
-        window.print()
-        window.location.reload()
-        document.body.innerHTML = oldContent
+        setTimeout(() => {
+          window.print()
+          window.location.reload()
+          document.body.innerHTML = oldContent
+          this.loadingReport = false
+        }, 250 * 10)
       })
     },
     filedsDataConversion (filedsObject, filedsData) {
@@ -942,8 +946,8 @@ $marginContentW: 25px;
   margin-top: $marginW;
   margin-bottom: $marginW;
   img {
-    width: 100%;
-    // height: 100px;
+    // width: 100%;
+    height: 80px;
   }
 }
 .printAndBrowse {

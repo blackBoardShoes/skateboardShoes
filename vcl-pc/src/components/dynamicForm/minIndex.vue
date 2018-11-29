@@ -22,7 +22,7 @@
             <div
               v-if="tf(items)"
               v-for="(items, index) in newFields"
-              :class="(items.type === 'RADIO' && (!items.values)) ? 'abnormal' : noLabel ? 'noLabel' : 'normal'"
+              :class="addNormal ? 'addNormal' : (items.type === 'RADIO' && (!items.values)) ? 'abnormal' : noLabel ? 'noLabel' : 'normal'"
               :style="{display: 'flex', alignItems: 'flexStart', width: coordinate[items.id] ? coordinate[items.id] + '%' : '100%'}"
               :key="index">
               <!--  v-if="disabled" -->
@@ -296,6 +296,12 @@ export default {
       type: Boolean,
       default () {
         return true
+      }
+    },
+    addNormal: {
+      type: Boolean,
+      default () {
+        return false
       }
     },
     noLabel: {
@@ -1016,9 +1022,14 @@ export default {
         }
       }
       // console.log(values, 'values')
-      return Math.max(...values)
+      // return Math.max(...values)
       // return values[0].toString()
-      // return values[0].toFixed(2).toString()
+      if (Math.max(...values).toFixed(1).toString().substr(-1) === '0') {
+        return Math.max(...values).toFixed(0).toString()
+      } else {
+        return Math.max(...values).toFixed(1).toString()
+      }
+
       /* eslint-disable */
     },
     evaluate (row, index) {
@@ -1155,7 +1166,7 @@ $full: 100%;
       width: $full;
       text-align: center;
     }
-    .el-radio, .el-checkbox {
+    /deep/ .el-radio, /deep/ .el-checkbox {
       // min-width: 140px;
       margin: 3px;
       // margin-left: 15px;
@@ -1166,20 +1177,36 @@ $full: 100%;
       flex-wrap: nowrap;
       // justify-content: space-between;
       width: 100%;
-      .el-form-item__content {
-        // flex-grow: 1;
-        width: calc(100% - 138px)
-      }
+      
     }
     .normal {
       /deep/ .el-form-item__label {
-        // min-width: 138px;
+        // min-width: 241px;
+        // max-width: 190px;
+        width: 241px;
+        // width: 10%;
+        white-space:normal;
+        word-break:break-all;
+        word-wrap:break-word; 
+      }
+      /deep/ .el-form-item__content {
+        // flex-grow: 1;
+        width: calc(100% - 241px)
+      }
+    }
+    .addNormal {
+      /deep/ .el-form-item__label {
+        // min-width: 241px;
         // max-width: 190px;
         width: 138px;
         // width: 10%;
         white-space:normal;
         word-break:break-all;
         word-wrap:break-word; 
+      }
+      /deep/ .el-form-item__content {
+        // flex-grow: 1;
+        width: calc(100% - 138px)
       }
     }
     .abnormal {
