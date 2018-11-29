@@ -527,12 +527,12 @@ export default {
           // 总表, 待审核
           break
         case '诊疗中心':
-          await this.formdataUndoneFilledFormShowData()
+          await this.formdataUndoneFilledFormShowAllData()
           await this.formdataRejectedFilledFormShowData()
           // 总表, 待录入, 待修正
           break
         case '科研护士':
-          await this.formdataUndoneFilledFormShowData()
+          await this.formdataUndoneFilledFormShowAllData()
           await this.formdataRejectedFilledFormShowData()
           await this.formdataFollowUpFilledFormShowData()
           // 总表, 待录入, 待修正, 随访
@@ -540,7 +540,7 @@ export default {
       }
       // let a = {
       //   AlltableColumn: this.recordAllRecordShowData(),
-      //   pendingEntryColumn: this.formdataUndoneFilledFormShowData(),
+      //   pendingEntryColumn: this.formdataUndoneFilledFormShowAllData(),
       //   toBeAuditedColumn: this.formdataFinishedFilledFormShowData()
       // }
       // console.log(a)
@@ -556,9 +556,7 @@ export default {
           }
           break
         case 'pendingEntryColumn':
-          for (let i in this.pendingEntryColumnTableData) {
-            this.$set(this.tableData, i, this.pendingEntryColumnTableData[i])
-          }
+          this.formdataUndoneFilledFormShowAllData()
           break
         case 'toBeAuditedColumn':
           for (let i in this.toBeAuditedColumnTableData) {
@@ -608,7 +606,7 @@ export default {
       }
       return false
     },
-    // 待录入
+    // 待录入 formdataUndoneFilledFormShowData
     async formdataUndoneFilledFormShowData () {
       let z = await undoneFilledFormMyself(Object.assign({currentPage: this.currentPage, perPage: this.perPage, searchPattern: this.lookupFormInputData}, this.user))
       if (z ? z.data.entity : false) {
@@ -750,7 +748,7 @@ export default {
           successOrFail = await this.recordAllRecordShowData()
           break
         case 'pendingEntryColumn':
-          successOrFail = await this.formdataUndoneFilledFormShowData()
+          successOrFail = await this.formdataUndoneFilledFormShowAllData()
           break
         case 'toBeAuditedColumn':
           successOrFail = await this.formdataFinishedFilledFormShowData()
