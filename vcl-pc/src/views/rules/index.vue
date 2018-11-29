@@ -34,7 +34,15 @@
                 clearable
                 prefix-icon="el-icon-search"></el-input>
             </el-col>
-            <el-button type="primary" @click="openCreateFish" v-if="[5, 6].includes(user.codetype)">新增</el-button>
+            <div>
+              <el-switch
+                v-if="rulesContainTop[activeIndex].title === '待录入'"
+                v-model="showAll"
+                @change="formdataUndoneFilledFormShowAllData"
+                active-text="查看全部">
+              </el-switch>&nbsp;&nbsp;&nbsp;
+              <el-button type="primary" @click="openCreateFish" v-if="[5, 6].includes(user.codetype)">新增</el-button>
+            </div>
           </el-row>
           <sx-min-table
             :mozhu="mozhu"
@@ -110,7 +118,7 @@
 // import { charts } from '../../data/chartTemplates/chart'
 import { mapState } from 'vuex'
 import sxMinTable from '../../components/dynamicForm/minTable'
-import { formdataDeleteId, formdataFollowingupLostcontact, record, formdataDelete, recordAllRecord, formdataRejectedFilledForm, formdataFinishedFilledForm, formdataUndoneFilledForm, formdataFollowUpFilledForm, patientGetPatientCount, patientAddPatient } from '../../api/rules/index.js'
+import { formdataDeleteId, undoneFilledFormMyself, formdataFollowingupLostcontact, record, formdataDelete, recordAllRecord, formdataRejectedFilledForm, formdataFinishedFilledForm, formdataUndoneFilledForm, formdataFollowUpFilledForm, patientGetPatientCount, patientAddPatient } from '../../api/rules/index.js'
 import { addressData } from '../../data/address/addressData.js'
 import { formdataSave } from '../../api/rules/lr.js'
 export default {
@@ -265,7 +273,7 @@ export default {
           { prop: 'patientId', label: '住院号', width: '120' },
           // { prop: 'operationNum', label: '编号' },
           { prop: 'patientName', label: '姓名', width: '90' },
-          { prop: 'gender', label: '性别', width: '80', sortable: true },
+          { prop: 'gender', label: '性别', width: '80' },
           { prop: 'dept', label: '科室' },
           { prop: 'inHospitalDate', label: '入院日期' },
           { prop: '住院基本情况', label: '住院基本情况', width: '122' },
@@ -274,20 +282,20 @@ export default {
           { prop: '术后', label: '术后记录' },
           { prop: '出院综合评估', label: '出院综合评估', width: '122' },
           { option: true, label: '操作', contain: [{label: '查看'}], fixed: 'right' }
-          // { prop: 'name', label: '是否纳入随访记录', width: '180', sortable: true, filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] }
+          // { prop: 'name', label: '是否纳入随访记录', width: '180', filters: [{ text: '男', value: '男' }, { text: '女', value: '女' }] }
         ],
         // 待录入 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (编辑、删除)
         pendingEntryColumn: [
           { prop: 'patientId', label: '住院号', width: '120' },
           { prop: 'operationNum', label: '编号', width: '120' },
           { prop: 'patientName', label: '姓名', width: '90' },
-          { prop: 'gender', label: '性别', width: '80', sortable: true },
+          { prop: 'gender', label: '性别', width: '80' },
           { prop: 'dept', label: '科室' },
           { prop: 'bedNum', label: '床号' },
           { prop: 'inHospitalDate', label: '入院日期' },
           { prop: 'operationDate', label: '手术日期' },
-          { prop: 'phase', label: '数据阶段', sortable: true, width: '115' },
-          { prop: 'responseName', label: '记录者', width: 100, sortable: true },
+          { prop: 'phase', label: '数据阶段', width: '115' },
+          { prop: 'responseName', label: '记录者', width: 100 },
           // , hidden: true
           { option: true, fixed: 'right', label: '操作', width: '130', contain: [{label: '编辑'}, {label: '录入'}, {label: '删除', style: 'color: #FF455B'}] }
         ],
@@ -296,13 +304,13 @@ export default {
           { prop: 'patientId', label: '住院号', width: '120' },
           { prop: 'operationNum', label: '编号', width: '120' },
           { prop: 'patientName', label: '姓名', width: '90' },
-          { prop: 'gender', label: '性别', width: '80', sortable: true },
+          { prop: 'gender', label: '性别', width: '80' },
           { prop: 'dept', label: '科室' },
           { prop: 'bedNum', label: '床号' },
           { prop: 'inHospitalDate', label: '入院日期' },
           { prop: 'operationDate', label: '手术日期' },
-          { prop: 'phase', label: '数据阶段', sortable: true, width: 115 },
-          { prop: 'responseName', label: '记录者', sortable: true, width: 100 },
+          { prop: 'phase', label: '数据阶段', width: 115 },
+          { prop: 'responseName', label: '记录者', width: 100 },
           { option: true, fixed: 'right', label: '操作', contain: [{label: '审核'}] }
         ],
         // 待修正 ---> 住院号 编号 科室 床号 姓名 性别 数据阶段 记录者 操作 (编辑
@@ -310,13 +318,13 @@ export default {
           { prop: 'patientId', label: '住院号', width: '120' },
           { prop: 'operationNum', label: '编号', width: '120' },
           { prop: 'patientName', label: '姓名', width: '90' },
-          { prop: 'gender', label: '性别', width: '80', sortable: true },
+          { prop: 'gender', label: '性别', width: '80' },
           { prop: 'dept', label: '科室' },
           { prop: 'bedNum', label: '床号' },
           { prop: 'inHospitalDate', label: '入院日期' },
           { prop: 'operationDate', label: '手术日期' },
-          { prop: 'phase', label: '数据阶段', sortable: true, width: 115 },
-          { prop: 'responseName', label: '记录者', sortable: true, width: 100 },
+          { prop: 'phase', label: '数据阶段', width: 115 },
+          { prop: 'responseName', label: '记录者', width: 100 },
           { option: true, fixed: 'right', label: '操作', contain: [{label: '编辑'}] }
         ],
         // 随访 ---> 住院号 编号 姓名 性别 主管医生 术后诊断 出院日期 记录者 状态（待问询、已失访、待复查） 操作（编辑）
@@ -324,7 +332,7 @@ export default {
           { prop: 'patientId', label: '住院号', width: '120' },
           // { prop: 'operationNum', label: '编号' },
           { prop: 'patientName', label: '姓名', width: '90' },
-          { prop: 'gender', label: '性别', width: '80', sortable: true },
+          { prop: 'gender', label: '性别', width: '80' },
           { prop: 'doctor', label: '主管医生' },
           // { prop: 'name', label: '术后诊断' },
           { prop: 'dischargeDate', label: '出院日期' },
@@ -429,7 +437,8 @@ export default {
       pendingEntryColumnTableData: [],
       toBeAuditedColumnTableData: [],
       toBeAmendedColumnTableData: [],
-      followUpColumnTableData: []
+      followUpColumnTableData: [],
+      showAll: false
     }
   },
   computed: mapState({
@@ -601,7 +610,7 @@ export default {
     },
     // 待录入
     async formdataUndoneFilledFormShowData () {
-      let z = await formdataUndoneFilledForm(Object.assign({currentPage: this.currentPage, perPage: this.perPage, searchPattern: this.lookupFormInputData}, this.user))
+      let z = await undoneFilledFormMyself(Object.assign({currentPage: this.currentPage, perPage: this.perPage, searchPattern: this.lookupFormInputData}, this.user))
       if (z ? z.data.entity : false) {
         this.pendingEntryColumnTableData = []
         for (let i of z.data.entity.data) {
@@ -625,6 +634,48 @@ export default {
         return true
       }
       return false
+    },
+    // 待录入 展示全部
+    async formdataUndoneFilledFormShowAllData () {
+      if (this.showAll) {
+        let z = await formdataUndoneFilledForm(Object.assign({currentPage: this.currentPage, perPage: this.perPage, searchPattern: this.lookupFormInputData}, this.user))
+        if (z ? z.data.entity : false) {
+          this.pendingEntryColumnTableData = []
+          for (let i of z.data.entity.data) {
+            console.log(i, 'z.data.entity.data1')
+            this.pendingEntryColumnTableData.push(Object.assign(i, i.header))
+            if (i.gender) i.gender = '男'
+            else i.gender = '女'
+          }
+          this.tableData = []
+          for (let i in this.pendingEntryColumnTableData) {
+            this.$set(this.tableData, i, this.pendingEntryColumnTableData[i])
+          }
+          // this.total = z.data.exntity.total
+          this.$set(this.rulesContainTopModel, 'pendingEntryColumn', z.data.entity.total)
+          return true
+        }
+        return false
+      } else {
+        let z = await undoneFilledFormMyself(Object.assign({currentPage: this.currentPage, perPage: this.perPage, searchPattern: this.lookupFormInputData}, this.user))
+        if (z ? z.data.entity : false) {
+          this.pendingEntryColumnTableData = []
+          for (let i of z.data.entity.data) {
+            console.log(i, 'z.data.entity.data1')
+            this.pendingEntryColumnTableData.push(Object.assign(i, i.header))
+            if (i.gender) i.gender = '男'
+            else i.gender = '女'
+          }
+          this.tableData = []
+          for (let i in this.pendingEntryColumnTableData) {
+            this.$set(this.tableData, i, this.pendingEntryColumnTableData[i])
+          }
+          // this.total = z.data.entity.total
+          this.$set(this.rulesContainTopModel, 'pendingEntryColumn', z.data.entity.total)
+          return true
+        }
+        return false
+      }
     },
     // 待审核
     async formdataFinishedFilledFormShowData () {

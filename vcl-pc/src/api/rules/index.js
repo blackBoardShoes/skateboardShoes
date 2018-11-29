@@ -23,9 +23,13 @@ export const formdataFollowingupLostcontact = data => {
 export const recordAllRecord = data => {
   return axios.get(api + '/formdata/record/allRecord', { params: data })
 }
-// 待录入
+// 待录入 all
 export const formdataUndoneFilledForm = data => {
   return axios.get(api + '/formdata/undoneFilledForm', { params: data })
+}
+// 待录入 myself
+export const undoneFilledFormMyself = data => {
+  return axios.get(api + '/formdata/undoneFilledFormMyself', { params: data })
 }
 // 审核
 export const formdataFinishedFilledForm = data => {
