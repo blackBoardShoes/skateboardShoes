@@ -310,9 +310,7 @@ export default {
             {
               id: 'responseName',
               label: '记录者',
-              values: [
-                {label: '123', value: '123'}
-              ],
+              values: [],
               type: 'SELECT',
               validations: [
                 { required: true, message: '请选择记录者', trigger: 'change' }
@@ -325,9 +323,7 @@ export default {
             {
               id: 'responseName',
               label: '记录者',
-              values: [
-                {label: '123', value: '123'}
-              ],
+              values: [],
               type: 'SELECT',
               validations: [
                 { required: true, message: '请选择记录者', trigger: 'change' }
@@ -451,7 +447,7 @@ export default {
         this.undoneFilledFormDataMozhu['科研护士'].fields[0].values = [...this.ubmtData.data.entity]
       } else {
         this.ubmtData = await userByMyType()
-        this.undoneFilledFormDataMozhu['科研护士'].fields[0].values = [...this.ubmtData.data.entity]
+        this.undoneFilledFormDataMozhu['科研护士'].fields[1].values = [...this.ubmtData.data.entity]
         console.log(this.patientInfo)
       }
       this.undoneFilledFormDialogVisible = true
