@@ -36,7 +36,7 @@
             </el-col>
             <div>
               <el-switch
-                v-if="rulesContainTop[activeIndex].title === '待录入'"
+                v-if="rulesContainTop[activeIndex].title === '待录入' && user.type === '科研护士'"
                 v-model="showAll"
                 @change="formdataUndoneFilledFormShowAllData"
                 active-text="查看全部">
@@ -478,6 +478,11 @@ export default {
     }
     console.log(a)
     console.log(this.user)
+    if (this.user.type === '科研护士') {
+      this.showAll = false
+    } else {
+      this.showAll = true
+    }
     this.init()
     await this.firstShow()
     this.show()
