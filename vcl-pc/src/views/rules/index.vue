@@ -108,6 +108,7 @@
       :visible.sync="patientDialogVisible">
       <sx-min-form
         submitTF
+        addNormal
         ref="thatFormPreview" v-model="patientData" :mozhu="patientFish"
         @consoleData="createPatientFish" ></sx-min-form>
     </el-dialog>
@@ -596,7 +597,8 @@ export default {
               if (z.submenu.length) {
                 i[z.label] = []
                 for (let o of z.submenu) {
-                  i[z.label].push(`${o.label}: ${o.state}`)
+                  console.log(o.label)
+                  i[z.label].push(`${o.label.substr(2)}: ${o.state}`)
                 }
                 i[z.label] = i[z.label].toString()
               }
