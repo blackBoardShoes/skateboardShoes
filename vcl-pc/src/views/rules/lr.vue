@@ -447,7 +447,7 @@ export default {
         this.undoneFilledFormDataMozhu['科研护士'].fields[0].values = [...this.ubmtData.data.entity]
       } else {
         this.ubmtData = await userByMyType()
-        this.undoneFilledFormDataMozhu['科研护士'].fields[1].values = [...this.ubmtData.data.entity]
+        this.undoneFilledFormDataMozhu['诊疗中心'].fields[0].values = [...this.ubmtData.data.entity]
         console.log(this.patientInfo)
       }
       this.undoneFilledFormDialogVisible = true
