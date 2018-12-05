@@ -91,9 +91,10 @@
                   @consoleData="consoleData"></sx-min-form>
               </div>
               <div class="rightContentStatic">
-                <sx-operation-report v-model="fishData[navArr[activeIndex].id]"
+                <sx-operation-report disabled v-model="fishData[navArr[activeIndex].id]"
                   ref="ssbgModel" v-if="navArr[activeIndex].name === '手术报告'"></sx-operation-report>
                 <sx-radiography
+                  disabled
                   ref="zyModel"
                   v-model="fishData[navArr[activeIndex].id]"
                   v-if="navArr[activeIndex].name === '鼻胆/胰管造影'"></sx-radiography>
