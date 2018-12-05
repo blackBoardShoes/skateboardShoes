@@ -36,7 +36,7 @@
             </el-col>
             <div>
               <el-switch
-                v-if="rulesContainTop[activeIndex].title === '待录入'"
+                v-if="rulesContainTop[activeIndex].title === '待录入' && user.type === '科研护士'"
                 v-model="showAll"
                 @change="formdataUndoneFilledFormShowAllData"
                 active-text="查看全部">
@@ -108,6 +108,7 @@
       :visible.sync="patientDialogVisible">
       <sx-min-form
         submitTF
+        addNormal
         ref="thatFormPreview" v-model="patientData" :mozhu="patientFish"
         @consoleData="createPatientFish" ></sx-min-form>
     </el-dialog>
@@ -478,6 +479,11 @@ export default {
     }
     console.log(a)
     console.log(this.user)
+    if (this.user.type === '科研护士') {
+      this.showAll = false
+    } else {
+      this.showAll = true
+    }
     this.init()
     await this.firstShow()
     this.show()
@@ -591,7 +597,8 @@ export default {
               if (z.submenu.length) {
                 i[z.label] = []
                 for (let o of z.submenu) {
-                  i[z.label].push(`${o.label}: ${o.state}`)
+                  console.log(o.label)
+                  i[z.label].push(`${o.label.substr(2)}: ${o.state}`)
                 }
                 i[z.label] = i[z.label].toString()
               }

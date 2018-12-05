@@ -99,6 +99,7 @@
       v-if="undoneFilledFormDialogVisible"
       :visible.sync="undoneFilledFormDialogVisible">
       <sx-min-form
+        addNormal
         submitTF v-model="undoneFilledFormData" :mozhu="undoneFilledFormDataMozhu[user.type]"
         @consoleData="undoneFilledFormConsoleData" ></sx-min-form>
     </el-dialog>
@@ -309,9 +310,7 @@ export default {
             {
               id: 'responseName',
               label: '记录者',
-              values: [
-                {label: '123', value: '123'}
-              ],
+              values: [],
               type: 'SELECT',
               validations: [
                 { required: true, message: '请选择记录者', trigger: 'change' }
@@ -324,11 +323,20 @@ export default {
             {
               id: 'responseName',
               label: '记录者',
-              type: 'INPUT',
+              values: [],
+              type: 'SELECT',
               validations: [
-                { required: true, message: '请输入姓名', trigger: 'change' }
+                { required: true, message: '请选择记录者', trigger: 'change' }
               ]
             }
+            // {
+            //   id: 'responseName',
+            //   label: '记录者',
+            //   type: 'INPUT',
+            //   validations: [
+            //     { required: true, message: '请输入姓名', trigger: 'change' }
+            //   ]
+            // }
           ]
         }
       },
@@ -433,19 +441,15 @@ export default {
       // this.navArr = this.allArr[key].subFields
     },
     async generalSubmit () {
-      console.log(this.navArr)
-      console.log(this.activeIndex)
-      console.log(this.activeIndexNav)
       this.undoneFilledFormData = {}
       if (this.user.type === '科研护士') {
         this.ubmtData = await userByMyType()
-        console.log(this.ubmtData.entity)
         this.undoneFilledFormDataMozhu['科研护士'].fields[0].values = [...this.ubmtData.data.entity]
       } else {
+        this.ubmtData = await userByMyType()
+        this.undoneFilledFormDataMozhu['诊疗中心'].fields[0].values = [...this.ubmtData.data.entity]
         console.log(this.patientInfo)
       }
-      console.log(this.user)
-      console.log(this.patientInfo.header['responseId'], this.patientInfo.header['responseName'], 'patientInfopatientInfo')
       this.undoneFilledFormDialogVisible = true
     },
     generalDelete () {
@@ -520,9 +524,13 @@ export default {
               this.patientInfo.header = Object.assign(this.patientInfo.header, { responseId: i.uuid, responseName: i.label })
             }
           }
-          // this.undoneFilledFormDataMozhu
         } else {
-          this.patientInfo.header = Object.assign(this.patientInfo.header, formModel, { responseId: this.user.id })
+          for (let i of this.ubmtData.data.entity) {
+            if (i.value === formModel['responseName']) {
+              this.patientInfo.header = Object.assign(this.patientInfo.header, { responseId: i.uuid, responseName: i.label })
+            }
+          }
+          // this.patientInfo.header = Object.assign(this.patientInfo.header, formModel, { responseId: this.user.id })
         }
         let fds = await formdataSubmit(Object.assign(this.patientInfo, {data: this.fishData}))
         console.log(this.patientInfo.header, 'patientInfo.headerpatientInfo.headerpatientInfo.header')
