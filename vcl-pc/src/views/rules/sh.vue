@@ -90,6 +90,7 @@
               </div>
               <div class="rightContentStatic">
                 <sx-radiography
+                  disabled
                   ref="zyModel"
                   v-model="fishData[navArr[activeIndex].id]"
                   v-if="navArr[activeIndex].name === '鼻胆/胰管造影'"></sx-radiography>
