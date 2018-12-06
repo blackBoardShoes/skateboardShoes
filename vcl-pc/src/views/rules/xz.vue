@@ -776,9 +776,19 @@ export default {
       this.$refs.thatForm.deleteError(val)
     },
     async generalSubmit () {
-      await this.$refs.thatForm.consoleData()
-      if (this.$refs['zyModel']) {
-        await this.$refs.zyModel.saveData()
+      // await this.$refs.thatForm.consoleData()
+      // if (this.$refs['zyModel']) {
+      //   await this.$refs.zyModel.saveData()
+      // }
+      if (!this.navArr[this.activeIndex].isStatic) {
+        await this.$refs.thatForm.consoleData()
+      } else {
+        if (this.$refs['zyModel']) {
+          await this.$refs.zyModel.saveData()
+        }
+        if (this.$refs['ssbgModel']) {
+          await this.$refs.ssbgModel.consoleData()
+        }
       }
       let fds = await formdataSubmit(Object.assign(this.patientInfo, {data: this.fishData}))
       console.log(fds)
@@ -787,9 +797,19 @@ export default {
       }
     },
     async generalSave () {
-      await this.$refs.thatForm.notVerifying()
-      if (this.$refs['zyModel']) {
-        await this.$refs.zyModel.saveData()
+      // await this.$refs.thatForm.notVerifying()
+      // if (this.$refs['zyModel']) {
+      //   await this.$refs.zyModel.saveData()
+      // }
+      if (!this.navArr[this.activeIndex].isStatic) {
+        await this.$refs.thatForm.notVerifying()
+      } else {
+        if (this.$refs['zyModel']) {
+          await this.$refs.zyModel.saveData()
+        }
+        if (this.$refs['ssbgModel']) {
+          await this.$refs.ssbgModel.consoleData()
+        }
       }
       let fds = await formdataSave(Object.assign(this.patientInfo, { data: this.fishData, comments: this.fishDataComments, whatUser: this.user }))
       console.log(fds)
