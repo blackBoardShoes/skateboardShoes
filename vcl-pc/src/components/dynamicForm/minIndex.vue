@@ -261,6 +261,7 @@
         <span style="font-weight: bold">错误原因</span>
       </div>
       <sx-min-form
+        addNormal
         :leftAndRightShow="false"
         :noLabel="true"
         cancel submitTF
