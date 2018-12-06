@@ -43,12 +43,12 @@
     <el-button style="margin-top:15px;" size="small" @click="addRow" v-if="showBtn">新增</el-button>
     <!-- <el-button style="margin-top:15px;" size="small" @click="getData">getData</el-button> -->
     <el-dialog
-      width="80%"
+      width="55%"
       append-to-body
       modal-append-to-body
       :visible.sync="dialogVisible">
       <!-- :mozhu="mozhu" -->
-      <sx-min-form :disabled="disabled" submitTF v-if="dialogVisible" :mozhu="mozhu"  v-model="formModel" @consoleData="consoleData"></sx-min-form>
+      <sx-min-form addNormal :disabled="disabled" submitTF v-if="dialogVisible" :mozhu="mozhu"  v-model="formModel" @consoleData="consoleData"></sx-min-form>
     </el-dialog>
   </div>
 </template>
