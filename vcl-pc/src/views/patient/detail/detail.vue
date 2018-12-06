@@ -847,10 +847,6 @@ export default {
       }
     }
   }
-  >>>.el-carousel__button{
-    opacity: 1 !important;
-    border-radius: 2px;
-  }
   .title{
     width: 100%;
     font-size: 15px;

@@ -268,7 +268,7 @@ export default {
           page12: '×',
           page13: '√',
           page14: '×',
-          pag15: '√',
+          pag15: '×',
           page16: '×'
         },
         {

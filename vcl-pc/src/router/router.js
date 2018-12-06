@@ -278,7 +278,7 @@ export const appRouter = [
     meta: {
       title: '系统管理',
       navigator: true,
-      role: [1, 2],
+      role: [1],
       icon: 'module-system'
     },
     component: Layout,
@@ -290,7 +290,7 @@ export const appRouter = [
         meta: {
           title: '系统管理',
           navigator: false,
-          role: [1, 2]
+          role: [1]
         },
         component: () => import('../../src/views/systemManage/index/index.vue'),
         children: [
@@ -300,7 +300,7 @@ export const appRouter = [
             meta: {
               title: '用户管理',
               navigator: false,
-              role: [1, 2]
+              role: [1]
             },
             component: () => import('../../src/views/systemManage/detail/user.vue')
           },

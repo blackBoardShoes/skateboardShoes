@@ -106,8 +106,7 @@
             :current-page="currentPage"
             :page-size="pageSize"
             @size-change= "SizeChange"
-            @current-change = "changePage"
-          >
+            @current-change = "changePage">
           </el-pagination>
         </div>
       </div>
@@ -229,18 +228,24 @@ export default {
 </script>
 <style lang="scss" scoped>
 #patient{
-  position: absolute;
-  left: 16px;
-  right: 16px;
-  bottom: 16px;
-  top: 16px;
+  // position: absolute;
+  // left: 16px;
+  // right: 16px;
+  // bottom: 16px;
+  // top: 16px;
+  width:100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 16px;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
   overflow: auto;
   // 系统概览
   .patient-statistics{
-    flex: 0 0 30%;
-    min-height: 280px;
+    // flex: 0 0 30%;
+    height: 30%;
+    min-height: 300px;
     display: flex;
     flex-direction: column;
     .el-card_header{
@@ -276,6 +281,9 @@ export default {
   .patient-list{
     flex: 1;
     // min-height: 500px;
+    height: 70%;
+    // max-height: 70%;
+    min-height: 700px;
     margin-top: 8px;
     display: flex;
     flex-direction: column;
@@ -291,16 +299,19 @@ export default {
         display: flex;
         flex-direction: column;
         .operate{
-          min-height: 60px;
+          min-height: 50px;
           box-sizing: border-box;
-          padding: 5px 0;
+          padding: 0;
         }
         .table{
-          flex:1;
-          height:100px;
+          // flex:1;
+          // min-height: 300px;
+          height: calc(100% - 130px);
+          // height:100px;
           position: relative;
         }
         .pagination{
+          height: 40px;
           margin-top: 12px;
           min-height: 30px;
           line-height: 30px;
