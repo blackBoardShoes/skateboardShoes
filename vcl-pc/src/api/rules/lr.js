@@ -22,3 +22,7 @@ export const userByMyType = data => {
 export const formdataGetPeroperative = data => {
   return axios.get(`${api}/formdata/getPeroperative/${data.id}/${data.operationNum}`)
 }
+// formdata/getbasicByRecord/{id} 术前表
+export const formdataGetbasicByRecord = data => {
+  return axios.get(`${api}/formdata/getbasicByRecord/${data.id}/${data.operationNum}`)
+}
