@@ -781,17 +781,17 @@ export default {
       //   'operationOperator': operationOperator
       // })
       this.printAndBrowseTF = true
-      // this.$nextTick(_ => {
-      //   let newContent = this.$refs.printAndBrowse.innerHTML
-      //   let oldContent = document.body.innerHTML
-      //   document.body.innerHTML = newContent
-      //   setTimeout(() => {
-      //     window.print()
-      //     window.location.reload()
-      //     document.body.innerHTML = oldContent
-      //     this.loadingReport = false
-      //   }, 250 * 10)
-      // })
+      this.$nextTick(_ => {
+        let newContent = this.$refs.printAndBrowse.innerHTML
+        let oldContent = document.body.innerHTML
+        document.body.innerHTML = newContent
+        setTimeout(() => {
+          window.print()
+          window.location.reload()
+          document.body.innerHTML = oldContent
+          this.loadingReport = false
+        }, 250 * 10)
+      })
     },
     filedsDataConversion (filedsObject, filedsData) {
       let dc = {}
