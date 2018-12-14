@@ -359,7 +359,7 @@ export default {
       text: '',
       textObj: {
         进镜: `
-          {{"id": "a1","unit": "进境，","type": "SELECT","values":[{"label": "十二指肠镜", "value": "十二指肠镜"},{"label": "胃镜", "value": "胃镜"},{"label": "单气囊小肠镜", "value": "单气囊小肠镜"},{"label": "双气囊小肠镜", "value": "双气囊小肠镜"},{"label": "结肠镜", "value": "结肠镜"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
+          {{"id": "a1","unit": "进镜，","type": "SELECT","values":[{"label": "十二指肠镜", "value": "十二指肠镜"},{"label": "胃镜", "value": "胃镜"},{"label": "单气囊小肠镜", "value": "单气囊小肠镜"},{"label": "双气囊小肠镜", "value": "双气囊小肠镜"},{"label": "结肠镜", "value": "结肠镜"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
           {{"id": "a2","labelWidth": "55px","label": "见食管","type": "SELECT","values":[{"label": "全段", "value": "全段"},{"label": "上段", "value": "上段"},{"label": "中段", "value": "中段"},{"label": "下段", "value": "下段"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
           {{"id": "a3","vIf": {"id":"a7", "value": ["息肉","隆起性肿物","溃疡","糜烂"]},"unit": "mm ×","type": "INPUT","validations": [{ "required": true, "message": "请输入", "trigger": "change" }]}}
           {{"id": "a4","vIf": {"id":"a7", "value": ["息肉","隆起性肿物","溃疡","糜烂"]},"unit": "mm","type": "INPUT","validations": [{ "required": true, "message": "请输入", "trigger": "change" }]}}
