@@ -506,6 +506,7 @@ export default {
       this.activeRow = this.rulesContainTop[this.activeIndex]
     },
     containTopControl (row, index) {
+      this.currentPage = 1
       this.activeIndex = index
       this.activeRow = row
       this.mozhu = [...this.whatObj[row.key]]
