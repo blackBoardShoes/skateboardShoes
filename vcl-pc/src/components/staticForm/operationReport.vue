@@ -103,15 +103,20 @@
               </div>
               <br>
             </div>
-            <el-row :gutter="20">
-              <el-col :span="10">
+            <el-row :gutter="21">
+              <el-col :span="7">
                 <el-form-item prop="ohShitProject" label="检查项目" >
                   <el-input v-model="contentModel['ohShitProject']" :disabled="disabled"></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="10">
+              <el-col :span="7">
                 <el-form-item prop="ohShitDept" label="送检科室" >
                   <el-input v-model="contentModel['ohShitDept']" :disabled="disabled"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="7">
+                <el-form-item prop="ohShitDoctor" label="报告医生" >
+                  <el-input v-model="contentModel['ohShitDoctor']" :disabled="disabled"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -154,7 +159,7 @@
               <div class="">THE FIRST HOSPITAL OF LANZHOU UNIVERSITY</div>
             </div>
           </div>
-          <div class="bolder-title">内镜报告检查单</div>
+          <div class="bolder-title">内镜诊疗报告单</div>
         </div>
         <!-- <grayTitle>受检者基本情况</grayTitle> -->
         <hr>
@@ -247,11 +252,15 @@
         <br><br>
         <hr>
         <el-row type="flex" style="margin-top: 12px">
-          <el-col :span="13">
+          <el-col :span="7">
           </el-col>
-          <el-col :span="11" style="display: flex;justify-content: space-between;align-items:center">
+          <el-col :span="17" style="display: flex;justify-content: space-between;align-items:center">
+            <div style="font-size:14px;line-height: 16px;width: 155px;">
+              <span>报告医生：</span>
+               {{contentModel['ohShitDoctor']}}
+            </div>
             <div style="width: 155px;">
-              <sx-show-min style="line-height: 16px;" :whatFiledsWhere="{operationOperator: {label: '报告医师：'}}" :whatFileds="{operationOperator: reportData['intraoperativeDiagnosisAndEvaluation'] ? reportData['intraoperativeDiagnosisAndEvaluation']['operationOperator'] : ''}"></sx-show-min>
+              <sx-show-min style="line-height: 16px;" :whatFiledsWhere="{operationOperator: {label: '操作医生：'}}" :whatFileds="{operationOperator: reportData['intraoperativeDiagnosisAndEvaluation'] ? reportData['intraoperativeDiagnosisAndEvaluation']['operationOperator'] : ''}"></sx-show-min>
             </div>
             <div style="font-size:14px;line-height: 16px;">
               <span>报告日期：</span>
@@ -276,7 +285,7 @@
 <script>
 import imgView from '../../components/imgView/imgView.vue'
 import { patientImageGetImages } from '../../api/rules/index.js'
-import { formdataGetPeroperative } from '../../api/rules/lr.js'
+import { formdataGetPeroperative, formdataGetbasicByRecord } from '../../api/rules/lr.js'
 import { fieldAllFields } from '../../api/form/zdk.js'
 let grayTitle = {
   template: '<div class="grayTitle"><slot></slot></div>'
@@ -350,7 +359,7 @@ export default {
       text: '',
       textObj: {
         进镜: `
-          {{"id": "a1","unit": "进境，","type": "SELECT","values":[{"label": "十二指肠镜", "value": "十二指肠镜"},{"label": "胃镜", "value": "胃镜"},{"label": "单气囊小肠镜", "value": "单气囊小肠镜"},{"label": "双气囊小肠镜", "value": "双气囊小肠镜"},{"label": "结肠镜", "value": "结肠镜"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
+          {{"id": "a1","unit": "进镜，","type": "SELECT","values":[{"label": "十二指肠镜", "value": "十二指肠镜"},{"label": "胃镜", "value": "胃镜"},{"label": "单气囊小肠镜", "value": "单气囊小肠镜"},{"label": "双气囊小肠镜", "value": "双气囊小肠镜"},{"label": "结肠镜", "value": "结肠镜"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
           {{"id": "a2","labelWidth": "55px","label": "见食管","type": "SELECT","values":[{"label": "全段", "value": "全段"},{"label": "上段", "value": "上段"},{"label": "中段", "value": "中段"},{"label": "下段", "value": "下段"}],"validations":[{ "required": true, "message": "请选择", "trigger": "change" }]}}
           {{"id": "a3","vIf": {"id":"a7", "value": ["息肉","隆起性肿物","溃疡","糜烂"]},"unit": "mm ×","type": "INPUT","validations": [{ "required": true, "message": "请输入", "trigger": "change" }]}}
           {{"id": "a4","vIf": {"id":"a7", "value": ["息肉","隆起性肿物","溃疡","糜烂"]},"unit": "mm","type": "INPUT","validations": [{ "required": true, "message": "请输入", "trigger": "change" }]}}
@@ -543,6 +552,9 @@ export default {
     if (!this.contentModel['ohShitDept']) {
       this.$set(this.contentModel, 'ohShitDept', '')
     }
+    if (!this.contentModel['ohShitDoctor']) {
+      this.$set(this.contentModel, 'ohShitDoctor', '')
+    }
   },
   methods: {
     async init () {
@@ -626,6 +638,7 @@ export default {
       this.$set(this.contentModel, 'operationCheckBox', [])
       this.$set(this.contentModel, 'ohShitProject', '')
       this.$set(this.contentModel, 'ohShitDept', '')
+      this.$set(this.contentModel, 'ohShitDoctor', '')
       this.$refs['contentModel'].resetFields()
     },
     async printAndBrowse () {
@@ -648,18 +661,20 @@ export default {
         }
       }
       // 术前表 preoperativeRecord获取 ， 要 麻醉方式（ANAtype）这个字段
-      let recordId = ''
-      let operationNum = ''
+      // let recordId = ''
+      // let operationNum = ''
       let anaType = {}
+      let admissionAge = null
       if (this.fishAllData) {
-        for (let ccc of this.fishAllData) {
-          if (ccc['header'].operationDate === this.activeIndexNav.substr(2)) {
-            recordId = ccc['header'].recordId
-            operationNum = ccc['header'].operationNum
-            break
-          }
-        }
-        await formdataGetPeroperative({id: recordId, operationNum: operationNum})
+        // for (let ccc of this.fishAllData) {
+        //   if (ccc['header'].operationDate === this.activeIndexNav.substr(2)) {
+        //     recordId = ccc['header'].recordId
+        //     operationNum = ccc['header'].operationNum
+        //     break
+        //   }
+        // }
+        // await formdataGetPeroperative({id: recordId, operationNum: operationNum})
+        admissionAge = this.fishAllData[0].data.generalCondition.admissionAge
         anaType = { preoperativeRecord: this.fishAllData[1].data.preoperativeRecord ? this.fishAllData[1].data.preoperativeRecord.anaType : '' }
       } else {
         console.log({id: this.patientInfo.recordId, operationNum: this.patientInfo.operationNum}, 'ccccccccccccc')
@@ -673,6 +688,17 @@ export default {
             message: '麻醉方式未获取'
           })
         }
+        let fgb = await formdataGetbasicByRecord({id: this.patientInfo.recordId, operationNum: this.patientInfo.operationNum})
+        if (fgb) {
+          let takeAField = fgb.data.entity.data.generalCondition
+          admissionAge = 'admissionAge' in takeAField ? takeAField['admissionAge'] : ''
+        } else {
+          this.loadingReport = false
+          this.$message({
+            showClose: true,
+            message: '年龄未获取'
+          })
+        }
       }
       this.fishData = Object.assign(this.fishData, anaType)
       // basicInfo
@@ -680,7 +706,7 @@ export default {
       for (let i in basicInfo) {
         this.$set(this.basicInfo, i, {value: this.patientInfo[basicInfo[i][1]], label: basicInfo[i][0]})
       }
-      this.basicInfo = this.basicInfo.concat([{value: this.contentModel['ohShitDept'], label: '送检科室'}, {value: this.contentModel['ohShitProject'], label: '检查项目'}])
+      this.basicInfo = this.basicInfo.concat([{value: this.contentModel['ohShitDept'], label: '送检科室'}, {value: this.contentModel['ohShitProject'], label: '检查项目'}, {value: admissionAge, label: '年龄'}])
       let ohShit = {
         preoperativeRecord: [
           'anaType'

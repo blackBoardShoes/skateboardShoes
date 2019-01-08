@@ -168,7 +168,7 @@ export default {
             values: [
               {value: '普外二科', label: '普外二科'},
               {value: '普外五科', label: '普外五科'},
-              {value: '特需病房（外科）', label: '特需病房（外科）'},
+              {value: '特需外科', label: '特需外科'},
               {value: '东岗院区普外科', label: '东岗院区普外科'},
               {value: '普外一科', label: '普外一科'},
               {value: '小儿外科', label: '小儿外科'},

@@ -379,7 +379,7 @@ export default {
       if (a) {
         this.fishData = a.data.entity ? Object.assign({}, a.data.entity.data) : {}
       }
-      console.log(this.fishData, 'firstShow')
+      console.log(a, 'firstShow')
     },
     async init () {
       this.navArr = []
