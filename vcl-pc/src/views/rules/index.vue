@@ -505,11 +505,12 @@ export default {
       this.mozhu = [...this.whatObj[this.rulesContainTop[1].key]]
       this.activeRow = this.rulesContainTop[this.activeIndex]
     },
-    containTopControl (row, index) {
+    async containTopControl (row, index) {
       this.currentPage = 1
       this.activeIndex = index
       this.activeRow = row
       this.mozhu = [...this.whatObj[row.key]]
+      await this.firstShow()
       this.show()
       // this.tableData = []
       // this.$router.push({name: 'sh', params: { data: JSON.stringify({a: 1}) }})
