@@ -1,5 +1,6 @@
 <template>
   <el-table
+    class="minTable"
     :data="tableData"
     :height="height"
     highlight-current-row
@@ -10,7 +11,7 @@
       type="index"
       width="50">
     </el-table-column>
-    <el-table-column type="expand" v-if="expand"  class="demo-table-expand">
+    <el-table-column type="expand"  class="demo-table-expand">
       <template slot-scope="props">
         <el-form label-position="left" inline>
           <el-form-item :label="z" v-for="(i, z) in props.row" :key="z">
@@ -118,18 +119,19 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.demo-table-expand {
+<style lang="scss">
+.minTable {
+  /deep/ .demo-table-expand {
     font-size: 0;
   }
-  .demo-table-expand label {
+  /deep/ .demo-table-expand label {
     width: 90px;
     color: #99a9bf;
   }
-  .demo-table-expand .el-form-item {
+  /deep/ .demo-table-expand .el-form-item {
     margin-right: 0;
     margin-bottom: 0;
     width: 50%;
   }
-
+}
 </style>
