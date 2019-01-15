@@ -11,11 +11,11 @@
       type="index"
       width="50">
     </el-table-column>
-    <el-table-column type="expand"  class="demo-table-expand">
+    <el-table-column type="expand" v-if="expand" class="demo-table-expand">
       <template slot-scope="props">
         <el-form label-position="left" inline>
           <el-form-item :label="z" v-for="(i, z) in props.row" :key="z">
-            <span>{{ i }}</span>
+            <!-- <span>{{ i }}</span> -->
           </el-form-item>
         </el-form>
       </template>
