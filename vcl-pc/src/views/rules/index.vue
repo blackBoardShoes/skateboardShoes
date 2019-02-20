@@ -45,7 +45,6 @@
             </div>
           </el-row>
           <sx-min-table
-            :expand="!activeIndex"
             :mozhu="mozhu"
             :tableData="tableData"
             :filterHandler="filterHandler"
