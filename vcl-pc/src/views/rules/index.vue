@@ -327,7 +327,7 @@ export default {
           { prop: 'operationDate', label: '手术日期' },
           { prop: 'phase', label: '数据阶段', width: 115 },
           { prop: 'responseName', label: '记录者', width: 100 },
-          { option: true, fixed: 'right', label: '操作', contain: [{label: '编辑'}] }
+          { option: true, fixed: 'right', label: '操作', contain: [{label: '编辑'}, {label: '修正'}] }
         ],
         // 随访 ---> 住院号 编号 姓名 性别 主管医生 术后诊断 出院日期 记录者 状态（待问询、已失访、待复查） 操作（编辑）
         followUpColumn: [
@@ -969,7 +969,18 @@ export default {
             this.$router.push({ name: 'sh', params: { data: JSON.stringify(row) } })
             break
           case '待修正':
-            this.$router.push({ name: 'xz', params: { data: JSON.stringify(row) } })
+            if (x.label === '修正') {
+              this.$router.push({ name: 'xz', params: { data: JSON.stringify(row) } })
+            } else {
+              this.createFishOrEditFish = false
+              let r = Object.assign({}, row)
+              if (r.gender === '男') r.gender = 1
+              else r.gender = 0
+              this.ruleForm = this.thatFishData = r
+              this.ruleFormTF = true
+              this.dialogVisible = true
+              console.log('bianji', 'row', row)
+            }
             break
           case '随访':
             this.$router.push({ name: 'sf', params: { data: JSON.stringify(row) } })
