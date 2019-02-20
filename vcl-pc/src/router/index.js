@@ -22,6 +22,7 @@ const router = new VueRouter(routerConfig)
 
 let loading
 router.beforeEach((to, from, next) => {
+  console.log(to)
   if (typeof store.state.cancelTokenData === 'function') {
     store.state.cancelTokenData()
   }

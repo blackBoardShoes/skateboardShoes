@@ -36,6 +36,11 @@ export const getPatientRecords = data => {
   return axios.get(api + `/formdata/recordsOrdered/patient/${data}`)
 }
 
+//  驳回一条记录
+export const unpassRecord = data => {
+  return axios.post(api + `/formdata/unpass/${data.id}`)
+}
+
 export const getPatientFollows = data => {
   return axios.get(api + `/formdata/followUpFilledForm/${data}`)
 }

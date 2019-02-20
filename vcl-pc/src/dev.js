@@ -5,12 +5,18 @@
 // 服务主要地址
 // 启敏
 // let host = 'http://192.168.10.249:8089'
-let host = 'http://192.168.10.104:8090'
+var localStorage = require('localStorage')
+let host = 'http://mitigenomics.leoatchina.com:18090'
+if (localStorage.getItem('api') && localStorage.getItem('port')) {
+  let api = localStorage.getItem('api')
+  let port = localStorage.getItem('port')
+  host = api + ':' + port
+}
 let nginx = false
-nginx = true
+// nginx = true
 // 是APP是 gzip 选用 false
 let gzip = true
-// gzip = false
+gzip = false
 // ----------------------------------------------------
 let proxyTable = {
   '/api': {
@@ -21,14 +27,6 @@ let proxyTable = {
     }
   }
 }
-// nginx 相对的配置
-
-// location /api {
-//   proxy_pass http://www.udao56.com/thinkphp5/index.php/tms;
-// }
-// location /hot {
-//     proxy_pass http://echarts.baidu.com/;
-// }
 
 let proxyTableApi = {}
 // Is your service nginx  和 npm run dev 都是代理方式

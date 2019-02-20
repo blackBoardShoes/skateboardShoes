@@ -27,6 +27,7 @@
                   @click="_togglePasswordType"></i>
               </el-input>
             </el-form-item>
+
             <el-row>
               <el-col :span="13">
                 <el-form-item prop="yanzhengma" ref="yanzhengma">
@@ -46,14 +47,17 @@
               </el-col>
             </el-row>
             <div style="margin-bottom: 0;margin-top:40px;height:48px;">
-              <el-col :offset="6" :span="12">
-                <el-button
-                  type="primary"
-                  class="login-btn"
-                  style="width: 100%;"
-                  @click="login()">
-                  登录系统
-                </el-button>
+              <el-col :span="24">
+                <el-button-group style="width:100%;display:flex;justify-content:center;">
+                  <el-button
+                    type="primary"
+                    class="login-btn"
+                    @click="login()">
+                    登录系统
+                  </el-button>
+                  <el-button icon="ercp-icon-module-system" type="primary" @click="showlock = true" v-if="env">
+                  </el-button>
+                </el-button-group>
               </el-col>
             </div>
           </el-form>
@@ -63,12 +67,41 @@
           <i class="ercp-icon-general-close" @click="windwowOperate('close')"></i>
         </div>
       </div>
+      <el-dialog
+        title="修改地址"
+        :modal="true"
+        append-to-body
+        :close-on-click-modal="false"
+        :visible.sync="showlock"
+        center
+        style="-webkit-app-region: no-drag;"
+        width="500px">
+        <el-form label-position="left" :rules="apiRules" ref="portForm" :model="apiUrl">
+          <el-row>
+            <el-col :span="18">
+              <el-form-item label="地址" prop="api">
+                <el-input  v-model="apiUrl.api"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="5" :offset="1">
+              <el-form-item label="端口号" prop="port">
+                <el-input  v-model="apiUrl.port"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer align-center">
+          <el-button @click="showlock = false">取 消</el-button>
+          <el-button type="primary" @click="lock">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
 <script>
 import validateCode from '../../components/ValidateCode/index'
 import { login } from '../../api/user/user.js'
+var localStorage = require('localStorage')
 export default {
   created () {
     // 如果是在electron环境下，动画
@@ -84,6 +117,18 @@ export default {
   },
   mounted () {
     this.env = this.$electron
+    if (localStorage.getItem('api') && localStorage.getItem('port')) {
+      let apiUrl = {
+        api: localStorage.api,
+        port: localStorage.port
+      }
+      this.apiUrl = apiUrl
+    } else {
+      this.apiUrl = {
+        api: '',
+        port: ''
+      }
+    }
   },
   data () {
     var checkYanzhengma = (rule, value, callback) => {
@@ -100,6 +145,17 @@ export default {
       }
     }
     return {
+      // stor: '',
+      showlock: false,
+      apiUrl: {},
+      apiRules: {
+        api: [
+          { required: true, message: '地址不能为空', trigger: 'blur' }
+        ],
+        port: [
+          { required: true, message: '端口号不能为空', trigger: 'blur' }
+        ]
+      },
       passwordType: 'password',
       checkCode: '',
       form: {
@@ -123,6 +179,39 @@ export default {
     }
   },
   methods: {
+    lock () {
+      this.$refs['portForm'].validate(async valid => {
+        if (valid) {
+          this.$confirm('此操作将修改地址参数，修改成功后需重新启动应用', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            localStorage.api = this.apiUrl.api
+            localStorage.port = this.apiUrl.port
+            this.showlock = false
+            if (this.env) {
+              let ipc = this.$electron.ipcRenderer
+              setTimeout(() => {
+                ipc.send('close')
+              }, 2000)
+              this.$message({
+                type: 'success',
+                message: '修改成功，本应用将于2秒后关闭，请重新启动应用'
+              })
+            }
+          }).catch(() => {
+            this.showlock = false
+            this.$message({
+              type: 'info',
+              message: '已取消'
+            })
+          })
+        } else {
+          return false
+        }
+      })
+    },
     // 更换验证码
     _setCheckCode (value) {
       this.checkCode = value
@@ -309,5 +398,14 @@ export default {
     text-align: right;
     right: 16px;
     left: auto;
+  }
+  .el-dialog__wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .el-dialog{
+    // height: 280px;
+    margin: 0 !important;
   }
 </style>

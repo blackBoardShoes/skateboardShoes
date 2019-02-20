@@ -40,6 +40,35 @@
             fit
             height="100%"
             class="absolute-table">
+            <el-table-column type="expand">
+              <template slot-scope="props" v-if="props.row.records">
+                <div class="no-record align-center" v-if="props.row.records.length <= 0">
+                  <span>住院记录：无</span>
+                </div>
+                <div class="in-hospital-record" v-else >
+                  <div class="record-title light-text" style="display:flex;padding-right:10px;">
+                    <div class="case">住院基本情况</div>
+                    <div class="case">出院综合评估</div>
+                    <div class="case">手术日期</div>
+                    <div class="case">手术编号</div>
+                    <div class="case">术中</div>
+                    <div class="case">术前</div>
+                    <div class="case">术后</div>
+                  </div>
+                  <div class="record-content">
+                    <div class="one-record light-text" v-for="(item,index) in props.row.records" :key="index" style="display:flex;padding-right:10px;">
+                      <div :class="{'case': true, 'danger-text': item['住院基本情况'].search('未') > -1}">{{item['住院基本情况']}}</div>
+                      <div :class="{'case': true, 'danger-text': item['出院综合评估'].search('未') > -1}">{{item['出院综合评估']}}</div>
+                      <div :class="{'case': true, 'danger-text': item['手术日期'].search('未') > -1}">{{item['手术日期']}}</div>
+                      <div :class="{'case': true, 'danger-text': item['手术编号'].search('未') > -1}">{{item['手术编号']}}</div>
+                      <div :class="{'case': true, 'danger-text': item['术中'].search('未') > -1}">{{item['术中']}}</div>
+                      <div :class="{'case': true, 'danger-text': item['术前'].search('未') > -1}">{{item['术前']}}</div>
+                      <div :class="{'case': true, 'danger-text': item['术后'].search('未') > -1}">{{item['术后']}}</div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </el-table-column>
             <el-table-column
               show-overflow-tooltip
               prop="hospitalId"
@@ -283,7 +312,7 @@ export default {
     // min-height: 500px;
     height: 70%;
     // max-height: 70%;
-    min-height: 700px;
+    min-height: 710px;
     margin-top: 8px;
     display: flex;
     flex-direction: column;
@@ -330,6 +359,12 @@ export default {
   }
   .el-table__header-wrapper{
     background-color: #eee;
+  }
+  .case{
+    flex:1;
+    text-align: center;
+    line-height: 2;
+    min-width: 120px;
   }
 }
 </style>

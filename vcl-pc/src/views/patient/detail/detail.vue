@@ -132,6 +132,7 @@
           <el-carousel :interval="4000" type="card"  style="height:100%;width:600px;" :autoplay=false arrow="always">
             <el-carousel-item v-for="(item, index) in record.forms" :key="index" :label="item.header.phase">
               <div class="card-content">
+                <div class="backup" @click="goback(item)" v-if="$store.state.user.codetype === 1 && item.header.isFinished === 1 && item.header.isPassed === 1 && item.header.isRejected === 0"><el-button plain size="mini" type="primary">退回</el-button></div>
                 <div class="card-title">
                   <!-- <el-tooltip class="item" effect="dark" placement="top" :disabled="true"> -->
                     <!-- <span v-if="item.header.phase === '术中'" class="ercp-icon-medicine-report primary-text" @click="operate('view', record, index)"></span> -->
@@ -260,6 +261,7 @@
           <el-carousel :interval="4000" type="card" style="height:100%;;width:600px;" :autoplay=false arrow="always" v-if="follow.find((n) => n.information.state === '已完成')">
             <el-carousel-item v-for="(record, index) in follow" :key="index" :label="record.header.phase + '(' + record.data.endpointEventRecord.followUpDate+ ')'" v-if="record.information.state === '已完成'">
               <div class="card-content">
+                <div class="backup" @click="goback(record)" v-if="$store.state.user.codetype === 1 && record.header.isFinished === 1 && record.header.isPassed === 1 && record.header.isRejected === 0"><el-button plain size="mini" type="primary">退回</el-button></div>
                 <div class="card-title">
                   {{record.header.phase}}({{record.data.endpointEventRecord.followUpDate}})
                 </div>
@@ -330,7 +332,7 @@
 <script>
 import textRadio from '../../../components/textRadio/textRadio'
 import {addressData} from '../../../data/address/addressData'
-import {deletePatient, editPatientBasic, getPatientRecords, getPatientFollows, getAllFormTemplates} from '../../../api/patient/patient.js'
+import {deletePatient, editPatientBasic, getPatientRecords, getPatientFollows, getAllFormTemplates, unpassRecord} from '../../../api/patient/patient.js'
 export default {
   name: 'patient_detail',
   components: {
@@ -657,6 +659,33 @@ export default {
           break
       }
     },
+    goback (item) {
+      console.log(item)
+      this.$confirm('此操作将退回该条记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.unpass(item)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
+    },
+    async unpass (item) {
+      let response = await unpassRecord(item)
+      if (response.data.mitiStatus === 'SUCCESS') {
+        this.$message.success('该条记录已退回')
+        this.getPatientRec()
+        this.getPatientFollow()
+        this.getFormTemplate()
+        this.initPermission(this.$store.state.user.codetype)
+      } else {
+        this.$message.error('ERROR: ' + response.data.message)
+      }
+    },
     // 随访
     operate2 (data) {
       let data4 = data
@@ -681,6 +710,11 @@ export default {
 </script>
 <style lang="scss" scoped>
   @import '../../../assets/css/variable';
+  .backup{
+    position: absolute;
+    top: 10px;
+    right: 15px;
+  }
   .wrapper{
     width: 100%;
     height: 100%;
