@@ -66,6 +66,11 @@ export const patientAddPatient = data => {
   return axios.post(api + '/patient/addPatient', data)
 }
 
+//  判断当前记录是一条新的住院记录还是只是新增的手术记录
+export const newEnter = data => {
+  return axios.get(api + `/patient/getRecord?patientId=${data.patientId}&inHospitalDate=${data.inHospitalDate}`)
+}
+
 // /patientImage/getImages  手术报告图片获取
 export const patientImageGetImages = data => {
   return axios.get(`${api}/patientImage/getImages`, { params: data })

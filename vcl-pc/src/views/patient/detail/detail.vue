@@ -629,20 +629,41 @@ export default {
       switch (type) {
         // 录入
         case 'typein' :
-          let data2 = data.header
+          let data2 = data
+          console.log(data)
+          for (let i in data.header) {
+            console.log(i, 'data.header')
+            data2[i] = data.header[i]
+          }
           data2.id = data.id
+          data2.gender = data2.gender ? '男' : '女'
+          console.log(data2)
           this.$router.push({ name: 'lr', params: { data: JSON.stringify(data2) } })
           break
         // 审核
         case 'check' :
-          let data1 = data.header
+          let data1 = data
+          console.log(data)
+          for (let i in data.header) {
+            console.log(i, 'data.header')
+            data1[i] = data.header[i]
+          }
           data1.id = data.id
+          data1.gender = data1.gender ? '男' : '女'
+          console.log(data1)
           this.$router.push({ name: 'sh', params: { data: JSON.stringify(data1) } })
           break
         // 修正
         case 'repair' :
-          let data3 = data.header
+          let data3 = data
+          console.log(data)
+          for (let i in data.header) {
+            console.log(i, 'data.header')
+            data3[i] = data.header[i]
+          }
           data3.id = data.id
+          data3.gender = data3.gender ? '男' : '女'
+          console.log(data3)
           this.$router.push({ name: 'xz', params: { data: JSON.stringify(data3) } })
           break
         // 查看

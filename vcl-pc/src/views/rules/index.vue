@@ -119,7 +119,7 @@
 // import { charts } from '../../data/chartTemplates/chart'
 import { mapState } from 'vuex'
 import sxMinTable from '../../components/dynamicForm/minTable'
-import { formdataDeleteId, undoneFilledFormMyself, formdataFollowingupLostcontact, record, formdataDelete, recordAllRecord, formdataRejectedFilledForm, formdataFinishedFilledForm, formdataUndoneFilledForm, formdataFollowUpFilledForm, patientGetPatientCount, patientAddPatient } from '../../api/rules/index.js'
+import { formdataDeleteId, undoneFilledFormMyself, formdataFollowingupLostcontact, record, formdataDelete, recordAllRecord, formdataRejectedFilledForm, formdataFinishedFilledForm, formdataUndoneFilledForm, formdataFollowUpFilledForm, patientGetPatientCount, patientAddPatient, newEnter } from '../../api/rules/index.js'
 import { addressData } from '../../data/address/addressData.js'
 import { formdataSave } from '../../api/rules/lr.js'
 export default {
@@ -816,6 +816,8 @@ export default {
           this.$set(this.ruleForm, i, pgp.data.entity[i])
           this.$set(this.thatFishData, i, pgp.data.entity[i])
         }
+        console.log(this.ruleForm)
+        console.log(this.thatFishData)
         return true
       } else {
         this.$confirm('是否新增患者', '提示', {
@@ -853,11 +855,35 @@ export default {
         if (valid) {
           if (this.createFishOrEditFish) {
             if (await this.patientIdCheckUp()) {
-              let r = await record(Object.assign(this.ruleForm, formModel))
-              console.log(r)
-              this.dialogVisible = false
-              await this.firstShow()
-              this.show()
+              let info = {
+                patientId: formModel.patientId,
+                inHospitalDate: formModel.inHospitalDate
+              }
+              let response = await newEnter(info)
+              if (response.data.mitiStatus === 'SUCCESS') {
+                console.log(response.data.entity)
+                // true：有这个日期 false：没有这个日期
+                // ！true = false 没有这条日期
+                if (!response.data.entity) {
+                  this.$confirm('当前填写的入院日期' + formModel.inHospitalDate + '是一条新的入院日期, 点击确定产生一条新的入院记录?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                  }).then(() => {
+                    this.sendRequest(formModel)
+                  }).catch(() => {
+                    this.$message({
+                      type: 'info',
+                      message: '请重新选择入院日期'
+                    })
+                  })
+                // 如果有这个日期，则表示这是一条新的手术记录而已
+                } else {
+                  this.sendRequest(formModel)
+                }
+              } else {
+                this.$message.error('ERROR: ' + response.data.message)
+              }
             }
           } else {
             this.ruleForm.header = Object.assign({ patientId: this.ruleForm.patientId }, formModel)
@@ -872,6 +898,13 @@ export default {
           console.log('error submit!!')
         }
       })
+    },
+    async sendRequest (formModel) {
+      let r = await record(Object.assign(this.ruleForm, formModel))
+      console.log(r)
+      this.dialogVisible = false
+      await this.firstShow()
+      this.show()
     },
     async updateFish () {},
     filterBtn (row, x) {
