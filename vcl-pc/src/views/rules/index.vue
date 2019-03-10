@@ -940,6 +940,9 @@ export default {
         case '审核':
           console.log('审核')
           break
+        case '修正':
+          console.log('修正')
+          break
         case '失访':
           if (this.activeRow.title === '随访') {
             deleteBtn = false
@@ -1003,6 +1006,7 @@ export default {
             break
           case '待修正':
             if (x.label === '修正') {
+              console.log(1)
               this.$router.push({ name: 'xz', params: { data: JSON.stringify(row) } })
             } else {
               this.createFishOrEditFish = false

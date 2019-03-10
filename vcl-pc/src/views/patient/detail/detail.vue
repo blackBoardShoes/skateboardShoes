@@ -231,7 +231,7 @@
                     审核
                   </el-button>
                   <!-- 已提交录入未通过已驳回 -->
-                  <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 0 && item.header.isPassed === 0 && item.header.isRejected === 1 && userPermission.repair.permission === true" @click="operate('repair', item)">
+                  <el-button type="primary" size="mini" plain v-if="item.header.isFinished === 0 && item.header.isPassed === 0 && item.header.isRejected === 1 && userPermission.repair.permission === true && item.header.responseId === $store.state.user.id" @click="operate('repair', item)">
                     修正
                   </el-button>
                   <!-- 皆可查看，但是和以上按钮无并存需要，css溢出隐藏 -->
