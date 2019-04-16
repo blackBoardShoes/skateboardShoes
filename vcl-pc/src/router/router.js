@@ -205,7 +205,7 @@ export const appRouter = [
             meta: {
               title: '数据导出',
               navigator: true,
-              role: [1, 2, 3]
+              role: [1]
             },
             component: () => import('../../src/views/statistics/detail/export.vue')
           }

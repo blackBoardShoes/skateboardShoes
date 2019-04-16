@@ -335,6 +335,7 @@ export default {
           // { prop: 'operationNum', label: '编号' },
           { prop: 'patientName', label: '姓名', width: '90' },
           { prop: 'gender', label: '性别', width: '80' },
+          { prop: 'phoneNum', label: '电话号码' },
           { prop: 'doctor', label: '主管医生' },
           // { prop: 'name', label: '术后诊断' },
           { prop: 'dischargeDate', label: '出院日期' },

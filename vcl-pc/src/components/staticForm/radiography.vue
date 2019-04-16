@@ -262,7 +262,7 @@ export default {
   async created () {
     let staticId = ['radiographyOrNot', 'radiographyPipeline', 'imagingTime', 'unobstructed', 'irrigation', 'incumbent', 'removeTime']
     for (let i of staticId) {
-      if (!this.contentModel[i]) {
+      if (!this.contentModel[i] && this.contentModel[i] !== 0) {
         this.$set(this.contentModel, i, '')
       }
     }
