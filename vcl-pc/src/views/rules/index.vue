@@ -341,7 +341,13 @@ export default {
           { prop: 'dischargeDate', label: '出院日期' },
           { prop: 'followUpDate', label: '随访日期' },
           { prop: 'responseName', label: '记录者' },
-          { prop: 'isLostContact', label: '状态' },
+          { prop: 'isLostContact',
+            label: '状态',
+            filters: [
+              {'text': '已失访', 'value': '已失访'},
+              {'text': '已完成', 'value': '已完成'}
+            ]
+          },
           { option: true, fixed: 'right', label: '操作', contain: [{label: '查看', hidden: true, reverse: true}, {label: '失访', style: 'color: #878A8D', hidden: true}, {label: '编辑', hidden: true}, {label: '删除', hidden: true, style: 'color: #FF455B'}], width: 130 }
         ]
       },
