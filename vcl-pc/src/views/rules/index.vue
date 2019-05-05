@@ -34,6 +34,19 @@
                 clearable
                 prefix-icon="el-icon-search"></el-input>
             </el-col>
+            <el-col :offset="10" :span="8" v-if="activeRow.key === 'followUpColumn'" style="text-align:right;">
+              <el-radio-group v-model="statusType" @change="lookupFormInput">
+                <el-radio-button label="0">
+                  未完成
+                </el-radio-button>
+                <el-radio-button label="1">
+                  已完成
+                </el-radio-button>
+                <el-radio-button label="2">
+                  已失访
+                </el-radio-button>
+              </el-radio-group>
+            </el-col>
             <div>
               <el-switch
                 v-if="rulesContainTop[activeIndex].title === '待录入' && user.type === '科研护士'"
@@ -342,11 +355,7 @@ export default {
           { prop: 'followUpDate', label: '随访日期' },
           { prop: 'responseName', label: '记录者' },
           { prop: 'isLostContact',
-            label: '状态',
-            filters: [
-              {'text': '已失访', 'value': '已失访'},
-              {'text': '已完成', 'value': '已完成'}
-            ]
+            label: '状态'
           },
           { option: true, fixed: 'right', label: '操作', contain: [{label: '查看', hidden: true, reverse: true}, {label: '失访', style: 'color: #878A8D', hidden: true}, {label: '编辑', hidden: true}, {label: '删除', hidden: true, style: 'color: #FF455B'}], width: 130 }
         ]
@@ -447,7 +456,8 @@ export default {
       toBeAuditedColumnTableData: [],
       toBeAmendedColumnTableData: [],
       followUpColumnTableData: [],
-      showAll: false
+      showAll: false,
+      statusType: ''
     }
   },
   computed: mapState({
@@ -496,6 +506,9 @@ export default {
     this.show()
   },
   methods: {
+    filterStatus () {
+      console.log(this.statusType)
+    },
     init () {
       // 角色 button 分配   this.user用户数据
       let topArr = []
@@ -760,6 +773,8 @@ export default {
         }
         // this.total = z.data.entity.total
         this.$set(this.rulesContainTopModel, 'followUpColumn', z.data.entity.total)
+        console.log(this.rulesContainTopModel)
+        console.log(this.followUpColumnTableData)
         return true
       }
       return false
