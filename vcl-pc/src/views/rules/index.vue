@@ -35,14 +35,17 @@
                 prefix-icon="el-icon-search"></el-input>
             </el-col>
             <el-col :offset="10" :span="8" v-if="activeRow.key === 'followUpColumn'" style="text-align:right;">
-              <el-radio-group v-model="statusType" @change="lookupFormInput">
-                <el-radio-button label="0">
+              <el-radio-group v-model="statusType" @change="statusTypeChange">
+                <el-radio-button label="全部">
+                  全部
+                </el-radio-button>
+                <el-radio-button label="未完成">
                   未完成
                 </el-radio-button>
-                <el-radio-button label="1">
+                <el-radio-button label="已完成">
                   已完成
                 </el-radio-button>
-                <el-radio-button label="2">
+                <el-radio-button label="已失访">
                   已失访
                 </el-radio-button>
               </el-radio-group>
@@ -457,7 +460,9 @@ export default {
       toBeAmendedColumnTableData: [],
       followUpColumnTableData: [],
       showAll: false,
-      statusType: ''
+      statusType: '全部',
+      sfIsFinish: '',
+      sfIsLostContact: ''
     }
   },
   computed: mapState({
@@ -506,8 +511,22 @@ export default {
     this.show()
   },
   methods: {
-    filterStatus () {
+    statusTypeChange () {
       console.log(this.statusType)
+      if (this.statusType === '已失访') {
+        this.sfIsFinish = ''
+        this.sfIsLostContact = 1
+      } else if (this.statusType === '未完成') {
+        this.sfIsFinish = 0
+        this.sfIsLostContact = 0
+      } else if (this.statusType === '已完成') {
+        this.sfIsFinish = 1
+        this.sfIsLostContact = 0
+      } else {
+        this.sfIsFinish = ''
+        this.sfIsLostContact = ''
+      }
+      this.lookupFormInput()
     },
     init () {
       // 角色 button 分配   this.user用户数据
@@ -745,7 +764,18 @@ export default {
     },
     // 随访
     async formdataFollowUpFilledFormShowData () {
-      let z = await formdataFollowUpFilledForm(Object.assign({currentPage: this.currentPage, perPage: this.perPage, searchPattern: this.lookupFormInputData}, this.user))
+      let obj22 = {
+        currentPage: this.currentPage,
+        perPage: this.perPage,
+        searchPattern: this.lookupFormInputData
+      }
+      if (this.sfIsFinish !== '') {
+        obj22.isFinished = this.sfIsFinish
+      }
+      if (this.sfIsLostContact !== '') {
+        obj22.isLostContact = this.sfIsLostContact
+      }
+      let z = await formdataFollowUpFilledForm(Object.assign(obj22, this.user))
       if (z ? z.data.entity : false) {
         this.followUpColumnTableData = []
         for (let i of z.data.entity.data) {
