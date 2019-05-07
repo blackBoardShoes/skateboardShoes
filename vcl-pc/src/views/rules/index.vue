@@ -1148,8 +1148,8 @@ $contentW: 95%;
       }
       .rulesContainContent {
         padding: 15px;
-        display: flex;
-        flex-direction: column;
+        // display: flex;
+        // flex-direction: column;
       }
     }
     .controlContent {
