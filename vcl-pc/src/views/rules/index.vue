@@ -788,12 +788,13 @@ export default {
           if (i.header.isLostContact) {
             isLostContact = '已失访'
           }
+          let sfForm = i.information.record.forms.find((n) => n.header.phase === '出院综合评估')
           this.followUpColumnTableData.push(
             Object.assign(
               i,
               i.header,
               {doctor: i.information.record ? i.information.record.forms[0].data.generalCondition.doctor : null},
-              {dischargeDate: i.information.record ? i.information.record.forms[4].data.comprehensiveAssessment.dischargeDate : null},
+              {dischargeDate: sfForm ? sfForm.data.comprehensiveAssessment.dischargeDate : null},
               {isLostContact: isLostContact},
               {followUpDate: i.data.endpointEventRecord ? i.data.endpointEventRecord.followUpDate : '/'}
             )
