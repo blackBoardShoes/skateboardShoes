@@ -6,19 +6,19 @@
 // 启敏
 // let host = 'http://192.168.10.249:8089'
 var localStorage = require('localStorage')
-let host = 'http://mitigenomics.leoatchina.com:18090'
+let host = 'http://61.178.84.56:28087'
 if (localStorage.getItem('api') && localStorage.getItem('port')) {
   let api = localStorage.getItem('api')
   let port = localStorage.getItem('port')
   host = api + ':' + port
 }
 // web
-let nginx = true
-let gzip = true
+// let nginx = true
+// let gzip = true
 
 // app
-// let nginx = true
-// let gzip = false
+let nginx = true
+let gzip = false
 // ----------------------------------------------------
 let proxyTable = {
   '/api': {

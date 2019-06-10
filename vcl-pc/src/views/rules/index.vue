@@ -34,7 +34,7 @@
                 clearable
                 prefix-icon="el-icon-search"></el-input>
             </el-col>
-            <el-col :offset="10" :span="8" v-if="activeRow.key === 'followUpColumn'" style="text-align:right;">
+            <el-col :offset="8" :span="8" v-if="activeRow.key === 'followUpColumn'" style="text-align:right;">
               <el-radio-group v-model="statusType" @change="statusTypeChange">
                 <el-radio-button label="全部">
                   全部
