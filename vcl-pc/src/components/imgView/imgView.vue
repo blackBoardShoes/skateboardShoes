@@ -165,10 +165,12 @@ export default {
       background-color: #fff;
       width:530px;
       border-right:1px solid #f0f0f0;
-      height:100%;
+      // height:636px;
+      overflow: auto;
       display:flex;
       flex-direction: column;
       .img-choosen{
+        max-height:596px;
         flex:1;
         overflow: auto;
         text-align: center;

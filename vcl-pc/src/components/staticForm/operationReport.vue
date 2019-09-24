@@ -121,13 +121,19 @@
               </el-col>
             </el-row>
             <!-- <div class="imgGroup">
-              <img :src="img.source" v-for="(img, o) in contentModel.checkImageList" :key="o">
+              <img :src="img" v-for="(img, o) in contentModel.checkImageList" :key="o">
             </div> -->
-            <el-row class="imgGroup" :gutter="20" v-if="contentModel.checkImageList ? contentModel.checkImageList.length : false">
+            <div class="imgGroup" v-if="contentModel.checkImageList ? contentModel.checkImageList.length : false">
+              <div class="item" v-for="(img, o) in contentModel.checkImageList" :key="o">
+                <img :src="img">
+              </div>
+              <div class="item" v-if="contentModel.checkImageList && contentModel.checkImageList.length === 2 || contentModel.checkImageList.length === 5"></div>
+            </div>
+            <!-- <el-row class="imgGroup" :gutter="20" v-if="contentModel.checkImageList ? contentModel.checkImageList.length : false">
               <el-col :span="4" v-for="(img, o) in contentModel.checkImageList" :key="o">
                 <img :src="img" >
               </el-col>
-            </el-row>
+            </el-row> -->
           </div>
           <!-- <div class="twoContentBottom">
             <el-form-item label="麻醉方式 :" prop="operationSelectMz" style="flex-grow:1;">
@@ -176,11 +182,17 @@
         <!-- <grayTitle>镜检照片</grayTitle> -->
         <!-- <img src="http://192.168.10.104:8090/termbase/getImage/|apis|image|patientImage|阿萨德.jpg" alt=""> -->
         <!-- <img style="widht:60px;height:60px" src="http://tp.yiaedu.com/showimg.php?url=http://uploads.xuexila.com/allimg/1703/867-1F330164643.jpg" alt=""> -->
-        <el-row class="imgGroup" :gutter="20" v-if="contentModel.checkImageList ? contentModel.checkImageList.length : false">
+        <!-- <el-row class="imgGroup" :gutter="20" v-if="contentModel.checkImageList ? contentModel.checkImageList.length : false">
           <el-col :span="4" v-for="(img, o) in contentModel.checkImageList" :key="o">
             <img :src="img" >
           </el-col>
-        </el-row>
+        </el-row> -->
+        <div class="imgGroup" v-if="contentModel.checkImageList ? contentModel.checkImageList.length : false">
+          <div class="item" v-for="(img, o) in contentModel.checkImageList" :key="o">
+            <img :src="img">
+          </div>
+          <div class="item" v-if="contentModel.checkImageList && contentModel.checkImageList.length === 2 || contentModel.checkImageList.length === 5"></div>
+        </div>
         <grayTitle>检查所见</grayTitle>
         <div class="reportOhterContain">
           <el-row type="flex">
@@ -327,9 +339,7 @@ export default {
   data () {
     return {
       activeNames: ['1', '2'],
-      imgArr: [
-        // require('../../../src/assets/images/导航栏@2x.png')
-      ],
+      imgArr: [],
       contentModel: this.value,
       formData: {
         operationCheckBox: [
@@ -617,7 +627,6 @@ export default {
         if (pigi) {
           this.imgArr = []
           this.imgArr = pigi.data.entity
-          // this.imgArr = pigi
         }
         // console.log({id: this.patientInfo.recordId, operationNum: this.patientInfo.operationNum})
       }
@@ -967,16 +976,33 @@ $marginContentW: 25px;
     }
   }
 }
+// .imgGroup {
+//   width: $full;
+//   display: flex;
+//   margin-top: $marginW;
+//   margin-bottom: $marginW;
+//   img {
+//     height: 80px;
+//   }
+// }
 .imgGroup {
   width: $full;
   display: flex;
-  // height: 100px;
-  // justify-content: space-between;
+  flex-wrap: wrap;
+  justify-content: space-between;
   margin-top: $marginW;
-  margin-bottom: $marginW;
-  img {
-    // width: 100%;
-    height: 80px;
+  // margin-bottom: $marginW;
+  .item {
+    flex: 0 0 30%;
+    height: 125px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    img {
+      max-width: 100%;
+      max-height: 100%
+    }
   }
 }
 .printAndBrowse {
