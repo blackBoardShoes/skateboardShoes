@@ -123,7 +123,7 @@
             <!-- <div class="imgGroup">
               <img :src="img.source" v-for="(img, o) in contentModel.checkImageList" :key="o">
             </div> -->
-            <el-row class="imgGroup" :gutter="20" v-if="contentModel.checkImageList ? contentModel.checkImageList.length : false">
+            <el-row class="imgGroup" :gutter="21" v-if="contentModel.checkImageList ? contentModel.checkImageList.length : false">
               <el-col :span="4" v-for="(img, o) in contentModel.checkImageList" :key="o">
                 <img :src="img" >
               </el-col>
@@ -177,7 +177,7 @@
         <!-- <img src="http://192.168.10.104:8090/termbase/getImage/|apis|image|patientImage|阿萨德.jpg" alt=""> -->
         <!-- <img style="widht:60px;height:60px" src="http://tp.yiaedu.com/showimg.php?url=http://uploads.xuexila.com/allimg/1703/867-1F330164643.jpg" alt=""> -->
         <el-row class="imgGroup" :gutter="20" v-if="contentModel.checkImageList ? contentModel.checkImageList.length : false">
-          <el-col :span="4" v-for="(img, o) in contentModel.checkImageList" :key="o">
+          <el-col :span="8" v-for="(img, o) in contentModel.checkImageList" :key="o" class="singleImage">
             <img :src="img" >
           </el-col>
         </el-row>
@@ -970,10 +970,18 @@ $marginContentW: 25px;
 .imgGroup {
   width: $full;
   display: flex;
+  flex-wrap: wrap;
   // height: 100px;
   // justify-content: space-between;
   margin-top: $marginW;
   margin-bottom: $marginW;
+  .singleImage{
+    text-align: center;
+    img {
+      // width: 100%;
+      height: 160px;
+    }
+  }
   img {
     // width: 100%;
     height: 80px;

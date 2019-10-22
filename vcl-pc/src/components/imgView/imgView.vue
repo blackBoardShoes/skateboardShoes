@@ -1,5 +1,5 @@
 <template>
-  <div id="img-view">
+  <div id="img-view" style="">
     <!-- <div class="title-header">
       <div class="float-left"> <i class="el-icon-picture-outline"></i> 请挑选镜检照片</div>
       <div class="close" @click="closeAndCancel"><i class="el-icon-close"></i></div>
@@ -136,6 +136,7 @@ export default {
 <style lang="scss" scoped>
   #img-view{
     background-color:#F0F0F0;
+    max-height: 600px;
     height:100%;
     width:100%;
     box-sizing: border-box;
@@ -165,7 +166,8 @@ export default {
       background-color: #fff;
       width:530px;
       border-right:1px solid #f0f0f0;
-      height:100%;
+      // height:100%;
+      max-height: 560px;
       display:flex;
       flex-direction: column;
       .img-choosen{
@@ -283,7 +285,7 @@ export default {
       background: #fff;
       .viewer-wrapper{
         width:90%;
-        height:500px;
+        height:424px;
       }
       .operate{
         width: 100%;
