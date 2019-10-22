@@ -168,9 +168,12 @@ export default {
       border-right:1px solid #f0f0f0;
       // height:100%;
       max-height: 560px;
+      // height:636px;
+      overflow: auto;
       display:flex;
       flex-direction: column;
       .img-choosen{
+        max-height:596px;
         flex:1;
         overflow: auto;
         text-align: center;

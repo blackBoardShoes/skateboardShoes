@@ -121,7 +121,7 @@
               </el-col>
             </el-row>
             <!-- <div class="imgGroup">
-              <img :src="img.source" v-for="(img, o) in contentModel.checkImageList" :key="o">
+              <img :src="img" v-for="(img, o) in contentModel.checkImageList" :key="o">
             </div> -->
             <el-row class="imgGroup" :gutter="21" v-if="contentModel.checkImageList ? contentModel.checkImageList.length : false">
               <el-col :span="4" v-for="(img, o) in contentModel.checkImageList" :key="o">
@@ -327,9 +327,7 @@ export default {
   data () {
     return {
       activeNames: ['1', '2'],
-      imgArr: [
-        // require('../../../src/assets/images/导航栏@2x.png')
-      ],
+      imgArr: [],
       contentModel: this.value,
       formData: {
         operationCheckBox: [
@@ -617,7 +615,6 @@ export default {
         if (pigi) {
           this.imgArr = []
           this.imgArr = pigi.data.entity
-          // this.imgArr = pigi
         }
         // console.log({id: this.patientInfo.recordId, operationNum: this.patientInfo.operationNum})
       }
@@ -967,6 +964,15 @@ $marginContentW: 25px;
     }
   }
 }
+// .imgGroup {
+//   width: $full;
+//   display: flex;
+//   margin-top: $marginW;
+//   margin-bottom: $marginW;
+//   img {
+//     height: 80px;
+//   }
+// }
 .imgGroup {
   width: $full;
   display: flex;
