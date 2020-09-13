@@ -969,6 +969,7 @@ export default {
       background-color:#fff;
       box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
       display:flex;
+      max-height: 100%;
       .qus-nav{
         flex:0 0 300px;
         overflow-x:hidden;
@@ -989,6 +990,7 @@ export default {
         overflow: auto;
         position: relative;
         transition: all .5s linear;
+        max-height: 100%;
         .content{
           overflow: hidden;
           p{

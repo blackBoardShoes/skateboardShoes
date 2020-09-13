@@ -13,12 +13,12 @@ if (localStorage.getItem('api') && localStorage.getItem('port')) {
   host = api + ':' + port
 }
 // web
-// let nginx = true
-// let gzip = true
+let nginx = true
+let gzip = true
 
 // app
-let nginx = true
-let gzip = false
+// let nginx = true
+// let gzip = false
 // ----------------------------------------------------
 let proxyTable = {
   '/api': {

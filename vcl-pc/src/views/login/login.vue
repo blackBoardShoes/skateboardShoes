@@ -8,7 +8,7 @@
         <div class="login-title">
           <img src="../../assets/images/ercp标题.png" alt="">
           <br>
-          <span>信息录入管理系统</span>
+          <span>信息录入管理系统1.0</span>
         </div>
         <div class="login-form">
           <el-form
@@ -46,7 +46,7 @@
                 </div>
               </el-col>
             </el-row>
-            <div style="margin-bottom: 0;margin-top:40px;height:48px;">
+            <div style="margin-bottom: 0;margin-top:20px;height:48px;">
               <el-col :span="24">
                 <el-button-group style="width:100%;display:flex;justify-content:center;">
                   <el-button
@@ -58,6 +58,9 @@
                   <el-button icon="ercp-icon-module-system" type="primary" @click="showlock = true" v-if="env">
                   </el-button>
                 </el-button-group>
+              </el-col>
+              <el-col>
+                <p class="version-info" style="color: #606266;text-align: center;font-size: 11px;line-height: 40px;">序列号:LDERCP201801</p>
               </el-col>
             </div>
           </el-form>

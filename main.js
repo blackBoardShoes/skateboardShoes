@@ -66,3 +66,54 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+var handleStartupEvent = function () {
+  if (process.platform !== 'win32') {
+    return false;
+  }
+
+  var squirrelCommand = process.argv[1];
+
+  switch (squirrelCommand) {
+    case '--squirrel-install':
+    case '--squirrel-updated':
+      install();
+      return true;
+    case '--squirrel-uninstall':
+      uninstall();
+      app.quit();
+      return true;
+    case '--squirrel-obsolete':
+      app.quit();
+      return true;
+  }
+  // install();
+    // 安装
+  function install() {
+    var cp = require('child_process');
+    var path = require('path');
+    console.log(path)
+    var updateDotExe = path.resolve(path.dirname(process.execPath), '..', 'update.exe');
+    var target = path.basename(process.execPath);
+    var child = cp.spawn(updateDotExe, ["--createShortcut", target], { detached: true });
+    child.on('close', function(code) {
+        app.quit();
+        // console.log(1)
+    });
+  }
+   // 卸载
+   function uninstall() {
+    var cp = require('child_process');    
+    var path = require('path');
+    var updateDotExe = path.resolve(path.dirname(process.execPath), '..', 'update.exe');
+    var target = path.basename(process.execPath);
+    var child = cp.spawn(updateDotExe, ["--removeShortcut", target], { detached: true });
+    child.on('close', function(code) {
+        app.quit();
+    });
+  }
+
+};
+
+if (handleStartupEvent()) {
+  return;
+}

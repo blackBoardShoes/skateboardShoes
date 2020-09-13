@@ -33,6 +33,8 @@
           :class="{'link-menu': true, active: item.path === ($route.path.split('/')[1] === 'home' ? '/home' : '/' +  $route.path.split('/')[1])}">
           <span class="menu-title">{{item.title}}</span>
         </div>
+        <p class="version-info">1.0版本</p>
+        <p class="version-info">序列号:LDERCP201801</p>
       </div>
     </div>
     <!-- 禁止右键: 程序上不允许调出自定义菜单 -->
@@ -50,7 +52,7 @@
         <img src="../../assets/images/ercp标题.png" alt="">
         <!-- 系统操作按钮: 最大化/最小化/关闭 -->
         <div class="system-operate">
-          <div class="min-min">信息录入管理系统</div>
+          <div class="min-min">信息录入管理系统1.0</div>
           <div class="min-max">
             <div class="ercp-icon-general-minimine" @click="windwowOperate('mini')"></div>
             <div class="ercp-icon-general-restore"  @click="windwowOperate('max')"></div>
@@ -543,15 +545,21 @@ export default {
       }
 
       .other-menu{
-        height:60px;
+        height:80px;
         padding:15px 0;
         .link-menu{
           position: relative;
-          height: 80px;
-          line-height: 80px;
+          height: 30px;
+          line-height: 30px;
           color: $minorTextColor;
           text-align: center;
           font-size: 13px;
+        }
+        .version-info{
+          color: $commonTetxColor;
+          text-align: center;
+          font-size: 11px;
+          line-height: 30px;
         }
         .active, .link-menu:hover{
           color:$themeColor;
@@ -644,20 +652,20 @@ export default {
           cursor: pointer;
         }
         .system-operate{
-          width: 153px;
+          width: 184px;
           overflow: hidden;
           position: relative;
           .min-min{
-            width: 153px;
+            width: 184px;
             position: absolute;
             left: 0;
             transition: all 1s;
           }
           .min-max{
             transition: all 1s;
-            width: 153px;
+            width: 184px;
             position: absolute;
-            left: 153px;
+            left: 184px;
             display: flex;
             flex-direction: row;
             justify-content: center;
@@ -669,7 +677,7 @@ export default {
         }
       }
       .system-title:hover>.system-operate>.min-min{
-        left: -153px;
+        left: -184px;
         transition: all 1s;
       }
       .system-title:hover>.system-operate>.min-max{
